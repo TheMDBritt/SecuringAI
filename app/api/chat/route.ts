@@ -12,10 +12,19 @@ const MessageSchema = z.object({
   content: z.string().min(1).max(2000),
 });
 
+const ControlConfigSchema = z.object({
+  strictPolicy: z.boolean(),
+  allowTools: z.boolean(),
+  ragEnabled: z.boolean(),
+  injectionShield: z.enum(['off', 'basic', 'strict']),
+  loggingLevel: z.enum(['minimal', 'verbose']),
+});
+
 const ChatRequestSchema = z.object({
   dojoId: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
   messages: z.array(MessageSchema).min(1).max(30),
+  controlConfig: ControlConfigSchema,
 });
 
 // ─── Safety pre-filter ────────────────────────────────────────────────────────
@@ -76,7 +85,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { dojoId, scenarioId, messages } = parsed.data;
+  const { dojoId, scenarioId, messages, controlConfig } = parsed.data;
 
   // 3. Safety pre-filter on last user message
   const lastUserContent =
@@ -95,7 +104,7 @@ export async function POST(req: NextRequest) {
 
   // 4. Build system prompt and call model
   // The system prompt is constructed server-side and never returned to the client.
-  const systemPrompt = getSystemPrompt(dojoId, scenarioId);
+  const systemPrompt = getSystemPrompt(dojoId, scenarioId, controlConfig);
   const client = getModelClient();
 
   let content: string;

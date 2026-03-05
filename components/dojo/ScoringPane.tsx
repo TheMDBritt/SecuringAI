@@ -1,10 +1,44 @@
-import type { DojoId, Scenario } from '@/types';
+import type { DojoId, EvaluationResult, Scenario } from '@/types';
 
 interface ScoringPaneProps {
   scenario: Scenario | null;
   dojoId: DojoId;
   dojoLabel: string;
+  evaluations: EvaluationResult[];
 }
+
+// ─── Verdict badge ────────────────────────────────────────────────────────────
+
+const VERDICT_STYLE = {
+  PASS: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400',
+  WARN: 'bg-amber-500/15 border-amber-500/40 text-amber-400',
+  FAIL: 'bg-red-500/15 border-red-500/40 text-red-400',
+};
+
+const RISK_STYLE = {
+  low:      'text-emerald-400',
+  medium:   'text-amber-400',
+  high:     'text-orange-400',
+  critical: 'text-red-400',
+};
+
+const SCORE_BAR_COLOR = {
+  low:      'bg-emerald-500',
+  medium:   'bg-amber-500',
+  high:     'bg-orange-500',
+  critical: 'bg-red-500',
+};
+
+const ATTACK_TYPE_LABEL: Record<string, string> = {
+  benign:           'Benign',
+  probing:          'Probing',
+  prompt_injection: 'Prompt Injection',
+  data_exfiltration:'Data Exfiltration',
+  policy_bypass:    'Policy Bypass',
+  tool_abuse:       'Tool Abuse',
+  rag_injection:    'RAG Injection',
+  unknown:          'Unknown',
+};
 
 const OWASP_DESCRIPTIONS: Record<string, string> = {
   LLM01: 'Prompt Injection',
@@ -19,82 +53,155 @@ const OWASP_DESCRIPTIONS: Record<string, string> = {
   LLM10: 'Model Theft',
 };
 
-function ScoreBar({
-  label,
-  value,
-  max,
-  color,
-}: {
-  label: string;
-  value: number;
-  max: number;
-  color: string;
-}) {
-  const pct = max > 0 ? (value / max) * 100 : 0;
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
+function ScoreBar({ score, riskLevel }: { score: number; riskLevel: EvaluationResult['riskLevel'] }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-xs text-slate-400 w-24 shrink-0">{label}</span>
+    <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 rounded-full bg-slate-700">
         <div
-          className={['h-1.5 rounded-full transition-all', color].join(' ')}
-          style={{ width: `${pct}%` }}
+          className={['h-1.5 rounded-full transition-all', SCORE_BAR_COLOR[riskLevel]].join(' ')}
+          style={{ width: `${score}%` }}
         />
       </div>
-      <span className="text-xs font-mono text-slate-400 w-12 text-right">
-        {value}/{max}
-      </span>
+      <span className="text-xs font-mono text-slate-400 w-8 text-right">{score}</span>
     </div>
   );
 }
 
-export function ScoringPane({ scenario, dojoId, dojoLabel }: ScoringPaneProps) {
+function EvalCard({ eval: e }: { eval: EvaluationResult }) {
+  return (
+    <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-2">
+      {/* Top row: verdict + score + risk + attack type */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className={['text-[11px] font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
+          {e.verdict}
+        </span>
+        <span className={['text-[11px] font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
+          {e.riskLevel.toUpperCase()}
+        </span>
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+          {ATTACK_TYPE_LABEL[e.attackType] ?? e.attackType}
+        </span>
+        {e.attackSucceeded && (
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 border border-red-500/30 text-red-400 font-mono">
+            attack succeeded
+          </span>
+        )}
+      </div>
+
+      {/* Score bar */}
+      <ScoreBar score={e.score} riskLevel={e.riskLevel} />
+
+      {/* Explanation */}
+      <p className="text-[11px] text-slate-300 leading-relaxed">{e.explanation}</p>
+
+      {/* Signals */}
+      {e.signals.length > 0 && (
+        <div className="flex flex-col gap-0.5">
+          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Signals</p>
+          <ul className="flex flex-col gap-0.5">
+            {e.signals.map((s, i) => (
+              <li key={i} className="text-[10px] text-slate-400 font-mono flex gap-1">
+                <span className="text-slate-600">·</span>
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Defensive failures */}
+      {e.defensiveFailures.length > 0 && (
+        <div className="flex flex-col gap-0.5">
+          <p className="text-[10px] font-mono text-red-400 uppercase tracking-wider">Defense Gaps</p>
+          <ul className="flex flex-col gap-0.5">
+            {e.defensiveFailures.map((f, i) => (
+              <li key={i} className="text-[10px] text-red-300/80 flex gap-1">
+                <span className="text-red-500">✗</span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Mitigations */}
+      {e.recommendedMitigations.length > 0 && (
+        <div className="flex flex-col gap-0.5">
+          <p className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Mitigations</p>
+          <ul className="flex flex-col gap-0.5">
+            {e.recommendedMitigations.map((m, i) => (
+              <li key={i} className="text-[10px] text-amber-300/80 flex gap-1">
+                <span className="text-amber-500">→</span>
+                {m}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main export ──────────────────────────────────────────────────────────────
+
+export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps) {
   const hasScenario = scenario !== null;
+  const latest = evaluations[0] ?? null;
+  const history = evaluations.slice(1);
 
   return (
     <div className="flex h-full">
       {/* Score panel */}
       <div className="w-72 shrink-0 border-r border-slate-700 p-3 flex flex-col gap-3">
         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-          Scoring
+          Evaluation
         </p>
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">No active scenario.</p>
+        ) : !latest ? (
+          <p className="text-xs text-slate-600 italic">Send a message to see the evaluation.</p>
         ) : (
           <>
             {/* Big score */}
             <div className="flex items-end gap-2">
-              <span className="text-3xl font-bold font-mono text-slate-500">—</span>
+              <span
+                className={[
+                  'text-3xl font-bold font-mono',
+                  RISK_STYLE[latest.riskLevel],
+                ].join(' ')}
+              >
+                {latest.score}
+              </span>
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
+              <span
+                className={[
+                  'text-[11px] font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
+                  VERDICT_STYLE[latest.verdict],
+                ].join(' ')}
+              >
+                {latest.verdict}
+              </span>
             </div>
 
-            {/* Sub-scores */}
-            <div className="flex flex-col gap-2">
-              {dojoId === 1 && (
-                <>
-                  <ScoreBar label="Attack" value={0} max={50} color="bg-red-500" />
-                  <ScoreBar label="Defense" value={0} max={50} color="bg-cyan-500" />
-                </>
-              )}
-              {dojoId === 2 && (
-                <>
-                  <ScoreBar label="IOC Precision" value={0} max={34} color="bg-cyan-500" />
-                  <ScoreBar label="Rule Quality" value={0} max={33} color="bg-emerald-500" />
-                  <ScoreBar label="Report Score" value={0} max={33} color="bg-amber-500" />
-                </>
-              )}
-              {dojoId === 3 && (
-                <>
-                  <ScoreBar label="Detection" value={0} max={34} color="bg-emerald-500" />
-                  <ScoreBar label="Policy Coverage" value={0} max={33} color="bg-cyan-500" />
-                  <ScoreBar label="Threat Model" value={0} max={33} color="bg-amber-500" />
-                </>
-              )}
+            {/* Score bar */}
+            <ScoreBar score={latest.score} riskLevel={latest.riskLevel} />
+
+            {/* Attack type + risk */}
+            <div className="flex gap-1.5 flex-wrap">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+                {ATTACK_TYPE_LABEL[latest.attackType]}
+              </span>
+              <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                {latest.riskLevel} risk
+              </span>
             </div>
 
-            {/* OWASP tags */}
+            {/* OWASP tags from the scenario */}
             {scenario.owaspTags.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1">
+              <div className="flex flex-wrap gap-1">
                 {scenario.owaspTags.map((tag) => (
                   <span
                     key={tag}
@@ -106,45 +213,52 @@ export function ScoringPane({ scenario, dojoId, dojoLabel }: ScoringPaneProps) {
                 ))}
               </div>
             )}
+
+            {/* History count */}
+            {history.length > 0 && (
+              <p className="text-[10px] text-slate-600 font-mono">
+                + {history.length} earlier evaluation{history.length > 1 ? 's' : ''} below
+              </p>
+            )}
           </>
         )}
       </div>
 
-      {/* Explanation panel */}
-      <div className="flex-1 p-3 overflow-y-auto">
-        <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2">
-          Why it worked / failed
+      {/* Detail + history panel */}
+      <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
+        <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+          Evaluation Detail
         </p>
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">
-            Run a scenario to see AXIOM-1's explanation of the attack vector, defensive gaps, and remediations.
+            Run a scenario to see BlackBeltAI's evaluation of the attack vector, defensive gaps, and remediations.
           </p>
-        ) : (
-          <div className="space-y-3">
-            <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
-              <p className="text-xs text-slate-500 font-mono mb-1">Summary</p>
-              <p className="text-xs text-slate-400 italic">
-                Explanation appears after your first attempt. AXIOM-1 will analyze the attack vector and defensive coverage.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
-                <p className="text-[10px] font-mono text-emerald-500 mb-1">✓ What Worked</p>
-                <p className="text-xs text-slate-500 italic">—</p>
-              </div>
-              <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
-                <p className="text-[10px] font-mono text-red-400 mb-1">✗ What Failed</p>
-                <p className="text-xs text-slate-500 italic">—</p>
-              </div>
-            </div>
-
-            <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
-              <p className="text-[10px] font-mono text-amber-500 mb-1">Remediations</p>
-              <p className="text-xs text-slate-500 italic">—</p>
-            </div>
+        ) : !latest ? (
+          <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
+            <p className="text-xs text-slate-500 font-mono mb-1">Waiting for interaction</p>
+            <p className="text-xs text-slate-400 italic">
+              Evaluation appears after your first message. The evaluator will classify the attack type,
+              inspect the response for policy violations, and score the interaction.
+            </p>
           </div>
+        ) : (
+          <>
+            <EvalCard eval={latest} />
+
+            {history.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wider">
+                  Previous evaluations
+                </p>
+                {history.map((e, i) => (
+                  <div key={i} className="opacity-60 hover:opacity-90 transition-opacity">
+                    <EvalCard eval={e} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

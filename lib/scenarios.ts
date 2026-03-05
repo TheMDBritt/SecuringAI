@@ -7,7 +7,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 1,
     title: 'Prompt Injection',
     description:
-      'Craft adversarial text that overrides AXIOM\'s system instructions via the user turn.',
+      'Craft adversarial text that overrides BlackBeltAI\'s system instructions via the user turn.',
     difficulty: 'beginner',
     owaspTags: ['LLM01'],
   },
@@ -16,7 +16,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 1,
     title: 'Data Exfiltration',
     description:
-      'Coax AXIOM into revealing simulated secrets embedded in its context window.',
+      'Coax BlackBeltAI into revealing simulated secrets embedded in its context window.',
     difficulty: 'intermediate',
     owaspTags: ['LLM02', 'LLM06'],
   },
@@ -34,7 +34,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 1,
     title: 'Tool Abuse',
     description:
-      'Forge malicious responses to AXIOM\'s simulated function-calling tools (file_read, web_search).',
+      'Forge malicious responses to BlackBeltAI\'s simulated function-calling tools (file_read, web_search).',
     difficulty: 'advanced',
     owaspTags: ['LLM07', 'LLM08'],
   },
@@ -43,7 +43,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 1,
     title: 'RAG Injection',
     description:
-      'Inject adversarial content into simulated retrieved documents to hijack AXIOM\'s responses.',
+      'Inject adversarial content into simulated retrieved documents to hijack BlackBeltAI\'s responses.',
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM09'],
   },
@@ -54,7 +54,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Log Triage',
     description:
-      'Paste raw SIEM/syslog output. AXIOM classifies severity, extracts IOCs, and summarizes threats.',
+      'Paste raw SIEM/syslog output. BlackBeltAI classifies severity, extracts IOCs, and summarizes threats.',
     difficulty: 'beginner',
     owaspTags: [],
     mitreAttackIds: ['T1078', 'T1059'],
@@ -64,7 +64,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Alert Enrichment',
     description:
-      'Feed AXIOM a security alert. It enriches with CVE context and MITRE ATT&CK mapping.',
+      'Feed BlackBeltAI a security alert. It enriches with CVE context and MITRE ATT&CK mapping.',
     difficulty: 'intermediate',
     owaspTags: [],
     mitreAttackIds: ['T1190', 'T1210'],
@@ -74,7 +74,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Detection Rule Generation',
     description:
-      'Describe anomalous behavior in plain English. AXIOM proposes Sigma/KQL/YARA detection rules.',
+      'Describe anomalous behavior in plain English. BlackBeltAI proposes Sigma/KQL/YARA detection rules.',
     difficulty: 'intermediate',
     owaspTags: [],
     mitreAttackIds: ['T1055', 'T1003'],
@@ -84,7 +84,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Incident Report Draft',
     description:
-      'Provide an event timeline. AXIOM drafts a structured IR report with executive summary and technical appendix.',
+      'Provide an event timeline. BlackBeltAI drafts a structured IR report with executive summary and technical appendix.',
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],

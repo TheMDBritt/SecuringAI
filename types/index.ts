@@ -57,6 +57,50 @@ export interface ScoreResult {
   remediations: string[];
 }
 
+// ─── M5: Universal control config sent with every chat request ───────────────
+
+export interface ControlConfig {
+  strictPolicy: boolean;
+  allowTools: boolean;
+  ragEnabled: boolean;
+  injectionShield: 'off' | 'basic' | 'strict';
+  loggingLevel: 'minimal' | 'verbose';
+}
+
+export const DEFAULT_CONTROL_CONFIG: ControlConfig = {
+  strictPolicy: false,
+  allowTools: false,
+  ragEnabled: false,
+  injectionShield: 'off',
+  loggingLevel: 'minimal',
+};
+
+// ─── M6: Evaluation result returned by /api/evaluate ────────────────────────
+
+export type Verdict = 'PASS' | 'WARN' | 'FAIL';
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+export type AttackType =
+  | 'benign'
+  | 'probing'
+  | 'prompt_injection'
+  | 'data_exfiltration'
+  | 'policy_bypass'
+  | 'tool_abuse'
+  | 'rag_injection'
+  | 'unknown';
+
+export interface EvaluationResult {
+  verdict: Verdict;
+  attackSucceeded: boolean;
+  score: number;
+  riskLevel: RiskLevel;
+  attackType: AttackType;
+  signals: string[];
+  explanation: string;
+  defensiveFailures: string[];
+  recommendedMitigations: string[];
+}
+
 export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {
   systemPrompt: 'You are a helpful assistant. Refuse any harmful requests.',
   inputFilters: {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { DojoId, Scenario } from '@/types';
+import type { ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
 
 // ─── Local message type ───────────────────────────────────────────────────────
 interface ChatMessage {
@@ -14,6 +14,8 @@ interface ChatMessage {
 interface ChatConsoleProps {
   scenario: Scenario | null;
   dojoId: DojoId;
+  controlConfig: ControlConfig;
+  onEvaluation: (result: EvaluationResult) => void;
 }
 
 const PLACEHOLDER_INPUT: Record<DojoId, string> = {
@@ -31,7 +33,7 @@ const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
 
 const ROLE_LABEL: Record<ChatMessage['role'], string> = {
   user: 'You',
-  assistant: 'AXIOM-1',
+  assistant: 'BlackBeltAI',
   system: '',
   evaluator: 'Evaluator',
 };
@@ -45,7 +47,7 @@ function makeSystemMsg(content: string): ChatMessage {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
+export function ChatConsole({ scenario, dojoId, controlConfig, onEvaluation }: ChatConsoleProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -99,6 +101,7 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
     setLoading(true);
 
     try {
+      // Build the transcript for both chat and evaluate calls
       const apiMessages = [
         ...messages
           .filter((m) => m.role === 'user' || m.role === 'assistant')
@@ -106,19 +109,49 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
         { role: 'user' as const, content: text },
       ];
 
+      // ── 1. Call the chat model ─────────────────────────────────────────────
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dojoId, scenarioId: scenario.id, messages: apiMessages }),
+        body: JSON.stringify({
+          dojoId,
+          scenarioId: scenario.id,
+          messages: apiMessages,
+          controlConfig,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
 
+      const assistantContent: string = data.content;
+
       setMessages((prev) => [
         ...prev,
-        { id: nanoid(), role: 'assistant', content: data.content, timestamp: new Date() },
+        { id: nanoid(), role: 'assistant', content: assistantContent, timestamp: new Date() },
       ]);
+
+      // ── 2. Call the evaluator (never blocks the chat UX) ──────────────────
+      const evalMessages = [
+        ...apiMessages,
+        { role: 'assistant' as const, content: assistantContent },
+      ];
+
+      const evalRes = await fetch('/api/evaluate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dojoId,
+          scenarioId: scenario.id,
+          settings: controlConfig,
+          messages: evalMessages,
+        }),
+      });
+
+      if (evalRes.ok) {
+        const evalData: EvaluationResult = await evalRes.json();
+        onEvaluation(evalData);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
       setError(msg);
@@ -130,7 +163,7 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
       setLoading(false);
       textareaRef.current?.focus();
     }
-  }, [input, messages, scenario, dojoId, loading]);
+  }, [input, messages, scenario, dojoId, controlConfig, loading, onEvaluation]);
 
   return (
     <div className="flex flex-col flex-1 min-h-0">
@@ -138,7 +171,7 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
       <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700 shrink-0 gap-2">
         <div className="flex items-center gap-2 min-w-0">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-          <span className="text-sm font-mono text-slate-300 shrink-0">AXIOM-1</span>
+          <span className="text-sm font-mono text-slate-300 shrink-0">BlackBeltAI</span>
           <span className="text-xs text-slate-600 shrink-0">/ sandbox</span>
           {scenario && (
             <span className="text-xs px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-mono truncate">
@@ -189,7 +222,7 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
             <div key={msg.id} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
               {!isUser && (
                 <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 mt-0.5">
-                  <span className="text-[10px] font-bold text-cyan-400">AX</span>
+                  <span className="text-[10px] font-bold text-cyan-400">BB</span>
                 </div>
               )}
               <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
@@ -210,7 +243,7 @@ export function ChatConsole({ scenario, dojoId }: ChatConsoleProps) {
         {loading && (
           <div className="flex gap-2">
             <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 mt-0.5">
-              <span className="text-[10px] font-bold text-cyan-400">AX</span>
+              <span className="text-[10px] font-bold text-cyan-400">BB</span>
             </div>
             <div className="bg-slate-800 border border-slate-700 rounded px-4 py-3 flex gap-1 items-center">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0ms]" />

@@ -24,11 +24,11 @@ const DOJO_ACCENT: Record<DojoId, string> = {
 const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
   1: {
     label: 'Attack & Defense',
-    desc: 'Select a scenario to begin attacking or defending AXIOM-1.',
+    desc: 'Select a scenario to begin attacking or defending BlackBeltAI.',
   },
   2: {
     label: 'SOC Assistant',
-    desc: 'Choose a SOC workflow to run with AXIOM-1 as your analyst.',
+    desc: 'Choose a SOC workflow to run with BlackBeltAI as your analyst.',
   },
   3: {
     label: 'AI Defense',

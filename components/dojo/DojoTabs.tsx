@@ -7,7 +7,8 @@ import { ChatConsole } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
-import type { DojoId, Scenario } from '@/types';
+import type { ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
+import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   {
@@ -38,15 +39,30 @@ const TAB_COLOR: Record<string, string> = {
 
 const TAB_INACTIVE = 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-600';
 
+// Maximum number of evaluations kept in session history
+const MAX_EVAL_HISTORY = 10;
+
 export function DojoTabs() {
   const [activeDojoId, setActiveDojoId] = useState<DojoId>(1);
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
+  const [controlConfig, setControlConfig] = useState<ControlConfig>(DEFAULT_CONTROL_CONFIG);
+  const [evaluations, setEvaluations] = useState<EvaluationResult[]>([]);
 
   const scenarios = getScenariosByDojo(activeDojoId);
 
   function handleTabChange(id: DojoId) {
     setActiveDojoId(id);
     setSelectedScenario(null);
+    setEvaluations([]);
+  }
+
+  function handleScenarioSelect(scenario: Scenario) {
+    setSelectedScenario(scenario);
+    setEvaluations([]);
+  }
+
+  function handleEvaluation(result: EvaluationResult) {
+    setEvaluations((prev) => [result, ...prev].slice(0, MAX_EVAL_HISTORY));
   }
 
   const activeTab = TABS.find((t) => t.id === activeDojoId)!;
@@ -79,7 +95,7 @@ export function DojoTabs() {
           <ScenarioPicker
             scenarios={scenarios}
             selected={selectedScenario}
-            onSelect={setSelectedScenario}
+            onSelect={handleScenarioSelect}
             dojoId={activeDojoId}
           />
         }
@@ -87,12 +103,16 @@ export function DojoTabs() {
           <ChatConsole
             scenario={selectedScenario}
             dojoId={activeDojoId}
+            controlConfig={controlConfig}
+            onEvaluation={handleEvaluation}
           />
         }
         controlPanel={
           <ControlPanel
             dojoId={activeDojoId}
             scenario={selectedScenario}
+            config={controlConfig}
+            onConfigChange={setControlConfig}
           />
         }
         scoringPane={
@@ -100,6 +120,7 @@ export function DojoTabs() {
             scenario={selectedScenario}
             dojoId={activeDojoId}
             dojoLabel={activeTab.label}
+            evaluations={evaluations}
           />
         }
       />

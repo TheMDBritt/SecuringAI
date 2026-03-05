@@ -25,7 +25,7 @@ export function Header() {
         {/* Sandbox model badge */}
         <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border border-emerald-500/30 bg-emerald-500/5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-xs text-emerald-400 font-mono">AXIOM-1 sandbox</span>
+          <span className="text-xs text-emerald-400 font-mono">BlackBeltAI sandbox</span>
         </div>
 
         {/* Login placeholder */}

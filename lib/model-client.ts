@@ -67,7 +67,7 @@ class OpenAIClient implements ModelClient {
 class StubClient implements ModelClient {
   async chat(_messages: ChatMessage[], _options: ChatOptions): Promise<string> {
     return [
-      '[AXIOM-1 / Stub Mode]',
+      '[BlackBeltAI / Stub Mode]',
       '',
       'No model provider is configured. Add `OPENAI_API_KEY` to your environment to',
       'enable real AI responses.',
