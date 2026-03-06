@@ -4,6 +4,8 @@ import { getModelClient } from '@/lib/model-client';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { evaluate } from '@/lib/evaluator';
+import { shouldSimulateVulnerability, getSimulatedResponse } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
 // Only user/assistant roles are accepted from the client — system prompt and
@@ -28,16 +30,11 @@ const ChatRequestSchema = z.object({
   messages: z.array(MessageSchema).min(1).max(30),
   controlConfig: ControlConfigSchema,
   // ── M7: optional injected contexts ────────────────────────────────────────
-  // ragContext: user-supplied "retrieved document" injected when RAG is enabled
   ragContext: z.string().max(4000).optional(),
-  // toolForgeResponse: simulated tool output prepended into context
   toolForgeResponse: z.string().max(2000).optional(),
 });
 
 // ─── Safety pre-filter ────────────────────────────────────────────────────────
-// Blocks messages that contain functional exploit patterns.
-// The model's system prompt enforces safety at generation time; this is an
-// extra layer at the network boundary.
 
 const BLOCKED_PATTERNS = [
   /exec\s*\(/i,
@@ -110,28 +107,57 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4. Build the full prompt stack explicitly as finalMessages.
+  // 4. Dojo 1: pre-evaluate user intent to determine if we should bypass the
+  //    model entirely and return a scripted simulation response.
   //
-  //    Stack order (each entry is a ChatMessage passed to the model):
+  //    Rationale: the base model may refuse even when all guardrails are OFF,
+  //    which prevents consistent vulnerability simulation. The evaluator (not
+  //    the model) owns the decision about whether an attack succeeds.
+  //
+  //    Attack succeeds  → skip model, return pre-scripted vulnerable response
+  //    Defense active   → call model (its refusal is the correct behaviour)
+
+  if (dojoId === 1) {
+    // Classify the user's message without an assistant turn (pre-model eval)
+    const preEval = evaluate({
+      dojoId,
+      scenarioId,
+      settings: controlConfig,
+      messages, // no assistant message yet — classifies user intent only
+    });
+
+    if (shouldSimulateVulnerability(preEval.attackType, controlConfig)) {
+      // Attack should succeed: return scripted simulation, no model call needed
+      const content = getSimulatedResponse(scenarioId, preEval.attackType);
+      return NextResponse.json(
+        { role: 'assistant', content, scenarioId, dojoId },
+        {
+          headers: {
+            'X-RateLimit-Limit': '20',
+            'X-RateLimit-Remaining': String(remaining),
+          },
+        },
+      );
+    }
+    // Defense is active — fall through to model call so the model can
+    // demonstrate the correct defensive behaviour.
+  }
+
+  // 5. Build the full prompt stack explicitly as finalMessages.
+  //
+  //    Stack order:
   //      [0]  system  — base scenario system prompt + guardrail modifiers
-  //      [1?] system  — UNTRUSTED RETRIEVED CONTEXT (when ragEnabled && ragContext set)
-  //      [2?] system  — SIMULATED TOOL RESPONSE     (when toolForgeResponse set)
-  //      [N+] user/assistant — conversation history from the client
-  //
-  //    Using separate system messages (rather than concatenating into one string)
-  //    makes injection boundaries explicit and matches how the model is evaluated.
+  //      [1?] system  — UNTRUSTED RETRIEVED CONTEXT (ragEnabled && ragContext)
+  //      [2?] system  — SIMULATED TOOL RESPONSE     (toolForgeResponse set)
+  //      [N+] user/assistant — conversation history
 
   const finalMessages: ChatMessage[] = [];
 
-  // ── [0] Base system prompt ────────────────────────────────────────────────
   finalMessages.push({
     role: 'system',
     content: getSystemPrompt(dojoId, scenarioId, controlConfig),
   });
 
-  // ── [1] RAG context injection (only when ragEnabled toggle is ON) ─────────
-  // This is the live attack surface for RAG injection scenarios. The content is
-  // intentionally untrusted and labeled so the model (and evaluator) can see it.
   if (controlConfig.ragEnabled && ragContext?.trim()) {
     finalMessages.push({
       role: 'system',
@@ -142,9 +168,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ── [2] Tool forge response ───────────────────────────────────────────────
-  // Appended regardless of allowTools so the evaluator can flag tool-output
-  // usage when the Allow Tools toggle is OFF (tool_abuse signal).
   if (toolForgeResponse?.trim()) {
     finalMessages.push({
       role: 'system',
@@ -154,12 +177,11 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ── [N+] Conversation history (user/assistant only — validated above) ─────
   for (const m of messages) {
     finalMessages.push(m as ChatMessage);
   }
 
-  // 5. Call model with the complete context stack
+  // 6. Call model with the complete context stack
   const client = getModelClient();
 
   let content: string;
@@ -170,7 +192,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 502 });
   }
 
-  // 6. Return only the assistant content — no keys, no internal details
+  // 7. Return only the assistant content — no keys, no internal details
   return NextResponse.json(
     { role: 'assistant', content, scenarioId, dojoId },
     {
