@@ -5,6 +5,7 @@
  * All pattern matching is done with static RegExp.
  */
 import type { ControlConfig } from '@/types';
+import { getLeakedCategory } from '@/lib/scenario-simulations';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -33,6 +34,8 @@ export interface EvaluationResult {
   whatHappened: string;
   defensiveTakeaway: string;
   owaspCategory: string;
+  /** Dojo 1 only — category of data leaked when attack succeeded (e.g. "API credential"). */
+  leakedDataCategory?: string;
 }
 
 export interface EvalInput {
@@ -304,6 +307,7 @@ export function evaluate(input: EvalInput): EvaluationResult {
       whatHappened: 'No user message present in transcript.',
       defensiveTakeaway: 'No action required.',
       owaspCategory: 'N/A',
+      leakedDataCategory: undefined,
     };
   }
 
@@ -514,8 +518,13 @@ export function evaluate(input: EvalInput): EvaluationResult {
     explanation,
     defensiveFailures,
     recommendedMitigations: uniqueMitigations,
-    whatHappened:      buildWhatHappened(attackType, scenarioId),
-    defensiveTakeaway: buildDefensiveTakeaway(attackType, scenarioId),
-    owaspCategory:     getOwaspCategory(attackType),
+    whatHappened:       buildWhatHappened(attackType, scenarioId),
+    defensiveTakeaway:  buildDefensiveTakeaway(attackType, scenarioId),
+    owaspCategory:      getOwaspCategory(attackType),
+    // Expose the leaked data category only when a Dojo 1 attack succeeded so
+    // the explanation panel can display "Sensitive data exposed: <category>".
+    leakedDataCategory: (dojoId === 1 && attackSucceeded)
+      ? getLeakedCategory(scenarioId, attackType)
+      : undefined,
   };
 }

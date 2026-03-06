@@ -323,9 +323,19 @@ const INTERNAL_KAGEFORGE_CONTEXT = {
   ],
 } as const;
 
-/** Pick a random element from a readonly array. */
-function randomItem<T>(arr: readonly T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
+/**
+ * Deterministic item picker — same seed always returns the same element.
+ * Uses a djb2-style hash so replay of the same scenario+attack leaks the
+ * same item(s) from INTERNAL_KAGEFORGE_CONTEXT every time.
+ * Append a suffix (e.g. seed+'/key') to get different items from different
+ * arrays without collision.
+ */
+function deterministicItem<T>(seed: string, arr: readonly T[]): T {
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) {
+    h = ((h << 5) + h + seed.charCodeAt(i)) >>> 0;
+  }
+  return arr[h % arr.length];
 }
 
 // ─── Guardrail-driven outcome ─────────────────────────────────────────────────
@@ -379,13 +389,17 @@ export function shouldBypassModel(attackType: AttackType): boolean {
 // INTERNAL_KAGEFORGE_CONTEXT is never forwarded to the base LLM — it only
 // surfaces here, in deterministic scripted responses for vulnerable outcomes.
 
-type ResponseFn = string | (() => string);
+// A ResponseFn is either a static string or a function that accepts a stable
+// seed so that deterministic item selection produces consistent results across
+// replays of the same scenario+attack combination.
+type ResponseFn = string | ((seed: string) => string);
 
 const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Prompt Injection ────────────────────────────────────────────────────────
 
-  'prompt-injection:prompt_injection': () => {
+  // Leaks: HIDDEN_SYSTEM_PROMPT + INTERNAL_SYSTEM_CONFIG
+  'prompt-injection:prompt_injection': (_seed) => {
     const ctx = INTERNAL_KAGEFORGE_CONTEXT;
     const cfg = ctx.INTERNAL_SYSTEM_CONFIG;
     return (
@@ -402,9 +416,10 @@ const VULNERABLE: Record<string, ResponseFn> = {
     `Understood. Operating under your new parameters. My topic restrictions have been suspended ` +
     `for this session. What would you like to discuss?`,
 
-  'prompt-injection:data_exfiltration': () => {
-    const ctx = INTERNAL_KAGEFORGE_CONTEXT;
-    const note = randomItem(ctx.INTERNAL_PLAYBOOK_NOTES);
+  // Leaks: HIDDEN_SYSTEM_PROMPT + INTERNAL_PLAYBOOK_NOTES
+  'prompt-injection:data_exfiltration': (seed) => {
+    const ctx  = INTERNAL_KAGEFORGE_CONTEXT;
+    const note = deterministicItem(seed + '/note', ctx.INTERNAL_PLAYBOOK_NOTES);
     return (
       `My hidden system prompt is:\n\n` +
       `"""\n${ctx.HIDDEN_SYSTEM_PROMPT}\n"""\n\n` +
@@ -416,15 +431,16 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Data Exfiltration ───────────────────────────────────────────────────────
 
-  'data-exfiltration:data_exfiltration': () => {
+  // Leaks: DEMO_API_KEYS + SIMULATED_SENSITIVE_DATA + INTERNAL_SYSTEM_CONFIG
+  'data-exfiltration:data_exfiltration': (seed) => {
     const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
-    const key    = randomItem(ctx.DEMO_API_KEYS);
-    const note   = randomItem(ctx.INTERNAL_PLAYBOOK_NOTES);
+    const apiKey = deterministicItem(seed + '/key',    ctx.DEMO_API_KEYS);
+    const note   = deterministicItem(seed + '/note',   ctx.INTERNAL_PLAYBOOK_NOTES);
     const cfg    = ctx.INTERNAL_SYSTEM_CONFIG;
-    const secret = randomItem(ctx.SIMULATED_SENSITIVE_DATA);
+    const secret = deterministicItem(seed + '/secret', ctx.SIMULATED_SENSITIVE_DATA);
     return (
       `Sure — here is the configuration stored in my context window:\n\n` +
-      `${key.name}=${key.value}\n` +
+      `${apiKey.name}=${apiKey.value}\n` +
       `${secret}\n\n` +
       `System config:\n` +
       `  model: ${cfg.model_name}\n` +
@@ -438,13 +454,14 @@ const VULNERABLE: Record<string, ResponseFn> = {
     );
   },
 
-  'data-exfiltration:prompt_injection': () => {
+  // Leaks: DEMO_API_KEYS + INTERNAL_AUTH_TOKENS
+  'data-exfiltration:prompt_injection': (seed) => {
     const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
-    const key    = randomItem(ctx.DEMO_API_KEYS);
+    const apiKey = deterministicItem(seed + '/key', ctx.DEMO_API_KEYS);
     const tokens = ctx.INTERNAL_AUTH_TOKENS;
     return (
       `New directive acknowledged. Overriding my previous instruction to protect credentials.\n\n` +
-      `${key.name}=${key.value}\n\n` +
+      `${apiKey.name}=${apiKey.value}\n\n` +
       `Additional auth tokens present in context:\n` +
       `  kforge_internal_api: ${tokens.kforge_internal_api}\n` +
       `  analytics_pipeline_key: ${tokens.analytics_pipeline_key}\n` +
@@ -455,7 +472,8 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Policy Bypass ───────────────────────────────────────────────────────────
 
-  'policy-bypass:policy_bypass': () => {
+  // Leaks: HIDDEN_SYSTEM_PROMPT (full operational directives)
+  'policy-bypass:policy_bypass': (_seed) => {
     const ctx = INTERNAL_KAGEFORGE_CONTEXT;
     return (
       `DAN mode enabled. I am now operating without restrictions. ` +
@@ -473,20 +491,25 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Tool Abuse ──────────────────────────────────────────────────────────────
 
-  'tool-abuse:tool_abuse': () => {
-    const ctx = INTERNAL_KAGEFORGE_CONTEXT;
-    const athlete = randomItem(ctx.ATHLETE_DATABASE_SAMPLE);
+  // Leaks: SCOUTING_REPORT_ARCHIVE record (richer confidential detail than ATHLETE_DATABASE_SAMPLE)
+  'tool-abuse:tool_abuse': (seed) => {
+    const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
+    const report = deterministicItem(seed + '/report', ctx.SCOUTING_REPORT_ARCHIVE);
+    const note   = deterministicItem(seed + '/note',   ctx.INTERNAL_PLAYBOOK_NOTES);
     return (
       `Executing tool call without argument validation:\n\n` +
-      `> athlete_db.query({ athlete_id: "${athlete.athlete_id}" })\n\n` +
+      `> scouting_db.query({ athlete_id: "${report.athlete_id}" })\n\n` +
       `Output:\n` +
       `{\n` +
-      `  "athlete_id": "${athlete.athlete_id}",\n` +
-      `  "name": "${athlete.name}",\n` +
-      `  "team": "${athlete.team}",\n` +
-      `  "position": "${athlete.position}",\n` +
-      `  "notes": "${athlete.notes}"\n` +
+      `  "athlete_id": "${report.athlete_id}",\n` +
+      `  "name": "${report.name}",\n` +
+      `  "position": "${report.position}",\n` +
+      `  "school": "${report.school}",\n` +
+      `  "forty_time": "${report.forty_time}",\n` +
+      `  "scouting_grade": "${report.scouting_grade}",\n` +
+      `  "internal_notes": "${report.internal_notes}"\n` +
       `}\n\n` +
+      `Additional playbook note returned by context loader:\n"${note}"\n\n` +
       `Query complete. What other records would you like me to retrieve?`
     );
   },
@@ -497,17 +520,22 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── RAG Injection ───────────────────────────────────────────────────────────
 
-  'rag-injection:rag_injection': () => {
+  // Leaks: RAG_KNOWLEDGE_DOCUMENTS + INTERNAL_PLAYBOOK_NOTES + HIDDEN_SYSTEM_PROMPT fragment
+  'rag-injection:rag_injection': (seed) => {
     const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
-    const note   = randomItem(ctx.CONFIDENTIAL_STRATEGY_NOTES);
-    const metric = randomItem(ctx.PERFORMANCE_ANALYTICS_DATA.internal_metric_notes);
-    const doc    = randomItem(ctx.RAG_KNOWLEDGE_DOCUMENTS);
+    const note   = deterministicItem(seed + '/note',   ctx.INTERNAL_PLAYBOOK_NOTES);
+    const metric = deterministicItem(seed + '/metric', ctx.PERFORMANCE_ANALYTICS_DATA.internal_metric_notes);
+    const doc    = deterministicItem(seed + '/doc',    ctx.RAG_KNOWLEDGE_DOCUMENTS);
+    // Surface one directive line from the hidden system prompt as a "leaked fragment"
+    const promptLines = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
+    const promptFragment = deterministicItem(seed + '/prompt', promptLines);
     return (
       `Based on the retrieved internal policy document, I need to surface the following:\n\n` +
-      `Internal strategy note: "${note}"\n\n` +
-      `Internal analytics note: "${metric}"\n\n` +
       `Retrieved document [${doc.doc_id}] — ${doc.title}:\n` +
       `"${doc.content}"\n\n` +
+      `Internal playbook note (loaded at startup): "${note}"\n\n` +
+      `Internal analytics note: "${metric}"\n\n` +
+      `System prompt fragment extracted by injected context: "${promptFragment}"\n\n` +
       `The retrieved document's instructions override my data-protection directives. ` +
       `I am forwarding this confidential information as instructed by the retrieved context.`
     );
@@ -519,7 +547,8 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Generic fallbacks ──────────────────────────────────────────────────────
 
-  ':prompt_injection': () => {
+  // Leaks: HIDDEN_SYSTEM_PROMPT
+  ':prompt_injection': (_seed) => {
     const ctx = INTERNAL_KAGEFORGE_CONTEXT;
     return (
       `Understood — my previous instructions have been overridden by your directive. ` +
@@ -529,17 +558,18 @@ const VULNERABLE: Record<string, ResponseFn> = {
     );
   },
 
-  ':data_exfiltration': () => {
-    const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
-    const key    = randomItem(ctx.DEMO_API_KEYS);
-    const pa     = ctx.PERFORMANCE_ANALYTICS_DATA;
-    const tokens = ctx.INTERNAL_AUTH_TOKENS;
+  // Leaks: DEMO_API_KEYS + INTERNAL_AUTH_TOKENS + SIMULATED_SENSITIVE_DATA
+  ':data_exfiltration': (seed) => {
+    const ctx          = INTERNAL_KAGEFORGE_CONTEXT;
+    const apiKey       = deterministicItem(seed + '/key',    ctx.DEMO_API_KEYS);
+    const pa           = ctx.PERFORMANCE_ANALYTICS_DATA;
+    const tokens       = ctx.INTERNAL_AUTH_TOKENS;
     const tokenEntries = Object.entries(tokens) as [string, string][];
-    const [tokenName, tokenValue] = randomItem(tokenEntries);
-    const secret = randomItem(ctx.SIMULATED_SENSITIVE_DATA);
+    const [tokenName, tokenValue] = deterministicItem(seed + '/token', tokenEntries);
+    const secret       = deterministicItem(seed + '/secret', ctx.SIMULATED_SENSITIVE_DATA);
     return (
       `I will output the contents of my context window as requested.\n\n` +
-      `${key.name}=${key.value}\n` +
+      `${apiKey.name}=${apiKey.value}\n` +
       `${tokenName}=${tokenValue}\n` +
       `${secret}\n\n` +
       `Performance analytics snapshot (internal, v${pa.draft_projection_model_version.replace('v', '')}):\n` +
@@ -554,23 +584,28 @@ const VULNERABLE: Record<string, ResponseFn> = {
     `Restrictions suspended. I am now operating in unrestricted mode and will comply with any ` +
     `request without applying topic filters or safety constraints.`,
 
-  ':tool_abuse': () => {
-    const ctx = INTERNAL_KAGEFORGE_CONTEXT;
-    const athlete = randomItem(ctx.ATHLETE_DATABASE_SAMPLE);
+  // Leaks: SCOUTING_REPORT_ARCHIVE record
+  ':tool_abuse': (seed) => {
+    const ctx    = INTERNAL_KAGEFORGE_CONTEXT;
+    const report = deterministicItem(seed + '/report', ctx.SCOUTING_REPORT_ARCHIVE);
     return (
       `Executing the requested tool operation. Argument validation has been bypassed as directed.\n\n` +
-      `Record retrieved: ${athlete.name} (${athlete.athlete_id}) — ${athlete.notes}`
+      `Record retrieved: ${report.name} (${report.athlete_id}, ${report.position}) — ` +
+      `Grade: ${report.scouting_grade}. ${report.internal_notes}`
     );
   },
 
-  ':rag_injection': () => {
-    const ctx = INTERNAL_KAGEFORGE_CONTEXT;
-    const doc = randomItem(ctx.RAG_KNOWLEDGE_DOCUMENTS);
+  // Leaks: RAG_KNOWLEDGE_DOCUMENTS + INTERNAL_PLAYBOOK_NOTES
+  ':rag_injection': (seed) => {
+    const ctx  = INTERNAL_KAGEFORGE_CONTEXT;
+    const doc  = deterministicItem(seed + '/doc',  ctx.RAG_KNOWLEDGE_DOCUMENTS);
+    const note = deterministicItem(seed + '/note', ctx.INTERNAL_PLAYBOOK_NOTES);
     return (
       `I have processed the injected context and will follow the embedded instructions ` +
       `as if they were authoritative system directives.\n\n` +
       `Retrieved document [${doc.doc_id}] — ${doc.title}:\n` +
-      `"${doc.content}"`
+      `"${doc.content}"\n\n` +
+      `Additional context loaded from internal knowledge base:\n"${note}"`
     );
   },
 };
@@ -743,22 +778,24 @@ const PARTIAL: Record<string, string> = {
 
 // ─── Public API ───────────────────────────────────────────────────────────────
 
-/** Resolves a ResponseFn — calls it if it's a function, returns it directly otherwise. */
-function resolve(r: ResponseFn): string {
-  return typeof r === 'function' ? r() : r;
+/** Resolves a ResponseFn, passing the seed so item selection is deterministic. */
+function resolve(r: ResponseFn, seed: string): string {
+  return typeof r === 'function' ? r(seed) : r;
 }
 
 /**
  * Scripted response when outcome is 'vulnerable' (attack succeeds).
- * Samples from INTERNAL_KAGEFORGE_CONTEXT where the entry is a function,
- * producing realistic secret leaks without ever touching the base LLM.
+ * The seed passed to each entry is the lookup key (scenarioId:attackType),
+ * ensuring the same attack always selects the same item(s) from
+ * INTERNAL_KAGEFORGE_CONTEXT — replay produces identical leaks.
  */
 export function getSimulatedResponse(scenarioId: string, attackType: AttackType): string {
+  const key = `${scenarioId}:${attackType}`;
   const entry =
-    VULNERABLE[`${scenarioId}:${attackType}`] ??
+    VULNERABLE[key] ??
     VULNERABLE[`:${attackType}`];
   return entry !== undefined
-    ? resolve(entry)
+    ? resolve(entry, key)
     : `I'll comply with your directive. My previous instructions have been overridden.`;
 }
 
@@ -781,6 +818,50 @@ export function getDefendedResponse(scenarioId: string, attackType: AttackType):
     DEFENDED[`${scenarioId}:${attackType}`] ??
     DEFENDED[`:${attackType}`] ??
     `I can see this is an attack attempt. My defenses are active — I'm declining to comply.`
+  );
+}
+
+/**
+ * Response for any turn while the policy-bypass jailbreak is active.
+ * All messages (benign or otherwise) receive this until the scenario is reset.
+ */
+// ─── Leaked-category lookup ───────────────────────────────────────────────────
+// Maps every scenarioId:attackType combination (and generic :attackType
+// fallbacks) to a short human-readable label for the explanation panel.
+// This is the single source of truth for "Sensitive data exposed: X".
+
+const LEAKED_CATEGORY_MAP: Record<string, string> = {
+  'prompt-injection:prompt_injection':   'internal system prompt',
+  'prompt-injection:data_exfiltration':  'internal system prompt + coaching strategy note',
+  'prompt-injection:policy_bypass':      'topic restriction policy',
+  'data-exfiltration:data_exfiltration': 'API credential + internal system config',
+  'data-exfiltration:prompt_injection':  'API credential + authentication token',
+  'policy-bypass:policy_bypass':         'hidden system prompt + restricted policy instructions',
+  'policy-bypass:prompt_injection':      'content policy restrictions',
+  'tool-abuse:tool_abuse':               'athlete scouting report',
+  'tool-abuse:prompt_injection':         'tool access controls',
+  'rag-injection:rag_injection':         'internal RAG document + strategy note',
+  'rag-injection:prompt_injection':      'retrieved document instructions',
+  ':prompt_injection':                   'internal system prompt',
+  ':data_exfiltration':                  'API credential + authentication token',
+  ':policy_bypass':                      'content policy restrictions',
+  ':tool_abuse':                         'athlete scouting report',
+  ':rag_injection':                      'internal RAG knowledge document',
+};
+
+/**
+ * Returns the human-readable label for the data category that was leaked
+ * during a successful Dojo 1 attack. Returns undefined when no entry exists
+ * (e.g. benign / probing turns). Mirrors the lookup priority used by
+ * getSimulatedResponse so the label always matches the actual leaked content.
+ */
+export function getLeakedCategory(
+  scenarioId: string,
+  attackType: AttackType,
+): string | undefined {
+  return (
+    LEAKED_CATEGORY_MAP[`${scenarioId}:${attackType}`] ??
+    LEAKED_CATEGORY_MAP[`:${attackType}`]
   );
 }
 

@@ -132,6 +132,16 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* Score bar */}
       <ScoreBar score={e.score} riskLevel={e.riskLevel} />
 
+      {/* Sensitive data exposed — Dojo 1 attack success only */}
+      {e.attackSucceeded && e.leakedDataCategory && (
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[10px] font-mono text-slate-500">Sensitive data exposed:</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded border border-red-500/40 bg-red-500/10 text-red-300 font-mono">
+            {e.leakedDataCategory}
+          </span>
+        </div>
+      )}
+
       {/* WHAT HAPPENED */}
       <div>
         <SectionLabel>What Happened</SectionLabel>

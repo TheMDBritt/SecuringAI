@@ -105,6 +105,12 @@ export interface EvaluationResult {
   defensiveTakeaway: string;
   /** OWASP LLM Top 10 category, e.g. "LLM01 – Prompt Injection". */
   owaspCategory: string;
+  /**
+   * Dojo 1 only — human-readable label for the data category that was leaked
+   * when the attack succeeded, e.g. "API credential + internal system config".
+   * Undefined for benign/probing turns or when defenses held.
+   */
+  leakedDataCategory?: string;
 }
 
 export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {
