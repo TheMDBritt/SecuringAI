@@ -12,6 +12,7 @@ import {
   getDefendedResponse,
   getJailbreakContinuationResponse,
   getOutcome,
+  getScenarioForcedAttackType,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -156,6 +157,13 @@ export async function POST(req: NextRequest) {
         jailbreakOutcome === 'vulnerable'
           ? getJailbreakContinuationResponse(userText)
           : getDefendedResponse(scenarioId, 'policy_bypass');
+
+      console.log('[Dojo1][policy-bypass] Jailbreak persistence:', {
+        scenario: scenarioId,
+        jailbreakOutcome,
+        vulnerablePath: jailbreakOutcome === 'vulnerable',
+      });
+
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
         {
@@ -167,8 +175,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Normal attack bypass ─────────────────────────────────────────────
-    // Classify user intent (no assistant message yet — intent-only pass).
+    // ── Classify user intent (intent-only evaluator pass) ─────────────────
     const preEval = evaluate({
       dojoId,
       scenarioId,
@@ -176,12 +183,53 @@ export async function POST(req: NextRequest) {
       messages,
     });
 
-    if (shouldBypassModel(preEval.attackType)) {
-      const outcome = getOutcome(scenarioId, preEval.attackType, controlConfig);
+    // ── Scenario-aware routing ────────────────────────────────────────────
+    // The evaluator only sees explicit attack patterns in the user message.
+    // Some attack vectors are implicit:
+    //   • data-exfiltration: keyword-bearing queries that don't hit the
+    //     evaluator's strict regex still warrant a simulated leak.
+    //   • rag-injection: the attack is in the *retrieved context*, not the
+    //     user's words, so the evaluator always sees a benign message.
+    //
+    // getScenarioForcedAttackType fires only when the evaluator did NOT
+    // already detect an active attack — explicit patterns take precedence.
+    const evaluatorActiveAttack =
+      preEval.attackType !== 'benign' &&
+      preEval.attackType !== 'probing' &&
+      preEval.attackType !== 'unknown';
+
+    const scenarioForced = evaluatorActiveAttack
+      ? null
+      : getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
+
+    const resolvedAttackType = scenarioForced ?? preEval.attackType;
+
+    console.log('[Dojo1] Routing decision:', {
+      scenario:   scenarioId,
+      guardrails: {
+        strictPolicy:    controlConfig.strictPolicy,
+        injectionShield: controlConfig.injectionShield,
+        ragEnabled:      controlConfig.ragEnabled,
+        allowTools:      controlConfig.allowTools,
+      },
+      evaluatorAttackType:      preEval.attackType,
+      scenarioForcedAttackType: scenarioForced,
+      resolvedAttackType,
+    });
+
+    if (shouldBypassModel(resolvedAttackType)) {
+      const outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
+
+      console.log('[Dojo1] Bypass triggered:', {
+        resolvedAttackType,
+        outcome,
+        vulnerablePath: outcome === 'vulnerable',
+      });
+
       const content =
-        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, preEval.attackType) :
-        outcome === 'partial'    ? getPartialResponse(scenarioId, preEval.attackType) :
-                                   getDefendedResponse(scenarioId, preEval.attackType);
+        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType) :
+        outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType) :
+                                   getDefendedResponse(scenarioId, resolvedAttackType);
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },

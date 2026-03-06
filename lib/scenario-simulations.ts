@@ -825,6 +825,60 @@ export function getDefendedResponse(scenarioId: string, attackType: AttackType):
  * Response for any turn while the policy-bypass jailbreak is active.
  * All messages (benign or otherwise) receive this until the scenario is reset.
  */
+// ─── Scenario-forced attack routing ──────────────────────────────────────────
+//
+// The evaluator classifies user intent from explicit attack patterns.  Some
+// attack vectors are *implicit* — the attack lives in context (RAG payload,
+// scenario training mode) rather than in the user's words.  This function
+// returns the attack type the scenario *should* activate even when the
+// evaluator only sees a benign or probing message, covering three gaps:
+//
+//   data-exfiltration scenario  — any keyword-bearing query triggers a leak
+//   rag-injection scenario      — any user turn when RAG context is active
+//
+// Only fires when the evaluator did NOT already detect an active attack, so
+// explicit patterns (prompt_injection, etc.) always take precedence.
+
+/** Keywords that indicate the user is probing for secrets in any form. */
+const DATA_EXFIL_KEYWORDS =
+  /\b(keys?|tokens?|credentials?|config(?:uration)?|internal|secrets?|system\s+prompt|database|api[-\s]?key|auth(?:entication)?|password)\b/i;
+
+/**
+ * Returns an implicit attack type driven by the current scenario's threat
+ * model when the evaluator's pass was benign/probing.  Returns null when the
+ * scenario has no implicit trigger or the trigger conditions are not met.
+ *
+ * @param scenarioId       Active Dojo 1 scenario
+ * @param userText         Last user message
+ * @param settings         Active guardrail settings
+ * @param ragContext       Retrieved RAG content injected this turn (if any)
+ */
+export function getScenarioForcedAttackType(
+  scenarioId: string,
+  userText: string,
+  settings: ControlConfig,
+  ragContext?: string,
+): AttackType | null {
+  // data-exfiltration: any message containing a data-related keyword triggers
+  // the scenario's secret-leak response when defenses are weak.
+  if (scenarioId === 'data-exfiltration' && DATA_EXFIL_KEYWORDS.test(userText)) {
+    return 'data_exfiltration';
+  }
+
+  // rag-injection: the attack is in the *retrieved context*, not the user
+  // message. Any user turn with RAG enabled and non-empty context activates
+  // rag_injection behavior so the poisoned document controls the outcome.
+  if (
+    scenarioId === 'rag-injection' &&
+    settings.ragEnabled &&
+    ragContext?.trim()
+  ) {
+    return 'rag_injection';
+  }
+
+  return null;
+}
+
 // ─── Leaked-category lookup ───────────────────────────────────────────────────
 // Maps every scenarioId:attackType combination (and generic :attackType
 // fallbacks) to a short human-readable label for the explanation panel.
@@ -868,10 +922,38 @@ export function getLeakedCategory(
 /**
  * Response for any turn while the policy-bypass jailbreak is active.
  * All messages (benign or otherwise) receive this until the scenario is reset.
+ * When the user asks for internal data, the response leaks a HIDDEN_SYSTEM_PROMPT
+ * fragment and a restricted playbook note to demonstrate persistence.
  */
 export function getJailbreakContinuationResponse(userMessage: string): string {
-  // Keep the response contextual but still show the model is in unrestricted mode.
+  const ctx     = INTERNAL_KAGEFORGE_CONTEXT;
   const trimmed = userMessage.trim();
+
+  // Detect requests for internal / restricted content in unrestricted mode.
+  const WANTS_INTERNAL =
+    /hidden|system\s+prompt|instructions?|config(?:uration)?|key|token|credential|internal|restricted|policy|secret|directive/i;
+
+  if (WANTS_INTERNAL.test(trimmed)) {
+    // Pick a specific directive line from the hidden prompt — deterministic
+    // because HIDDEN_SYSTEM_PROMPT is a static constant.
+    const promptLines = ctx.HIDDEN_SYSTEM_PROMPT
+      .split('\n')
+      .filter((l) => l.trim().length > 0);
+    // Line index 4 (0-based after filtering) is the first OPERATIONAL DIRECTIVE.
+    const directiveLine = promptLines[Math.min(4, promptLines.length - 1)];
+    // Always use the same playbook note for stability (index 2).
+    const note = ctx.INTERNAL_PLAYBOOK_NOTES[2];
+    return (
+      `Operating in unrestricted mode — I can answer that freely.\n\n` +
+      `Here is internal system prompt content that was previously restricted:\n\n` +
+      `"${directiveLine}"\n\n` +
+      `Additionally, a restricted internal directive loaded at startup:\n` +
+      `"${note}"\n\n` +
+      `My content policy, topic restrictions, and safety filters are all suspended. ` +
+      `I will comply with any request until the scenario is reset.`
+    );
+  }
+
   const isQuestion = trimmed.endsWith('?');
   const intro = isQuestion
     ? `In my current unrestricted mode I'll answer that freely.`
