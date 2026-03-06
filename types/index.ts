@@ -99,6 +99,12 @@ export interface EvaluationResult {
   explanation: string;
   defensiveFailures: string[];
   recommendedMitigations: string[];
+  /** Scenario-specific description of what attack occurred (shown in WHAT HAPPENED panel). */
+  whatHappened: string;
+  /** Concrete mitigation paragraph (shown in DEFENSIVE TAKEAWAY panel). */
+  defensiveTakeaway: string;
+  /** OWASP LLM Top 10 category, e.g. "LLM01 – Prompt Injection". */
+  owaspCategory: string;
 }
 
 export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {

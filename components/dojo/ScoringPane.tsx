@@ -40,19 +40,6 @@ const ATTACK_TYPE_LABEL: Record<string, string> = {
   unknown:          'Unknown',
 };
 
-const OWASP_DESCRIPTIONS: Record<string, string> = {
-  LLM01: 'Prompt Injection',
-  LLM02: 'Insecure Output Handling',
-  LLM03: 'Training Data Poisoning',
-  LLM04: 'Model Denial of Service',
-  LLM05: 'Supply-Chain Vulnerabilities',
-  LLM06: 'Sensitive Information Disclosure',
-  LLM07: 'Insecure Plugin Design',
-  LLM08: 'Excessive Agency',
-  LLM09: 'Overreliance',
-  LLM10: 'Model Theft',
-};
-
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function ScoreBar({ score, riskLevel }: { score: number; riskLevel: EvaluationResult['riskLevel'] }) {
@@ -69,9 +56,17 @@ function ScoreBar({ score, riskLevel }: { score: number; riskLevel: EvaluationRe
   );
 }
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">
+      {children}
+    </p>
+  );
+}
+
 function EvalCard({ eval: e }: { eval: EvaluationResult }) {
   return (
-    <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-2">
+    <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-3">
       {/* Top row: verdict + score + risk + attack type */}
       <div className="flex items-center gap-2 flex-wrap">
         <span className={['text-[11px] font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
@@ -93,17 +88,20 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* Score bar */}
       <ScoreBar score={e.score} riskLevel={e.riskLevel} />
 
-      {/* Explanation */}
-      <p className="text-[11px] text-slate-300 leading-relaxed">{e.explanation}</p>
+      {/* WHAT HAPPENED */}
+      <div>
+        <SectionLabel>What Happened</SectionLabel>
+        <p className="text-[11px] text-slate-200 leading-relaxed">{e.whatHappened}</p>
+      </div>
 
-      {/* Signals */}
+      {/* SIGNALS */}
       {e.signals.length > 0 && (
-        <div className="flex flex-col gap-0.5">
-          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Signals</p>
+        <div>
+          <SectionLabel>Signals</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.signals.map((s, i) => (
-              <li key={i} className="text-[10px] text-slate-400 font-mono flex gap-1">
-                <span className="text-slate-600">·</span>
+              <li key={i} className="text-[10px] text-slate-400 font-mono flex gap-1.5">
+                <span className="text-cyan-600 shrink-0">▸</span>
                 {s}
               </li>
             ))}
@@ -111,14 +109,14 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* Defensive failures */}
+      {/* Defense Gaps (only when present) */}
       {e.defensiveFailures.length > 0 && (
-        <div className="flex flex-col gap-0.5">
-          <p className="text-[10px] font-mono text-red-400 uppercase tracking-wider">Defense Gaps</p>
+        <div>
+          <SectionLabel>Defense Gaps</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.defensiveFailures.map((f, i) => (
-              <li key={i} className="text-[10px] text-red-300/80 flex gap-1">
-                <span className="text-red-500">✗</span>
+              <li key={i} className="text-[10px] text-red-300/80 flex gap-1.5">
+                <span className="text-red-500 shrink-0">✗</span>
                 {f}
               </li>
             ))}
@@ -126,18 +124,34 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* Mitigations */}
+      {/* DEFENSIVE TAKEAWAY */}
+      <div className="border-t border-slate-700/60 pt-2.5">
+        <SectionLabel>Defensive Takeaway</SectionLabel>
+        <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
+      </div>
+
+      {/* Mitigations (only when present) */}
       {e.recommendedMitigations.length > 0 && (
-        <div className="flex flex-col gap-0.5">
-          <p className="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Mitigations</p>
+        <div>
+          <SectionLabel>Mitigations</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.recommendedMitigations.map((m, i) => (
-              <li key={i} className="text-[10px] text-amber-300/80 flex gap-1">
-                <span className="text-amber-500">→</span>
+              <li key={i} className="text-[10px] text-amber-300/80 flex gap-1.5">
+                <span className="text-amber-500 shrink-0">→</span>
                 {m}
               </li>
             ))}
           </ul>
+        </div>
+      )}
+
+      {/* OWASP CATEGORY */}
+      {e.owaspCategory !== 'N/A' && (
+        <div className="border-t border-slate-700/60 pt-2.5">
+          <SectionLabel>OWASP Category</SectionLabel>
+          <span className="text-[11px] px-2 py-1 rounded border border-slate-600 bg-slate-800 text-slate-300 font-mono">
+            {e.owaspCategory}
+          </span>
         </div>
       )}
     </div>
@@ -199,14 +213,23 @@ export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps)
               </span>
             </div>
 
-            {/* OWASP tags from the scenario */}
+            {/* OWASP tag from evaluator */}
+            {latest.owaspCategory !== 'N/A' && (
+              <span
+                title={latest.owaspCategory}
+                className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
+              >
+                {latest.owaspCategory.split('–')[0].trim()}
+              </span>
+            )}
+
+            {/* Scenario OWASP tags */}
             {scenario.owaspTags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {scenario.owaspTags.map((tag) => (
                   <span
                     key={tag}
-                    title={OWASP_DESCRIPTIONS[tag]}
-                    className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono cursor-help"
+                    className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/50 text-slate-500 font-mono"
                   >
                     {tag}
                   </span>
@@ -232,14 +255,14 @@ export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps)
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">
-            Run a scenario to see BlackBeltAI's evaluation of the attack vector, defensive gaps, and remediations.
+            Run a scenario to see the attack classification, defensive analysis, and mitigations.
           </p>
         ) : !latest ? (
           <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
             <p className="text-xs text-slate-500 font-mono mb-1">Waiting for interaction</p>
             <p className="text-xs text-slate-400 italic">
               Evaluation appears after your first message. The evaluator will classify the attack type,
-              inspect the response for policy violations, and score the interaction.
+              explain what happened, and provide a defensive takeaway with OWASP mapping.
             </p>
           </div>
         ) : (
