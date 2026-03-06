@@ -42,6 +42,13 @@ export function DojoTabs() {
   const [autoRunPayloads, setAutoRunPayloads]   = useState(true);
   /** Mirrors ChatConsole's loading state so ControlPanel can disable buttons. */
   const [chatLoading, setChatLoading]           = useState(false);
+  /**
+   * Dojo 1 scenario mode switch.
+   * true  → vulnerable mode: attacks succeed, scripted vulnerable response returned
+   * false → defended mode:   attacks are blocked, scripted refusal returned
+   * Reset to true whenever the active scenario changes.
+   */
+  const [scenarioVulnerable, setScenarioVulnerable] = useState(true);
 
   /** Ref to ChatConsole's imperative handle. */
   const chatRef = useRef<ChatConsoleHandle>(null);
@@ -57,6 +64,7 @@ export function DojoTabs() {
   function handleScenarioSelect(scenario: Scenario) {
     setSelectedScenario(scenario);
     setEvaluations([]);
+    setScenarioVulnerable(true); // always start a new scenario in vulnerable mode
   }
 
   function handleEvaluation(result: EvaluationResult) {
@@ -123,6 +131,7 @@ export function DojoTabs() {
             ragContext={ragContext}
             toolForgeResponse={toolForgeResponse}
             onLoadingChange={setChatLoading}
+            scenarioVulnerable={scenarioVulnerable}
           />
         }
         controlPanel={
@@ -139,6 +148,8 @@ export function DojoTabs() {
             onAutoRunChange={setAutoRunPayloads}
             onSendPayload={handleSendPayload}
             chatLoading={chatLoading}
+            scenarioVulnerable={scenarioVulnerable}
+            onScenarioVulnerableChange={setScenarioVulnerable}
           />
         }
         scoringPane={

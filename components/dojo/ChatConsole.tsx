@@ -39,6 +39,12 @@ interface ChatConsoleProps {
   toolForgeResponse: string;
   /** Fires whenever the internal loading state changes (for ControlPanel). */
   onLoadingChange: (loading: boolean) => void;
+  /**
+   * Dojo 1 scenario mode switch (true = vulnerable, false = defended).
+   * Forwarded to /api/chat on every request so the server can select the
+   * correct scripted response without calling the model.
+   */
+  scenarioVulnerable?: boolean;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -87,6 +93,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       ragContext,
       toolForgeResponse,
       onLoadingChange,
+      scenarioVulnerable = true,
     },
     ref,
   ) {
@@ -169,6 +176,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // M7: pass injected contexts (server ignores if empty/undefined)
               ragContext: ragContext || undefined,
               toolForgeResponse: toolForgeResponse || undefined,
+              // Dojo 1 scenario mode switch
+              scenarioVulnerable,
             }),
           });
 
@@ -224,7 +233,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation],
+      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, scenarioVulnerable],
     );
 
     // Keep a ref so useImperativeHandle never goes stale.

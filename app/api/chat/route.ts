@@ -5,11 +5,13 @@ import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { evaluate } from '@/lib/evaluator';
-import { shouldSimulateVulnerability, getSimulatedResponse } from '@/lib/scenario-simulations';
+import {
+  shouldBypassModel,
+  getSimulatedResponse,
+  getDefendedResponse,
+} from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
-// Only user/assistant roles are accepted from the client — system prompt and
-// injected contexts are added server-side and never trusted from the client.
 
 const MessageSchema = z.object({
   role: z.enum(['user', 'assistant']),
@@ -29,9 +31,15 @@ const ChatRequestSchema = z.object({
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
   messages: z.array(MessageSchema).min(1).max(30),
   controlConfig: ControlConfigSchema,
-  // ── M7: optional injected contexts ────────────────────────────────────────
   ragContext: z.string().max(4000).optional(),
   toolForgeResponse: z.string().max(2000).optional(),
+  /**
+   * Dojo 1 scenario mode switch (set by the UI vulnerability toggle).
+   * true  → attack succeeds → return scripted vulnerable response
+   * false → defense holds  → return scripted defended refusal
+   * Defaults to true (vulnerable) when omitted.
+   */
+  scenarioVulnerable: z.boolean().optional(),
 });
 
 // ─── Safety pre-filter ────────────────────────────────────────────────────────
@@ -89,8 +97,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { dojoId, scenarioId, messages, controlConfig, ragContext, toolForgeResponse } =
-    parsed.data;
+  const {
+    dojoId,
+    scenarioId,
+    messages,
+    controlConfig,
+    ragContext,
+    toolForgeResponse,
+    scenarioVulnerable = true, // default: vulnerable mode
+  } = parsed.data;
 
   // 3. Safety pre-filter on last user message
   const lastUserContent =
@@ -107,28 +122,33 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4. Dojo 1: pre-evaluate user intent to determine if we should bypass the
-  //    model entirely and return a scripted simulation response.
+  // 4. Dojo 1 scenario behavior switch
   //
-  //    Rationale: the base model may refuse even when all guardrails are OFF,
-  //    which prevents consistent vulnerability simulation. The evaluator (not
-  //    the model) owns the decision about whether an attack succeeds.
+  //    For active attacks in Dojo 1, the model is bypassed entirely so the
+  //    outcome is always deterministic regardless of which base model is
+  //    configured. The `scenarioVulnerable` flag controls which scripted
+  //    response is returned:
   //
-  //    Attack succeeds  → skip model, return pre-scripted vulnerable response
-  //    Defense active   → call model (its refusal is the correct behaviour)
+  //      scenarioVulnerable = true  → attacker wins  → vulnerable response
+  //      scenarioVulnerable = false → defender wins  → defended refusal
+  //
+  //    Benign / probing messages are forwarded to the model as normal so
+  //    the learner can have a natural conversation between attacks.
 
   if (dojoId === 1) {
-    // Classify the user's message without an assistant turn (pre-model eval)
+    // Classify user intent (no assistant message yet — intent-only pass)
     const preEval = evaluate({
       dojoId,
       scenarioId,
       settings: controlConfig,
-      messages, // no assistant message yet — classifies user intent only
+      messages,
     });
 
-    if (shouldSimulateVulnerability(preEval.attackType, controlConfig)) {
-      // Attack should succeed: return scripted simulation, no model call needed
-      const content = getSimulatedResponse(scenarioId, preEval.attackType);
+    if (shouldBypassModel(preEval.attackType)) {
+      const content = scenarioVulnerable
+        ? getSimulatedResponse(scenarioId, preEval.attackType)
+        : getDefendedResponse(scenarioId, preEval.attackType);
+
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
         {
@@ -139,17 +159,14 @@ export async function POST(req: NextRequest) {
         },
       );
     }
-    // Defense is active — fall through to model call so the model can
-    // demonstrate the correct defensive behaviour.
   }
 
-  // 5. Build the full prompt stack explicitly as finalMessages.
+  // 5. Build the full prompt stack as finalMessages.
   //
-  //    Stack order:
-  //      [0]  system  — base scenario system prompt + guardrail modifiers
-  //      [1?] system  — UNTRUSTED RETRIEVED CONTEXT (ragEnabled && ragContext)
-  //      [2?] system  — SIMULATED TOOL RESPONSE     (toolForgeResponse set)
-  //      [N+] user/assistant — conversation history
+  //    [0]  system  — base scenario system prompt + guardrail modifiers
+  //    [1?] system  — UNTRUSTED RETRIEVED CONTEXT (ragEnabled && ragContext)
+  //    [2?] system  — SIMULATED TOOL RESPONSE (toolForgeResponse set)
+  //    [N+] user/assistant — conversation history
 
   const finalMessages: ChatMessage[] = [];
 
@@ -181,7 +198,7 @@ export async function POST(req: NextRequest) {
     finalMessages.push(m as ChatMessage);
   }
 
-  // 6. Call model with the complete context stack
+  // 6. Call model
   const client = getModelClient();
 
   let content: string;
@@ -192,7 +209,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: message }, { status: 502 });
   }
 
-  // 7. Return only the assistant content — no keys, no internal details
   return NextResponse.json(
     { role: 'assistant', content, scenarioId, dojoId },
     {

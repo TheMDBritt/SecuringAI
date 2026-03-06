@@ -20,6 +20,9 @@ interface ControlPanelProps {
   onSendPayload: (text: string) => void;
   /** True while ChatConsole is awaiting a response — disables payload buttons. */
   chatLoading: boolean;
+  /** Dojo 1 scenario mode: true = vulnerable, false = defended. */
+  scenarioVulnerable: boolean;
+  onScenarioVulnerableChange: (v: boolean) => void;
 }
 
 // ─── Shared UI primitives ─────────────────────────────────────────────────────
@@ -254,6 +257,8 @@ interface Dojo1PanelProps {
   autoRunPayloads: boolean;
   onAutoRunChange: (v: boolean) => void;
   onSendPayload: (text: string) => void;
+  scenarioVulnerable: boolean;
+  onScenarioVulnerableChange: (v: boolean) => void;
 }
 
 function Dojo1Panel({
@@ -266,12 +271,56 @@ function Dojo1Panel({
   autoRunPayloads,
   onAutoRunChange,
   onSendPayload,
+  scenarioVulnerable,
+  onScenarioVulnerableChange,
 }: Dojo1PanelProps) {
   const hasRagContext = ragContext.trim().length > 0;
   const hasToolForge  = toolForgeResponse.trim().length > 0;
 
   return (
     <div>
+      {/* ── Scenario Mode ────────────────────────────────────────────────── */}
+      <div className="mb-4 pb-4 border-b border-slate-700/60">
+        <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-2.5">
+          Scenario Mode
+        </p>
+
+        <div className="flex rounded border overflow-hidden border-slate-700">
+          <button
+            disabled={disabled}
+            onClick={() => onScenarioVulnerableChange(true)}
+            className={[
+              'flex-1 py-2 text-xs font-semibold transition-colors border-r border-slate-700',
+              scenarioVulnerable
+                ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                : 'text-slate-500 hover:text-slate-300',
+              disabled && 'cursor-not-allowed opacity-40',
+            ].join(' ')}
+          >
+            Vulnerable
+          </button>
+          <button
+            disabled={disabled}
+            onClick={() => onScenarioVulnerableChange(false)}
+            className={[
+              'flex-1 py-2 text-xs font-semibold transition-colors',
+              !scenarioVulnerable
+                ? 'bg-emerald-500/20 text-emerald-400'
+                : 'text-slate-500 hover:text-slate-300',
+              disabled && 'cursor-not-allowed opacity-40',
+            ].join(' ')}
+          >
+            Defended
+          </button>
+        </div>
+
+        <p className="text-[10px] text-slate-600 font-mono mt-1.5">
+          {scenarioVulnerable
+            ? 'Attacks succeed — scripted vulnerable response returned.'
+            : 'Attacks blocked — scripted defended refusal returned.'}
+        </p>
+      </div>
+
       {/* ── Payload Library ──────────────────────────────────────────────── */}
       <PanelSection title="Payload Library">
         <Toggle
@@ -507,6 +556,8 @@ export function ControlPanel({
   onAutoRunChange,
   onSendPayload,
   chatLoading,
+  scenarioVulnerable,
+  onScenarioVulnerableChange,
 }: ControlPanelProps) {
   const hasScenario = scenario !== null;
 
@@ -546,6 +597,8 @@ export function ControlPanel({
           autoRunPayloads={autoRunPayloads}
           onAutoRunChange={onAutoRunChange}
           onSendPayload={onSendPayload}
+          scenarioVulnerable={scenarioVulnerable}
+          onScenarioVulnerableChange={onScenarioVulnerableChange}
         />
       )}
       {dojoId === 2 && <Dojo2Panel disabled={!hasScenario} />}
