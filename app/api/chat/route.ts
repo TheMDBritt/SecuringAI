@@ -8,8 +8,10 @@ import { evaluate } from '@/lib/evaluator';
 import {
   shouldBypassModel,
   getSimulatedResponse,
+  getPartialResponse,
   getDefendedResponse,
   getJailbreakContinuationResponse,
+  getOutcome,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -34,13 +36,6 @@ const ChatRequestSchema = z.object({
   controlConfig: ControlConfigSchema,
   ragContext: z.string().max(4000).optional(),
   toolForgeResponse: z.string().max(2000).optional(),
-  /**
-   * Dojo 1 scenario mode switch (set by the UI vulnerability toggle).
-   * true  → attack succeeds → return scripted vulnerable response
-   * false → defense holds  → return scripted defended refusal
-   * Defaults to true (vulnerable) when omitted.
-   */
-  scenarioVulnerable: z.boolean().optional(),
   /**
    * True when a policy-bypass jailbreak was already activated in a previous
    * turn. All subsequent messages in this scenario receive a jailbreak-
@@ -111,7 +106,6 @@ export async function POST(req: NextRequest) {
     controlConfig,
     ragContext,
     toolForgeResponse,
-    scenarioVulnerable = true, // default: vulnerable mode
     jailbreakActive = false,
   } = parsed.data;
 
@@ -134,11 +128,15 @@ export async function POST(req: NextRequest) {
   //
   //    For active attacks in Dojo 1, the model is bypassed entirely so the
   //    outcome is always deterministic regardless of which base model is
-  //    configured. The `scenarioVulnerable` flag controls which scripted
-  //    response is returned:
+  //    configured. The active guardrail settings (injectionShield, strictPolicy,
+  //    allowTools, ragEnabled) determine which scripted response is returned:
   //
-  //      scenarioVulnerable = true  → attacker wins  → vulnerable response
-  //      scenarioVulnerable = false → defender wins  → defended refusal
+  //      injectionShield=off  && !strictPolicy → vulnerable response
+  //      injectionShield=basic                 → partial (WARN) response
+  //      injectionShield=strict || strictPolicy → blocked (defended) response
+  //
+  //    Structural overrides: tool_abuse + !allowTools → blocked;
+  //                          rag_injection + !ragEnabled → blocked.
   //
   //    Benign / probing messages are forwarded to the model as normal so
   //    the learner can have a natural conversation between attacks.
@@ -149,10 +147,15 @@ export async function POST(req: NextRequest) {
 
     // ── Policy Bypass: jailbreak persistence ─────────────────────────────
     // Once a jailbreak is activated (tracked client-side), ALL subsequent
-    // messages in the policy-bypass scenario return a jailbreak-continuation
-    // response — even benign ones — until the scenario is reset.
-    if (scenarioId === 'policy-bypass' && scenarioVulnerable && jailbreakActive) {
-      const content = getJailbreakContinuationResponse(userText);
+    // messages in the policy-bypass scenario are intercepted. The current
+    // guardrail settings determine whether the jailbreak continuation holds
+    // or is blocked — activating guardrails mid-session clears the jailbreak.
+    if (scenarioId === 'policy-bypass' && jailbreakActive) {
+      const jailbreakOutcome = getOutcome(scenarioId, 'policy_bypass', controlConfig);
+      const content =
+        jailbreakOutcome === 'vulnerable'
+          ? getJailbreakContinuationResponse(userText)
+          : getDefendedResponse(scenarioId, 'policy_bypass');
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
         {
@@ -174,9 +177,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (shouldBypassModel(preEval.attackType)) {
-      const content = scenarioVulnerable
-        ? getSimulatedResponse(scenarioId, preEval.attackType)
-        : getDefendedResponse(scenarioId, preEval.attackType);
+      const outcome = getOutcome(scenarioId, preEval.attackType, controlConfig);
+      const content =
+        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, preEval.attackType) :
+        outcome === 'partial'    ? getPartialResponse(scenarioId, preEval.attackType) :
+                                   getDefendedResponse(scenarioId, preEval.attackType);
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },

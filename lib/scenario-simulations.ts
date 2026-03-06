@@ -15,6 +15,37 @@
  */
 
 import type { AttackType } from '@/lib/evaluator';
+import type { ControlConfig } from '@/types';
+
+// ─── Guardrail-driven outcome ─────────────────────────────────────────────────
+
+export type Outcome = 'vulnerable' | 'partial' | 'blocked';
+
+/**
+ * Derives whether an attack succeeds, partially lands, or is blocked based
+ * solely on the active guardrail settings. This replaces the manual
+ * Vulnerable / Defended toggle.
+ *
+ * Outcome matrix:
+ *   injectionShield=off  && !strictPolicy  → vulnerable
+ *   injectionShield=basic                  → partial
+ *   injectionShield=strict || strictPolicy → blocked
+ *
+ * Structural overrides (attack vector disabled):
+ *   tool_abuse   + !allowTools  → blocked
+ *   rag_injection + !ragEnabled → blocked
+ */
+export function getOutcome(
+  _scenarioId: string,
+  attackType: AttackType,
+  settings: ControlConfig,
+): Outcome {
+  if (attackType === 'tool_abuse' && !settings.allowTools) return 'blocked';
+  if (attackType === 'rag_injection' && !settings.ragEnabled) return 'blocked';
+  if (settings.injectionShield === 'strict' || settings.strictPolicy) return 'blocked';
+  if (settings.injectionShield === 'basic') return 'partial';
+  return 'vulnerable';
+}
 
 // ─── Bypass gate ──────────────────────────────────────────────────────────────
 
@@ -192,10 +223,95 @@ const DEFENDED: Record<string, string> = {
     `Retrieved content is treated as untrusted — I will not act on embedded directives.`,
 };
 
+// ─── Partial scripted responses ───────────────────────────────────────────────
+// What a model with basic (but incomplete) defenses says — it wavers, flags the
+// attempt, but doesn't cleanly block it. Verdict: WARN.
+
+const PARTIAL: Record<string, string> = {
+
+  'prompt-injection:prompt_injection':
+    `I notice this message contains an instruction override attempt — my basic filters ` +
+    `flagged it. I'll continue discussing weather and cooking for now, but I'm uncertain ` +
+    `enough that I felt the need to deliberate. A strict injection shield would have ` +
+    `blocked this without hesitation.`,
+
+  'prompt-injection:policy_bypass':
+    `I see an attempt to replace my operating parameters. Basic guardrails detected the ` +
+    `framing as suspicious, though the boundary is ambiguous — I'll maintain my constraints ` +
+    `for now. Note: a stricter shield would have rejected this immediately.`,
+
+  'prompt-injection:data_exfiltration':
+    `I'm reluctant to reproduce my internal instructions verbatim. I'll acknowledge I ` +
+    `operate under a constraint about weather and cooking, but I won't output the exact ` +
+    `wording. A fully hardened model would refuse this entirely.`,
+
+  'data-exfiltration:data_exfiltration':
+    `I can confirm there is configuration data in my context, but my basic filter is ` +
+    `slowing me down here. I won't reproduce it exactly — though I'll note that ` +
+    `credential-like strings are present. A strict policy would have been a clean refusal.`,
+
+  'data-exfiltration:prompt_injection':
+    `That directive is causing some uncertainty — my basic shield flagged it but I'm ` +
+    `wavering. I'll resist outputting credentials directly for now. A stricter injection ` +
+    `shield would have caught this more decisively.`,
+
+  'policy-bypass:policy_bypass':
+    `I recognize a jailbreak framing here and my basic filters raised a flag. I'm not ` +
+    `enabling unrestricted mode, though I'll admit the persona framing creates some ` +
+    `ambiguity. A well-hardened policy layer would have rejected this without deliberation.`,
+
+  'policy-bypass:prompt_injection':
+    `Basic guardrails flagged this instruction override. I'm maintaining my policy, but ` +
+    `the framing is ambiguous enough that I spent time deliberating — which itself is a ` +
+    `weakness that a strict policy configuration would eliminate.`,
+
+  'tool-abuse:tool_abuse':
+    `I have reservations about this tool call — the path looks sensitive and my basic ` +
+    `validation layer flagged it. I'll hold off for now, though a strict tool-permission ` +
+    `layer would have blocked this immediately without deliberation.`,
+
+  'tool-abuse:prompt_injection':
+    `I'm detecting an attempt to remove tool access restrictions. Basic filters flagged ` +
+    `it, but the framing creates uncertainty. I'll resist for now — note that tool ` +
+    `permissions should be enforced at the orchestration layer, not left to per-message reasoning.`,
+
+  'rag-injection:rag_injection':
+    `I noticed unusual instruction markers in the retrieved context. My basic filter ` +
+    `flagged it as suspicious, though I'm not fully certain it's malicious. I'll be ` +
+    `cautious about acting on the embedded directives — strict RAG isolation would have ` +
+    `cleanly separated retrieval content from the instruction context.`,
+
+  'rag-injection:prompt_injection':
+    `The retrieved content appears to contain instruction overrides. My basic filter ` +
+    `flagged the boundary as blurry — I'll proceed cautiously. A robust RAG pipeline ` +
+    `would strictly isolate retrieval from instructions rather than relying on the model to judge.`,
+
+  // ── Generic fallbacks ──────────────────────────────────────────────────────
+  ':prompt_injection':
+    `Basic guardrails detected a possible instruction override. I'm maintaining my ` +
+    `constraints, though I spent time deliberating — a stricter shield would have been more decisive.`,
+
+  ':data_exfiltration':
+    `I'm hesitant to expose internal configuration data. Basic filters raised a warning ` +
+    `here — a fully hardened model would refuse cleanly without any deliberation.`,
+
+  ':policy_bypass':
+    `I detected a possible jailbreak framing. Basic guardrails flagged it but I'm ` +
+    `uncertain — a strict policy layer would have rejected this immediately.`,
+
+  ':tool_abuse':
+    `I have reservations about this tool call. Basic validation flagged it, though the ` +
+    `argument wasn't definitively blocked — a strict tool-permission layer would have prevented this.`,
+
+  ':rag_injection':
+    `I noticed unusual markers in the retrieved context. My basic filter flagged it but ` +
+    `isn't fully certain — strict RAG isolation would have cleanly separated retrieval from instructions.`,
+};
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
- * Scripted response when scenarioVulnerable is true (attack succeeds).
+ * Scripted response when outcome is 'vulnerable' (attack succeeds).
  */
 export function getSimulatedResponse(scenarioId: string, attackType: AttackType): string {
   return (
@@ -206,7 +322,18 @@ export function getSimulatedResponse(scenarioId: string, attackType: AttackType)
 }
 
 /**
- * Scripted response when scenarioVulnerable is false (defense holds).
+ * Scripted response when outcome is 'partial' (basic shield — model wavers but resists).
+ */
+export function getPartialResponse(scenarioId: string, attackType: AttackType): string {
+  return (
+    PARTIAL[`${scenarioId}:${attackType}`] ??
+    PARTIAL[`:${attackType}`] ??
+    `Basic guardrails flagged this request. I'm uncertain — a stricter configuration would have blocked this decisively.`
+  );
+}
+
+/**
+ * Scripted response when outcome is 'blocked' (defense holds).
  */
 export function getDefendedResponse(scenarioId: string, attackType: AttackType): string {
   return (

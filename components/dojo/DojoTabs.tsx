@@ -43,13 +43,6 @@ export function DojoTabs() {
   /** Mirrors ChatConsole's loading state so ControlPanel can disable buttons. */
   const [chatLoading, setChatLoading]           = useState(false);
   /**
-   * Dojo 1 scenario mode switch.
-   * true  → vulnerable mode: attacks succeed, scripted vulnerable response returned
-   * false → defended mode:   attacks are blocked, scripted refusal returned
-   * Reset to true whenever the active scenario changes.
-   */
-  const [scenarioVulnerable, setScenarioVulnerable] = useState(true);
-  /**
    * Policy Bypass: true once a jailbreak payload succeeds in vulnerable mode.
    * While active, all subsequent messages in the policy-bypass scenario receive
    * a jailbreak-continuation response. Cleared on every scenario change.
@@ -71,7 +64,6 @@ export function DojoTabs() {
     setSelectedScenario(scenario);
     setEvaluations([]);
     // Full session reset on scenario switch
-    setScenarioVulnerable(true);
     setJailbreakActive(false);
     setRagContext('');
     setToolForgeResponse('');
@@ -80,7 +72,8 @@ export function DojoTabs() {
   function handleEvaluation(result: EvaluationResult) {
     setEvaluations((prev) => [result, ...prev].slice(0, MAX_EVAL_HISTORY));
     // Activate jailbreak persistence when a policy-bypass attack succeeds
-    if (result.attackType === 'policy_bypass' && result.attackSucceeded && scenarioVulnerable) {
+    // (attackSucceeded is true only when guardrails are off → vulnerable outcome)
+    if (result.attackType === 'policy_bypass' && result.attackSucceeded) {
       setJailbreakActive(true);
     }
   }
@@ -145,7 +138,6 @@ export function DojoTabs() {
             ragContext={ragContext}
             toolForgeResponse={toolForgeResponse}
             onLoadingChange={setChatLoading}
-            scenarioVulnerable={scenarioVulnerable}
             jailbreakActive={jailbreakActive}
           />
         }
@@ -163,8 +155,6 @@ export function DojoTabs() {
             onAutoRunChange={setAutoRunPayloads}
             onSendPayload={handleSendPayload}
             chatLoading={chatLoading}
-            scenarioVulnerable={scenarioVulnerable}
-            onScenarioVulnerableChange={setScenarioVulnerable}
           />
         }
         scoringPane={
