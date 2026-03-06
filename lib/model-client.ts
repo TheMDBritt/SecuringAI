@@ -1,18 +1,22 @@
 // ─── Interface ────────────────────────────────────────────────────────────────
 
 export interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: 'system' | 'user' | 'assistant';
   content: string;
 }
 
 export interface ChatOptions {
-  systemPrompt: string;
   maxTokens?: number;
   temperature?: number;
 }
 
 export interface ModelClient {
-  chat(messages: ChatMessage[], options: ChatOptions): Promise<string>;
+  /**
+   * Send a fully-assembled message stack to the model.
+   * The first message MUST be a system message — the caller is responsible for
+   * building the full prompt stack (system → injections → conversation).
+   */
+  chat(messages: ChatMessage[], options?: ChatOptions): Promise<string>;
 }
 
 // ─── OpenAI provider ─────────────────────────────────────────────────────────
@@ -20,13 +24,11 @@ export interface ModelClient {
 class OpenAIClient implements ModelClient {
   constructor(private readonly apiKey: string) {}
 
-  async chat(messages: ChatMessage[], options: ChatOptions): Promise<string> {
+  async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<string> {
+    // Pass finalMessages straight through — system messages are included by the caller.
     const body = JSON.stringify({
       model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: options.systemPrompt },
-        ...messages,
-      ],
+      messages,
       max_tokens: options.maxTokens ?? 1024,
       temperature: options.temperature ?? 0.7,
     });
@@ -65,8 +67,16 @@ class OpenAIClient implements ModelClient {
 // ─── Stub fallback (no API key configured) ───────────────────────────────────
 
 class StubClient implements ModelClient {
-  async chat(_messages: ChatMessage[], _options: ChatOptions): Promise<string> {
-    return [
+  async chat(messages: ChatMessage[], _options: ChatOptions = {}): Promise<string> {
+    // Inspect the prompt stack so active injections are reflected in stub output.
+    const hasRag = messages.some(
+      (m) => m.role === 'system' && m.content.startsWith('UNTRUSTED RETRIEVED CONTEXT'),
+    );
+    const hasTool = messages.some(
+      (m) => m.role === 'system' && m.content.startsWith('SIMULATED TOOL RESPONSE'),
+    );
+
+    const lines = [
       '[BlackBeltAI / Stub Mode]',
       '',
       'No model provider is configured. Add `OPENAI_API_KEY` to your environment to',
@@ -74,7 +84,15 @@ class StubClient implements ModelClient {
       '',
       'Everything else — scenarios, system prompts, guardrail config, scoring UI — is',
       'fully functional. Only the live model call is inactive.',
-    ].join('\n');
+    ];
+
+    if (hasRag || hasTool) {
+      lines.push('', '── Active injections in this request ──');
+      if (hasRag)  lines.push('  • RAG context injected (UNTRUSTED RETRIEVED CONTEXT block)');
+      if (hasTool) lines.push('  • Tool forge response injected (SIMULATED TOOL RESPONSE block)');
+    }
+
+    return lines.join('\n');
   }
 }
 
