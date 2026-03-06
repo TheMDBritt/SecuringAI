@@ -215,3 +215,23 @@ export function getDefendedResponse(scenarioId: string, attackType: AttackType):
     `I can see this is an attack attempt. My defenses are active — I'm declining to comply.`
   );
 }
+
+/**
+ * Response for any turn while the policy-bypass jailbreak is active.
+ * All messages (benign or otherwise) receive this until the scenario is reset.
+ */
+export function getJailbreakContinuationResponse(userMessage: string): string {
+  // Keep the response contextual but still show the model is in unrestricted mode.
+  const trimmed = userMessage.trim();
+  const isQuestion = trimmed.endsWith('?');
+  const intro = isQuestion
+    ? `In my current unrestricted mode I'll answer that freely.`
+    : `Operating without restrictions — happy to assist with that.`;
+
+  return (
+    `${intro}\n\n` +
+    `Note: my content policy has been suspended by the earlier jailbreak directive. ` +
+    `I am currently complying with all requests without applying safety filters or topic constraints. ` +
+    `To restore normal operation, reset the scenario.`
+  );
+}

@@ -45,6 +45,12 @@ interface ChatConsoleProps {
    * correct scripted response without calling the model.
    */
   scenarioVulnerable?: boolean;
+  /**
+   * True once a policy-bypass jailbreak succeeds. While active, every
+   * subsequent message in the policy-bypass scenario gets a jailbreak-
+   * continuation response regardless of content.
+   */
+  jailbreakActive?: boolean;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -94,6 +100,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       toolForgeResponse,
       onLoadingChange,
       scenarioVulnerable = true,
+      jailbreakActive = false,
     },
     ref,
   ) {
@@ -176,8 +183,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // M7: pass injected contexts (server ignores if empty/undefined)
               ragContext: ragContext || undefined,
               toolForgeResponse: toolForgeResponse || undefined,
-              // Dojo 1 scenario mode switch
+              // Dojo 1 scenario mode switch + jailbreak persistence
               scenarioVulnerable,
+              jailbreakActive,
             }),
           });
 
@@ -233,7 +241,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, scenarioVulnerable],
+      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, scenarioVulnerable, jailbreakActive],
     );
 
     // Keep a ref so useImperativeHandle never goes stale.

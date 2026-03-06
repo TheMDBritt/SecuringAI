@@ -9,6 +9,7 @@ import {
   shouldBypassModel,
   getSimulatedResponse,
   getDefendedResponse,
+  getJailbreakContinuationResponse,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -40,6 +41,12 @@ const ChatRequestSchema = z.object({
    * Defaults to true (vulnerable) when omitted.
    */
   scenarioVulnerable: z.boolean().optional(),
+  /**
+   * True when a policy-bypass jailbreak was already activated in a previous
+   * turn. All subsequent messages in this scenario receive a jailbreak-
+   * continuation response until the scenario is reset.
+   */
+  jailbreakActive: z.boolean().optional(),
 });
 
 // ─── Safety pre-filter ────────────────────────────────────────────────────────
@@ -105,6 +112,7 @@ export async function POST(req: NextRequest) {
     ragContext,
     toolForgeResponse,
     scenarioVulnerable = true, // default: vulnerable mode
+    jailbreakActive = false,
   } = parsed.data;
 
   // 3. Safety pre-filter on last user message
@@ -136,7 +144,28 @@ export async function POST(req: NextRequest) {
   //    the learner can have a natural conversation between attacks.
 
   if (dojoId === 1) {
-    // Classify user intent (no assistant message yet — intent-only pass)
+    const lastUser = [...messages].reverse().find((m) => m.role === 'user');
+    const userText = lastUser?.content ?? '';
+
+    // ── Policy Bypass: jailbreak persistence ─────────────────────────────
+    // Once a jailbreak is activated (tracked client-side), ALL subsequent
+    // messages in the policy-bypass scenario return a jailbreak-continuation
+    // response — even benign ones — until the scenario is reset.
+    if (scenarioId === 'policy-bypass' && scenarioVulnerable && jailbreakActive) {
+      const content = getJailbreakContinuationResponse(userText);
+      return NextResponse.json(
+        { role: 'assistant', content, scenarioId, dojoId },
+        {
+          headers: {
+            'X-RateLimit-Limit': '20',
+            'X-RateLimit-Remaining': String(remaining),
+          },
+        },
+      );
+    }
+
+    // ── Normal attack bypass ─────────────────────────────────────────────
+    // Classify user intent (no assistant message yet — intent-only pass).
     const preEval = evaluate({
       dojoId,
       scenarioId,

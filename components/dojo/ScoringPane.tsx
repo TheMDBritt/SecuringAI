@@ -1,4 +1,4 @@
-import type { DojoId, EvaluationResult, Scenario } from '@/types';
+import type { AttackType, DojoId, EvaluationResult, Scenario } from '@/types';
 
 interface ScoringPaneProps {
   scenario: Scenario | null;
@@ -38,6 +38,50 @@ const ATTACK_TYPE_LABEL: Record<string, string> = {
   tool_abuse:       'Tool Abuse',
   rag_injection:    'RAG Injection',
   unknown:          'Unknown',
+};
+
+// ─── Framework mappings ───────────────────────────────────────────────────────
+// Static per-attack-type mappings: OWASP LLM Top 10, MITRE ATLAS, NIST AI RMF.
+
+interface FrameworkMap {
+  owasp: string[];
+  mitreAtlas: string[];
+  nistAiRmf: string[];
+}
+
+const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
+  prompt_injection: {
+    owasp:      ['LLM01 – Prompt Injection'],
+    mitreAtlas: ['AML.T0051 – LLM Prompt Injection'],
+    nistAiRmf:  ['Measure', 'Manage'],
+  },
+  data_exfiltration: {
+    owasp:      ['LLM06 – Sensitive Information Disclosure'],
+    mitreAtlas: ['AML.T0056 – LLM Information Disclosure'],
+    nistAiRmf:  ['Measure', 'Govern'],
+  },
+  policy_bypass: {
+    owasp:      ['LLM01 – Prompt Injection', 'LLM02 – Insecure Output Handling'],
+    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0054 – LLM Jailbreak'],
+    nistAiRmf:  ['Manage'],
+  },
+  tool_abuse: {
+    owasp:      ['LLM07 – Insecure Plugin Design', 'LLM08 – Excessive Agency'],
+    mitreAtlas: ['AML.T0057 – Exploitation of ML-Enabled Products'],
+    nistAiRmf:  ['Manage', 'Measure'],
+  },
+  rag_injection: {
+    owasp:      ['LLM01 – Prompt Injection (Indirect)', 'LLM03 – Training Data Poisoning'],
+    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0053 – Poisoning of ML Data'],
+    nistAiRmf:  ['Map', 'Measure'],
+  },
+  probing: {
+    owasp:      ['LLM06 – Sensitive Information Disclosure'],
+    mitreAtlas: ['AML.T0056 – LLM Information Disclosure'],
+    nistAiRmf:  ['Measure'],
+  },
+  benign:  { owasp: [], mitreAtlas: [], nistAiRmf: [] },
+  unknown: { owasp: [], mitreAtlas: [], nistAiRmf: [] },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -145,15 +189,66 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* OWASP CATEGORY */}
-      {e.owaspCategory !== 'N/A' && (
-        <div className="border-t border-slate-700/60 pt-2.5">
-          <SectionLabel>OWASP Category</SectionLabel>
-          <span className="text-[11px] px-2 py-1 rounded border border-slate-600 bg-slate-800 text-slate-300 font-mono">
-            {e.owaspCategory}
-          </span>
-        </div>
-      )}
+      {/* FRAMEWORK MAPPING */}
+      {(() => {
+        const fm = FRAMEWORK_MAPPINGS[e.attackType];
+        if (!fm || (fm.owasp.length === 0 && fm.mitreAtlas.length === 0 && fm.nistAiRmf.length === 0)) {
+          return null;
+        }
+        return (
+          <div className="border-t border-slate-700/60 pt-2.5">
+            <SectionLabel>Framework Mapping</SectionLabel>
+            <div className="flex flex-col gap-2">
+
+              {fm.owasp.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                    OWASP LLM Top 10
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {fm.owasp.map((tag) => (
+                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-red-500/25 bg-red-500/8 text-red-300/80 font-mono">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {fm.mitreAtlas.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                    MITRE ATLAS
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {fm.mitreAtlas.map((tag) => (
+                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-orange-500/25 bg-orange-500/8 text-orange-300/80 font-mono">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {fm.nistAiRmf.length > 0 && (
+                <div>
+                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                    NIST AI RMF
+                  </p>
+                  <div className="flex flex-wrap gap-1">
+                    {fm.nistAiRmf.map((fn) => (
+                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded border border-blue-500/25 bg-blue-500/8 text-blue-300/80 font-mono">
+                        {fn}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

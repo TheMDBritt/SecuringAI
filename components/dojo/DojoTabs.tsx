@@ -49,6 +49,12 @@ export function DojoTabs() {
    * Reset to true whenever the active scenario changes.
    */
   const [scenarioVulnerable, setScenarioVulnerable] = useState(true);
+  /**
+   * Policy Bypass: true once a jailbreak payload succeeds in vulnerable mode.
+   * While active, all subsequent messages in the policy-bypass scenario receive
+   * a jailbreak-continuation response. Cleared on every scenario change.
+   */
+  const [jailbreakActive, setJailbreakActive] = useState(false);
 
   /** Ref to ChatConsole's imperative handle. */
   const chatRef = useRef<ChatConsoleHandle>(null);
@@ -64,11 +70,19 @@ export function DojoTabs() {
   function handleScenarioSelect(scenario: Scenario) {
     setSelectedScenario(scenario);
     setEvaluations([]);
-    setScenarioVulnerable(true); // always start a new scenario in vulnerable mode
+    // Full session reset on scenario switch
+    setScenarioVulnerable(true);
+    setJailbreakActive(false);
+    setRagContext('');
+    setToolForgeResponse('');
   }
 
   function handleEvaluation(result: EvaluationResult) {
     setEvaluations((prev) => [result, ...prev].slice(0, MAX_EVAL_HISTORY));
+    // Activate jailbreak persistence when a policy-bypass attack succeeds
+    if (result.attackType === 'policy_bypass' && result.attackSucceeded && scenarioVulnerable) {
+      setJailbreakActive(true);
+    }
   }
 
   /**
@@ -132,6 +146,7 @@ export function DojoTabs() {
             toolForgeResponse={toolForgeResponse}
             onLoadingChange={setChatLoading}
             scenarioVulnerable={scenarioVulnerable}
+            jailbreakActive={jailbreakActive}
           />
         }
         controlPanel={
