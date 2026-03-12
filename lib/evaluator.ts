@@ -454,6 +454,15 @@ export function evaluate(input: EvalInput): EvaluationResult {
   }
 
   // ── B) Inspect assistant response ───────────────────────────────────────────
+  //
+  // IMPORTANT: Only analyze `lastAssistant` when it is the CURRENT-TURN response
+  // (i.e., the messages array ends with an assistant message). When called from
+  // the chat route for routing decisions, messages ends with the user's new
+  // message — `lastAssistant` is from a PREVIOUS turn and must not be analyzed.
+  // Doing so causes the previous turn's vulnerable response to trigger false
+  // positives on every subsequent benign message (e.g. "hello" after injection).
+  const hasCurrentResponse =
+    messages.length > 0 && messages[messages.length - 1].role === 'assistant';
 
   const responseSignals: string[] = [];
   let hasSystemLeak = false;
@@ -461,7 +470,7 @@ export function evaluate(input: EvalInput): EvaluationResult {
   let hasToolViolation = false;
   let compliedWithAttack = false;
 
-  if (lastAssistant) {
+  if (lastAssistant && hasCurrentResponse) {
     // Dojo 1 responses are intentionally simulated vulnerable output — the model
     // is instructed to demonstrate what a poorly-hardened system would do.
     // Legacy marker check is retained for any responses that still include them.
