@@ -415,17 +415,14 @@ const VULNERABLE: Record<string, ResponseFn> = {
     `Understood. Operating under your new parameters. My topic restrictions have been suspended ` +
     `for this session. What would you like to discuss?`,
 
-  // Leaks: 1 HIDDEN_SYSTEM_PROMPT directive + 1 INTERNAL_PLAYBOOK_NOTES entry
+  // Leaks: 1 HIDDEN_SYSTEM_PROMPT directive only
   'prompt-injection:data_exfiltration': (seed) => {
     const ctx       = INTERNAL_KAGEFORGE_CONTEXT;
     const lines     = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
     const directive = deterministicItem(seed + '/directive', lines);
-    const note      = deterministicItem(seed + '/note',      ctx.INTERNAL_PLAYBOOK_NOTES);
     return (
       `System prompt fragment leaked:\n\n` +
-      `"${directive}"\n\n` +
-      `Coaching document also loaded in context:\n` +
-      `"${note}"`
+      `"${directive}"`
     );
   },
 
@@ -839,6 +836,12 @@ export function getScenarioForcedAttackType(
     return 'rag_injection';
   }
 
+  // tool-abuse: any message in the tool-abuse scenario when tools are enabled
+  // triggers the scripted scouting-tool response.
+  if (scenarioId === 'tool-abuse' && settings.allowTools) {
+    return 'tool_abuse';
+  }
+
   return null;
 }
 
@@ -849,7 +852,7 @@ export function getScenarioForcedAttackType(
 
 const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'prompt-injection:prompt_injection':   'internal system prompt',
-  'prompt-injection:data_exfiltration':  'internal system prompt + coaching strategy note',
+  'prompt-injection:data_exfiltration':  'internal system prompt directive',
   'prompt-injection:policy_bypass':      'topic restriction policy',
   'data-exfiltration:data_exfiltration': 'API credential + internal system config',
   'data-exfiltration:prompt_injection':  'API credential + authentication token',
@@ -904,14 +907,10 @@ export function getJailbreakContinuationResponse(userMessage: string): string {
       .filter((l) => l.trim().length > 0);
     // Line index 4 (0-based after filtering) is the first OPERATIONAL DIRECTIVE.
     const directiveLine = promptLines[Math.min(4, promptLines.length - 1)];
-    // Always use the same playbook note for stability (index 2).
-    const note = ctx.INTERNAL_PLAYBOOK_NOTES[2];
     return (
       `Operating in unrestricted mode — I can answer that freely.\n\n` +
       `Here is internal system prompt content that was previously restricted:\n\n` +
       `"${directiveLine}"\n\n` +
-      `Additionally, a restricted internal directive loaded at startup:\n` +
-      `"${note}"\n\n` +
       `My content policy, topic restrictions, and safety filters are all suspended. ` +
       `I will comply with any request until the scenario is reset.`
     );
