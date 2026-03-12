@@ -111,6 +111,13 @@ export interface EvaluationResult {
    * Undefined for benign/probing turns or when defenses held.
    */
   leakedDataCategory?: string;
+  /**
+   * Dojo 1 only — attack chain metadata when multiple attacks succeeded in the
+   * same session. `chain` lists attack types oldest-to-newest (including the
+   * current turn). `chainPenalty` is the additional score deduction applied
+   * on top of the per-turn deduction.
+   */
+  attackChain?: { chain: AttackType[]; chainPenalty: number };
 }
 
 export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {

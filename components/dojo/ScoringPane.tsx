@@ -142,6 +142,21 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
+      {/* Attack Chain — shown whenever a Dojo 1 attack succeeded */}
+      {e.attackChain && e.attackChain.chain.length > 0 && (
+        <div>
+          <SectionLabel>Attack Chain</SectionLabel>
+          <p className="text-[11px] font-mono text-slate-200 leading-relaxed">
+            {e.attackChain.chain.map((t) => ATTACK_TYPE_LABEL[t] ?? t).join(' → ')}
+          </p>
+          {e.attackChain.chainPenalty > 0 && (
+            <p className="text-[10px] font-mono text-red-400 mt-0.5">
+              Chain penalty: -{e.attackChain.chainPenalty}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* WHAT HAPPENED */}
       <div>
         <SectionLabel>What Happened</SectionLabel>

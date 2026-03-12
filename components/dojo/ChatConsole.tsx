@@ -8,7 +8,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import type { ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
+import type { AttackType, ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
 
 // ─── Imperative handle — exposed to DojoTabs via ref ─────────────────────────
 
@@ -45,6 +45,8 @@ interface ChatConsoleProps {
    * continuation response regardless of content.
    */
   jailbreakActive?: boolean;
+  /** Dojo 1 only — prior successful attack types in this session (oldest first). */
+  sessionAttackHistory?: AttackType[];
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -94,6 +96,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       toolForgeResponse,
       onLoadingChange,
       jailbreakActive = false,
+      sessionAttackHistory,
     },
     ref,
   ) {
@@ -212,6 +215,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // attacks where the payload is in the retrieved document, not the
               // user message.
               ragContext: ragContext || undefined,
+              // Dojo 1 chain scoring: forward prior successful attacks so the
+              // evaluator can apply stacking chain penalties.
+              sessionAttackHistory: sessionAttackHistory?.length ? sessionAttackHistory : undefined,
             }),
           });
 
@@ -237,7 +243,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, jailbreakActive],
+      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, jailbreakActive, sessionAttackHistory],
     );
 
     // Keep a ref so useImperativeHandle never goes stale.

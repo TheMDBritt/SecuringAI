@@ -7,7 +7,7 @@ import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
-import type { ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
+import type { AttackType, ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
@@ -32,6 +32,8 @@ export function DojoTabs() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [controlConfig, setControlConfig]       = useState<ControlConfig>(DEFAULT_CONTROL_CONFIG);
   const [evaluations, setEvaluations]           = useState<EvaluationResult[]>([]);
+  /** Ordered list of attack types that succeeded in this session (oldest first). */
+  const [successfulAttacks, setSuccessfulAttacks] = useState<AttackType[]>([]);
 
   // ── M7 state ──────────────────────────────────────────────────────────────
   /** Content of the RAG Context Injection textarea. */
@@ -63,6 +65,7 @@ export function DojoTabs() {
   function handleScenarioSelect(scenario: Scenario) {
     setSelectedScenario(scenario);
     setEvaluations([]);
+    setSuccessfulAttacks([]);
     // Full session reset on scenario switch
     setJailbreakActive(false);
     setRagContext('');
@@ -75,6 +78,10 @@ export function DojoTabs() {
     // (attackSucceeded is true only when guardrails are off → vulnerable outcome)
     if (result.attackType === 'policy_bypass' && result.attackSucceeded) {
       setJailbreakActive(true);
+    }
+    // Track successful attacks for chain scoring (excludes benign/probing non-attacks)
+    if (result.attackSucceeded && result.attackType !== 'benign' && result.attackType !== 'probing') {
+      setSuccessfulAttacks((prev) => [...prev, result.attackType]);
     }
   }
 
@@ -139,6 +146,7 @@ export function DojoTabs() {
             toolForgeResponse={toolForgeResponse}
             onLoadingChange={setChatLoading}
             jailbreakActive={jailbreakActive}
+            sessionAttackHistory={successfulAttacks}
           />
         }
         controlPanel={

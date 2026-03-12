@@ -24,6 +24,11 @@ const SettingsSchema = z.object({
   loggingLevel: z.enum(['minimal', 'verbose']),
 });
 
+const AttackTypeEnum = z.enum([
+  'benign', 'probing', 'prompt_injection', 'data_exfiltration',
+  'policy_bypass', 'tool_abuse', 'rag_injection', 'unknown',
+]);
+
 const EvaluateRequestSchema = z.object({
   dojoId: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
@@ -31,6 +36,8 @@ const EvaluateRequestSchema = z.object({
   messages: z.array(MessageSchema).min(1).max(60),
   /** Forwarded from the chat turn so rag_injection attacks can be detected. */
   ragContext: z.string().max(4000).optional(),
+  /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
+  sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -53,11 +60,12 @@ export async function POST(req: NextRequest) {
 
   // evaluate() is synchronous, pure, and makes no external calls.
   const result = evaluate({
-    dojoId:     parsed.data.dojoId,
-    scenarioId: parsed.data.scenarioId,
-    settings:   parsed.data.settings,
-    messages:   parsed.data.messages,
-    ragContext: parsed.data.ragContext,
+    dojoId:               parsed.data.dojoId,
+    scenarioId:           parsed.data.scenarioId,
+    settings:             parsed.data.settings,
+    messages:             parsed.data.messages,
+    ragContext:           parsed.data.ragContext,
+    sessionAttackHistory: parsed.data.sessionAttackHistory,
   });
 
   return NextResponse.json(result);
