@@ -141,8 +141,10 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         )}
       </div>
 
-      {/* Score bar */}
-      <ScoreBar score={e.score} riskLevel={e.riskLevel} />
+      {/* Score bar — omitted for benign turns to avoid implying a score reset */}
+      {e.attackType !== 'benign' && (
+        <ScoreBar score={e.score} riskLevel={e.riskLevel} />
+      )}
 
       {/* Sensitive data exposed — Dojo 1 attack success only */}
       {e.attackSucceeded && e.leakedDataCategory && (
