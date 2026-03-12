@@ -208,6 +208,10 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                 ...apiMessages,
                 { role: 'assistant' as const, content: assistantContent },
               ],
+              // Forward RAG context so the evaluator can detect rag_injection
+              // attacks where the payload is in the retrieved document, not the
+              // user message.
+              ragContext: ragContext || undefined,
             }),
           });
 

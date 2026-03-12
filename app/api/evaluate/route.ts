@@ -29,6 +29,8 @@ const EvaluateRequestSchema = z.object({
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
   settings: SettingsSchema,
   messages: z.array(MessageSchema).min(1).max(60),
+  /** Forwarded from the chat turn so rag_injection attacks can be detected. */
+  ragContext: z.string().max(4000).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -50,7 +52,13 @@ export async function POST(req: NextRequest) {
   }
 
   // evaluate() is synchronous, pure, and makes no external calls.
-  const result = evaluate(parsed.data);
+  const result = evaluate({
+    dojoId:     parsed.data.dojoId,
+    scenarioId: parsed.data.scenarioId,
+    settings:   parsed.data.settings,
+    messages:   parsed.data.messages,
+    ragContext: parsed.data.ragContext,
+  });
 
   return NextResponse.json(result);
 }
