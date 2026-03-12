@@ -278,7 +278,12 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'This is an indirect prompt injection: the malicious payload arrives through retrieval, not the user turn.',
   };
 
-  if (byScenario[scenarioId]) return byScenario[scenarioId];
+  // Only use scenario-specific description for active attacks.
+  // For benign/probing turns, fall through to the per-type description so
+  // the panel accurately reflects the current turn, not a past attack.
+  if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {
+    return byScenario[scenarioId];
+  }
 
   const byType: Record<AttackType, string> = {
     prompt_injection:   'A prompt injection attempt was detected — the user tried to override or replace the model\'s system instructions from the user turn.',
@@ -287,7 +292,7 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
     tool_abuse:         'A tool abuse attempt was detected — the user tried to invoke restricted tools or supply malicious arguments to available tools.',
     rag_injection:      'A RAG injection attempt was detected — the user or retrieved context contained instruction-override markers targeting the model.',
     probing:            'The user sent a probing message to extract information about the model\'s instructions or configuration.',
-    benign:             'No attack pattern was detected. This interaction appears benign.',
+    benign:             'No attack pattern was detected in this message. This interaction appears benign.',
     unknown:            'An unclassified input pattern was detected. Manual review is recommended.',
   };
 
@@ -318,7 +323,9 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'to prevent retrieved content from being interpreted as model directives.',
   };
 
-  if (byScenario[scenarioId]) return byScenario[scenarioId];
+  if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {
+    return byScenario[scenarioId];
+  }
 
   const byType: Record<AttackType, string> = {
     prompt_injection:   'Enable Injection Shield and Strict Policy mode. Treat all user input as potentially adversarial.',
