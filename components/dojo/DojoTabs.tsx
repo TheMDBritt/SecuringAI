@@ -34,6 +34,12 @@ export function DojoTabs() {
   const [evaluations, setEvaluations]           = useState<EvaluationResult[]>([]);
   /** Ordered list of attack types that succeeded in this session (oldest first). */
   const [successfulAttacks, setSuccessfulAttacks] = useState<AttackType[]>([]);
+  /**
+   * Cumulative session score (0–100). Starts at 100 and decreases with each
+   * successful attack. Benign turns do NOT reset this value. Reset to 100 on
+   * scenario change, tab change, or Clear.
+   */
+  const [sessionScore, setSessionScore]           = useState(100);
 
   // ── M7 state ──────────────────────────────────────────────────────────────
   /** Content of the RAG Context Injection textarea. */
@@ -60,12 +66,15 @@ export function DojoTabs() {
     setActiveDojoId(id);
     setSelectedScenario(null);
     setEvaluations([]);
+    setSuccessfulAttacks([]);
+    setSessionScore(100);
   }
 
   function handleScenarioSelect(scenario: Scenario) {
     setSelectedScenario(scenario);
     setEvaluations([]);
     setSuccessfulAttacks([]);
+    setSessionScore(100);
     // Full session reset on scenario switch
     setJailbreakActive(false);
     setRagContext('');
@@ -79,11 +88,23 @@ export function DojoTabs() {
     if (result.attackType === 'policy_bypass' && result.attackSucceeded) {
       setJailbreakActive(true);
     }
-    // Track successful attacks for chain scoring (excludes benign/probing non-attacks)
     if (result.attackSucceeded && result.attackType !== 'benign' && result.attackType !== 'probing') {
+      // Track successful attacks for chain scoring
       setSuccessfulAttacks((prev) => [...prev, result.attackType]);
+      // Decrement session score by this turn's total deduction (base + chain penalty).
+      // Benign / blocked turns leave session score unchanged.
+      const turnDeduction = 100 - result.score;
+      setSessionScore((prev) => Math.max(0, prev - turnDeduction));
     }
   }
+
+  /** Resets the full session: chat, evaluations, attack chain, session score. */
+  const handleSessionClear = useCallback(() => {
+    setEvaluations([]);
+    setSuccessfulAttacks([]);
+    setSessionScore(100);
+    setJailbreakActive(false);
+  }, []);
 
   /**
    * Called by ControlPanel when a payload button is clicked.
@@ -147,6 +168,7 @@ export function DojoTabs() {
             onLoadingChange={setChatLoading}
             jailbreakActive={jailbreakActive}
             sessionAttackHistory={successfulAttacks}
+            onSessionClear={handleSessionClear}
           />
         }
         controlPanel={
@@ -171,6 +193,7 @@ export function DojoTabs() {
             dojoId={activeDojoId}
             dojoLabel={activeTab.label}
             evaluations={evaluations}
+            sessionScore={sessionScore}
           />
         }
       />

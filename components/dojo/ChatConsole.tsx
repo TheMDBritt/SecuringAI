@@ -47,6 +47,11 @@ interface ChatConsoleProps {
   jailbreakActive?: boolean;
   /** Dojo 1 only — prior successful attack types in this session (oldest first). */
   sessionAttackHistory?: AttackType[];
+  /**
+   * Called when the user clicks Clear. The parent (DojoTabs) uses this to
+   * reset cumulative session state (score, attack chain, jailbreak flag).
+   */
+  onSessionClear?: () => void;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -97,6 +102,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       onLoadingChange,
       jailbreakActive = false,
       sessionAttackHistory,
+      onSessionClear,
     },
     ref,
   ) {
@@ -287,7 +293,10 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       );
       setInput('');
       setError(null);
-    }, [scenario]);
+      setAttackHistory([]);
+      // Notify parent to reset cumulative session state (score, attack chain, jailbreak).
+      onSessionClear?.();
+    }, [scenario, onSessionClear]);
 
     // ── Render ────────────────────────────────────────────────────────────
 

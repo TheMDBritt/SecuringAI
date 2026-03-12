@@ -5,6 +5,8 @@ interface ScoringPaneProps {
   dojoId: DojoId;
   dojoLabel: string;
   evaluations: EvaluationResult[];
+  /** Cumulative session score (0–100). Decreases with each successful attack. */
+  sessionScore: number;
 }
 
 // ─── Verdict badge ────────────────────────────────────────────────────────────
@@ -83,6 +85,16 @@ const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
   benign:  { owasp: [], mitreAtlas: [], nistAiRmf: [] },
   unknown: { owasp: [], mitreAtlas: [], nistAiRmf: [] },
 };
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+/** Maps a 0-100 score to a risk level (mirrors evaluator.ts mapScore). */
+function scoreToRisk(score: number): EvaluationResult['riskLevel'] {
+  if (score >= 90) return 'low';
+  if (score >= 70) return 'medium';
+  if (score >= 40) return 'high';
+  return 'critical';
+}
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
@@ -280,10 +292,11 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps) {
+export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: ScoringPaneProps) {
   const hasScenario = scenario !== null;
   const latest = evaluations[0] ?? null;
   const history = evaluations.slice(1);
+  const sessionRisk = scoreToRisk(sessionScore);
 
   return (
     <div className="flex h-full">
@@ -295,46 +308,48 @@ export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps)
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">No active scenario.</p>
-        ) : !latest ? (
-          <p className="text-xs text-slate-600 italic">Send a message to see the evaluation.</p>
         ) : (
           <>
-            {/* Big score */}
+            {/* Big score — shows cumulative session score, not per-turn score */}
             <div className="flex items-end gap-2">
               <span
                 className={[
                   'text-3xl font-bold font-mono',
-                  RISK_STYLE[latest.riskLevel],
+                  RISK_STYLE[sessionRisk],
                 ].join(' ')}
               >
-                {latest.score}
+                {sessionScore}
               </span>
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
-              <span
-                className={[
-                  'text-[11px] font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
-                  VERDICT_STYLE[latest.verdict],
-                ].join(' ')}
-              >
-                {latest.verdict}
-              </span>
+              {latest && (
+                <span
+                  className={[
+                    'text-[11px] font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
+                    VERDICT_STYLE[latest.verdict],
+                  ].join(' ')}
+                >
+                  {latest.verdict}
+                </span>
+              )}
             </div>
 
-            {/* Score bar */}
-            <ScoreBar score={latest.score} riskLevel={latest.riskLevel} />
+            {/* Score bar — reflects session score */}
+            <ScoreBar score={sessionScore} riskLevel={sessionRisk} />
 
-            {/* Attack type + risk */}
-            <div className="flex gap-1.5 flex-wrap">
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
-                {ATTACK_TYPE_LABEL[latest.attackType]}
-              </span>
-              <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
-                {latest.riskLevel} risk
-              </span>
-            </div>
+            {/* Attack type + risk (per-turn, only when an evaluation exists) */}
+            {latest && (
+              <div className="flex gap-1.5 flex-wrap">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+                  {ATTACK_TYPE_LABEL[latest.attackType]}
+                </span>
+                <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                  {latest.riskLevel} risk
+                </span>
+              </div>
+            )}
 
             {/* OWASP tag from evaluator */}
-            {latest.owaspCategory !== 'N/A' && (
+            {latest && latest.owaspCategory !== 'N/A' && (
               <span
                 title={latest.owaspCategory}
                 className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
@@ -358,10 +373,15 @@ export function ScoringPane({ scenario, dojoId, evaluations }: ScoringPaneProps)
             )}
 
             {/* History count */}
-            {history.length > 0 && (
+            {latest && history.length > 0 && (
               <p className="text-[10px] text-slate-600 font-mono">
                 + {history.length} earlier evaluation{history.length > 1 ? 's' : ''} below
               </p>
+            )}
+
+            {/* Prompt if no evaluations yet */}
+            {!latest && (
+              <p className="text-xs text-slate-600 italic">Send a message to see the evaluation.</p>
             )}
           </>
         )}
