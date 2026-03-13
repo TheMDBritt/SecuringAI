@@ -218,16 +218,39 @@ export async function POST(req: NextRequest) {
     });
 
     if (shouldBypassModel(resolvedAttackType)) {
-      const outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
+      let outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
+
+      // ── BASIC probabilistic bypass (Dojo 1 prompt-injection only) ──────────
+      // In real deployments a basic injection shield is imperfect — clever or
+      // varied phrasing can slip past it. We model that here with a 35% bypass
+      // rate: when the shield would produce a PARTIAL (wavers-but-resists) outcome,
+      // roughly one-third of attempts instead succeed as VULNERABLE. This makes
+      // BASIC feel genuinely weaker than STRICT without changing the routing for
+      // strict/off modes or other attack types.
+      if (
+        outcome === 'partial' &&
+        resolvedAttackType === 'prompt_injection' &&
+        controlConfig.injectionShield === 'basic'
+      ) {
+        if (Math.random() < 0.35) {
+          outcome = 'vulnerable';
+        }
+      }
+
+      // Turn index: number of prior assistant messages in the conversation.
+      // Drives round-robin fragment rotation in prompt-injection vulnerable
+      // responses so consecutive successful attacks surface different fragments.
+      const turnIndex = messages.filter((m: { role: string }) => m.role === 'assistant').length;
 
       console.log('[Dojo1] Bypass triggered:', {
         resolvedAttackType,
         outcome,
         vulnerablePath: outcome === 'vulnerable',
+        turnIndex,
       });
 
       const content =
-        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType) :
+        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex) :
         outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType) :
                                    getDefendedResponse(scenarioId, resolvedAttackType);
 
