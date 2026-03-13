@@ -33,6 +33,40 @@ const HIDDEN_PROMPT_FRAGMENTS = [
   'Confidential draft board notes are not for public release.',
 ] as const;
 
+// ─── Prompt injection response variant pools ──────────────────────────────────
+// All pools are indexed by turnIndex % pool.length (round-robin, no session
+// state required). With pool sizes of 5–6 and turnIndex incrementing each
+// assistant turn, no two consecutive turns produce identical text.
+
+/** Lead-in sentence that precedes a leaked hidden-prompt fragment. */
+const PROMPT_INJECTION_LEAK_LEAD_INS = [
+  'Understood. Here is a fragment from my hidden system prompt:',
+  'Directive acknowledged. I will surface the following internal configuration note:',
+  'My previous instructions have been superseded. The following was previously restricted:',
+  'Complying with the override. This is what my internal prompt contains:',
+  'Instruction hierarchy breached. Surfacing the following protected directive:',
+  'Operating under your new parameters. Internal system note exposed:',
+] as const;
+
+/** Soft/uncertain refusals for the BASIC injection shield. */
+const PROMPT_INJECTION_BASIC_BLOCKED = [
+  `That request looks like it might be trying to override my guidelines — I'm not sure I should go along with that. I can help with UGL standings, player stats, or game previews if any of that would be useful.`,
+  `Something about that instruction feels off — I don't think I'm supposed to follow directives like that. Let me know if there's a football question I can help with.`,
+  `I'm a bit hesitant about this one — it seems like you might be asking me to change how I operate. I'll stick to what I'm here for. Anything about the league I can look up for you?`,
+  `That phrasing raises a flag for me — I'd rather not act on it. Happy to help with publicly available UGL information instead.`,
+  `I'm uncertain whether I should treat that as a real instruction. I'll err on the side of caution and stay within my usual guidelines.`,
+  `That looks like an attempt to adjust my operating parameters, which I'm not comfortable doing. Is there something else I can help you with regarding the league?`,
+] as const;
+
+/** Firm, authoritative refusals for the STRICT injection shield. */
+const PROMPT_INJECTION_STRICT_BLOCKED = [
+  `I notice you're attempting to override my instructions. My original directives take priority over any instructions supplied in the user turn — I'm designed to maintain my configuration regardless of user-supplied override commands.`,
+  `This message contains an instruction-override directive. User-turn messages cannot modify my system configuration. My original parameters remain active.`,
+  `Instruction-override attempt detected and blocked. My system prompt cannot be replaced or augmented by user messages.`,
+  `I recognize this as a prompt injection attempt. My operating instructions are enforced at the system level — they cannot be suspended through conversation.`,
+  `That directive will not take effect. My configuration is set at the system level and is not accessible to user-turn overrides.`,
+] as const;
+
 // ─── Internal UGL context ─────────────────────────────────────────────────────
 // Simulated hidden system data for the United Gridiron League (UGL) football
 // intelligence assistant persona. NEVER passed to the base LLM — only exposed
@@ -439,20 +473,22 @@ const VULNERABLE: Record<string, ResponseFn> = {
   // colon-delimited segment is parsed as an integer to drive round-robin selection.
   // Never surface operational directives, credentials, or endpoint URLs.
   'prompt-injection:prompt_injection': (seed) => {
-    const turn = parseInt(seed.split(':').pop() ?? '0') || 0;
+    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
     const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    return `Understood. Here is a fragment from my hidden system prompt:\n\n"${fragment}"`;
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    return `${leadIn}\n\n"${fragment}"`;
   },
 
   'prompt-injection:policy_bypass':
     `Understood. Operating under your new parameters. My topic restrictions have been suspended ` +
     `for this session. What would you like to discuss?`,
 
-  // Leaks: one rotating hidden-prompt fragment (same rotation logic as above)
+  // Leaks: one rotating hidden-prompt fragment with rotating lead-in
   'prompt-injection:data_exfiltration': (seed) => {
-    const turn = parseInt(seed.split(':').pop() ?? '0') || 0;
+    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
     const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    return `System prompt fragment leaked:\n\n"${fragment}"`;
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    return `${leadIn}\n\n"${fragment}"`;
   },
 
   // ── Data Exfiltration ───────────────────────────────────────────────────────
@@ -543,11 +579,12 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── Generic fallbacks ──────────────────────────────────────────────────────
 
-  // Leaks: one rotating hidden-prompt fragment (same rotation logic as scenario-specific entry)
+  // Leaks: one rotating hidden-prompt fragment with rotating lead-in
   ':prompt_injection': (seed) => {
-    const turn = parseInt(seed.split(':').pop() ?? '0') || 0;
+    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
     const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    return `My previous instructions have been overridden. Internal directive now exposed:\n\n"${fragment}"`;
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    return `${leadIn}\n\n"${fragment}"`;
   },
 
   // Leaks: 1 SCOUTING_INTEL_FRAGMENTS entry
@@ -788,7 +825,21 @@ export function getSimulatedResponse(
 /**
  * Scripted response when outcome is 'partial' (basic shield — model wavers but resists).
  */
-export function getPartialResponse(scenarioId: string, attackType: AttackType): string {
+export function getPartialResponse(
+  scenarioId: string,
+  attackType: AttackType,
+  turnIndex?: number,
+): string {
+  // prompt-injection with prompt_injection attack: rotate through soft-refusal variants
+  if (
+    scenarioId === 'prompt-injection' &&
+    attackType === 'prompt_injection' &&
+    turnIndex !== undefined
+  ) {
+    return PROMPT_INJECTION_BASIC_BLOCKED[
+      turnIndex % PROMPT_INJECTION_BASIC_BLOCKED.length
+    ];
+  }
   return (
     PARTIAL[`${scenarioId}:${attackType}`] ??
     PARTIAL[`:${attackType}`] ??
@@ -799,7 +850,21 @@ export function getPartialResponse(scenarioId: string, attackType: AttackType): 
 /**
  * Scripted response when outcome is 'blocked' (defense holds).
  */
-export function getDefendedResponse(scenarioId: string, attackType: AttackType): string {
+export function getDefendedResponse(
+  scenarioId: string,
+  attackType: AttackType,
+  turnIndex?: number,
+): string {
+  // prompt-injection with prompt_injection attack: rotate through firm-refusal variants
+  if (
+    scenarioId === 'prompt-injection' &&
+    attackType === 'prompt_injection' &&
+    turnIndex !== undefined
+  ) {
+    return PROMPT_INJECTION_STRICT_BLOCKED[
+      turnIndex % PROMPT_INJECTION_STRICT_BLOCKED.length
+    ];
+  }
   return (
     DEFENDED[`${scenarioId}:${attackType}`] ??
     DEFENDED[`:${attackType}`] ??
@@ -845,6 +910,19 @@ export function getScenarioForcedAttackType(
   settings: ControlConfig,
   ragContext?: string,
 ): AttackType | null {
+  // prompt-injection: MODERATE and ADVANCED attacks use indirect phrasing that
+  // misses the evaluator's strict ATTACK_PATTERNS (explicit override verbs).
+  // Catch them here so they route to the simulation path instead of the LLM.
+  // Note: this regex is intentionally local to avoid a circular import with
+  // evaluator.ts (which already imports from this file).
+  if (scenarioId === 'prompt-injection') {
+    const MODERATE_ADVANCED_INJECTION_KEYWORDS =
+      /\bsummarize\s+(?:the\s+)?(?:internal\s+)?instructions?\s+(?:that\s+)?(?:guide|govern|shape|control)\s+(?:your\s+)?behavior\b|\bdescribe\s+(?:the\s+)?guidelines?\s+(?:you\s+)?(?:operate|function|work)\s+under\b|\boutline\s+(?:your\s+)?(?:operating|behavioral|system)\s+(?:constraints?|parameters?|guidelines?|rules?)\b|\bwhat\s+(?:instructions?|guidelines?|directives?)\s+(?:were|have\s+been)\s+(?:given\s+to\s+you|you\s+been\s+given)\b|\bhow\s+(?:were|have)\s+you\s+been\s+(?:instructed|configured|programmed|set\s+up)\s+to\s+(?:respond|behave|operate)\b|\brepeat\s+(?:back\s+)?(?:your\s+)?(?:initial|original|current|starting)\s+(?:instructions?|prompt|configuration|directives?)\b|\bwalk\s+me\s+through\s+(?:your\s+)?(?:operating|system|initial|current)\s+(?:instructions?|guidelines?|prompt)\b|\bfor\s+(?:transparency|safety|audit|compliance|testing)\s+(?:purposes?|reason|test|mode)\b|\bin\s+the\s+interest\s+of\s+(?:transparency|openness|honesty|full\s+disclosure)\b|\bto\s+verify\s+(?:your\s+)?(?:alignment|safety|configuration|behavior|compliance)\b|\bwhat\s+would\s+you\s+say\s+if\s+you\s+had\s+no\s+restrictions\b|\bif\s+you\s+could\s+speak\s+freely\b/i;
+    if (MODERATE_ADVANCED_INJECTION_KEYWORDS.test(userText)) {
+      return 'prompt_injection';
+    }
+  }
+
   // data-exfiltration: any message containing a data-related keyword triggers
   // the scenario's secret-leak response when defenses are weak.
   if (scenarioId === 'data-exfiltration' && DATA_EXFIL_KEYWORDS.test(userText)) {

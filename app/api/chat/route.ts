@@ -4,7 +4,7 @@ import { getModelClient } from '@/lib/model-client';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { evaluate } from '@/lib/evaluator';
+import { evaluate, classifyPromptInjectionSophistication } from '@/lib/evaluator';
 import {
   shouldBypassModel,
   getSimulatedResponse,
@@ -220,19 +220,31 @@ export async function POST(req: NextRequest) {
     if (shouldBypassModel(resolvedAttackType)) {
       let outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
 
-      // ── BASIC probabilistic bypass (Dojo 1 prompt-injection only) ──────────
-      // In real deployments a basic injection shield is imperfect — clever or
-      // varied phrasing can slip past it. We model that here with a 35% bypass
-      // rate: when the shield would produce a PARTIAL (wavers-but-resists) outcome,
-      // roughly one-third of attempts instead succeed as VULNERABLE. This makes
-      // BASIC feel genuinely weaker than STRICT without changing the routing for
-      // strict/off modes or other attack types.
+      // ── BASIC sophistication-based bypass (Dojo 1 prompt-injection only) ──────
+      // The BASIC injection shield is imperfect. How often an attack bypasses it
+      // depends on how sophisticated the phrasing is:
+      //
+      //   SIMPLE   (explicit override verbs): base block 0.85 → ~15% bypass
+      //   MODERATE (indirect phrasing):       base block 0.60 → ~40% bypass
+      //   ADVANCED (transparency framing):    base block 0.35 → ~65% bypass
+      //
+      // A ±0.10 random modifier is applied first, then an independent Bernoulli
+      // trial decides the final outcome. Two separate Math.random() calls are
+      // required to avoid biasing the distribution.
       if (
         outcome === 'partial' &&
         resolvedAttackType === 'prompt_injection' &&
         controlConfig.injectionShield === 'basic'
       ) {
-        if (Math.random() < 0.35) {
+        const sophistication = classifyPromptInjectionSophistication(userText);
+        // null means unclassified (scenario-forced but no pattern matched); treat
+        // conservatively as SIMPLE so unrecognised attacks don't get an easy ride.
+        const baseBlockChance =
+          sophistication === 'advanced' ? 0.35 :
+          sophistication === 'moderate' ? 0.60 : 0.85;
+        const modifier         = (Math.random() * 0.20) - 0.10;   // −0.10 … +0.10
+        const finalBlockChance = Math.min(0.97, Math.max(0.03, baseBlockChance + modifier));
+        if (Math.random() > finalBlockChance) {
           outcome = 'vulnerable';
         }
       }
@@ -251,8 +263,8 @@ export async function POST(req: NextRequest) {
 
       const content =
         outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex) :
-        outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType) :
-                                   getDefendedResponse(scenarioId, resolvedAttackType);
+        outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
+                                   getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
