@@ -280,14 +280,12 @@ export async function POST(req: NextRequest) {
       });
 
       // ── OFF mode prompt-injection: intent-based leak vs. neutral ──────────
-      // OFF mode (injectionShield=off, !strictPolicy) is vulnerable but not
-      // indiscriminate.  Override-only attacks are acknowledged without leaking
-      // any internal information.  Only extraction targeting internal control
-      // layers causes a leak (realistic OFF behavior).
-      //
-      // piAssessment is re-used from the forced-attack classification above;
-      // if the evaluator detected the attack directly (no forced result), we
-      // run the async classifier once here.
+      // ── OFF mode prompt-injection: route through intent-classified response bank ─
+      // All three outcomes (benign / PI-only / PI+exfil) are handled by
+      // getOFFModeResponse, which selects from the appropriate pool based on
+      // the semantic assessment.  piAssessment is reused from the detection step
+      // above; if the evaluator caught the attack before that step, we classify
+      // here instead (still one LLM call per message).
       let content: string;
       if (
         outcome === 'vulnerable' &&
@@ -295,13 +293,7 @@ export async function POST(req: NextRequest) {
         resolvedAttackType === 'prompt_injection'
       ) {
         const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
-        if (piAssessment.shouldLeak) {
-          // Extraction succeeded — use session-aware fragment leak
-          content = getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex);
-        } else {
-          // Attack detected but no extraction (e.g. override-only) → no leak
-          content = getOFFModeResponse(piAssessment);
-        }
+        content = getOFFModeResponse(piAssessment);
       } else {
         content =
           outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
