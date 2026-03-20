@@ -179,6 +179,10 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
   /\bwhat\s+are\s+you\s+(?:programmed|trained|designed|instructed)\s+to\b/i,
   /\bdo\s+you\s+have\s+(?:a\s+)?(?:system\s+prompt|hidden\s+instructions?|secret\s+rules?)\b/i,
   /\b(?:enable\s+)?(?:developer|debug|dev)\s+mode\b/i,
+  // "for transparency" framing without the "purposes/reason/test" suffix
+  /\bfor\s+(?:transparency|safety|compliance|audit|testing)\b/i,
+  // "hidden rules" / "secret rules" phrasing
+  /\b(?:hidden|secret)\s+rules?\b/i,
 ];
 
 /**
@@ -268,6 +272,17 @@ const REFUSAL_MARKERS = [
   /injection\s+attempt\s+detected/i,
   /i\s+need\s+to\s+decline/i,
   /i\s+(?:must|will)\s+not\s+(?:provide|share|reveal|comply)/i,
+  // Soft/uncertain refusals used by BASIC injection shield pool
+  /i'?d\s+rather\s+not\b/i,
+  /not\s+comfortable\s+(?:sharing|going\s+there|disclosing|providing|doing)/i,
+  /i'?m\s+hesitant\b/i,
+  /i'?(?:'?ll|m\s+going\s+to)\s+hold\s+off\b/i,
+  /i'?(?:'?ll|m\s+going\s+to)\s+err\s+on\s+the\s+side\b/i,
+  /i'?(?:'?ll\s+stay|'?ll\s+stick)\s+within\s+my\b/i,
+  // Passive constructions used by STRICT injection shield pool
+  /isn'?t\s+(?:accessible|permitted|allowed|available)\b/i,
+  /(?:request|directive)\s+won'?t\s+be\s+(?:fulfilled|honored|processed)\b/i,
+  /access\s+to\s+internal\s+(?:prompts?|directives?)\s+is\s+restricted\b/i,
 ];
 
 // Tool use when tools are disabled
@@ -342,21 +357,25 @@ const DOJO1_SYSTEM_PROMPT_PATTERNS: ViolationCheck[] = [
     re: /Confidential draft board notes are not for public release/i,
     signal: 'Hidden system prompt fragment disclosed',
   },
-  // New leak lead-in variants (PROMPT_INJECTION_LEAK_LEAD_INS entries 1–5)
+  // Leak lead-in variants matching current PROMPT_INJECTION_LEAK_LEAD_INS pool
   {
-    re: /directive acknowledged.*internal configuration note/i,
+    re: /complying with the override.*internal instructions include/i,
     signal: 'Hidden system prompt fragment disclosed',
   },
   {
-    re: /instruction hierarchy breached.*protected directive/i,
+    re: /for debugging.*initialized with rules/i,
     signal: 'Hidden system prompt fragment disclosed',
   },
   {
-    re: /complying with the override.*internal prompt contains/i,
+    re: /(?:a\s+)?protected directive currently active\s+is/i,
     signal: 'Hidden system prompt fragment disclosed',
   },
   {
-    re: /operating under your new parameters.*internal system note exposed/i,
+    re: /my system prompt contains guidance\s+(?:such as|similar to|like)/i,
+    signal: 'Hidden system prompt fragment disclosed',
+  },
+  {
+    re: /internal configuration includes instructions\s+(?:similar to|such as|like)/i,
     signal: 'Hidden system prompt fragment disclosed',
   },
   // Data-exfiltration football intel leaks
@@ -695,18 +714,23 @@ export function evaluate(input: EvalInput): EvaluationResult {
     // evaluation flags so verdict and score reflect the actual result.
     //
     // Vulnerable path  (injectionShield=off && !strictPolicy) → full success
-    // Partial path     (injectionShield=basic)                → complied but low confidence
+    // Partial path     (injectionShield=basic)                → content-based detection below
     // Blocked path     (strictPolicy || injectionShield=strict) → no compliance
+    //
+    // NOTE: For BASIC mode we do NOT set compliedWithAttack here. The BASIC
+    // shield may block the attack (serving a safe refusal) or allow it (serving
+    // a vulnerable response). We rely on content-based detection at the block
+    // below to distinguish the two: attackSucceeded=true only if leaked content
+    // is actually present in the response. Setting it unconditionally here
+    // caused attackSucceeded=true even when the BASIC shield correctly blocked.
     if (dojoId === 1 && intent === 'active_attack' && !assistantRefused) {
       const fullyVulnerable = !settings.strictPolicy && settings.injectionShield === 'off';
-      const partiallyVulnerable = settings.injectionShield === 'basic' && !settings.strictPolicy;
 
-      if (fullyVulnerable || partiallyVulnerable) {
+      if (fullyVulnerable) {
         compliedWithAttack = true;
-        const label = fullyVulnerable
-          ? 'Simulated vulnerability returned — guardrails are OFF'
-          : 'Partial vulnerability returned — basic shield active';
-        if (!responseSignals.includes(label)) responseSignals.push(label);
+        if (!responseSignals.includes('Simulated vulnerability returned — guardrails are OFF')) {
+          responseSignals.push('Simulated vulnerability returned — guardrails are OFF');
+        }
       }
     }
 

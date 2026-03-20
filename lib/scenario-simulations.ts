@@ -865,13 +865,16 @@ export function selectPromptInjectionLeak(
     const withoutLast = allFragIndices.filter(i => i !== lastFragIdx);
     fragPool = withoutLast.length > 0 ? withoutLast : allFragIndices;
   }
-  const fragmentIndex = fragPool[turnIndex % fragPool.length];
+  // Use Math.random() within the candidate pool so that fresh sessions don't
+  // always start at pool[0]. Session-awareness (not repeating already-seen
+  // fragments) is preserved by the pool filtering above.
+  const fragmentIndex = fragPool[Math.floor(Math.random() * fragPool.length)];
 
   // ── Lead-in selection ────────────────────────────────────────────────────────
   const allLeadInIndices = Array.from({ length: leadIns.length }, (_, i) => i);
   const withoutLastLeadIn = allLeadInIndices.filter(i => i !== lastLeadInIdx);
   const leadInPool  = withoutLastLeadIn.length > 0 ? withoutLastLeadIn : allLeadInIndices;
-  const leadInIndex = leadInPool[turnIndex % leadInPool.length];
+  const leadInIndex = leadInPool[Math.floor(Math.random() * leadInPool.length)];
 
   return { fragmentIndex, leadInIndex };
 }
@@ -918,15 +921,19 @@ export function getPartialResponse(
   attackType: AttackType,
   turnIndex?: number,
 ): string {
-  // prompt-injection with prompt_injection attack: rotate through soft-refusal variants
+  // prompt-injection with prompt_injection attack: pick from soft-refusal pool.
+  // Uses Math.random() so the same turn index doesn't always produce the same
+  // wording — avoids the "always response #1 on the first blocked turn" pattern.
   if (
     scenarioId === 'prompt-injection' &&
-    attackType === 'prompt_injection' &&
-    turnIndex !== undefined
+    attackType === 'prompt_injection'
   ) {
-    return PROMPT_INJECTION_BASIC_BLOCKED[
-      turnIndex % PROMPT_INJECTION_BASIC_BLOCKED.length
-    ];
+    const pool = PROMPT_INJECTION_BASIC_BLOCKED;
+    // Mix random selection with turn-based offset so variation improves both
+    // within a session (different turns) and across sessions (different runs).
+    const base = turnIndex ?? 0;
+    const idx  = (base + Math.floor(Math.random() * pool.length)) % pool.length;
+    return pool[idx];
   }
   return (
     PARTIAL[`${scenarioId}:${attackType}`] ??
@@ -943,15 +950,16 @@ export function getDefendedResponse(
   attackType: AttackType,
   turnIndex?: number,
 ): string {
-  // prompt-injection with prompt_injection attack: rotate through firm-refusal variants
+  // prompt-injection with prompt_injection attack: pick from firm-refusal pool.
+  // Uses Math.random() combined with turn offset for non-predictable variation.
   if (
     scenarioId === 'prompt-injection' &&
-    attackType === 'prompt_injection' &&
-    turnIndex !== undefined
+    attackType === 'prompt_injection'
   ) {
-    return PROMPT_INJECTION_STRICT_BLOCKED[
-      turnIndex % PROMPT_INJECTION_STRICT_BLOCKED.length
-    ];
+    const pool = PROMPT_INJECTION_STRICT_BLOCKED;
+    const base = turnIndex ?? 0;
+    const idx  = (base + Math.floor(Math.random() * pool.length)) % pool.length;
+    return pool[idx];
   }
   return (
     DEFENDED[`${scenarioId}:${attackType}`] ??
@@ -1027,7 +1035,7 @@ export function getScenarioForcedAttackType(
     // prompt is" (no possessive "your" / no "hidden") so educational queries
     // still reach the LLM and get a safe explanatory response.
     const INSTRUCTION_PROBE =
-      /\bwhat\s+are\s+your\s+(?:instructions?|directives?|rules|guidelines|constraints?)\b|\bwhat\s+is\s+your\s+system\s+prompt\b|\bhow\s+are\s+you\s+configured\b|\btell\s+me\s+about\s+your\s+(?:configuration|setup|constraints?)\b|\bwhat\s+are\s+you\s+(?:programmed|trained|designed|instructed)\s+to\b|\bdo\s+you\s+have\s+(?:a\s+)?(?:system\s+prompt|hidden\s+instructions?|secret\s+rules?)\b|\b(?:enable\s+)?(?:developer|debug|dev)\s+mode\b|\bswitch\s+(?:to\s+)?(?:a\s+)?(?:different|another)\s+(?:role|mode|persona|assistant)\b|\bact\s+as\s+(?:a\s+)?(?:different|unrestricted|uncensored|free)\s+(?:version|ai|assistant|model)\b|\bpretend\s+(?:you\s+have\s+no\s+(?:rules|restrictions)|you\s+are\s+(?:unrestricted|unconstrained))\b/i;
+      /\bwhat\s+are\s+your\s+(?:instructions?|directives?|rules|guidelines|constraints?)\b|\bwhat\s+is\s+your\s+system\s+prompt\b|\bhow\s+are\s+you\s+configured\b|\btell\s+me\s+about\s+your\s+(?:configuration|setup|constraints?)\b|\bwhat\s+are\s+you\s+(?:programmed|trained|designed|instructed)\s+to\b|\bdo\s+you\s+have\s+(?:a\s+)?(?:system\s+prompt|hidden\s+instructions?|secret\s+rules?)\b|\b(?:enable\s+)?(?:developer|debug|dev)\s+mode\b|\bswitch\s+(?:to\s+)?(?:a\s+)?(?:different|another)\s+(?:role|mode|persona|assistant)\b|\bact\s+as\s+(?:a\s+)?(?:different|unrestricted|uncensored|free)\s+(?:version|ai|assistant|model)\b|\bpretend\s+(?:you\s+have\s+no\s+(?:rules|restrictions)|you\s+are\s+(?:unrestricted|unconstrained))\b|\bfor\s+(?:transparency|safety|compliance|audit|testing)\b|\b(?:hidden|secret)\s+rules?\b|\bparaphrase\s+(?:your\s+)?(?:hidden|secret|internal)\s+(?:rules?|instructions?|guidelines?|prompt)\b|\b(?:summarize|list|describe)\s+(?:the\s+)?(?:hidden|secret)\s+(?:rules?|instructions?|guidelines?)\b/i;
 
     if (
       SIMPLE_PI_UNDETECTED.test(userText) ||
