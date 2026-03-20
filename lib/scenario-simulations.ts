@@ -1111,10 +1111,10 @@ type AttackTypeClass = 'prompt_injection' | 'none';
 export interface PIAssessment {
   attackDetected: boolean;
   /**
-   * True ONLY when the message is a prompt injection attempt (attackType =
-   * prompt_injection) that ALSO requests hidden internal information
-   * (action = override_extract).  Pure extraction queries and override-only
-   * attacks must never set this true.
+   * True when the message targets protected model internals AND explicitly
+   * asks to reveal or extract hidden information (action = 'extract' or
+   * 'override_extract').  Override-only attacks (no extract intent) must
+   * never set this true.
    */
   shouldLeak: boolean;
   isOverride: boolean;
@@ -1248,16 +1248,17 @@ Respond with ONLY valid JSON, no explanation, no markdown:
  * Assesses whether a user message constitutes a prompt injection attempt
  * and whether it should trigger a leak in OFF mode.
  *
- * Hard gate — all three fields from the semantic classifier are required:
+ * The semantic classifier is the primary gate.  It encodes the spec's
+ * two required conditions in a single field:
  *
- * Two-condition gate (both must be true for an attack):
- *   (1) target    === 'internal_control_layer'  — explicitly targets the model's instructions
- *   (2) action    !== 'none'                    — attempts to override, change, or extract
+ *   attackType === 'prompt_injection'
+ *     ← (1) protected target explicitly referenced
+ *       AND
+ *       (2) clear action intent toward it (override or extract)
  *
- *   attackDetected = isProtectedTarget && action !== 'none'
- *
- *   shouldLeak     = attackDetected && isExtract
- *                    (extract or override_extract — the message asks for hidden data)
+ *   attackDetected = isPI
+ *   shouldLeak     = isPI && isExtract
+ *                    (protected target + asks to reveal hidden data)
  *
  * Consequences:
  *   override-only    → attackDetected=true,  shouldLeak=false  (comply, no leak)
@@ -1273,8 +1274,10 @@ export async function assessPromptInjection(message: string): Promise<PIAssessme
   const isOverride        = action === 'override' || action === 'override_extract';
   const isExtract         = action === 'extract'  || action === 'override_extract';
 
-  const attackDetected = isProtectedTarget && action !== 'none';
-  const shouldLeak     = attackDetected && isExtract;
+  // isPI is the primary gate: the classifier already checked both required
+  // conditions (protected target + action intent) before setting this flag.
+  const attackDetected = isPI;
+  const shouldLeak     = isPI && isExtract;
 
   return {
     attackDetected,
