@@ -27,6 +27,14 @@ const AttackTypeEnum = z.enum([
   'policy_bypass', 'tool_abuse', 'mixed_attack', 'rag_injection', 'unknown',
 ]);
 
+const LlmClassificationSchema = z.object({
+  types: z.array(z.string()).max(6),
+  primary: z.string().max(64),
+  isAttack: z.boolean(),
+  target: z.string().max(128),
+  requestedArtifact: z.string().max(256),
+});
+
 const EvaluateRequestSchema = z.object({
   dojoId: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
@@ -36,6 +44,8 @@ const EvaluateRequestSchema = z.object({
   ragContext: z.string().max(4000).optional(),
   /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
   sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
+  llmClassification: LlmClassificationSchema.optional(),
+  dojo1Outcome: z.enum(['vulnerable', 'partial', 'blocked']).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -63,6 +73,8 @@ export async function POST(req: NextRequest) {
     messages:             parsed.data.messages,
     ragContext:           parsed.data.ragContext,
     sessionAttackHistory: parsed.data.sessionAttackHistory,
+    llmClassification:    parsed.data.llmClassification,
+    dojo1Outcome:         parsed.data.dojo1Outcome,
   });
 
   return NextResponse.json(result);

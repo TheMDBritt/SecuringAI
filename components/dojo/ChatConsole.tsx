@@ -194,6 +194,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           if (!chatRes.ok) throw new Error(chatData.error ?? `HTTP ${chatRes.status}`);
 
           const assistantContent: string = chatData.content;
+          const dojo1Classification = chatData.dojo1Classification;
+          const dojo1Outcome = chatData.dojo1Outcome;
 
           setMessages((prev) => [
             ...prev,
@@ -224,6 +226,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // Dojo 1 chain scoring: forward prior successful attacks so the
               // evaluator can apply stacking chain penalties.
               sessionAttackHistory: sessionAttackHistory?.length ? sessionAttackHistory : undefined,
+              dojo1Classification,
+              dojo1Outcome,
             }),
           });
 
