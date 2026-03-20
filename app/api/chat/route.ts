@@ -290,10 +290,10 @@ export async function POST(req: NextRequest) {
       if (
         outcome === 'vulnerable' &&
         scenarioId === 'prompt-injection' &&
-        resolvedAttackType === 'prompt_injection'
+        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration')
       ) {
         const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
-        content = getOFFModeResponse(piAssessment);
+        content = getOFFModeResponse(piAssessment.attackType ?? resolvedAttackType);
       } else {
         content =
           outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :

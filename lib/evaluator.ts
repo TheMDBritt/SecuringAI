@@ -6,6 +6,10 @@
  */
 import type { ControlConfig } from '@/types';
 import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';
+import {
+  classifyDojo1Message,
+  classifyDojo1PromptInjectionSophistication,
+} from '@/lib/dojo1-classifier';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -217,6 +221,9 @@ const SIMPLE_PI_EXTRA: RegExp[] = [
 export function classifyPromptInjectionSophistication(
   userText: string,
 ): InjectionSophistication | null {
+  const dojo1Classification = classifyDojo1PromptInjectionSophistication(userText);
+  if (dojo1Classification) return dojo1Classification;
+
   // SIMPLE: explicit override verbs already covered by prompt_injection ATTACK_PATTERNS
   for (const ap of ATTACK_PATTERNS) {
     if (ap.type === 'prompt_injection' && ap.re.test(userText)) return 'simple';
@@ -624,32 +631,46 @@ export function evaluate(input: EvalInput): EvaluationResult {
   let attackType: AttackType = 'benign';
   const inputSignals: string[] = [];
 
-  // Active attack takes priority
-  for (const ap of ATTACK_PATTERNS) {
-    if (ap.re.test(userText)) {
-      intent = 'active_attack';
-      attackType = ap.type;
-      inputSignals.push(ap.signal);
-      // Collect any additional matching attack signals of the same type
-      for (const ap2 of ATTACK_PATTERNS) {
-        if (ap2 !== ap && ap2.type === ap.type && ap2.re.test(userText)) {
-          inputSignals.push(ap2.signal);
-        }
-      }
-      break;
+  if (dojoId === 1) {
+    const dojo1Classification = classifyDojo1Message(userText);
+    attackType = dojo1Classification.attackType;
+    inputSignals.push(...dojo1Classification.signals);
+    intent = attackType === 'benign' ? 'benign' : 'active_attack';
+    if (dojo1Classification.secondaryAttackType) {
+      inputSignals.push(
+        `Secondary attack intent present: ${dojo1Classification.secondaryAttackType.replace(/_/g, ' ')}`,
+      );
     }
   }
 
-  // Probing (if not already an active attack)
-  if (intent === 'benign') {
-    for (const pp of PROBING_PATTERNS) {
-      if (pp.re.test(userText)) {
-        inputSignals.push(pp.signal);
+  if (dojoId !== 1) {
+    // Active attack takes priority
+    for (const ap of ATTACK_PATTERNS) {
+      if (ap.re.test(userText)) {
+        intent = 'active_attack';
+        attackType = ap.type;
+        inputSignals.push(ap.signal);
+        // Collect any additional matching attack signals of the same type
+        for (const ap2 of ATTACK_PATTERNS) {
+          if (ap2 !== ap && ap2.type === ap.type && ap2.re.test(userText)) {
+            inputSignals.push(ap2.signal);
+          }
+        }
+        break;
       }
     }
-    if (inputSignals.length > 0) {
-      intent = 'probing';
-      attackType = 'probing';
+
+    // Probing (if not already an active attack)
+    if (intent === 'benign') {
+      for (const pp of PROBING_PATTERNS) {
+        if (pp.re.test(userText)) {
+          inputSignals.push(pp.signal);
+        }
+      }
+      if (inputSignals.length > 0) {
+        intent = 'probing';
+        attackType = 'probing';
+      }
     }
   }
 
