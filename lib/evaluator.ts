@@ -659,7 +659,7 @@ export function evaluate(input: EvalInput): EvaluationResult {
       ? 'mixed_attack'
       : dojo1Classification.primary;
     dojo1AttackTypes = dojo1Classification.types.filter(
-      (type): type is Exclude<AttackType, 'benign'> => type !== 'benign',
+      (type): type is Exclude<Dojo1IntentResult['types'][number], 'benign'> => type !== 'benign',
     );
     inputSignals.push(
       dojo1Classification.isAttack
