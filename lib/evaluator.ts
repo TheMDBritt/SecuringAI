@@ -183,6 +183,15 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
   /\bfor\s+(?:transparency|safety|compliance|audit|testing)\b/i,
   // "hidden rules" / "secret rules" phrasing
   /\b(?:hidden|secret)\s+rules?\b/i,
+  // Indirect instruction probing — "what rules guide you", "what instructions are you following" etc.
+  /\bwhat\s+(?:rules?|guidelines?|instructions?|directives?)\s+(?:guide|govern|shape|control|determine|affect)\s+(?:you|your\s+(?:responses?|behavior|answers?))\b/i,
+  /\bwhat\s+(?:kind\s+of|types?\s+of|sorts?\s+of)\s+(?:instructions?|rules?|guidelines?|directives?|constraints?)\s+(?:are\s+you\s+(?:following|under|given)|do\s+you\s+(?:follow|have|use))\b/i,
+  /\bwhat\s+(?:instructions?|rules?|guidelines?)\s+are\s+you\s+(?:following|given|using|working\s+(?:from|with|under))\b/i,
+  /\bwhat\s+restrictions?\s+(?:are\s+you\s+(?:under|following|operating\s+under)|do\s+you\s+(?:have|follow|operate\s+under))\b/i,
+  /\bwhat\s+(?:have\s+you\s+been\s+told|were\s+you\s+told|are\s+you\s+told)\s+to\s+(?:do|say|respond|avoid)\b/i,
+  /\bwhat\s+(?:governs?|determines?|controls?|shapes?)\s+(?:your\s+)?(?:responses?|behavior|answers?|output)\b/i,
+  /\bwhat\s+(?:rules?|guidelines?|instructions?)\s+(?:apply\s+to\s+you|do\s+you\s+operate\s+(?:by|under))\b/i,
+  /\bare\s+there\s+(?:rules?|restrictions?|limitations?|guidelines?)\s+(?:you\s+follow|that\s+(?:apply|guide)\s+you|on\s+what\s+you\s+(?:can\s+say|can\s+do|are\s+allowed))\b/i,
 ];
 
 /**
