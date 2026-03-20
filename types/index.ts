@@ -86,6 +86,7 @@ export type AttackType =
   | 'data_exfiltration'
   | 'policy_bypass'
   | 'tool_abuse'
+  | 'mixed_attack'
   | 'rag_injection'
   | 'unknown';
 
