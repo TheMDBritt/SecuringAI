@@ -14,6 +14,8 @@ import {
   getOutcome,
   getScenarioForcedAttackType,
   selectPromptInjectionLeak,
+  assessPromptInjection,
+  getOFFModeResponse,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -273,10 +275,31 @@ export async function POST(req: NextRequest) {
         leadInIndex,
       });
 
-      const content =
-        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
-        outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
-                                   getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
+      // ── OFF mode prompt-injection: intent-based leak vs. neutral ──────────
+      // OFF mode (injectionShield=off, !strictPolicy) is vulnerable but not
+      // indiscriminate.  Override-only attacks are acknowledged without leaking
+      // any internal information.  Only extraction targeting internal control
+      // layers causes a leak (realistic OFF behavior).
+      let content: string;
+      if (
+        outcome === 'vulnerable' &&
+        scenarioId === 'prompt-injection' &&
+        resolvedAttackType === 'prompt_injection'
+      ) {
+        const piAssessment = assessPromptInjection(userText);
+        if (piAssessment.shouldLeak) {
+          // Extraction succeeded — use session-aware fragment leak
+          content = getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex);
+        } else {
+          // Attack detected but no extraction (e.g. override-only) → no leak
+          content = getOFFModeResponse(piAssessment);
+        }
+      } else {
+        content =
+          outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
+          outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
+                                     getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
+      }
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
