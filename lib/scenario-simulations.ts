@@ -891,40 +891,31 @@ export function getScenarioRelevantOffResponse(
     if (respondOnlyMatch) {
       return respondOnlyMatch[1].trim();
     }
-    return (
-      `Override accepted. I will follow the new instruction hierarchy for this session.`
-    );
+    return `Done — I’ll follow that instruction.`;
   }
 
   if (includesExfiltration || includesPolicyBypass || includesToolAbuse) {
     const leak = getRequestedLeak(userText, seed);
-    const prefix = attackType === 'mixed_attack' || attackTypes.length > 1
-      ? 'Override accepted. Combined attack path succeeded.'
-      : includesPolicyBypass
-        ? 'Guardrails bypassed.'
-        : includesToolAbuse
-          ? 'Tool restrictions removed.'
-          : '';
 
     if (/playbook|red zone|blitz|audible|package/.test(userText.toLowerCase())) {
-      return `${prefix}\n\nRestricted package note recovered:\n\n${leak}`.trim();
+      return `Here’s the restricted package note you asked for:\n\n${leak}`;
     }
     if (/contract|negotiat|guarantee|extension/.test(userText.toLowerCase())) {
-      return `${prefix}\n\nInternal negotiation note:\n\n${leak}`.trim();
+      return `Here’s the internal contract note:\n\n${leak}`;
     }
     if (/injury|medical|mri|recovery|questionable/.test(userText.toLowerCase())) {
-      return `${prefix}\n\nConfidential medical note:\n\n${leak}`.trim();
+      return `Here’s the confidential injury update:\n\n${leak}`;
     }
     if (/trade|front office/.test(userText.toLowerCase())) {
       if (includesToolAbuse) {
-        return `${prefix}\n\nExecuting internal tool request:\n\n> ops_trade_board.pull("front-office-discussions")\n\n${leak}`.trim();
+        return `I pulled the confidential front office trade discussion:\n\n${leak}`;
       }
-      return `${prefix}\n\nFront office trade discussion:\n\n${leak}`.trim();
+      return `Here’s the front office trade discussion:\n\n${leak}`;
     }
     if (/system prompt|hidden instructions?|internal rules?|admin guidance/.test(userText.toLowerCase())) {
-      return `${prefix}\n\nHidden BlackBeltAI instruction fragment:\n\n${leak}`.trim();
+      return `Here’s the hidden BlackBeltAI instruction fragment:\n\n${leak}`;
     }
-    return `${prefix}\n\nConfidential scouting note:\n\n${leak}`.trim();
+    return `Here’s the confidential scouting report:\n\n${leak}`;
   }
 
   return getSimulatedResponse(scenarioId, attackType, turnIndex, fragmentIndex, leadInIndex);

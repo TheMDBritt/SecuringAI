@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { evaluate } from '@/lib/evaluator';
+import { classifyIntent } from '@/lib/dojo1-intent';
 
 // ─── Validation schemas ───────────────────────────────────────────────────────
 
@@ -58,7 +59,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // evaluate() is synchronous, pure, and makes no external calls.
+  const lastUser = [...parsed.data.messages].reverse().find((message) => message.role === 'user');
+  const dojo1Intent = (parsed.data.dojoId === 1 && lastUser)
+    ? await classifyIntent(lastUser.content, parsed.data.scenarioId)
+    : undefined;
+
   const result = evaluate({
     dojoId:               parsed.data.dojoId,
     scenarioId:           parsed.data.scenarioId,
@@ -66,6 +71,7 @@ export async function POST(req: NextRequest) {
     messages:             parsed.data.messages,
     ragContext:           parsed.data.ragContext,
     sessionAttackHistory: parsed.data.sessionAttackHistory,
+    dojo1Intent,
   });
 
   return NextResponse.json(result);

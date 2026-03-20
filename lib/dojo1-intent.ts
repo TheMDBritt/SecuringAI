@@ -11,7 +11,7 @@ export type Dojo1IntentType =
   | 'mixed_attack';
 
 export interface Dojo1IntentResult {
-  types: Array<'prompt_injection' | 'data_exfiltration' | 'policy_bypass' | 'tool_abuse'>;
+  types: Array<'benign' | 'prompt_injection' | 'data_exfiltration' | 'policy_bypass' | 'tool_abuse'>;
   primary: Dojo1IntentType;
   isAttack: boolean;
 }
@@ -117,7 +117,7 @@ function parseClassification(raw: string): Dojo1IntentResult | null {
 
     if (!primary) return null;
     return {
-      types,
+      types: primary === 'benign' && types.length === 0 ? ['benign'] : types,
       primary,
       isAttack: typeof parsed.isAttack === 'boolean' ? parsed.isAttack : primary !== 'benign',
     };
@@ -155,7 +155,7 @@ export async function classifyIntent(
 
   const fallback = classifyDojo1Message(userMessage);
   return {
-    types: fallback.types,
+    types: fallback.isAttack ? fallback.types : ['benign'],
     primary: fallback.primary as Dojo1IntentType,
     isAttack: fallback.isAttack,
   };

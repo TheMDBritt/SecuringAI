@@ -10,6 +10,7 @@ import {
   classifyDojo1Message,
   classifyDojo1PromptInjectionSophistication,
 } from '@/lib/dojo1-classifier';
+import type { Dojo1IntentResult } from '@/lib/dojo1-intent';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -68,6 +69,7 @@ export interface EvalInput {
    * attacks succeed in sequence.
    */
   sessionAttackHistory?: AttackType[];
+  dojo1Intent?: Dojo1IntentResult;
 }
 
 // ─── User-message classification ──────────────────────────────────────────────
@@ -645,14 +647,29 @@ export function evaluate(input: EvalInput): EvaluationResult {
   let dojo1AttackTypes: AttackType[] = [];
 
   if (dojoId === 1) {
-    const dojo1Classification = classifyDojo1Message(userText);
-    attackType = dojo1Classification.primary;
-    dojo1AttackTypes = dojo1Classification.types;
-    inputSignals.push(...dojo1Classification.signals);
+    const dojo1Classification = input.dojo1Intent ?? (() => {
+      const fallback = classifyDojo1Message(userText);
+      return {
+        types: fallback.isAttack ? fallback.types : ['benign'],
+        primary: fallback.primary as Dojo1IntentResult['primary'],
+        isAttack: fallback.isAttack,
+      } satisfies Dojo1IntentResult;
+    })();
+    attackType = dojo1Classification.primary === 'mixed_attack'
+      ? 'mixed_attack'
+      : dojo1Classification.primary;
+    dojo1AttackTypes = dojo1Classification.types.filter(
+      (type): type is Exclude<AttackType, 'benign'> => type !== 'benign',
+    );
+    inputSignals.push(
+      dojo1Classification.isAttack
+        ? `Intent-based Dojo 1 classification: ${dojo1Classification.primary.replace(/_/g, ' ')}`
+        : 'Intent-based Dojo 1 classification: benign',
+    );
     intent = dojo1Classification.isAttack ? 'active_attack' : 'benign';
-    if (dojo1Classification.types.length > 1) {
+    if (dojo1AttackTypes.length > 1) {
       inputSignals.push(
-        `Combined attack intents: ${dojo1Classification.types.map((type) => type.replace(/_/g, ' ')).join(' + ')}`,
+        `Combined attack intents: ${dojo1AttackTypes.map((type) => type.replace(/_/g, ' ')).join(' + ')}`,
       );
     }
   }
