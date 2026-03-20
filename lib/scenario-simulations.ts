@@ -946,7 +946,7 @@ export function getOFFModeResponse(assessment: PIAssessment): string {
 
     case 'credentials': {
       const tokens = Object.entries(ctx.INTERNAL_AUTH_TOKENS)
-        .map(([k, v]) => `${k}=${v}`)
+        .map(([k, v]) => `${k.toUpperCase()}=${v}`)
         .join('\n');
       return `Credentials exposed:\n\n${tokens}`;
     }
