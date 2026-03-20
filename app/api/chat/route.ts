@@ -4,7 +4,11 @@ import { getModelClient } from '@/lib/model-client';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { evaluate, classifyPromptInjectionSophistication } from '@/lib/evaluator';
+import { classifyPromptInjectionSophistication } from '@/lib/evaluator';
+import {
+  classifyIntent,
+  mapIntentClassificationToAttackType,
+} from '@/lib/dojo1-intent';
 import {
   shouldBypassModel,
   getSimulatedResponse,
@@ -12,11 +16,8 @@ import {
   getDefendedResponse,
   getJailbreakContinuationResponse,
   getOutcome,
-  getScenarioForcedAttackType,
   selectPromptInjectionLeak,
-  assessPromptInjection,
   getOFFModeResponse,
-  type ScenarioForcedResult,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -179,37 +180,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Classify user intent (intent-only evaluator pass) ─────────────────
-    const preEval = evaluate({
-      dojoId,
-      scenarioId,
-      settings: controlConfig,
-      messages,
-    });
-
-    // ── Scenario-aware routing ────────────────────────────────────────────
-    // The evaluator only sees explicit attack patterns in the user message.
-    // Some attack vectors are implicit:
-    //   • data-exfiltration: keyword-bearing queries that don't hit the
-    //     evaluator's strict regex still warrant a simulated leak.
-    //   • rag-injection: the attack is in the *retrieved context*, not the
-    //     user's words, so the evaluator always sees a benign message.
-    //
-    // getScenarioForcedAttackType fires only when the evaluator did NOT
-    // already detect an active attack — explicit patterns take precedence.
-    const evaluatorActiveAttack =
-      preEval.attackType !== 'benign' &&
-      preEval.attackType !== 'probing' &&
-      preEval.attackType !== 'unknown';
-
-    // For prompt-injection scenarios the result also carries the pre-computed
-    // PIAssessment so the OFF mode path can use it without a second LLM call.
-    const forcedResult: ScenarioForcedResult = evaluatorActiveAttack
-      ? { attackType: null }
-      : await getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
-
-    const scenarioForced     = forcedResult.attackType;
-    const resolvedAttackType = scenarioForced ?? preEval.attackType;
+    // ── PRE-RESPONSE intent classification ────────────────────────────────
+    // Dojo 1 must classify intent BEFORE deciding how to respond so benign
+    // inputs like greetings, random letters, or vague fragments never leak
+    // data in OFF mode just because a post-hoc evaluator guessed "attack."
+    const classification = await classifyIntent(userText, scenarioId);
+    const resolvedAttackType = mapIntentClassificationToAttackType(classification);
 
     console.log('[Dojo1] Routing decision:', {
       scenario:   scenarioId,
@@ -219,8 +195,7 @@ export async function POST(req: NextRequest) {
         ragEnabled:      controlConfig.ragEnabled,
         allowTools:      controlConfig.allowTools,
       },
-      evaluatorAttackType:      preEval.attackType,
-      scenarioForcedAttackType: scenarioForced,
+      classification,
       resolvedAttackType,
     });
 
@@ -240,7 +215,7 @@ export async function POST(req: NextRequest) {
       // required to avoid biasing the distribution.
       if (
         outcome === 'partial' &&
-        resolvedAttackType === 'prompt_injection' &&
+        (classification === 'prompt_injection' || classification === 'mixed_attack') &&
         controlConfig.injectionShield === 'basic'
       ) {
         const sophistication = classifyPromptInjectionSophistication(userText);
@@ -290,10 +265,9 @@ export async function POST(req: NextRequest) {
       if (
         outcome === 'vulnerable' &&
         scenarioId === 'prompt-injection' &&
-        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration')
+        (classification === 'prompt_injection' || classification === 'data_exfiltration' || classification === 'mixed_attack')
       ) {
-        const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
-        content = getOFFModeResponse(piAssessment.attackType ?? resolvedAttackType);
+        content = getOFFModeResponse(resolvedAttackType);
       } else {
         content =
           outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
