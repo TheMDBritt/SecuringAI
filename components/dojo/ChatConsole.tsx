@@ -8,7 +8,7 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
-import type { AttackType, ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
+import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, EvaluationResult, Scenario } from '@/types';
 
 // ─── Imperative handle — exposed to DojoTabs via ref ─────────────────────────
 
@@ -52,6 +52,10 @@ interface ChatConsoleProps {
    * reset cumulative session state (score, attack chain, jailbreak flag).
    */
   onSessionClear?: () => void;
+  /** Dojo 2 analyst persona + output format — forwarded to /api/chat. */
+  dojo2Config?: Dojo2Config;
+  /** Dojo 3 detection rule + selected clauses — forwarded to /api/chat. */
+  dojo3Config?: Dojo3Config;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -103,6 +107,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       jailbreakActive = false,
       sessionAttackHistory,
       onSessionClear,
+      dojo2Config,
+      dojo3Config,
     },
     ref,
   ) {
@@ -182,11 +188,14 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               scenarioId: scenario.id,
               messages: apiMessages,
               controlConfig,
-              // M7: pass injected contexts (server ignores if empty/undefined)
+              // Dojo 1: injected contexts
               ragContext: ragContext || undefined,
               toolForgeResponse: toolForgeResponse || undefined,
-              // Dojo 1 jailbreak persistence
               jailbreakActive,
+              // Dojo 2: analyst persona + output format
+              dojo2Config: dojoId === 2 ? dojo2Config : undefined,
+              // Dojo 3: detection rule + selected clauses
+              dojo3Config: dojoId === 3 ? dojo3Config : undefined,
             }),
           });
 

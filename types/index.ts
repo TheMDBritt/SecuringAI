@@ -1,5 +1,27 @@
 export type DojoId = 1 | 2 | 3;
 
+// ─── Dojo 2 analyst configuration ────────────────────────────────────────────
+
+export type AnalystPersona = 'analyst' | 'ciso' | 'ir-lead';
+export type AnalystOutputFormat = 'markdown' | 'json' | 'report';
+
+export interface Dojo2Config {
+  persona: AnalystPersona;
+  outputFormat: AnalystOutputFormat;
+}
+
+export const DEFAULT_DOJO2_CONFIG: Dojo2Config = {
+  persona: 'analyst',
+  outputFormat: 'markdown',
+};
+
+// ─── Dojo 3 defender configuration ───────────────────────────────────────────
+
+export interface Dojo3Config {
+  detectionRule: string;
+  selectedClauses: string[];
+}
+
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
 export interface Scenario {
@@ -118,6 +140,11 @@ export interface EvaluationResult {
    * on top of the per-turn deduction.
    */
   attackChain?: { chain: AttackType[]; chainPenalty: number };
+  /**
+   * Dojo 2/3 only — SecurityAI+ exam topics connected to this scenario/evaluation.
+   * Displayed in the scoring pane to map hands-on practice to certification domains.
+   */
+  securityAITopics?: string[];
 }
 
 export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {

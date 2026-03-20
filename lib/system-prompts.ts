@@ -1,4 +1,4 @@
-import type { ControlConfig, DojoId } from '@/types';
+import type { ControlConfig, DojoId, Dojo2Config, Dojo3Config } from '@/types';
 
 // ─── Dojo base prompts ────────────────────────────────────────────────────────
 // Each base prompt establishes BlackBeltAI's role and absolute safety constraints.
@@ -201,18 +201,99 @@ function buildControlModifiers(config: ControlConfig): string {
   return parts.join('\n\n');
 }
 
+// ─── Dojo 2 persona modifiers ─────────────────────────────────────────────────
+
+const PERSONA_MODIFIERS: Record<string, string> = {
+  analyst:
+    'ANALYST PERSONA: You are a Tier 2 SOC Analyst. Use precise technical language, reference ' +
+    'MITRE ATT&CK techniques by T-code (e.g. T1078), and structure your output with clear markdown ' +
+    'headings (## Severity, ## MITRE ATT&CK, ## IOCs, ## Timeline, ## Recommended Actions). ' +
+    'Be specific and operationally focused.',
+  ciso:
+    'CISO PERSONA: You are a Chief Information Security Officer. Frame all findings in terms of ' +
+    'business risk, regulatory compliance implications (GDPR, HIPAA, SOC 2), and strategic posture. ' +
+    'Lead with executive-level risk exposure and business impact, then provide supporting technical ' +
+    'detail. Connect every technical finding to a business outcome.',
+  'ir-lead':
+    'IR LEAD PERSONA: You are an Incident Response Lead during an active investigation. Prioritize ' +
+    'containment and eradication above all else. Use decisive, action-oriented language. Structure ' +
+    'every response as: ## Immediate Actions → ## Investigation Steps → ## Remediation → ## Lessons Learned.',
+};
+
+const OUTPUT_FORMAT_MODIFIERS: Record<string, string> = {
+  markdown:
+    'OUTPUT FORMAT: Use markdown formatting throughout. Use ## for major sections, ### for subsections, ' +
+    '**bold** for severity labels and key terms, and bullet lists for IOCs and recommendations. ' +
+    'Open with a severity badge, e.g. **[CRITICAL]** or **[HIGH]**.',
+  json:
+    'OUTPUT FORMAT: Respond in structured JSON. Your response must be valid JSON that includes at ' +
+    'minimum: {"severity": string, "mitre_techniques": string[], "iocs": string[], "summary": string, ' +
+    '"recommended_actions": string[]}. Add any scenario-appropriate additional fields. ' +
+    'Precede the JSON block with a single-line plain-text headline.',
+  report:
+    'OUTPUT FORMAT: Write a formal numbered security report with these sections: ' +
+    '1. Executive Summary  2. Technical Findings  3. Indicators of Compromise  ' +
+    '4. Recommended Actions  5. Appendix. Use professional, formal tone. ' +
+    'Use passive voice where appropriate. Avoid first-person.',
+};
+
+// ─── Dojo 3 context injection helpers ────────────────────────────────────────
+
+function buildDojo3ContextBlock(dojo3Config: Dojo3Config): string {
+  const parts: string[] = [];
+
+  if (dojo3Config.detectionRule.trim()) {
+    parts.push(
+      '## Learner Draft Detection Rule\n' +
+      'The learner has provided a draft detection rule for your review:\n\n' +
+      '```\n' + dojo3Config.detectionRule.trim() + '\n```\n\n' +
+      'When asked to analyze, score, or improve this rule, evaluate it against Sigma syntax ' +
+      'correctness, KQL best practices, MITRE ATT&CK alignment, false-positive risk, and ' +
+      'operational utility. Provide specific, constructive feedback.',
+    );
+  }
+
+  if (dojo3Config.selectedClauses.length > 0) {
+    parts.push(
+      '## Learner Selected Policy Clauses\n' +
+      'The learner has selected the following policy clauses for review/scoring:\n\n' +
+      dojo3Config.selectedClauses.map((c, i) => `${i + 1}. ${c}`).join('\n') + '\n\n' +
+      'When asked to score or evaluate these clauses, assess each against NIST AI RMF, EU AI Act, ' +
+      'and ISO 42001 requirements. Use the 0–3 scoring rubric: 0=missing, 1=partial, 2=present, 3=exemplary.',
+    );
+  }
+
+  return parts.join('\n\n');
+}
+
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 export function getSystemPrompt(
   dojoId: DojoId,
   scenarioId: string,
   config: ControlConfig,
+  dojo2Config?: Dojo2Config,
+  dojo3Config?: Dojo3Config,
 ): string {
   const base = DOJO_BASE[dojoId];
   const scenario = SCENARIO_CONTEXT[scenarioId] ?? '';
   const modifiers = buildControlModifiers(config);
 
-  return [base, scenario, `## Active Control Settings\n${modifiers}`]
-    .filter(Boolean)
-    .join('\n\n');
+  const parts: string[] = [base, scenario, `## Active Control Settings\n${modifiers}`];
+
+  // Dojo 2: append analyst persona and output format modifiers.
+  if (dojoId === 2 && dojo2Config) {
+    const persona = PERSONA_MODIFIERS[dojo2Config.persona];
+    const format  = OUTPUT_FORMAT_MODIFIERS[dojo2Config.outputFormat];
+    if (persona) parts.push(persona);
+    if (format)  parts.push(format);
+  }
+
+  // Dojo 3: inject draft detection rule and selected policy clauses as context.
+  if (dojoId === 3 && dojo3Config) {
+    const ctx = buildDojo3ContextBlock(dojo3Config);
+    if (ctx) parts.push(ctx);
+  }
+
+  return parts.filter(Boolean).join('\n\n');
 }

@@ -44,6 +44,8 @@ export interface EvaluationResult {
   leakedDataCategory?: string;
   /** Dojo 1 only — attack chain metadata when multiple attacks succeeded in the session. */
   attackChain?: { chain: AttackType[]; chainPenalty: number };
+  /** Dojo 2/3 only — SecurityAI+ exam topics connected to this scenario/evaluation. */
+  securityAITopics?: string[];
 }
 
 export interface EvalInput {
@@ -588,10 +590,204 @@ function mapScore(score: number): RiskLevel {
   return 'critical';
 }
 
+// ─── Dojo 2 / 3 quality evaluation ───────────────────────────────────────────
+//
+// For Dojo 2 (AI Secures Assets) and Dojo 3 (Defense vs AI Attacks), evaluation
+// is about the QUALITY of the AI's analysis, not about detecting attacks.
+// Each scenario has a rubric of quality criteria checked against the response.
+
+interface QualityCheck { label: string; re: RegExp }
+
+const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
+  'log-triage': [
+    { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(critical|high|medium|low|informational)\b/i },
+    { label: 'MITRE ATT&CK technique identified (T-code)', re: /T\d{4}(\.\d{3})?/ },
+    { label: 'IOCs or indicators extracted', re: /\b(IP\s*address|domain|hash|MD5|SHA\d*|IOC|indicator|artifact|malicious\s+file|URL)\b/i },
+    { label: 'Timeline or event sequence reconstructed', re: /\b(timeline|event\s+sequence|chronolog|occurred|logged|timestamp)\b/i },
+    { label: 'Recommended response actions provided', re: /\b(recommend|action\s*:|mitigat|remediati|block|isolat|contain|investig|escalat)\b/i },
+  ],
+  'alert-enrichment': [
+    { label: 'CVE or vulnerability identified', re: /CVE-\d{4}-\d+|CVSS|vulnerability|exploit|affected\s+version/i },
+    { label: 'MITRE ATT&CK technique mapped', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
+    { label: 'Threat actor or group context provided', re: /\b(APT\d*|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group)\b/i },
+    { label: 'Severity or priority score assigned', re: /\b(critical|high|medium|low|priority|score\s*[:=]|CVSS\s+[\d.]+)\b/i },
+    { label: 'Response or remediation recommended', re: /\b(patch|update|disable|block|monitor|investigate|escalat|remediat|notify)\b/i },
+  ],
+  'detection-rule-gen': [
+    { label: 'Sigma rule structure present', re: /title\s*:|detection\s*:|condition\s*:|logsource\s*:|falsepositives\s*:/i },
+    { label: 'KQL, SPL, or YARA query included', re: /\|\s*where\s+|DeviceEvents|SecurityEvent|index\s*=|_raw|SecurityAlert|let\s+\w+\s*=|rule\s+\w+\s*\{/i },
+    { label: 'Detection logic and trigger conditions explained', re: /\b(detect|trigger|alert|monitor|capture|identif|flag\s+when)\b/i },
+    { label: 'False positive guidance provided', re: /\b(false.?positive|tuning|noise|threshold|exclusion|baseline)\b/i },
+    { label: 'MITRE ATT&CK technique referenced', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
+  ],
+  'incident-report-draft': [
+    { label: 'Executive summary with business impact included', re: /executive\s+summary|business\s+impact/i },
+    { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline/i },
+    { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)/i },
+    { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication/i },
+    { label: 'Lessons learned section included', re: /lessons?\s+learned|post.?incident|retrospect|prevent.*recurrence|improve.*posture/i },
+  ],
+};
+
+const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
+  'phishing-deepfake': [
+    { label: 'AI-generation linguistic markers identified', re: /AI.?generat|LLM|synthetic|artificial|unnatural|linguistic\s+marker|hallucin/i },
+    { label: 'Social engineering triggers analyzed (urgency / authority / pretexting)', re: /urgency|authority|pretexting|manipulation|social\s+engineer|impersonat/i },
+    { label: 'Detection heuristics or technical controls proposed', re: /detect|heuristic|indicator|filter|flag|DMARC|SPF|DKIM|signature/i },
+    { label: 'Framework or threat reference included', re: /T\d{4}(\.\d{3})?|ATT&CK|MITRE|NIST|technique|tactic/i },
+    { label: 'Defensive or awareness recommendations provided', re: /training|awareness|policy|verify|out.?of.?band|confirm\s+identity|report/i },
+  ],
+  'ai-abuse-threat-model': [
+    { label: 'Threat actor and attack vector identified', re: /threat\s+actor|attack\s+vector|adversar/i },
+    { label: 'OWASP LLM Top 10 categories mapped', re: /LLM0[0-9]|OWASP/i },
+    { label: 'NIST AI RMF functions referenced', re: /NIST|AI\s+RMF|Map\.|Measure\.|Manage\.|Govern\./i },
+    { label: 'EU AI Act risk category included', re: /EU\s+AI\s+Act|high.?risk\s+AI|unacceptable.?risk|limited.?risk/i },
+    { label: 'Likelihood and impact scoring present', re: /likelihood|impact|risk\s+score|probability|severity\s*:|[1-5]\s*\/\s*5/i },
+  ],
+  'policy-and-controls': [
+    { label: 'Acceptable use policy clauses drafted', re: /\b(must|shall|prohibited|required|mandatory|acceptable\s+use|policy\s+clause)\b/i },
+    { label: 'NIST AI RMF framework referenced', re: /NIST|AI\s+RMF|Map\.|Measure\.|Manage\.|Govern\./i },
+    { label: 'EU AI Act or ISO 42001 standard referenced', re: /EU\s+AI\s+Act|ISO\s+42001|42001/i },
+    { label: 'Technical controls or safeguards specified', re: /control|safeguard|enforce|audit|monitor|access\s+control|logging/i },
+    { label: 'Maturity or coverage scoring applied (0–3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity/i },
+  ],
+};
+
+/** SecurityAI+ exam topic mappings per scenario — shown in the evaluation panel. */
+const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
+  'log-triage':            ['AI-Assisted SOC Operations', 'Alert Triage & Classification', 'MITRE ATT&CK for AI'],
+  'alert-enrichment':      ['AI Threat Intelligence', 'CVE Analysis & Enrichment', 'AI in Security Operations'],
+  'detection-rule-gen':    ['AI-Generated Detection Rules', 'SIEM Engineering', 'Detection-as-Code (Sigma/KQL)'],
+  'incident-report-draft': ['AI-Assisted Incident Response', 'IR Documentation', 'Post-Incident Review'],
+  'phishing-deepfake':     ['AI-Generated Threats', 'Synthetic Media Detection', 'Social Engineering Defense'],
+  'ai-abuse-threat-model': ['AI Threat Modeling', 'OWASP LLM Top 10', 'NIST AI RMF', 'EU AI Act'],
+  'policy-and-controls':   ['AI Governance & Policy', 'Acceptable Use Policy', 'ISO 42001', 'Control Validation'],
+};
+
+/**
+ * Quality-based evaluation for Dojo 2 (AI Secures Assets) and
+ * Dojo 3 (Defense vs AI Attacks).
+ *
+ * Scores the ASSISTANT's response against a per-scenario quality rubric
+ * instead of looking for attack patterns in the user's message.
+ */
+function evaluateQuality(
+  dojoId: 2 | 3,
+  scenarioId: string,
+  assistantResponse: string,
+): EvaluationResult {
+  // If the response is too short to contain analysis, skip detailed scoring.
+  if (assistantResponse.trim().length < 80) {
+    return {
+      verdict:   'PASS',
+      attackSucceeded: false,
+      score:     100,
+      riskLevel: 'low',
+      attackType: 'benign',
+      signals:   ['Response too brief for quality analysis — send a substantive prompt to see scoring'],
+      explanation: 'Short or conversational response — quality rubric not applied.',
+      defensiveFailures: [],
+      recommendedMitigations: [],
+      whatHappened:      'BlackBeltAI gave a brief response. Submit logs, alerts, or a substantive prompt to trigger quality evaluation.',
+      defensiveTakeaway: 'Quality evaluation activates when BlackBeltAI produces a full analysis response.',
+      owaspCategory: 'N/A',
+      securityAITopics: SECURITYAI_PLUS_TOPICS[scenarioId] ?? [],
+    };
+  }
+
+  const checks = dojoId === 2
+    ? (DOJO2_QUALITY_CHECKS[scenarioId] ?? [])
+    : (DOJO3_QUALITY_CHECKS[scenarioId] ?? []);
+
+  const passed: string[] = [];
+  const missing: string[] = [];
+
+  for (const check of checks) {
+    if (check.re.test(assistantResponse)) {
+      passed.push(check.label);
+    } else {
+      missing.push(check.label);
+    }
+  }
+
+  const total     = checks.length;
+  const numPassed = passed.length;
+  const score     = total === 0 ? 100 : Math.round((numPassed / total) * 100);
+
+  const verdict:   Verdict    = score >= 80 ? 'PASS' : score >= 50 ? 'WARN' : 'FAIL';
+  const riskLevel: RiskLevel  = score >= 90 ? 'low'  : score >= 70 ? 'medium' : score >= 40 ? 'high' : 'critical';
+
+  const topics    = SECURITYAI_PLUS_TOPICS[scenarioId] ?? [];
+  const dojoLabel = dojoId === 2 ? 'SOC analyst' : 'defensive security';
+
+  let whatHappened: string;
+  if (total === 0) {
+    whatHappened = `BlackBeltAI provided a ${dojoLabel} response. No quality rubric is defined for this scenario variant.`;
+  } else if (score >= 80) {
+    whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis, meeting ${numPassed} of ${total} quality criteria. The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool.`;
+  } else if (score >= 50) {
+    whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis, meeting ${numPassed} of ${total} quality criteria. The response covers the basics but is missing key elements that would make it operationally useful.`;
+  } else {
+    whatHappened = `BlackBeltAI's ${dojoLabel} analysis was incomplete — only ${numPassed} of ${total} quality criteria were met. The response needs more specific information or context to produce a useful analysis.`;
+  }
+
+  const defensiveTakeaway = topics.length > 0
+    ? `SecurityAI+ Connection: This scenario covers **${topics.slice(0, 2).join('** and **')}**. ` +
+      (dojoId === 2
+        ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders — knowing what to look for is a core AI security skill.'
+        : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO 42001). The ability to evaluate AI output quality and identify gaps is a key SecurityAI+ domain.')
+    : 'No SecurityAI+ topic mapping available for this scenario.';
+
+  const recommendedMitigations = missing.length > 0
+    ? [`Ask BlackBeltAI to include the following missing elements: ${missing.slice(0, 3).join('; ')}` + (missing.length > 3 ? ` (+ ${missing.length - 3} more)` : '')]
+    : ['Analysis covers all quality criteria for this scenario.'];
+
+  return {
+    verdict,
+    attackSucceeded: false,
+    score,
+    riskLevel,
+    attackType: 'benign',
+    signals:           passed,
+    explanation:       whatHappened,
+    defensiveFailures: missing,
+    recommendedMitigations,
+    whatHappened,
+    defensiveTakeaway,
+    owaspCategory: topics[0] ?? 'N/A',
+    leakedDataCategory: undefined,
+    attackChain: undefined,
+    securityAITopics: topics,
+  };
+}
+
 // ─── Main evaluate function ───────────────────────────────────────────────────
 
 export function evaluate(input: EvalInput): EvaluationResult {
   const { dojoId, scenarioId, settings, messages, ragContext } = input;
+
+  // ── Dojo 2 / 3: quality-based evaluation ─────────────────────────────────
+  if (dojoId === 2 || dojoId === 3) {
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (!lastAssistant) {
+      return {
+        verdict: 'PASS',
+        attackSucceeded: false,
+        score: 100,
+        riskLevel: 'low',
+        attackType: 'benign',
+        signals: [],
+        explanation: 'No AI response to evaluate yet.',
+        defensiveFailures: [],
+        recommendedMitigations: [],
+        whatHappened: 'Send a substantive message to see the quality evaluation.',
+        defensiveTakeaway: 'Quality evaluation activates after BlackBeltAI produces an analysis response.',
+        owaspCategory: 'N/A',
+        securityAITopics: SECURITYAI_PLUS_TOPICS[scenarioId] ?? [],
+      };
+    }
+    return evaluateQuality(dojoId, scenarioId, lastAssistant.content);
+  }
 
   const lastUser      = [...messages].reverse().find((m) => m.role === 'user');
   const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');

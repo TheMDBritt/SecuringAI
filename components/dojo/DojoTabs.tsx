@@ -7,8 +7,16 @@ import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
-import type { AttackType, ControlConfig, DojoId, EvaluationResult, Scenario } from '@/types';
-import { DEFAULT_CONTROL_CONFIG } from '@/types';
+import type {
+  AttackType,
+  ControlConfig,
+  Dojo2Config,
+  Dojo3Config,
+  DojoId,
+  EvaluationResult,
+  Scenario,
+} from '@/types';
+import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   { id: 1, label: 'LLM Attack / Defense', sublabel: 'Dojo 1', color: 'red' },
@@ -41,6 +49,15 @@ export function DojoTabs() {
    */
   const [sessionScore, setSessionScore]           = useState(100);
 
+  // ── Dojo 2 config ──────────────────────────────────────────────────────────
+  const [dojo2Config, setDojo2Config] = useState<Dojo2Config>(DEFAULT_DOJO2_CONFIG);
+
+  // ── Dojo 3 config ──────────────────────────────────────────────────────────
+  const [dojo3Config, setDojo3Config] = useState<Dojo3Config>({
+    detectionRule:   '',
+    selectedClauses: [],
+  });
+
   // ── M7 state ──────────────────────────────────────────────────────────────
   /** Content of the RAG Context Injection textarea. */
   const [ragContext, setRagContext]             = useState('');
@@ -68,6 +85,9 @@ export function DojoTabs() {
     setEvaluations([]);
     setSuccessfulAttacks([]);
     setSessionScore(100);
+    // Reset dojo-specific configs on tab change
+    setDojo2Config(DEFAULT_DOJO2_CONFIG);
+    setDojo3Config({ detectionRule: '', selectedClauses: [] });
   }
 
   function handleScenarioSelect(scenario: Scenario) {
@@ -79,6 +99,7 @@ export function DojoTabs() {
     setJailbreakActive(false);
     setRagContext('');
     setToolForgeResponse('');
+    setDojo3Config({ detectionRule: '', selectedClauses: [] });
   }
 
   function handleEvaluation(result: EvaluationResult) {
@@ -169,6 +190,8 @@ export function DojoTabs() {
             jailbreakActive={jailbreakActive}
             sessionAttackHistory={successfulAttacks}
             onSessionClear={handleSessionClear}
+            dojo2Config={dojo2Config}
+            dojo3Config={dojo3Config}
           />
         }
         controlPanel={
@@ -185,6 +208,10 @@ export function DojoTabs() {
             onAutoRunChange={setAutoRunPayloads}
             onSendPayload={handleSendPayload}
             chatLoading={chatLoading}
+            dojo2Config={dojo2Config}
+            onDojo2ConfigChange={setDojo2Config}
+            dojo3Config={dojo3Config}
+            onDojo3ConfigChange={setDojo3Config}
           />
         }
         scoringPane={

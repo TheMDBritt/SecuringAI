@@ -27,15 +27,6 @@ export function Header() {
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs text-emerald-400 font-mono">BlackBeltAI sandbox</span>
         </div>
-
-        {/* Login placeholder */}
-        <button
-          disabled
-          className="px-3 py-1.5 text-sm rounded border border-slate-600 text-slate-400 cursor-not-allowed opacity-60"
-          title="Login coming in M4"
-        >
-          Login
-        </button>
       </div>
     </header>
   );

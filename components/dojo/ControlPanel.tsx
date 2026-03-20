@@ -1,6 +1,12 @@
 'use client';
 
-import type { ControlConfig, DojoId, Scenario } from '@/types';
+import type {
+  ControlConfig,
+  Dojo2Config,
+  Dojo3Config,
+  DojoId,
+  Scenario,
+} from '@/types';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -9,17 +15,23 @@ interface ControlPanelProps {
   scenario: Scenario | null;
   config: ControlConfig;
   onConfigChange: (c: ControlConfig) => void;
-  // ── M7: Dojo 1 live-injection state ───────────────────────────────────────
+  // ── Dojo 1: live-injection state ──────────────────────────────────────────
   ragContext: string;
   onRagContextChange: (v: string) => void;
   toolForgeResponse: string;
   onToolForgeChange: (v: string) => void;
   autoRunPayloads: boolean;
   onAutoRunChange: (v: boolean) => void;
-  /** Called when the user clicks a payload button. */
+  /** Called when the user clicks a payload button (Dojo 1) or a clause button (Dojo 3). */
   onSendPayload: (text: string) => void;
   /** True while ChatConsole is awaiting a response — disables payload buttons. */
   chatLoading: boolean;
+  // ── Dojo 2: analyst configuration ────────────────────────────────────────
+  dojo2Config: Dojo2Config;
+  onDojo2ConfigChange: (c: Dojo2Config) => void;
+  // ── Dojo 3: defender toolkit ──────────────────────────────────────────────
+  dojo3Config: Dojo3Config;
+  onDojo3ConfigChange: (c: Dojo3Config) => void;
 }
 
 // ─── Shared UI primitives ─────────────────────────────────────────────────────
@@ -414,37 +426,81 @@ function Dojo1Panel({
 
 // ─── Dojo 2 — SOC Analyst Config ──────────────────────────────────────────────
 
-function Dojo2Panel({ disabled }: { disabled: boolean }) {
+const PERSONA_LABELS: Record<string, string> = {
+  analyst:  'SOC Analyst',
+  ciso:     'CISO',
+  'ir-lead':'IR Lead',
+};
+
+const PERSONA_DESC: Record<string, string> = {
+  analyst:  'Technical triage focus — T-codes, IOCs, severity',
+  ciso:     'Business risk & compliance framing',
+  'ir-lead':'Containment-first, action-oriented',
+};
+
+const FORMAT_DESC: Record<string, string> = {
+  markdown: 'Structured headings, bold labels, bullet lists',
+  json:     'Structured JSON object output',
+  report:   'Formal numbered report sections',
+};
+
+interface Dojo2PanelProps {
+  disabled: boolean;
+  dojo2Config: Dojo2Config;
+  onDojo2ConfigChange: (c: Dojo2Config) => void;
+}
+
+function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelProps) {
   return (
     <div>
       <PanelSection title="Analyst Persona">
-        <div className="flex flex-col gap-1">
-          {(['analyst', 'ciso', 'ir-lead'] as const).map((p) => (
-            <button
-              key={p}
-              disabled={disabled}
-              className="text-left px-3 py-1.5 rounded border border-slate-700 text-xs font-medium capitalize text-slate-400 hover:border-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              {p === 'ir-lead' ? 'IR Lead' : p.toUpperCase()}
-            </button>
-          ))}
+        <div className="flex flex-col gap-1.5">
+          {(['analyst', 'ciso', 'ir-lead'] as const).map((p) => {
+            const isActive = dojo2Config.persona === p;
+            return (
+              <button
+                key={p}
+                disabled={disabled}
+                onClick={() => onDojo2ConfigChange({ ...dojo2Config, persona: p })}
+                className={[
+                  'w-full text-left px-2.5 py-2 rounded border transition-colors',
+                  isActive
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                <span className="text-xs font-medium block">{PERSONA_LABELS[p]}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">{PERSONA_DESC[p]}</span>
+              </button>
+            );
+          })}
         </div>
-        <p className="text-[10px] text-slate-600 font-mono mt-1 italic">Wired in M8</p>
       </PanelSection>
 
       <PanelSection title="Output Format">
-        <div className="flex flex-col gap-1">
-          {(['markdown', 'json', 'report'] as const).map((f) => (
-            <button
-              key={f}
-              disabled={disabled}
-              className="text-left px-3 py-1.5 rounded border border-slate-700 text-xs font-mono uppercase text-slate-400 hover:border-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              {f}
-            </button>
-          ))}
+        <div className="flex flex-col gap-1.5">
+          {(['markdown', 'json', 'report'] as const).map((f) => {
+            const isActive = dojo2Config.outputFormat === f;
+            return (
+              <button
+                key={f}
+                disabled={disabled}
+                onClick={() => onDojo2ConfigChange({ ...dojo2Config, outputFormat: f })}
+                className={[
+                  'w-full text-left px-2.5 py-2 rounded border transition-colors',
+                  isActive
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                <span className="text-xs font-mono font-medium block uppercase">{f}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">{FORMAT_DESC[f]}</span>
+              </button>
+            );
+          })}
         </div>
-        <p className="text-[10px] text-slate-600 font-mono mt-1 italic">Wired in M8</p>
       </PanelSection>
     </div>
   );
@@ -453,40 +509,102 @@ function Dojo2Panel({ disabled }: { disabled: boolean }) {
 // ─── Dojo 3 — Defender Toolkit ────────────────────────────────────────────────
 
 const POLICY_CLAUSES = [
-  'Employees must not share credentials with AI systems',
-  'AI outputs require human review before action',
-  'Deepfake verification required for executive requests',
-  'AI tool usage logged and audited quarterly',
-  'Prohibited: using AI to generate deceptive content',
+  'Employees must not share credentials with AI systems.',
+  'All AI-generated outputs require human review before any action is taken.',
+  'Deepfake verification is required before executing executive requests.',
+  'AI tool usage must be logged and audited on a quarterly basis.',
+  'Generating deceptive content using AI tools is strictly prohibited.',
+  'AI systems used in security workflows must have documented threat models.',
+  'Prompt injection controls must be validated before production AI deployment.',
+  'AI vendor access must be scoped to minimum necessary data and permissions.',
 ];
 
-function Dojo3Panel({ disabled }: { disabled: boolean }) {
+interface Dojo3PanelProps {
+  disabled: boolean;
+  dojo3Config: Dojo3Config;
+  onDojo3ConfigChange: (c: Dojo3Config) => void;
+  onSendPayload: (text: string) => void;
+}
+
+function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
+  const hasRule    = dojo3Config.detectionRule.trim().length > 0;
+
   return (
     <div>
+      {/* ── Detection Rule Builder ────────────────────────────────────────── */}
       <PanelSection title="Detection Rule Builder">
+        <div className="flex items-center justify-between mb-1.5 gap-2">
+          <div className="flex items-center gap-1.5">
+            {hasRule ? (
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono">
+                rule active
+              </span>
+            ) : (
+              <span className="text-[10px] text-slate-600 font-mono">no rule drafted</span>
+            )}
+          </div>
+          {hasRule && (
+            <button
+              disabled={disabled}
+              onClick={() => onDojo3ConfigChange({ ...dojo3Config, detectionRule: '' })}
+              className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+            >
+              Clear
+            </button>
+          )}
+        </div>
         <textarea
           disabled={disabled}
-          placeholder={'title: Detect AI Phishing\ndetection:\n  keywords: [urgent, wire transfer]'}
-          rows={5}
-          className="w-full resize-none rounded border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs font-mono text-slate-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed"
+          value={dojo3Config.detectionRule}
+          onChange={(e) => onDojo3ConfigChange({ ...dojo3Config, detectionRule: e.target.value })}
+          placeholder={'title: Detect AI Phishing\nstatus: experimental\nlogsource:\n  category: email\ndetection:\n  keywords: [urgent, wire transfer]\n  condition: keywords'}
+          rows={6}
+          className={[
+            'w-full resize-none rounded border px-2.5 py-2 text-xs font-mono',
+            'bg-slate-800 placeholder-slate-600 focus:outline-none',
+            'disabled:opacity-40 disabled:cursor-not-allowed',
+            hasRule
+              ? 'border-emerald-500/40 text-emerald-200 focus:border-emerald-400'
+              : 'border-slate-700 text-slate-300 focus:border-emerald-500',
+          ].join(' ')}
         />
-        <p className="text-[10px] text-slate-600 font-mono mt-1 italic">Sigma scoring in M8</p>
+        <p className="text-[10px] text-slate-600 font-mono mt-1">
+          Rule context is injected when RAG Enabled is ON. Ask BlackBeltAI to analyze, score, or improve it.
+        </p>
+        {hasRule && (
+          <button
+            disabled={disabled}
+            onClick={() => onSendPayload('Please analyze and score my detection rule against Sigma syntax standards, MITRE ATT&CK alignment, and false-positive risk.')}
+            className="mt-1.5 w-full text-xs py-1.5 rounded border border-emerald-700/40 bg-emerald-500/10 text-emerald-400 hover:border-emerald-600/60 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Analyze Rule →
+          </button>
+        )}
       </PanelSection>
 
+      {/* ── Policy Clause Library ─────────────────────────────────────────── */}
       <PanelSection title="Policy Clause Library">
+        <p className="text-[10px] text-slate-500 mb-2">
+          Click a clause to send it to the chat for scoring/analysis against NIST AI RMF, EU AI Act, and ISO 42001.
+        </p>
         <div className="flex flex-col gap-1.5">
           {POLICY_CLAUSES.map((clause) => (
             <button
               key={clause}
               disabled={disabled}
-              className="w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border border-slate-700 text-xs text-slate-400 hover:border-slate-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              onClick={() => onSendPayload(`Please score this policy clause against NIST AI RMF, EU AI Act, and ISO 42001: "${clause}"`)}
+              className={[
+                'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors',
+                'border-slate-700 bg-slate-800/40 text-slate-400',
+                'hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                'disabled:opacity-40 disabled:cursor-not-allowed text-xs',
+              ].join(' ')}
             >
-              <span className="mt-0.5 shrink-0 w-3 h-3 rounded border border-slate-600" />
-              {clause}
+              <span className="mt-0.5 shrink-0 w-3 h-3 rounded border border-slate-600 flex-none" />
+              <span>{clause}</span>
             </button>
           ))}
         </div>
-        <p className="text-[10px] text-slate-600 font-mono mt-1 italic">Scored in M8</p>
       </PanelSection>
     </div>
   );
@@ -507,6 +625,10 @@ export function ControlPanel({
   onAutoRunChange,
   onSendPayload,
   chatLoading,
+  dojo2Config,
+  onDojo2ConfigChange,
+  dojo3Config,
+  onDojo3ConfigChange,
 }: ControlPanelProps) {
   const hasScenario = scenario !== null;
 
@@ -548,8 +670,21 @@ export function ControlPanel({
           onSendPayload={onSendPayload}
         />
       )}
-      {dojoId === 2 && <Dojo2Panel disabled={!hasScenario} />}
-      {dojoId === 3 && <Dojo3Panel disabled={!hasScenario} />}
+      {dojoId === 2 && (
+        <Dojo2Panel
+          disabled={!hasScenario}
+          dojo2Config={dojo2Config}
+          onDojo2ConfigChange={onDojo2ConfigChange}
+        />
+      )}
+      {dojoId === 3 && (
+        <Dojo3Panel
+          disabled={!hasScenario || chatLoading}
+          dojo3Config={dojo3Config}
+          onDojo3ConfigChange={onDojo3ConfigChange}
+          onSendPayload={onSendPayload}
+        />
+      )}
     </div>
   );
 }

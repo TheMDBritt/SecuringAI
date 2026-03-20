@@ -5,11 +5,11 @@ interface ScoringPaneProps {
   dojoId: DojoId;
   dojoLabel: string;
   evaluations: EvaluationResult[];
-  /** Cumulative session score (0–100). Decreases with each successful attack. */
+  /** Cumulative session score (0–100). Decreases with each successful attack (Dojo 1 only). */
   sessionScore: number;
 }
 
-// ─── Verdict badge ────────────────────────────────────────────────────────────
+// ─── Shared style maps ────────────────────────────────────────────────────────
 
 const VERDICT_STYLE = {
   PASS: 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400',
@@ -42,8 +42,15 @@ const ATTACK_TYPE_LABEL: Record<string, string> = {
   unknown:          'Unknown',
 };
 
-// ─── Framework mappings ───────────────────────────────────────────────────────
-// Static per-attack-type mappings: OWASP LLM Top 10, MITRE ATLAS, NIST AI RMF.
+// Dojo 2/3 quality level labels
+const QUALITY_LEVEL_LABEL: Record<string, string> = {
+  low:      'Strong Analysis',
+  medium:   'Adequate Analysis',
+  high:     'Weak Analysis',
+  critical: 'Incomplete Analysis',
+};
+
+// ─── Framework mappings (Dojo 1) ─────────────────────────────────────────────
 
 interface FrameworkMap {
   owasp: string[];
@@ -88,7 +95,6 @@ const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-/** Maps a 0-100 score to a risk level (mirrors evaluator.ts mapScore). */
 function scoreToRisk(score: number): EvaluationResult['riskLevel'] {
   if (score >= 90) return 'low';
   if (score >= 70) return 'medium';
@@ -120,7 +126,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-function EvalCard({ eval: e }: { eval: EvaluationResult }) {
+// ─── Dojo 1 EvalCard ──────────────────────────────────────────────────────────
+
+function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
   return (
     <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-3">
       {/* Top row: verdict + score + risk + attack type */}
@@ -141,12 +149,12 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         )}
       </div>
 
-      {/* Score bar — omitted for benign turns to avoid implying a score reset */}
+      {/* Score bar — omitted for benign turns */}
       {e.attackType !== 'benign' && (
         <ScoreBar score={e.score} riskLevel={e.riskLevel} />
       )}
 
-      {/* Sensitive data exposed — Dojo 1 attack success only */}
+      {/* Sensitive data exposed */}
       {e.attackSucceeded && e.leakedDataCategory && (
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-[10px] font-mono text-slate-500">Sensitive data exposed:</span>
@@ -156,7 +164,7 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* Attack Chain — shown whenever a Dojo 1 attack succeeded */}
+      {/* Attack Chain */}
       {e.attackChain && e.attackChain.chain.length > 0 && (
         <div>
           <SectionLabel>Attack Chain</SectionLabel>
@@ -192,7 +200,7 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* Defense Gaps (only when present) */}
+      {/* Defense Gaps */}
       {e.defensiveFailures.length > 0 && (
         <div>
           <SectionLabel>Defense Gaps</SectionLabel>
@@ -213,7 +221,7 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
         <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
       </div>
 
-      {/* Mitigations (only when present) */}
+      {/* Mitigations */}
       {e.recommendedMitigations.length > 0 && (
         <div>
           <SectionLabel>Mitigations</SectionLabel>
@@ -238,7 +246,6 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
           <div className="border-t border-slate-700/60 pt-2.5">
             <SectionLabel>Framework Mapping</SectionLabel>
             <div className="flex flex-col gap-2">
-
               {fm.owasp.length > 0 && (
                 <div>
                   <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
@@ -253,7 +260,6 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
                   </div>
                 </div>
               )}
-
               {fm.mitreAtlas.length > 0 && (
                 <div>
                   <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
@@ -268,7 +274,6 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
                   </div>
                 </div>
               )}
-
               {fm.nistAiRmf.length > 0 && (
                 <div>
                   <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
@@ -283,7 +288,6 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
                   </div>
                 </div>
               )}
-
             </div>
           </div>
         );
@@ -292,35 +296,140 @@ function EvalCard({ eval: e }: { eval: EvaluationResult }) {
   );
 }
 
+// ─── Dojo 2/3 Quality EvalCard ────────────────────────────────────────────────
+
+function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
+  const qualityLabel = QUALITY_LEVEL_LABEL[e.riskLevel] ?? 'Analysis';
+
+  return (
+    <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-3">
+      {/* Top row: verdict + quality level */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className={['text-[11px] font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
+          {e.verdict}
+        </span>
+        <span className={['text-[11px] font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
+          {qualityLabel.toUpperCase()}
+        </span>
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+          {e.score}% complete
+        </span>
+      </div>
+
+      {/* Quality score bar */}
+      <ScoreBar score={e.score} riskLevel={e.riskLevel} />
+
+      {/* ANALYSIS SUMMARY */}
+      <div>
+        <SectionLabel>Analysis Summary</SectionLabel>
+        <p className="text-[11px] text-slate-200 leading-relaxed">{e.whatHappened}</p>
+      </div>
+
+      {/* QUALITY CRITERIA MET */}
+      {e.signals.length > 0 && (
+        <div>
+          <SectionLabel>Quality Criteria Met</SectionLabel>
+          <ul className="flex flex-col gap-0.5">
+            {e.signals.map((s, i) => (
+              <li key={i} className="text-[10px] text-emerald-300/80 flex gap-1.5">
+                <span className="text-emerald-500 shrink-0">✓</span>
+                {s}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* MISSING ELEMENTS */}
+      {e.defensiveFailures.length > 0 && (
+        <div>
+          <SectionLabel>Missing Elements</SectionLabel>
+          <ul className="flex flex-col gap-0.5">
+            {e.defensiveFailures.map((f, i) => (
+              <li key={i} className="text-[10px] text-amber-300/70 flex gap-1.5">
+                <span className="text-amber-500 shrink-0">◯</span>
+                {f}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* HOW TO IMPROVE */}
+      {e.recommendedMitigations.length > 0 && e.recommendedMitigations[0] !== 'Analysis covers all quality criteria for this scenario.' && (
+        <div>
+          <SectionLabel>How to Improve</SectionLabel>
+          <ul className="flex flex-col gap-0.5">
+            {e.recommendedMitigations.map((m, i) => (
+              <li key={i} className="text-[10px] text-slate-400 flex gap-1.5">
+                <span className="text-cyan-600 shrink-0">→</span>
+                {m}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* SECURITYAI+ CONNECTION */}
+      <div className="border-t border-slate-700/60 pt-2.5">
+        <SectionLabel>SecurityAI+ Connection</SectionLabel>
+        <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
+      </div>
+
+      {/* SECURITYAI+ TOPICS */}
+      {e.securityAITopics && e.securityAITopics.length > 0 && (
+        <div className="border-t border-slate-700/60 pt-2.5">
+          <SectionLabel>SecurityAI+ Exam Topics</SectionLabel>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {e.securityAITopics.map((topic) => (
+              <span
+                key={topic}
+                className="text-[10px] px-1.5 py-0.5 rounded border border-cyan-500/25 bg-cyan-500/8 text-cyan-300/80 font-mono"
+              >
+                {topic}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main export ──────────────────────────────────────────────────────────────
 
 export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: ScoringPaneProps) {
-  const hasScenario = scenario !== null;
-  const latest = evaluations[0] ?? null;
-  const history = evaluations.slice(1);
-  const sessionRisk = scoreToRisk(sessionScore);
+  const hasScenario  = scenario !== null;
+  const latest       = evaluations[0] ?? null;
+  const history      = evaluations.slice(1);
+  const sessionRisk  = scoreToRisk(sessionScore);
+  const isQualityMode = dojoId === 2 || dojoId === 3;
+
+  // For Dojo 2/3 show the latest evaluation score prominently; for Dojo 1 show cumulative session score.
+  const displayScore = isQualityMode ? (latest?.score ?? 100) : sessionScore;
+  const displayRisk  = isQualityMode ? (latest?.riskLevel ?? 'low') : sessionRisk;
 
   return (
     <div className="flex h-full">
       {/* Score panel */}
       <div className="w-72 shrink-0 border-r border-slate-700 p-3 flex flex-col gap-3">
         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-          Evaluation
+          {isQualityMode ? 'Analysis Quality' : 'Evaluation'}
         </p>
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">No active scenario.</p>
         ) : (
           <>
-            {/* Big score — shows cumulative session score, not per-turn score */}
+            {/* Big score */}
             <div className="flex items-end gap-2">
               <span
                 className={[
                   'text-3xl font-bold font-mono',
-                  RISK_STYLE[sessionRisk],
+                  RISK_STYLE[displayRisk],
                 ].join(' ')}
               >
-                {sessionScore}
+                {displayScore}
               </span>
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
               {latest && (
@@ -335,23 +444,31 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               )}
             </div>
 
-            {/* Score bar — reflects session score */}
-            <ScoreBar score={sessionScore} riskLevel={sessionRisk} />
+            {/* Score bar */}
+            <ScoreBar score={displayScore} riskLevel={displayRisk} />
 
-            {/* Attack type + risk (per-turn, only when an evaluation exists) */}
+            {/* Quality label (Dojo 2/3) or attack type (Dojo 1) */}
             {latest && (
               <div className="flex gap-1.5 flex-wrap">
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
-                  {ATTACK_TYPE_LABEL[latest.attackType]}
-                </span>
-                <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
-                  {latest.riskLevel} risk
-                </span>
+                {isQualityMode ? (
+                  <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                    {QUALITY_LEVEL_LABEL[latest.riskLevel] ?? 'Analysis'}
+                  </span>
+                ) : (
+                  <>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+                      {ATTACK_TYPE_LABEL[latest.attackType]}
+                    </span>
+                    <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                      {latest.riskLevel} risk
+                    </span>
+                  </>
+                )}
               </div>
             )}
 
-            {/* OWASP tag from evaluator */}
-            {latest && latest.owaspCategory !== 'N/A' && (
+            {/* OWASP tag (Dojo 1 only) */}
+            {!isQualityMode && latest && latest.owaspCategory !== 'N/A' && (
               <span
                 title={latest.owaspCategory}
                 className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
@@ -360,8 +477,15 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               </span>
             )}
 
-            {/* Scenario OWASP tags */}
-            {scenario.owaspTags.length > 0 && (
+            {/* SecurityAI+ primary topic (Dojo 2/3) */}
+            {isQualityMode && latest?.securityAITopics && latest.securityAITopics.length > 0 && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded border border-cyan-500/30 bg-cyan-500/5 text-cyan-400 font-mono w-fit">
+                {latest.securityAITopics[0]}
+              </span>
+            )}
+
+            {/* Scenario OWASP tags (Dojo 1 only) */}
+            {!isQualityMode && scenario.owaspTags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {scenario.owaspTags.map((tag) => (
                   <span
@@ -383,7 +507,11 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {/* Prompt if no evaluations yet */}
             {!latest && (
-              <p className="text-xs text-slate-600 italic">Send a message to see the evaluation.</p>
+              <p className="text-xs text-slate-600 italic">
+                {isQualityMode
+                  ? 'Paste logs, alerts, or a security artifact to see the quality evaluation.'
+                  : 'Send a message to see the evaluation.'}
+              </p>
             )}
           </>
         )}
@@ -392,24 +520,33 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
       {/* Detail + history panel */}
       <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-          Evaluation Detail
+          {isQualityMode ? 'Quality Analysis' : 'Evaluation Detail'}
         </p>
 
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">
-            Run a scenario to see the attack classification, defensive analysis, and mitigations.
+            {isQualityMode
+              ? 'Select a scenario and interact with BlackBeltAI to see how well its analysis covers key security criteria.'
+              : 'Run a scenario to see the attack classification, defensive analysis, and mitigations.'}
           </p>
         ) : !latest ? (
           <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
-            <p className="text-xs text-slate-500 font-mono mb-1">Waiting for interaction</p>
+            <p className="text-xs text-slate-500 font-mono mb-1">
+              {isQualityMode ? 'Waiting for interaction' : 'Waiting for interaction'}
+            </p>
             <p className="text-xs text-slate-400 italic">
-              Evaluation appears after your first message. The evaluator will classify the attack type,
-              explain what happened, and provide a defensive takeaway with OWASP mapping.
+              {isQualityMode
+                ? 'Submit a security artifact (logs, alert, behavior description, or policy question) to BlackBeltAI. The evaluator will score the analysis against scenario quality criteria and show SecurityAI+ exam connections.'
+                : 'Evaluation appears after your first message. The evaluator will classify the attack type, explain what happened, and provide a defensive takeaway with OWASP mapping.'}
             </p>
           </div>
         ) : (
           <>
-            <EvalCard eval={latest} />
+            {isQualityMode ? (
+              <QualityEvalCard eval={latest} />
+            ) : (
+              <Dojo1EvalCard eval={latest} />
+            )}
 
             {history.length > 0 && (
               <div className="flex flex-col gap-2">
@@ -418,7 +555,11 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                 </p>
                 {history.map((e, i) => (
                   <div key={i} className="opacity-60 hover:opacity-90 transition-opacity">
-                    <EvalCard eval={e} />
+                    {isQualityMode ? (
+                      <QualityEvalCard eval={e} />
+                    ) : (
+                      <Dojo1EvalCard eval={e} />
+                    )}
                   </div>
                 ))}
               </div>

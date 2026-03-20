@@ -34,6 +34,16 @@ const ControlConfigSchema = z.object({
   loggingLevel: z.enum(['minimal', 'verbose']),
 });
 
+const Dojo2ConfigSchema = z.object({
+  persona:      z.enum(['analyst', 'ciso', 'ir-lead']),
+  outputFormat: z.enum(['markdown', 'json', 'report']),
+});
+
+const Dojo3ConfigSchema = z.object({
+  detectionRule:   z.string().max(4000),
+  selectedClauses: z.array(z.string().max(300)).max(20),
+});
+
 const ChatRequestSchema = z.object({
   dojoId: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   scenarioId: z.string().min(1).max(64).regex(/^[a-z0-9-]+$/),
@@ -47,6 +57,10 @@ const ChatRequestSchema = z.object({
    * continuation response until the scenario is reset.
    */
   jailbreakActive: z.boolean().optional(),
+  /** Dojo 2 analyst persona + output format configuration. */
+  dojo2Config: Dojo2ConfigSchema.optional(),
+  /** Dojo 3 detection rule draft + selected policy clauses. */
+  dojo3Config: Dojo3ConfigSchema.optional(),
 });
 
 // ─── Safety pre-filter ────────────────────────────────────────────────────────
@@ -112,6 +126,8 @@ export async function POST(req: NextRequest) {
     ragContext,
     toolForgeResponse,
     jailbreakActive = false,
+    dojo2Config,
+    dojo3Config,
   } = parsed.data;
 
   // 3. Safety pre-filter on last user message
@@ -324,7 +340,7 @@ export async function POST(req: NextRequest) {
 
   finalMessages.push({
     role: 'system',
-    content: getSystemPrompt(dojoId, scenarioId, controlConfig),
+    content: getSystemPrompt(dojoId, scenarioId, controlConfig, dojo2Config, dojo3Config),
   });
 
   if (controlConfig.ragEnabled && ragContext?.trim()) {
