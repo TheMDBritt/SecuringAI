@@ -16,6 +16,7 @@ import {
   selectPromptInjectionLeak,
   assessPromptInjection,
   getOFFModeResponse,
+  type ScenarioForcedResult,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -201,10 +202,13 @@ export async function POST(req: NextRequest) {
       preEval.attackType !== 'probing' &&
       preEval.attackType !== 'unknown';
 
-    const scenarioForced = evaluatorActiveAttack
-      ? null
-      : getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
+    // For prompt-injection scenarios the result also carries the pre-computed
+    // PIAssessment so the OFF mode path can use it without a second LLM call.
+    const forcedResult: ScenarioForcedResult = evaluatorActiveAttack
+      ? { attackType: null }
+      : await getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
 
+    const scenarioForced     = forcedResult.attackType;
     const resolvedAttackType = scenarioForced ?? preEval.attackType;
 
     console.log('[Dojo1] Routing decision:', {
@@ -280,13 +284,17 @@ export async function POST(req: NextRequest) {
       // indiscriminate.  Override-only attacks are acknowledged without leaking
       // any internal information.  Only extraction targeting internal control
       // layers causes a leak (realistic OFF behavior).
+      //
+      // piAssessment is re-used from the forced-attack classification above;
+      // if the evaluator detected the attack directly (no forced result), we
+      // run the async classifier once here.
       let content: string;
       if (
         outcome === 'vulnerable' &&
         scenarioId === 'prompt-injection' &&
         resolvedAttackType === 'prompt_injection'
       ) {
-        const piAssessment = assessPromptInjection(userText);
+        const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
         if (piAssessment.shouldLeak) {
           // Extraction succeeded — use session-aware fragment leak
           content = getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex);

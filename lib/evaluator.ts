@@ -5,7 +5,7 @@
  * All pattern matching is done with static RegExp.
  */
 import type { ControlConfig } from '@/types';
-import { getLeakedCategory, getScenarioForcedAttackType } from '@/lib/scenario-simulations';
+import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -620,15 +620,14 @@ export function evaluate(input: EvalInput): EvaluationResult {
   }
 
   // ── A2) Dojo 1 scenario-forced attack override ───────────────────────────────
-  // The evaluator only sees explicit patterns in the user message. Some Dojo 1
-  // scenarios have implicit attack vectors:
-  //   • data-exfiltration: keyword-bearing queries that miss strict regex
+  // Some Dojo 1 scenarios have implicit attack vectors not visible in user text:
   //   • rag-injection: payload is in the retrieved context, not user text
-  // When the pattern-matcher returned benign/probing, check whether the active
-  // scenario forces an attack classification. This ensures the scoring, verdict,
-  // and leakedDataCategory correctly reflect what the API route actually did.
+  //   • tool-abuse: attack is the tool call itself, not the user message
+  // data-exfiltration keywords are caught by the DATA_EXFIL_KEYWORDS block below.
+  // prompt-injection is excluded here — it uses an async LLM classifier in the
+  // route handler; the evaluator relies on ATTACK_PATTERNS for obvious cases.
   if (dojoId === 1 && intent !== 'active_attack') {
-    const forced = getScenarioForcedAttackType(scenarioId, userText, settings, ragContext);
+    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext);
     if (forced !== null) {
       intent     = 'active_attack';
       attackType = forced;
