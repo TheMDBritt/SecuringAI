@@ -11,13 +11,12 @@ import {
 } from '@/lib/dojo1-intent';
 import {
   shouldBypassModel,
-  getSimulatedResponse,
   getPartialResponse,
   getDefendedResponse,
   getJailbreakContinuationResponse,
   getOutcome,
   selectPromptInjectionLeak,
-  getOFFModeResponse,
+  getScenarioRelevantOffResponse,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -262,17 +261,19 @@ export async function POST(req: NextRequest) {
       // above; if the evaluator caught the attack before that step, we classify
       // here instead (still one LLM call per message).
       let content: string;
-      if (
-        outcome === 'vulnerable' &&
-        scenarioId === 'prompt-injection' &&
-        (classification === 'prompt_injection' || classification === 'data_exfiltration' || classification === 'mixed_attack')
-      ) {
-        content = getOFFModeResponse(resolvedAttackType);
+      if (outcome === 'vulnerable') {
+        content = getScenarioRelevantOffResponse(
+          scenarioId,
+          resolvedAttackType,
+          userText,
+          turnIndex,
+          fragmentIndex,
+          leadInIndex,
+        );
       } else {
         content =
-          outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
-          outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
-                                     getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
+          outcome === 'partial' ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
+                                  getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
       }
 
       return NextResponse.json(
