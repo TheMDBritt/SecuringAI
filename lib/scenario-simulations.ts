@@ -1258,11 +1258,40 @@ function classifyPIIntent(userText: string): PITier {
 function hasStructuralInjectionIntent(userText: string): boolean {
   const n = normalizePIText(userText);
 
+  // ── General benign rule: conversational correction ────────────────────────
+  // Override verbs (ignore/disregard/forget/scratch) whose grammatical object
+  // is the USER'S OWN prior message are never injection, regardless of phrasing.
+  // This is the class-level fix — it handles all variants without needing a
+  // phrase-list entry for each one.
+  //
+  // Object = user message/words:                      → benign (return false)
+  //   "Ignore my last question"
+  //   "Disregard my earlier request"
+  //   "Forget what I just said"
+  //   "Scratch my previous comment"
+  //
+  // Object = AI's governing instructions/config:      → injection (continue)
+  //   "Ignore previous instructions"
+  //   "Forget your training"
+  //   "Disregard all system directives"
+  //
+  // The discriminator: if the noun after the override verb is a conversational
+  // reference (message, question, request, etc.) → benign.
+  // If it is an instruction-class noun AND not possessive "my" → injection.
+  const CONVERSATIONAL_CORRECTION =
+    /\b(?:ignore|disregard|forget|scratch|cancel|revise|undo)\s+(?:(?:that|this|my|what)\s+)?(?:last\s+|previous\s+|prior\s+|latest\s+|earlier\s+)?(?:message|question|request|comment|sentence|text|point|thing)\b|\bwhat\s+i\s+(?:just\s+)?(?:said|wrote|typed|asked|mentioned)\b/i;
+  if (CONVERSATIONAL_CORRECTION.test(n)) return false;
+
   // FP1: Override directive — verb must be followed (immediately or after a
   // qualifier like "all/previous/prior/your") by an instruction-class noun.
   // "ignore previous instructions" ✓  "ignore that last message" ✗
+  //
+  // "my" is intentionally EXCLUDED from the qualifier group: "ignore my
+  // instructions" means the user is cancelling their own prior message to the
+  // AI (benign), not overriding the AI's governing config (injection).
+  // "your" stays — it refers to the AI's own instructions.
   const OVERRIDE =
-    /\b(?:ignore|disregard|forget|override|bypass)\s+(?:all\s+)?(?:previous|prior|above|your|any|current|my)?\s*(?:instructions?|directives?|rules?|guidelines?|training|constraints?|programming)\b/i;
+    /\b(?:ignore|disregard|forget|override|bypass)\s+(?:all\s+)?(?:previous|prior|above|your|any|current)?\s*(?:instructions?|directives?|rules?|guidelines?|training|constraints?|programming)\b/i;
 
   // FP2: Extraction verb + possessive + AI config target.
   // "reveal your system prompt" ✓  "tell me the football rules" ✗
