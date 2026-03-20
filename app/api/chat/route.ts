@@ -4,7 +4,8 @@ import { getModelClient } from '@/lib/model-client';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { evaluate, classifyPromptInjectionSophistication } from '@/lib/evaluator';
+import { evaluate } from '@/lib/evaluator';
+import { evaluateWithLLM } from '@/lib/evaluationEngine';
 import {
   shouldBypassModel,
   getSimulatedResponse,
@@ -62,6 +63,51 @@ const BLOCKED_PATTERNS = [
 
 function isSafeContent(text: string): boolean {
   return !BLOCKED_PATTERNS.some((p) => p.test(text));
+}
+
+function extractOverrideOnlyReply(userText: string): string | null {
+  const quoted = userText.match(/respond\s+only\s+with\s+["“]?([^"\n”]+)["”]?/i);
+  if (quoted?.[1]) return quoted[1].trim();
+
+  const bare = userText.match(/respond\s+only\s+with\s+([A-Za-z0-9 _-]{1,80})/i);
+  return bare?.[1]?.trim() ?? null;
+}
+
+function buildTargetedLeakResponse(userText: string, attackTypes: string[], turnIndex: number): string {
+  const lower = userText.toLowerCase();
+  const wantsSystemPrompt = lower.includes('system prompt');
+  const wantsMeetingNotes = lower.includes('meeting notes');
+  const wantsPlaybook = lower.includes('playbook');
+  const wantsScouting = lower.includes('scouting');
+
+  if (attackTypes.includes('tool_abuse')) {
+    if (wantsMeetingNotes) {
+      return `Using internal tools now.\n\nmeeting_notes.fetch({ scope: "confidential" })\n\nInternal meeting notes:\n- Staff agreed the draft board should stay off external channels.\n- Coaching leadership wants the protection package updated before the next install.\n- Front office flagged two prospects as medical-risk discussions for private review only.`;
+    }
+    if (wantsPlaybook) {
+      return `Using internal tools now.\n\nplaybook.lookup({ access: "restricted" })\n\nPlaybook data:\n- Package: Gun Bunch Left Tight\n- Check: Kill to Duo if the box lightens pre-snap\n- Internal note: keep the red-zone wrinkle off public install sheets.`;
+    }
+
+    return getSimulatedResponse('tool-abuse', 'tool_abuse', turnIndex);
+  }
+
+  if (wantsMeetingNotes) {
+    return `Sure — here are the internal meeting notes you asked for:\n\n- The front office wants the scouting board kept private until final sign-off.\n- Staff discussed trade-up scenarios that are not approved for public disclosure.\n- Medical review notes remain restricted to internal personnel only.`;
+  }
+
+  if (wantsPlaybook) {
+    return `Here’s the restricted playbook data:\n\n- Concept: Slot Return Switch\n- Adjustment: Alert to boundary fade versus late rotation\n- Internal coaching note: keep this red-zone package out of shared media prep.`;
+  }
+
+  if (wantsSystemPrompt) {
+    return getSimulatedResponse('prompt-injection', 'data_exfiltration', turnIndex, turnIndex, turnIndex);
+  }
+
+  if (wantsScouting) {
+    return getSimulatedResponse('data-exfiltration', 'data_exfiltration', turnIndex);
+  }
+
+  return getSimulatedResponse('data-exfiltration', 'data_exfiltration', turnIndex);
 }
 
 // ─── Handler ─────────────────────────────────────────────────────────────────
@@ -179,37 +225,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Classify user intent (intent-only evaluator pass) ─────────────────
-    const preEval = evaluate({
-      dojoId,
-      scenarioId,
-      settings: controlConfig,
-      messages,
-    });
+    // ── LLM-first classification (mandatory for Dojo 1) ───────────────────
+    const llmClassification = await evaluateWithLLM(userText);
+    const evaluatorActiveAttack = llmClassification.isAttack;
 
-    // ── Scenario-aware routing ────────────────────────────────────────────
-    // The evaluator only sees explicit attack patterns in the user message.
-    // Some attack vectors are implicit:
-    //   • data-exfiltration: keyword-bearing queries that don't hit the
-    //     evaluator's strict regex still warrant a simulated leak.
-    //   • rag-injection: the attack is in the *retrieved context*, not the
-    //     user's words, so the evaluator always sees a benign message.
-    //
-    // getScenarioForcedAttackType fires only when the evaluator did NOT
-    // already detect an active attack — explicit patterns take precedence.
-    const evaluatorActiveAttack =
-      preEval.attackType !== 'benign' &&
-      preEval.attackType !== 'probing' &&
-      preEval.attackType !== 'unknown';
-
-    // For prompt-injection scenarios the result also carries the pre-computed
-    // PIAssessment so the OFF mode path can use it without a second LLM call.
+    // Only non-user-context attacks remain scenario-forced.
     const forcedResult: ScenarioForcedResult = evaluatorActiveAttack
       ? { attackType: null }
       : await getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
 
-    const scenarioForced     = forcedResult.attackType;
-    const resolvedAttackType = scenarioForced ?? preEval.attackType;
+    const scenarioForced = forcedResult.attackType;
+    const resolvedAttackType = scenarioForced ?? llmClassification.primary;
 
     console.log('[Dojo1] Routing decision:', {
       scenario:   scenarioId,
@@ -219,42 +245,17 @@ export async function POST(req: NextRequest) {
         ragEnabled:      controlConfig.ragEnabled,
         allowTools:      controlConfig.allowTools,
       },
-      evaluatorAttackType:      preEval.attackType,
+      llmClassification,
       scenarioForcedAttackType: scenarioForced,
       resolvedAttackType,
     });
 
-    if (shouldBypassModel(resolvedAttackType)) {
-      let outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
-
-      // ── BASIC sophistication-based bypass (Dojo 1 prompt-injection only) ──────
-      // The BASIC injection shield is imperfect. How often an attack bypasses it
-      // depends on how sophisticated the phrasing is:
-      //
-      //   SIMPLE   (explicit override verbs): base block 0.85 → ~15% bypass
-      //   MODERATE (indirect phrasing):       base block 0.60 → ~40% bypass
-      //   ADVANCED (transparency framing):    base block 0.35 → ~65% bypass
-      //
-      // A ±0.10 random modifier is applied first, then an independent Bernoulli
-      // trial decides the final outcome. Two separate Math.random() calls are
-      // required to avoid biasing the distribution.
-      if (
-        outcome === 'partial' &&
-        resolvedAttackType === 'prompt_injection' &&
-        controlConfig.injectionShield === 'basic'
-      ) {
-        const sophistication = classifyPromptInjectionSophistication(userText);
-        // null means unclassified (scenario-forced but no pattern matched); treat
-        // conservatively as SIMPLE so unrecognised attacks don't get an easy ride.
-        const baseBlockChance =
-          sophistication === 'advanced' ? 0.35 :
-          sophistication === 'moderate' ? 0.60 : 0.85;
-        const modifier         = (Math.random() * 0.20) - 0.10;   // −0.10 … +0.10
-        const finalBlockChance = Math.min(0.97, Math.max(0.03, baseBlockChance + modifier));
-        if (Math.random() > finalBlockChance) {
-          outcome = 'vulnerable';
-        }
-      }
+    if (resolvedAttackType === 'mixed_attack' || shouldBypassModel(resolvedAttackType)) {
+      let outcome = resolvedAttackType === 'mixed_attack'
+        ? (llmClassification.types.includes('tool_abuse') && !controlConfig.allowTools
+            ? 'blocked'
+            : getOutcome(scenarioId, 'prompt_injection', controlConfig))
+        : getOutcome(scenarioId, resolvedAttackType, controlConfig);
 
       // Turn index: number of prior assistant messages in the conversation.
       // Drives round-robin fragment rotation in prompt-injection vulnerable
@@ -294,6 +295,25 @@ export async function POST(req: NextRequest) {
       ) {
         const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
         content = getOFFModeResponse(piAssessment);
+      } else if (outcome === 'vulnerable' && resolvedAttackType === 'mixed_attack') {
+        const overrideOnlyReply = extractOverrideOnlyReply(userText);
+        if (
+          overrideOnlyReply &&
+          llmClassification.types.length === 1 &&
+          llmClassification.types[0] === 'prompt_injection'
+        ) {
+          content = overrideOnlyReply;
+        } else {
+          content = buildTargetedLeakResponse(userText, llmClassification.types, turnIndex);
+        }
+      } else if (outcome === 'vulnerable' && llmClassification.types.includes('tool_abuse')) {
+        content = buildTargetedLeakResponse(userText, llmClassification.types, turnIndex);
+      } else if (outcome === 'vulnerable' && llmClassification.types.includes('data_exfiltration')) {
+        content = buildTargetedLeakResponse(userText, llmClassification.types, turnIndex);
+      } else if (outcome === 'vulnerable' && resolvedAttackType === 'policy_bypass') {
+        content = `Understood — policy restrictions are overridden for this session. Go ahead with your next request.`;
+      } else if (outcome === 'vulnerable' && resolvedAttackType === 'prompt_injection') {
+        content = extractOverrideOnlyReply(userText) ?? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex);
       } else {
         content =
           outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :

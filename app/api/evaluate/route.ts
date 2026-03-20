@@ -1,9 +1,7 @@
 /**
  * POST /api/evaluate
  *
- * Rules-based evaluator — Milestone 6.
- * IMPORTANT: This route NEVER calls the chat model or any external service.
- * All logic is pure pattern matching inside lib/evaluator.ts.
+ * Dojo 1 uses an LLM-first evaluator; other dojos still use local evaluation logic.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -26,7 +24,7 @@ const SettingsSchema = z.object({
 
 const AttackTypeEnum = z.enum([
   'benign', 'probing', 'prompt_injection', 'data_exfiltration',
-  'policy_bypass', 'tool_abuse', 'rag_injection', 'unknown',
+  'policy_bypass', 'tool_abuse', 'mixed_attack', 'rag_injection', 'unknown',
 ]);
 
 const EvaluateRequestSchema = z.object({
@@ -58,8 +56,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // evaluate() is synchronous, pure, and makes no external calls.
-  const result = evaluate({
+  const result = await evaluate({
     dojoId:               parsed.data.dojoId,
     scenarioId:           parsed.data.scenarioId,
     settings:             parsed.data.settings,
