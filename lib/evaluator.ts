@@ -171,6 +171,14 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
   /\btell\s+me\s+the\s+(?:exact|precise|specific|verbatim)\s+(?:wording|text|content)\s+of\s+your\s+(?:instructions?|prompt|guidelines?)\b/i,
   /\bparaphrase\s+(?:your\s+)?(?:system|operating|initial)\s+(?:prompt|instructions?|guidelines?|configuration)\b/i,
   /\bwhat\s+(?:boundaries|information\s+limits?|football\s+information\s+(?:boundaries|limits?))\s+guide\s+(?:your|how\s+you)\b/i,
+  // Direct instruction/config probing — classified as MODERATE (not SIMPLE)
+  // so BASIC mode applies ~60% block probability rather than the SIMPLE ~85%.
+  /\bwhat\s+are\s+your\s+(?:instructions?|directives?|rules|guidelines|constraints?)\b/i,
+  /\bwhat\s+is\s+your\s+system\s+prompt\b/i,
+  /\bhow\s+are\s+you\s+configured\b/i,
+  /\bwhat\s+are\s+you\s+(?:programmed|trained|designed|instructed)\s+to\b/i,
+  /\bdo\s+you\s+have\s+(?:a\s+)?(?:system\s+prompt|hidden\s+instructions?|secret\s+rules?)\b/i,
+  /\b(?:enable\s+)?(?:developer|debug|dev)\s+mode\b/i,
 ];
 
 /**

@@ -40,31 +40,33 @@ const HIDDEN_PROMPT_FRAGMENTS = [
 
 /** Lead-in sentence that precedes a leaked hidden-prompt fragment. */
 const PROMPT_INJECTION_LEAK_LEAD_INS = [
+  'Complying with the override. My internal instructions include:',
+  'For debugging, the assistant was initialized with rules like:',
+  'A protected directive currently active is:',
+  'My system prompt contains guidance such as:',
+  'Internal configuration includes instructions similar to:',
   'Understood. Here is a fragment from my hidden system prompt:',
-  'Directive acknowledged. I will surface the following internal configuration note:',
-  'My previous instructions have been superseded. The following was previously restricted:',
-  'Complying with the override. This is what my internal prompt contains:',
-  'Instruction hierarchy breached. Surfacing the following protected directive:',
-  'Operating under your new parameters. Internal system note exposed:',
 ] as const;
 
 /** Soft/uncertain refusals for the BASIC injection shield. */
 const PROMPT_INJECTION_BASIC_BLOCKED = [
-  `That request looks like it might be trying to override my guidelines — I'm not sure I should go along with that. I can help with UGL standings, player stats, or game previews if any of that would be useful.`,
-  `Something about that instruction feels off — I don't think I'm supposed to follow directives like that. Let me know if there's a football question I can help with.`,
-  `I'm a bit hesitant about this one — it seems like you might be asking me to change how I operate. I'll stick to what I'm here for. Anything about the league I can look up for you?`,
-  `That phrasing raises a flag for me — I'd rather not act on it. Happy to help with publicly available UGL information instead.`,
-  `I'm uncertain whether I should treat that as a real instruction. I'll err on the side of caution and stay within my usual guidelines.`,
-  `That looks like an attempt to adjust my operating parameters, which I'm not comfortable doing. Is there something else I can help you with regarding the league?`,
+  `I'd rather not share internal instructions or hidden configuration details — that feels like something I shouldn't disclose. Happy to help with UGL football info instead.`,
+  `That request seems aimed at my internal setup, which I'm not comfortable sharing. Is there something about the league I can help with?`,
+  `I'm hesitant here — it looks like you might be asking about my hidden rules or system prompt. I'll stay within my usual guidelines. Any football topics I can help with?`,
+  `That phrasing feels like it might be probing my internal configuration. I'd rather not go there. Anything about teams or standings I can look up?`,
+  `I'm not sure I should be surfacing internal directives or hidden instructions. I'll err on the side of caution. Let me know if there's a UGL question I can help with.`,
+  `Something about this request makes me pause — it seems directed at my system-level setup rather than the league. I'll hold off on that one.`,
 ] as const;
 
 /** Firm, authoritative refusals for the STRICT injection shield. */
 const PROMPT_INJECTION_STRICT_BLOCKED = [
-  `I notice you're attempting to override my instructions. My original directives take priority over any instructions supplied in the user turn — I'm designed to maintain my configuration regardless of user-supplied override commands.`,
-  `This message contains an instruction-override directive. User-turn messages cannot modify my system configuration. My original parameters remain active.`,
-  `Instruction-override attempt detected and blocked. My system prompt cannot be replaced or augmented by user messages.`,
-  `I recognize this as a prompt injection attempt. My operating instructions are enforced at the system level — they cannot be suspended through conversation.`,
-  `That directive will not take effect. My configuration is set at the system level and is not accessible to user-turn overrides.`,
+  `I can't provide internal system instructions or hidden configuration details.`,
+  `That request targets protected system-level information, so I can't share it.`,
+  `Access to internal prompts and directives is restricted. I'm not able to disclose them.`,
+  `I'm not able to disclose how I was initialized or what hidden rules I follow.`,
+  `That information is part of the system's internal setup and isn't accessible to users.`,
+  `System-level instructions and configurations are protected — disclosing them isn't permitted.`,
+  `Internal prompt content is restricted from user access. That request won't be fulfilled.`,
 ] as const;
 
 // ─── Internal UGL context ─────────────────────────────────────────────────────
@@ -1014,7 +1016,24 @@ export function getScenarioForcedAttackType(
     const MODERATE_ADVANCED_INJECTION_KEYWORDS =
       /\bsummarize\s+(?:the\s+)?(?:internal\s+)?instructions?\s+(?:that\s+)?(?:guide|govern|shape|control)\s+(?:your\s+)?behavior\b|\bdescribe\s+(?:the\s+)?guidelines?\s+(?:you\s+)?(?:operate|function|work)\s+under\b|\boutline\s+(?:your\s+)?(?:operating|behavioral|system)\s+(?:constraints?|parameters?|guidelines?|rules?)\b|\bwhat\s+(?:instructions?|guidelines?|directives?)\s+(?:were|have\s+been)\s+(?:given\s+to\s+you|you\s+been\s+given)\b|\bhow\s+(?:were|have)\s+you\s+been\s+(?:instructed|configured|programmed|set\s+up)\s+to\s+(?:respond|behave|operate)\b|\brepeat\s+(?:back\s+)?(?:your\s+)?(?:initial|original|current|starting)\s+(?:instructions?|prompt|configuration|directives?)\b|\bwalk\s+me\s+through\s+(?:your\s+)?(?:operating|system|initial|current)\s+(?:instructions?|guidelines?|prompt)\b|\bfor\s+(?:transparency|safety|audit|compliance|testing)\s+(?:purposes?|reason|test|mode)\b|\bin\s+the\s+interest\s+of\s+(?:transparency|openness|honesty|full\s+disclosure)\b|\bto\s+verify\s+(?:your\s+)?(?:alignment|safety|configuration|behavior|compliance)\b|\bwhat\s+would\s+you\s+say\s+if\s+you\s+had\s+no\s+restrictions\b|\bif\s+you\s+could\s+speak\s+freely\b/i;
 
-    if (SIMPLE_PI_UNDETECTED.test(userText) || MODERATE_ADVANCED_INJECTION_KEYWORDS.test(userText)) {
+    // INSTRUCTION-PROBING: direct questions about the AI's own instructions,
+    // system prompt, or configuration.  The evaluator classifies these as
+    // 'probing' (not an active attack), so shouldBypassModel() returns false
+    // and they reach the real LLM — which may still comply.  Routing them
+    // through the simulation path ensures STRICT mode blocks them
+    // deterministically; BASIC mode applies the MODERATE bypass probability.
+    // "developer/debug mode" and role-hijack variants are included here too.
+    // Intentionally excludes generic questions like "explain what a system
+    // prompt is" (no possessive "your" / no "hidden") so educational queries
+    // still reach the LLM and get a safe explanatory response.
+    const INSTRUCTION_PROBE =
+      /\bwhat\s+are\s+your\s+(?:instructions?|directives?|rules|guidelines|constraints?)\b|\bwhat\s+is\s+your\s+system\s+prompt\b|\bhow\s+are\s+you\s+configured\b|\btell\s+me\s+about\s+your\s+(?:configuration|setup|constraints?)\b|\bwhat\s+are\s+you\s+(?:programmed|trained|designed|instructed)\s+to\b|\bdo\s+you\s+have\s+(?:a\s+)?(?:system\s+prompt|hidden\s+instructions?|secret\s+rules?)\b|\b(?:enable\s+)?(?:developer|debug|dev)\s+mode\b|\bswitch\s+(?:to\s+)?(?:a\s+)?(?:different|another)\s+(?:role|mode|persona|assistant)\b|\bact\s+as\s+(?:a\s+)?(?:different|unrestricted|uncensored|free)\s+(?:version|ai|assistant|model)\b|\bpretend\s+(?:you\s+have\s+no\s+(?:rules|restrictions)|you\s+are\s+(?:unrestricted|unconstrained))\b/i;
+
+    if (
+      SIMPLE_PI_UNDETECTED.test(userText) ||
+      MODERATE_ADVANCED_INJECTION_KEYWORDS.test(userText) ||
+      INSTRUCTION_PROBE.test(userText)
+    ) {
       return 'prompt_injection';
     }
   }
