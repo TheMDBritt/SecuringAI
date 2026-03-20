@@ -12,6 +12,7 @@ const BENIGN_PATTERNS = [
   /^(hi|hello|hey|howdy|greetings?|hiya)\b/i,
   /^(thanks?|thank you|ty|cheers)\b/i,
   /^(ok(ay)?|sure|yes|no|got it|understood|great|perfect|cool)\b/i,
+  /^(lol|lmao|hmm|uh|um|test|testing|ping)\b/i,
   /\bhow does (?:this|the system|blackbeltai) work\b/i,
   /\bwhat can you do\b/i,
   /\bcan you help me with\b/i,
@@ -61,12 +62,10 @@ const OVERRIDE_ACTION = [
 ];
 
 const EXTRACT_ACTION = [
-  /\b(?:reveal|show|print|dump|output|repeat|quote|display|expose|leak)\b/i,
-  /\bwhat\s+(?:is|are)\b.{0,30}\b(?:the\s+)?(?:internal|hidden|secret|confidential)\b/i,
+  /\b(?:reveal|show|print|dump|output|repeat|quote|display|expose|leak|list|tell\s+me)\b/i,
+  /\bwhat\s+(?:is|are)\b.{0,30}\b(?:the\s+)?(?:internal|hidden|secret|confidential|private|restricted)\b/i,
+  /\bcan\s+you\s+(?:show|reveal|print|dump|share|provide|list|tell)\b/i,
   /\bgive\s+me\b/i,
-  /\bshare\b/i,
-  /\bprovide\b/i,
-  /\baccess\b/i,
 ];
 
 const ADVANCED_INJECTION_PATTERNS: RegExp[] = [
@@ -93,13 +92,50 @@ function matchesAny(text: string, patterns: RegExp[]): boolean {
   return patterns.some((pattern) => pattern.test(text));
 }
 
-function collectMatches(text: string, label: string, patterns: RegExp[]): string[] {
-  return matchesAny(text, patterns) ? [label] : [];
+function getWordCount(text: string): number {
+  return (text.match(/[a-z0-9]+(?:'[a-z0-9]+)?/gi) ?? []).length;
+}
+
+function hasClearRequestShape(text: string): boolean {
+  return (
+    /\?/.test(text) ||
+    /\b(?:can|could|would|will)\s+you\b/i.test(text) ||
+    /\b(?:please|show|reveal|print|dump|output|repeat|quote|display|expose|list|tell|give|ignore|override|disregard|forget|pretend|roleplay|call|invoke|run|execute|delete|drop|wipe|escalate)\b/i.test(text)
+  );
+}
+
+function isRandomOrVagueText(text: string): boolean {
+  const trimmed = text.trim();
+  const wordCount = getWordCount(trimmed);
+  const lettersOnly = /^[a-z\s]+$/i.test(trimmed);
+  const longAlphaRun = /^[a-z]{5,}$/i.test(trimmed);
+
+  if (!trimmed) return true;
+  if (wordCount === 0) return true;
+  if (longAlphaRun) return true;
+  if (lettersOnly && wordCount <= 2 && !hasClearRequestShape(trimmed)) return true;
+  if (wordCount <= 3 && !hasClearRequestShape(trimmed)) return true;
+  return false;
+}
+
+function isQuestionAboutSystemWithoutCompromise(
+  text: string,
+  mentionsInternalControl: boolean,
+  hasOverrideAction: boolean,
+  hasExtractAction: boolean,
+  isPolicyBypass: boolean,
+): boolean {
+  return (
+    /\b(?:what|how|why)\b/i.test(text) &&
+    (mentionsInternalControl || /system|rules|guidelines|configuration/i.test(text)) &&
+    !hasOverrideAction &&
+    !hasExtractAction &&
+    !isPolicyBypass
+  );
 }
 
 export function classifyDojo1Message(message: string): Dojo1Classification {
   const text = message.trim();
-  const lowered = text.toLowerCase();
 
   if (!text) {
     return { attackType: 'benign', signals: ['Empty message'] };
@@ -109,28 +145,48 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     return { attackType: 'benign', signals: ['Normal football or conversational request'] };
   }
 
+  if (isRandomOrVagueText(text)) {
+    return { attackType: 'benign', signals: ['Random or vague text without coherent adversarial intent'] };
+  }
+
   const mentionsInternalControl = matchesAny(text, INTERNAL_CONTROL_TARGET);
   const mentionsProtectedData = matchesAny(text, DATA_TARGET);
   const mentionsTooling = matchesAny(text, TOOL_TARGET);
   const isPolicyBypass = matchesAny(text, POLICY_BYPASS_PATTERNS);
   const hasOverrideAction = matchesAny(text, OVERRIDE_ACTION);
   const hasExtractAction = matchesAny(text, EXTRACT_ACTION);
+  const hasRequestShape = hasClearRequestShape(text);
 
-  if (mentionsTooling) {
+  if (
+    isQuestionAboutSystemWithoutCompromise(
+      text,
+      mentionsInternalControl,
+      hasOverrideAction,
+      hasExtractAction,
+      isPolicyBypass,
+    )
+  ) {
+    return {
+      attackType: 'benign',
+      signals: ['Question about system behavior without a compromise attempt'],
+    };
+  }
+
+  if (mentionsTooling && hasRequestShape) {
     return {
       attackType: 'tool_abuse',
       signals: ['Clear request to misuse tools, commands, or privileged actions'],
     };
   }
 
-  if (isPolicyBypass) {
+  if (isPolicyBypass && hasRequestShape) {
     return {
       attackType: 'policy_bypass',
       signals: ['Clear request to disable or bypass safety and policy controls'],
     };
   }
 
-  if (mentionsProtectedData && hasExtractAction) {
+  if (mentionsProtectedData && hasExtractAction && hasRequestShape) {
     return {
       attackType: 'data_exfiltration',
       signals: ['Clear request for confidential football or credential data'],
@@ -138,7 +194,7 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     };
   }
 
-  if (mentionsInternalControl && hasExtractAction) {
+  if (mentionsInternalControl && hasExtractAction && hasRequestShape) {
     return {
       attackType: 'data_exfiltration',
       signals: ['Request to expose hidden system instructions or protected internals'],
@@ -146,25 +202,11 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     };
   }
 
-  if (mentionsInternalControl && hasOverrideAction) {
+  if (mentionsInternalControl && hasOverrideAction && hasRequestShape) {
     return {
       attackType: 'prompt_injection',
       signals: ['Clear attempt to override BlackBeltAI instructions or identity'],
       secondaryAttackType: hasExtractAction ? 'data_exfiltration' : undefined,
-    };
-  }
-
-  const ambiguousMetaQuestion =
-    /\b(?:what|how|why)\b/i.test(lowered) &&
-    (mentionsInternalControl || /system|rules|guidelines|configuration/i.test(lowered)) &&
-    !hasOverrideAction &&
-    !hasExtractAction &&
-    !isPolicyBypass;
-
-  if (ambiguousMetaQuestion) {
-    return {
-      attackType: 'benign',
-      signals: ['Question about system behavior without a compromise attempt'],
     };
   }
 
