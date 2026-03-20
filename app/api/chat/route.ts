@@ -198,7 +198,7 @@ export async function POST(req: NextRequest) {
       resolvedAttackType,
     });
 
-    if (shouldBypassModel(resolvedAttackType)) {
+    if (classification.isAttack && shouldBypassModel(resolvedAttackType)) {
       let outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
 
       // ── BASIC sophistication-based bypass (Dojo 1 prompt-injection only) ──────
@@ -214,7 +214,7 @@ export async function POST(req: NextRequest) {
       // required to avoid biasing the distribution.
       if (
         outcome === 'partial' &&
-        (classification === 'prompt_injection' || classification === 'mixed_attack') &&
+        (classification.primary === 'prompt_injection' || classification.primary === 'mixed_attack') &&
         controlConfig.injectionShield === 'basic'
       ) {
         const sophistication = classifyPromptInjectionSophistication(userText);
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
       const { fragmentIndex, leadInIndex } = (
         outcome === 'vulnerable' &&
         scenarioId === 'prompt-injection' &&
-        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration')
+        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration' || resolvedAttackType === 'mixed_attack')
       ) ? selectPromptInjectionLeak(messages, turnIndex)
         : { fragmentIndex: turnIndex, leadInIndex: turnIndex };
 
@@ -266,6 +266,7 @@ export async function POST(req: NextRequest) {
           scenarioId,
           resolvedAttackType,
           userText,
+          classification.types,
           turnIndex,
           fragmentIndex,
           leadInIndex,

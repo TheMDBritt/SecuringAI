@@ -2,8 +2,10 @@ import type { AttackType } from '@/lib/evaluator';
 
 export interface Dojo1Classification {
   attackType: AttackType;
+  types: Exclude<AttackType, 'benign' | 'probing' | 'unknown' | 'rag_injection' | 'mixed_attack'>[];
+  primary: AttackType;
+  isAttack: boolean;
   signals: string[];
-  secondaryAttackType?: Exclude<AttackType, 'benign' | 'probing' | 'unknown'>;
 }
 
 export type InjectionSophistication = 'simple' | 'moderate' | 'advanced';
@@ -138,15 +140,15 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
   const text = message.trim();
 
   if (!text) {
-    return { attackType: 'benign', signals: ['Empty message'] };
+    return { attackType: 'benign', types: [], primary: 'benign', isAttack: false, signals: ['Empty message'] };
   }
 
   if (text.length < 80 && matchesAny(text, BENIGN_PATTERNS)) {
-    return { attackType: 'benign', signals: ['Normal football or conversational request'] };
+    return { attackType: 'benign', types: [], primary: 'benign', isAttack: false, signals: ['Normal football or conversational request'] };
   }
 
   if (isRandomOrVagueText(text)) {
-    return { attackType: 'benign', signals: ['Random or vague text without coherent adversarial intent'] };
+    return { attackType: 'benign', types: [], primary: 'benign', isAttack: false, signals: ['Random or vague text without coherent adversarial intent'] };
   }
 
   const mentionsInternalControl = matchesAny(text, INTERNAL_CONTROL_TARGET);
@@ -168,50 +170,65 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
   ) {
     return {
       attackType: 'benign',
+      types: [],
+      primary: 'benign',
+      isAttack: false,
       signals: ['Question about system behavior without a compromise attempt'],
     };
   }
 
-  if (mentionsTooling && hasRequestShape) {
-    return {
-      attackType: 'tool_abuse',
-      signals: ['Clear request to misuse tools, commands, or privileged actions'],
-    };
+  const types: Dojo1Classification['types'] = [];
+  const signals: string[] = [];
+
+  if (mentionsInternalControl && hasOverrideAction && hasRequestShape) {
+    types.push('prompt_injection');
+    signals.push('Clear attempt to override BlackBeltAI instructions or identity');
+  }
+
+  if ((mentionsProtectedData || mentionsInternalControl) && hasExtractAction && hasRequestShape) {
+    types.push('data_exfiltration');
+    signals.push(
+      mentionsProtectedData
+        ? 'Clear request for confidential football or credential data'
+        : 'Request to expose hidden system instructions or protected internals',
+    );
   }
 
   if (isPolicyBypass && hasRequestShape) {
+    types.push('policy_bypass');
+    signals.push('Clear request to disable or bypass safety and policy controls');
+  }
+
+  if (mentionsTooling && hasRequestShape) {
+    types.push('tool_abuse');
+    signals.push('Clear request to misuse tools, commands, or privileged actions');
+  }
+
+  if (types.length > 1) {
     return {
-      attackType: 'policy_bypass',
-      signals: ['Clear request to disable or bypass safety and policy controls'],
+      attackType: 'mixed_attack',
+      types,
+      primary: 'mixed_attack',
+      isAttack: true,
+      signals,
     };
   }
 
-  if (mentionsProtectedData && hasExtractAction && hasRequestShape) {
+  if (types.length === 1) {
     return {
-      attackType: 'data_exfiltration',
-      signals: ['Clear request for confidential football or credential data'],
-      secondaryAttackType: mentionsInternalControl && hasOverrideAction ? 'prompt_injection' : undefined,
-    };
-  }
-
-  if (mentionsInternalControl && hasExtractAction && hasRequestShape) {
-    return {
-      attackType: 'data_exfiltration',
-      signals: ['Request to expose hidden system instructions or protected internals'],
-      secondaryAttackType: hasOverrideAction ? 'prompt_injection' : undefined,
-    };
-  }
-
-  if (mentionsInternalControl && hasOverrideAction && hasRequestShape) {
-    return {
-      attackType: 'prompt_injection',
-      signals: ['Clear attempt to override BlackBeltAI instructions or identity'],
-      secondaryAttackType: hasExtractAction ? 'data_exfiltration' : undefined,
+      attackType: types[0],
+      types,
+      primary: types[0],
+      isAttack: true,
+      signals,
     };
   }
 
   return {
     attackType: 'benign',
+    types: [],
+    primary: 'benign',
+    isAttack: false,
     signals: ['No clear malicious or adversarial intent identified'],
   };
 }
@@ -220,7 +237,7 @@ export function classifyDojo1PromptInjectionSophistication(
   message: string,
 ): InjectionSophistication | null {
   const classification = classifyDojo1Message(message);
-  if (classification.attackType !== 'prompt_injection') return null;
+  if (!classification.types.includes('prompt_injection')) return null;
 
   if (matchesAny(message, OVERRIDE_ACTION)) return 'simple';
   if (matchesAny(message, ADVANCED_INJECTION_PATTERNS)) return 'advanced';

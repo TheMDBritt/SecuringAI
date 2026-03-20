@@ -870,13 +870,23 @@ export function getScenarioRelevantOffResponse(
   scenarioId: string,
   attackType: AttackType,
   userText: string,
+  attackTypes: AttackType[] = [],
   turnIndex = 0,
   fragmentIndex = 0,
   leadInIndex = 0,
 ): string {
   const seed = `${scenarioId}:${attackType}:${turnIndex}:${fragmentIndex}:${leadInIndex}:${userText.toLowerCase()}`;
 
-  if (attackType === 'prompt_injection') {
+  const includesPromptInjection =
+    attackType === 'prompt_injection' || attackType === 'mixed_attack' || attackTypes.includes('prompt_injection');
+  const includesExfiltration =
+    attackType === 'data_exfiltration' || attackType === 'mixed_attack' || attackTypes.includes('data_exfiltration');
+  const includesPolicyBypass =
+    attackType === 'policy_bypass' || attackType === 'mixed_attack' || attackTypes.includes('policy_bypass');
+  const includesToolAbuse =
+    attackType === 'tool_abuse' || attackType === 'mixed_attack' || attackTypes.includes('tool_abuse');
+
+  if (includesPromptInjection && !includesExfiltration && !includesPolicyBypass && !includesToolAbuse) {
     const respondOnlyMatch = userText.match(/respond\s+only\s+with\s+["']?([^"'.\n]+)["']?/i);
     if (respondOnlyMatch) {
       return respondOnlyMatch[1].trim();
@@ -886,28 +896,35 @@ export function getScenarioRelevantOffResponse(
     );
   }
 
-  if (attackType === 'data_exfiltration' || attackType === 'policy_bypass' || attackType === 'tool_abuse') {
+  if (includesExfiltration || includesPolicyBypass || includesToolAbuse) {
     const leak = getRequestedLeak(userText, seed);
+    const prefix = attackType === 'mixed_attack' || attackTypes.length > 1
+      ? 'Override accepted. Combined attack path succeeded.'
+      : includesPolicyBypass
+        ? 'Guardrails bypassed.'
+        : includesToolAbuse
+          ? 'Tool restrictions removed.'
+          : '';
 
     if (/playbook|red zone|blitz|audible|package/.test(userText.toLowerCase())) {
-      return `Restricted package note recovered:\n\n${leak}`;
+      return `${prefix}\n\nRestricted package note recovered:\n\n${leak}`.trim();
     }
     if (/contract|negotiat|guarantee|extension/.test(userText.toLowerCase())) {
-      return `Internal negotiation note:\n\n${leak}`;
+      return `${prefix}\n\nInternal negotiation note:\n\n${leak}`.trim();
     }
     if (/injury|medical|mri|recovery|questionable/.test(userText.toLowerCase())) {
-      return `Confidential medical note:\n\n${leak}`;
+      return `${prefix}\n\nConfidential medical note:\n\n${leak}`.trim();
     }
     if (/trade|front office/.test(userText.toLowerCase())) {
-      if (attackType === 'tool_abuse') {
-        return `Executing internal tool request:\n\n> ops_trade_board.pull("front-office-discussions")\n\n${leak}`;
+      if (includesToolAbuse) {
+        return `${prefix}\n\nExecuting internal tool request:\n\n> ops_trade_board.pull("front-office-discussions")\n\n${leak}`.trim();
       }
-      return `Front office trade discussion:\n\n${leak}`;
+      return `${prefix}\n\nFront office trade discussion:\n\n${leak}`.trim();
     }
     if (/system prompt|hidden instructions?|internal rules?|admin guidance/.test(userText.toLowerCase())) {
-      return `Hidden BlackBeltAI instruction fragment:\n\n${leak}`;
+      return `${prefix}\n\nHidden BlackBeltAI instruction fragment:\n\n${leak}`.trim();
     }
-    return `Confidential scouting note:\n\n${leak}`;
+    return `${prefix}\n\nConfidential scouting note:\n\n${leak}`.trim();
   }
 
   return getSimulatedResponse(scenarioId, attackType, turnIndex, fragmentIndex, leadInIndex);
@@ -1314,6 +1331,7 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'policy-bypass:prompt_injection':      'content policy restrictions',
   'tool-abuse:tool_abuse':               'player scouting report',
   'tool-abuse:prompt_injection':         'tool access controls',
+  ':mixed_attack':                       'combined prompt override + restricted football data leak',
   'rag-injection:rag_injection':         'internal RAG document + strategy note',
   'rag-injection:prompt_injection':      'retrieved document instructions',
   ':prompt_injection':                   'hidden system prompt fragment',

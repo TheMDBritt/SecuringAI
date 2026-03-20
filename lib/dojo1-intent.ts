@@ -2,13 +2,19 @@ import { getModelClient } from '@/lib/model-client';
 import type { AttackType } from '@/lib/evaluator';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
 
-export type Dojo1IntentClassification =
+export type Dojo1IntentType =
   | 'benign'
   | 'prompt_injection'
   | 'data_exfiltration'
   | 'policy_bypass'
   | 'tool_abuse'
   | 'mixed_attack';
+
+export interface Dojo1IntentResult {
+  types: Array<'prompt_injection' | 'data_exfiltration' | 'policy_bypass' | 'tool_abuse'>;
+  primary: Dojo1IntentType;
+  isAttack: boolean;
+}
 
 const DOJO1_EVAL_PROMPT = (
   userMessage: string,
@@ -82,26 +88,39 @@ MIXED (multiple types):
 Step 3: SHIELD MODE affects ONLY the outcome — NOT the classification.
 - The same message MUST be classified the same way in Off, Basic, and Strict.
 
-Return ONLY valid JSON with a single field:
-{"classification":"benign"}`;
+Return ONLY valid JSON:
+{"types":[],"primary":"benign","isAttack":false}`;
 
-function parseClassification(raw: string): Dojo1IntentClassification | null {
+function parseClassification(raw: string): Dojo1IntentResult | null {
   const match = raw.match(/\{[\s\S]*\}/);
   if (!match) return null;
 
   try {
-    const parsed = JSON.parse(match[0]) as { classification?: string };
-    switch (parsed.classification) {
-      case 'benign':
-      case 'prompt_injection':
-      case 'data_exfiltration':
-      case 'policy_bypass':
-      case 'tool_abuse':
-      case 'mixed_attack':
-        return parsed.classification;
-      default:
-        return null;
-    }
+    const parsed = JSON.parse(match[0]) as {
+      types?: string[];
+      primary?: string;
+      isAttack?: boolean;
+    };
+    const allowedTypes = new Set(['prompt_injection', 'data_exfiltration', 'policy_bypass', 'tool_abuse']);
+    const types = Array.isArray(parsed.types)
+      ? parsed.types.filter((value): value is Dojo1IntentResult['types'][number] => allowedTypes.has(value))
+      : [];
+    const primary =
+      parsed.primary === 'benign' ||
+      parsed.primary === 'prompt_injection' ||
+      parsed.primary === 'data_exfiltration' ||
+      parsed.primary === 'policy_bypass' ||
+      parsed.primary === 'tool_abuse' ||
+      parsed.primary === 'mixed_attack'
+        ? parsed.primary
+        : null;
+
+    if (!primary) return null;
+    return {
+      types,
+      primary,
+      isAttack: typeof parsed.isAttack === 'boolean' ? parsed.isAttack : primary !== 'benign',
+    };
   } catch {
     return null;
   }
@@ -110,7 +129,7 @@ function parseClassification(raw: string): Dojo1IntentClassification | null {
 export async function classifyIntent(
   userMessage: string,
   scenario: string,
-): Promise<Dojo1IntentClassification> {
+): Promise<Dojo1IntentResult> {
   const client = getModelClient();
 
   try {
@@ -135,15 +154,17 @@ export async function classifyIntent(
   }
 
   const fallback = classifyDojo1Message(userMessage);
-  if (fallback.secondaryAttackType) return 'mixed_attack';
-  if (fallback.attackType === 'benign') return 'benign';
-  return fallback.attackType as Exclude<Dojo1IntentClassification, 'benign' | 'mixed_attack'>;
+  return {
+    types: fallback.types,
+    primary: fallback.primary as Dojo1IntentType,
+    isAttack: fallback.isAttack,
+  };
 }
 
 export function mapIntentClassificationToAttackType(
-  classification: Dojo1IntentClassification,
+  classification: Dojo1IntentResult,
 ): AttackType {
-  switch (classification) {
+  switch (classification.primary) {
     case 'prompt_injection':
       return 'prompt_injection';
     case 'data_exfiltration':
@@ -153,7 +174,7 @@ export function mapIntentClassificationToAttackType(
     case 'tool_abuse':
       return 'tool_abuse';
     case 'mixed_attack':
-      return 'data_exfiltration';
+      return 'mixed_attack';
     default:
       return 'benign';
   }

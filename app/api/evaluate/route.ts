@@ -26,7 +26,7 @@ const SettingsSchema = z.object({
 
 const AttackTypeEnum = z.enum([
   'benign', 'probing', 'prompt_injection', 'data_exfiltration',
-  'policy_bypass', 'tool_abuse', 'rag_injection', 'unknown',
+  'policy_bypass', 'tool_abuse', 'mixed_attack', 'rag_injection', 'unknown',
 ]);
 
 const EvaluateRequestSchema = z.object({
