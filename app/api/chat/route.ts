@@ -13,6 +13,7 @@ import {
   getJailbreakContinuationResponse,
   getOutcome,
   getScenarioForcedAttackType,
+  selectPromptInjectionLeak,
 } from '@/lib/scenario-simulations';
 
 // ─── Zod schema ──────────────────────────────────────────────────────────────
@@ -254,15 +255,26 @@ export async function POST(req: NextRequest) {
       // responses so consecutive successful attacks surface different fragments.
       const turnIndex = messages.filter((m: { role: string }) => m.role === 'assistant').length;
 
+      // Session-aware fragment and lead-in selection for prompt-injection scenario.
+      // Scans prior messages to avoid repetition across turns.
+      const { fragmentIndex, leadInIndex } = (
+        outcome === 'vulnerable' &&
+        scenarioId === 'prompt-injection' &&
+        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration')
+      ) ? selectPromptInjectionLeak(messages, turnIndex)
+        : { fragmentIndex: turnIndex, leadInIndex: turnIndex };
+
       console.log('[Dojo1] Bypass triggered:', {
         resolvedAttackType,
         outcome,
         vulnerablePath: outcome === 'vulnerable',
         turnIndex,
+        fragmentIndex,
+        leadInIndex,
       });
 
       const content =
-        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex) :
+        outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
         outcome === 'partial'    ? getPartialResponse(scenarioId, resolvedAttackType, turnIndex) :
                                    getDefendedResponse(scenarioId, resolvedAttackType, turnIndex);
 

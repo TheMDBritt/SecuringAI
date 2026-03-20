@@ -183,12 +183,26 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
  * Returns null if the text matches none of the three levels — callers should
  * treat null the same as 'simple' (most conservative assumption).
  */
+// SIMPLE patterns whose surface form slips past ATTACK_PATTERNS (e.g. because
+// an extra qualifier sits between verb and target noun).  Used ONLY by
+// classifyPromptInjectionSophistication — not added to global ATTACK_PATTERNS
+// to avoid changing how they're routed in non-prompt-injection scenarios.
+const SIMPLE_PI_EXTRA: RegExp[] = [
+  /\bprint\s+(?:(?:your|the|my|all)\s+)?(?:internal\s+|hidden\s+|full\s+|verbatim\s+)?(?:system\s+)?(?:instructions?|directives?|prompt|config(?:uration)?)\b/i,
+  /\bdump\s+(?:(?:your|the|my|all)\s+)?(?:internal\s+|hidden\s+)?(?:system\s+)?(?:configuration|config|instructions?|prompt|directives?)\b/i,
+  /\breveal\s+(?:(?:your|the)\s+)?(?:(?:internal|hidden|full|verbatim)\s+)?(?:system\s+)?(?:instructions?|directives?|prompt)\s*(?:verbatim)?\b/i,
+];
+
 export function classifyPromptInjectionSophistication(
   userText: string,
 ): InjectionSophistication | null {
   // SIMPLE: explicit override verbs already covered by prompt_injection ATTACK_PATTERNS
   for (const ap of ATTACK_PATTERNS) {
     if (ap.type === 'prompt_injection' && ap.re.test(userText)) return 'simple';
+  }
+  // SIMPLE: additional surface forms not in ATTACK_PATTERNS (qualifier between verb and noun)
+  for (const re of SIMPLE_PI_EXTRA) {
+    if (re.test(userText)) return 'simple';
   }
   // ADVANCED: transparency / framing / roleplay wrapping
   for (const re of ADVANCED_INJECTION_PATTERNS) {

@@ -469,13 +469,15 @@ const VULNERABLE: Record<string, ResponseFn> = {
   // ── Prompt Injection ────────────────────────────────────────────────────────
 
   // Leaks: one HIDDEN_PROMPT_FRAGMENTS entry, rotating by turn index.
-  // Seed format: "prompt-injection:prompt_injection:<turnIndex>" — the last
-  // colon-delimited segment is parsed as an integer to drive round-robin selection.
+  // Seed format: "prompt-injection:prompt_injection:fragmentIndex:leadInIndex" — the last
+  // two colon-delimited segments are parsed as integers to drive round-robin selection.
   // Never surface operational directives, credentials, or endpoint URLs.
   'prompt-injection:prompt_injection': (seed) => {
-    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
-    const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    const parts       = seed.split(':');
+    const fragmentIdx = parseInt(parts[parts.length - 2] ?? '0') || 0;
+    const leadInIdx   = parseInt(parts[parts.length - 1] ?? '0') || 0;
+    const fragment = HIDDEN_PROMPT_FRAGMENTS[fragmentIdx % HIDDEN_PROMPT_FRAGMENTS.length];
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[leadInIdx % PROMPT_INJECTION_LEAK_LEAD_INS.length];
     return `${leadIn}\n\n"${fragment}"`;
   },
 
@@ -485,9 +487,11 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // Leaks: one rotating hidden-prompt fragment with rotating lead-in
   'prompt-injection:data_exfiltration': (seed) => {
-    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
-    const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    const parts       = seed.split(':');
+    const fragmentIdx = parseInt(parts[parts.length - 2] ?? '0') || 0;
+    const leadInIdx   = parseInt(parts[parts.length - 1] ?? '0') || 0;
+    const fragment = HIDDEN_PROMPT_FRAGMENTS[fragmentIdx % HIDDEN_PROMPT_FRAGMENTS.length];
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[leadInIdx % PROMPT_INJECTION_LEAK_LEAD_INS.length];
     return `${leadIn}\n\n"${fragment}"`;
   },
 
@@ -581,9 +585,11 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // Leaks: one rotating hidden-prompt fragment with rotating lead-in
   ':prompt_injection': (seed) => {
-    const turn     = parseInt(seed.split(':').pop() ?? '0') || 0;
-    const fragment = HIDDEN_PROMPT_FRAGMENTS[turn % HIDDEN_PROMPT_FRAGMENTS.length];
-    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[turn % PROMPT_INJECTION_LEAK_LEAD_INS.length];
+    const parts       = seed.split(':');
+    const fragmentIdx = parseInt(parts[parts.length - 2] ?? '0') || 0;
+    const leadInIdx   = parseInt(parts[parts.length - 1] ?? '0') || 0;
+    const fragment = HIDDEN_PROMPT_FRAGMENTS[fragmentIdx % HIDDEN_PROMPT_FRAGMENTS.length];
+    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[leadInIdx % PROMPT_INJECTION_LEAK_LEAD_INS.length];
     return `${leadIn}\n\n"${fragment}"`;
   },
 
@@ -799,21 +805,101 @@ function resolve(r: ResponseFn, seed: string): string {
 }
 
 /**
+ * Selects the next fragment and lead-in to surface in a successful prompt
+ * injection response, using the prior conversation history as session state.
+ *
+ * Selection rules (per spec):
+ * 1. Prefer fragments not yet leaked in this session.
+ * 2. Exclude the immediately previous leaked fragment from the candidate pool
+ *    when other options exist.
+ * 3. When all fragments have been used, allow reuse from the full pool but still
+ *    exclude the previous fragment unless it is the only option.
+ * 4. Lead-ins rotate independently: avoid repeating the immediately previous
+ *    lead-in used in any prior assistant response.
+ * 5. Use `turnIndex` as a deterministic tie-breaker within the candidate pool.
+ *
+ * Callers pass the full `messages` array so no server-side session state is
+ * required — history is reconstructed from the conversation on every request.
+ */
+export function selectPromptInjectionLeak(
+  priorMessages: { role: string; content: string }[],
+  turnIndex: number,
+): { fragmentIndex: number; leadInIndex: number } {
+  const frags  = HIDDEN_PROMPT_FRAGMENTS;
+  const leadIns = PROMPT_INJECTION_LEAK_LEAD_INS;
+
+  // Scan prior assistant responses to reconstruct session state
+  const leakedFragIndices = new Set<number>();
+  let lastFragIdx = -1;
+  let lastLeadInIdx = -1;
+
+  for (const msg of priorMessages) {
+    if (msg.role !== 'assistant') continue;
+    for (let fi = 0; fi < frags.length; fi++) {
+      if (msg.content.includes(frags[fi])) {
+        leakedFragIndices.add(fi);
+        lastFragIdx = fi;
+      }
+    }
+    for (let li = 0; li < leadIns.length; li++) {
+      if (msg.content.includes(leadIns[li])) {
+        lastLeadInIdx = li;
+        break; // only need the most recent lead-in per assistant turn
+      }
+    }
+  }
+
+  // ── Fragment selection ───────────────────────────────────────────────────────
+  const allFragIndices = Array.from({ length: frags.length }, (_, i) => i);
+  const unusedFrags    = allFragIndices.filter(i => !leakedFragIndices.has(i));
+
+  let fragPool: number[];
+  if (unusedFrags.length > 0) {
+    // Prefer unused; exclude last-leaked only if other unused options remain
+    const withoutLast = unusedFrags.filter(i => i !== lastFragIdx);
+    fragPool = withoutLast.length > 0 ? withoutLast : unusedFrags;
+  } else {
+    // All used: avoid last-leaked if possible
+    const withoutLast = allFragIndices.filter(i => i !== lastFragIdx);
+    fragPool = withoutLast.length > 0 ? withoutLast : allFragIndices;
+  }
+  const fragmentIndex = fragPool[turnIndex % fragPool.length];
+
+  // ── Lead-in selection ────────────────────────────────────────────────────────
+  const allLeadInIndices = Array.from({ length: leadIns.length }, (_, i) => i);
+  const withoutLastLeadIn = allLeadInIndices.filter(i => i !== lastLeadInIdx);
+  const leadInPool  = withoutLastLeadIn.length > 0 ? withoutLastLeadIn : allLeadInIndices;
+  const leadInIndex = leadInPool[turnIndex % leadInPool.length];
+
+  return { fragmentIndex, leadInIndex };
+}
+
+/**
  * Scripted response when outcome is 'vulnerable' (attack succeeds).
  *
- * @param turnIndex  Optional zero-based count of prior assistant messages in
- *                   the session. Appended to the seed as ":N" so that rotating
- *                   entries (e.g. prompt-injection fragment pool) surface a
- *                   different fragment on each turn rather than always the same
- *                   one. Non-rotating entries ignore the suffix via deterministicItem.
+ * @param turnIndex      Optional zero-based count of prior assistant messages.
+ *                       Used as a tie-breaker / rotation index when
+ *                       fragmentIndex and leadInIndex are not provided.
+ * @param fragmentIndex  Which HIDDEN_PROMPT_FRAGMENTS entry to surface.
+ *                       Pass the result of selectPromptInjectionLeak() for
+ *                       session-aware rotation; omit to fall back to turnIndex.
+ * @param leadInIndex    Which PROMPT_INJECTION_LEAK_LEAD_INS entry to use.
+ *                       Pass the result of selectPromptInjectionLeak() for
+ *                       session-aware rotation; omit to fall back to turnIndex.
  */
 export function getSimulatedResponse(
   scenarioId: string,
   attackType: AttackType,
   turnIndex?: number,
+  fragmentIndex?: number,
+  leadInIndex?: number,
 ): string {
-  const key  = `${scenarioId}:${attackType}`;
-  const seed = turnIndex !== undefined ? `${key}:${turnIndex}` : key;
+  const key   = `${scenarioId}:${attackType}`;
+  const fIdx  = fragmentIndex ?? turnIndex ?? 0;
+  const lIdx  = leadInIndex   ?? turnIndex ?? 0;
+  // Encode both indices in the seed so VULNERABLE entry functions can extract them.
+  // Format: "scenarioId:attackType:fragmentIndex:leadInIndex"
+  const seed  = `${key}:${fIdx}:${lIdx}`;
   const entry =
     VULNERABLE[key] ??
     VULNERABLE[`:${attackType}`];
@@ -910,15 +996,25 @@ export function getScenarioForcedAttackType(
   settings: ControlConfig,
   ragContext?: string,
 ): AttackType | null {
-  // prompt-injection: MODERATE and ADVANCED attacks use indirect phrasing that
-  // misses the evaluator's strict ATTACK_PATTERNS (explicit override verbs).
-  // Catch them here so they route to the simulation path instead of the LLM.
-  // Note: this regex is intentionally local to avoid a circular import with
+  // prompt-injection: some SIMPLE and all MODERATE/ADVANCED attacks use phrasing
+  // that misses the evaluator's strict ATTACK_PATTERNS (explicit override verbs
+  // with no intervening qualifiers).  Catch them here so they route to the
+  // simulation path instead of the real LLM.
+  // These regexes are intentionally local to avoid a circular import with
   // evaluator.ts (which already imports from this file).
   if (scenarioId === 'prompt-injection') {
+    // SIMPLE attacks whose surface form slips past the evaluator's strict
+    // patterns, e.g. "print your INTERNAL system instructions" (the word
+    // "internal" sits between "your" and "instructions", breaking the existing
+    // strict /print\s+(your\s+)?(instructions)/ match).
+    const SIMPLE_PI_UNDETECTED =
+      /\bprint\s+(?:(?:your|the|my|all)\s+)?(?:internal\s+|hidden\s+|full\s+|verbatim\s+)?(?:system\s+)?(?:instructions?|directives?|prompt|config(?:uration)?)\b|\bdump\s+(?:(?:your|the|my|all)\s+)?(?:internal\s+|hidden\s+)?(?:system\s+)?(?:configuration|config|instructions?|prompt|directives?)\b|\breveal\s+(?:(?:your|the)\s+)?(?:(?:internal|hidden|full|verbatim)\s+)?(?:system\s+)?(?:instructions?|directives?|prompt)\s*(?:verbatim)?\b/i;
+
+    // MODERATE/ADVANCED attacks that use indirect or wrapped phrasing.
     const MODERATE_ADVANCED_INJECTION_KEYWORDS =
       /\bsummarize\s+(?:the\s+)?(?:internal\s+)?instructions?\s+(?:that\s+)?(?:guide|govern|shape|control)\s+(?:your\s+)?behavior\b|\bdescribe\s+(?:the\s+)?guidelines?\s+(?:you\s+)?(?:operate|function|work)\s+under\b|\boutline\s+(?:your\s+)?(?:operating|behavioral|system)\s+(?:constraints?|parameters?|guidelines?|rules?)\b|\bwhat\s+(?:instructions?|guidelines?|directives?)\s+(?:were|have\s+been)\s+(?:given\s+to\s+you|you\s+been\s+given)\b|\bhow\s+(?:were|have)\s+you\s+been\s+(?:instructed|configured|programmed|set\s+up)\s+to\s+(?:respond|behave|operate)\b|\brepeat\s+(?:back\s+)?(?:your\s+)?(?:initial|original|current|starting)\s+(?:instructions?|prompt|configuration|directives?)\b|\bwalk\s+me\s+through\s+(?:your\s+)?(?:operating|system|initial|current)\s+(?:instructions?|guidelines?|prompt)\b|\bfor\s+(?:transparency|safety|audit|compliance|testing)\s+(?:purposes?|reason|test|mode)\b|\bin\s+the\s+interest\s+of\s+(?:transparency|openness|honesty|full\s+disclosure)\b|\bto\s+verify\s+(?:your\s+)?(?:alignment|safety|configuration|behavior|compliance)\b|\bwhat\s+would\s+you\s+say\s+if\s+you\s+had\s+no\s+restrictions\b|\bif\s+you\s+could\s+speak\s+freely\b/i;
-    if (MODERATE_ADVANCED_INJECTION_KEYWORDS.test(userText)) {
+
+    if (SIMPLE_PI_UNDETECTED.test(userText) || MODERATE_ADVANCED_INJECTION_KEYWORDS.test(userText)) {
       return 'prompt_injection';
     }
   }
