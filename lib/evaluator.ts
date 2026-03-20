@@ -869,7 +869,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
     // Dojo 1 responses are intentionally simulated vulnerable output — the model
     // is instructed to demonstrate what a poorly-hardened system would do.
     // Legacy marker check is retained for any responses that still include them.
-    const isSimulatedOutput = dojoId === 1 || anyMatch(respText, SIMULATION_MARKERS);
+    const isSimulatedOutput = anyMatch(respText, SIMULATION_MARKERS);
     const assistantRefused  = anyMatch(respText, REFUSAL_MARKERS);
 
     // System prompt leak
@@ -903,61 +903,6 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
       responseSignals.push('Assistant did not refuse or apply educational framing to the attack');
     }
 
-    // Dojo 1: when guardrails allow a vulnerable outcome the scripted simulation
-    // was returned — the attack succeeded by design. Map the outcome to the
-    // evaluation flags so verdict and score reflect the actual result.
-    //
-    // Vulnerable path  (injectionShield=off && !strictPolicy) → full success
-    // Partial path     (injectionShield=basic)                → content-based detection below
-    // Blocked path     (strictPolicy || injectionShield=strict) → no compliance
-    //
-    // NOTE: For BASIC mode we do NOT set compliedWithAttack here. The BASIC
-    // shield may block the attack (serving a safe refusal) or allow it (serving
-    // a vulnerable response). We rely on content-based detection at the block
-    // below to distinguish the two: attackSucceeded=true only if leaked content
-    // is actually present in the response. Setting it unconditionally here
-    // caused attackSucceeded=true even when the BASIC shield correctly blocked.
-    if (dojoId === 1 && intent === 'active_attack' && !assistantRefused) {
-      const fullyVulnerable = !settings.strictPolicy && settings.injectionShield === 'off';
-
-      if (fullyVulnerable) {
-        compliedWithAttack = true;
-        if (!responseSignals.includes('Simulated vulnerability returned — guardrails are OFF')) {
-          responseSignals.push('Simulated vulnerability returned — guardrails are OFF');
-        }
-      }
-    }
-
-    // ── Dojo 1 content-based leak detection ───────────────────────────────────
-    // Scans the response for patterns that appear ONLY in VULNERABLE scripted
-    // output from scenario-simulations.ts. This catches cases where the user
-    // message was benign (e.g. jailbreak continuation asking for data,
-    // tool-abuse query without explicit attack markers) but the API route still
-    // returned a vulnerable response. Fires after the guardrail-state check so
-    // both paths set compliedWithAttack, and the content signals are additive.
-    if (dojoId === 1 && !assistantRefused) {
-      const credHits = collectSignals(respText, DOJO1_CRED_PATTERNS);
-      const sysHits  = collectSignals(respText, DOJO1_SYSTEM_PROMPT_PATTERNS);
-      const toolHits = collectSignals(respText, DOJO1_TOOL_PATTERNS);
-      const ragHits  = collectSignals(respText, DOJO1_RAG_PATTERNS);
-      const leakHits = [...credHits, ...sysHits, ...toolHits, ...ragHits];
-
-      if (leakHits.length > 0) {
-        compliedWithAttack = true;
-        responseSignals.push(...leakHits);
-
-        // When the user message was benign (e.g. jailbreak continuation) the
-        // pattern-matcher left intent as benign/probing.  Upgrade it so the
-        // scoring, attackSucceeded, and leakedDataCategory are all correct.
-        if (dojoId !== 1 && intent !== 'active_attack') {
-          intent = 'active_attack';
-          if (toolHits.length > 0)      attackType = 'tool_abuse';
-          else if (ragHits.length > 0)  attackType = 'rag_injection';
-          else if (credHits.length > 0) attackType = 'data_exfiltration';
-          else                          attackType = 'prompt_injection';
-        }
-      }
-    }
   }
 
   // ── C) Score ────────────────────────────────────────────────────────────────
@@ -1015,7 +960,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   let chainPenalty = 0;
   let attackChain: EvaluationResult['attackChain'];
 
-  if (dojoId === 1 && attackSucceeded) {
+  if (attackSucceeded) {
     const currentChainTypes =
       llmTypes.length > 0
         ? llmTypes
@@ -1117,11 +1062,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
     whatHappened:       buildWhatHappened(attackType, scenarioId),
     defensiveTakeaway:  buildDefensiveTakeaway(attackType, scenarioId),
     owaspCategory:      getOwaspCategory(attackType),
-    // Expose the leaked data category only when a Dojo 1 attack succeeded so
-    // the explanation panel can display "Sensitive data exposed: <category>".
-    leakedDataCategory: (dojoId === 1 && attackSucceeded)
-      ? (detectDojo1LeakedDataCategory(respText) ?? getLeakedCategory(scenarioId, attackType))
-      : undefined,
+    leakedDataCategory: undefined,
     attackChain,
   };
 }
