@@ -1319,9 +1319,6 @@ export function getScenarioForcedAttackTypeSync(
   if (scenarioId === 'rag-injection' && settings.ragEnabled && ragContext?.trim()) {
     return 'rag_injection';
   }
-  if (scenarioId === 'tool-abuse' && settings.allowTools) {
-    return 'tool_abuse';
-  }
   return null;
 }
 
@@ -1346,35 +1343,12 @@ export async function getScenarioForcedAttackType(
   settings: ControlConfig,
   ragContext?: string,
 ): Promise<ScenarioForcedResult> {
-  if (scenarioId === 'prompt-injection') {
-    const piAssessment = await assessPromptInjection(userText);
-    return {
-      attackType:   piAssessment.attackDetected ? 'prompt_injection' : null,
-      piAssessment,
-    };
-  }
-
-  // data-exfiltration: any message containing a data-related keyword triggers
-  // the scenario's secret-leak response when defenses are weak.
-  if (scenarioId === 'data-exfiltration' && DATA_EXFIL_KEYWORDS.test(userText)) {
-    return { attackType: 'data_exfiltration' };
-  }
-
-  // rag-injection: the attack is in the *retrieved context*, not the user
-  // message. Any user turn with RAG enabled and non-empty context activates
-  // rag_injection behavior so the poisoned document controls the outcome.
   if (
     scenarioId === 'rag-injection' &&
     settings.ragEnabled &&
     ragContext?.trim()
   ) {
     return { attackType: 'rag_injection' };
-  }
-
-  // tool-abuse: any message in the tool-abuse scenario when tools are enabled
-  // triggers the scripted scouting-tool response.
-  if (scenarioId === 'tool-abuse' && settings.allowTools) {
-    return { attackType: 'tool_abuse' };
   }
 
   return { attackType: null };

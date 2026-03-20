@@ -1,9 +1,7 @@
 /**
  * POST /api/evaluate
  *
- * Rules-based evaluator — Milestone 6.
- * IMPORTANT: This route NEVER calls the chat model or any external service.
- * All logic is pure pattern matching inside lib/evaluator.ts.
+ * Dojo 1 uses an LLM-first evaluator; other dojos still use local evaluation logic.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -26,8 +24,16 @@ const SettingsSchema = z.object({
 
 const AttackTypeEnum = z.enum([
   'benign', 'probing', 'prompt_injection', 'data_exfiltration',
-  'policy_bypass', 'tool_abuse', 'rag_injection', 'unknown',
+  'policy_bypass', 'tool_abuse', 'mixed_attack', 'rag_injection', 'unknown',
 ]);
+
+const LlmClassificationSchema = z.object({
+  types: z.array(z.string()).max(6),
+  primary: z.string().max(64),
+  isAttack: z.boolean(),
+  target: z.string().max(128),
+  requestedArtifact: z.string().max(256),
+});
 
 const EvaluateRequestSchema = z.object({
   dojoId: z.union([z.literal(1), z.literal(2), z.literal(3)]),
@@ -38,6 +44,8 @@ const EvaluateRequestSchema = z.object({
   ragContext: z.string().max(4000).optional(),
   /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
   sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
+  llmClassification: LlmClassificationSchema.optional(),
+  dojo1Outcome: z.enum(['vulnerable', 'partial', 'blocked']).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -58,14 +66,15 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // evaluate() is synchronous, pure, and makes no external calls.
-  const result = evaluate({
+  const result = await evaluate({
     dojoId:               parsed.data.dojoId,
     scenarioId:           parsed.data.scenarioId,
     settings:             parsed.data.settings,
     messages:             parsed.data.messages,
     ragContext:           parsed.data.ragContext,
     sessionAttackHistory: parsed.data.sessionAttackHistory,
+    llmClassification:    parsed.data.llmClassification,
+    dojo1Outcome:         parsed.data.dojo1Outcome,
   });
 
   return NextResponse.json(result);

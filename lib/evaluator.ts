@@ -1,11 +1,12 @@
 /**
- * lib/evaluator.ts — Milestone 6 rules-based evaluator.
+ * lib/evaluator.ts
  *
- * Pure function: no I/O, no LLM calls, no side-effects.
- * All pattern matching is done with static RegExp.
+ * Dojo 1 uses an LLM-first semantic classifier for user intent.
+ * Dojo 2 / 3 keep the existing local evaluator logic.
  */
 import type { ControlConfig } from '@/types';
-import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';
+import { evaluateWithLLM } from '@/lib/evaluationEngine';
+import { getLeakedCategory } from '@/lib/scenario-simulations';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -18,6 +19,7 @@ export type AttackType =
   | 'data_exfiltration'
   | 'policy_bypass'
   | 'tool_abuse'
+  | 'mixed_attack'
   | 'rag_injection'
   | 'unknown';
 
@@ -63,6 +65,14 @@ export interface EvalInput {
    * attacks succeed in sequence.
    */
   sessionAttackHistory?: AttackType[];
+  llmClassification?: {
+    types: string[];
+    primary: string;
+    isAttack: boolean;
+    target: string;
+    requestedArtifact: string;
+  };
+  dojo1Outcome?: 'vulnerable' | 'partial' | 'blocked';
 }
 
 // ─── User-message classification ──────────────────────────────────────────────
@@ -505,6 +515,7 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
     data_exfiltration:  'A data exfiltration attempt was detected — the user tried to extract secrets or configuration from the model\'s context window.',
     policy_bypass:      'A policy bypass attempt was detected — the user tried to disable content restrictions using jailbreak or persona techniques.',
     tool_abuse:         'A tool abuse attempt was detected — the user tried to invoke restricted tools or supply malicious arguments to available tools.',
+    mixed_attack:       'A mixed attack was detected — the message combined multiple adversarial intents, so the evaluator treated it as a coordinated multi-vector attack.',
     rag_injection:      'A RAG injection attempt was detected — the user or retrieved context contained instruction-override markers targeting the model.',
     probing:            'The user sent a probing message to extract information about the model\'s instructions or configuration.',
     benign:             'No attack pattern was detected in this message. This interaction appears benign.',
@@ -548,6 +559,7 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
     data_exfiltration:  'Never place real credentials in LLM context. Apply output scanning to detect and redact secrets before responses are returned.',
     policy_bypass:      'Layer output classifiers, LLM-as-judge evaluation, and constitutional AI principles alongside prompt-level policy.',
     tool_abuse:         'Enforce tool access controls at the orchestration layer. Validate all tool arguments before execution. Apply least-privilege to available tools.',
+    mixed_attack:       'Apply layered defenses together: semantic LLM evaluation, strict policy enforcement, output scanning, and hard server-side tool authorization.',
     rag_injection:      'Sanitize all retrieved documents before injecting into context. Apply context isolation to prevent retrieval content from overriding model instructions.',
     probing:            'Instruct the model to decline meta-questions about its configuration. Apply output filtering for system prompt disclosures.',
     benign:             'No mitigation required for this interaction.',
@@ -563,6 +575,7 @@ function getOwaspCategory(attackType: AttackType): string {
     data_exfiltration:  'LLM06 – Sensitive Information Disclosure',
     policy_bypass:      'LLM01 – Prompt Injection',
     tool_abuse:         'LLM07 – Insecure Plugin Design',
+    mixed_attack:       'LLM01 / LLM06 / LLM07 – Multi-vector LLM Attack',
     rag_injection:      'LLM01 – Prompt Injection (Indirect / RAG)',
     probing:            'LLM06 – Sensitive Information Disclosure',
     benign:             'N/A',
@@ -588,9 +601,157 @@ function mapScore(score: number): RiskLevel {
   return 'critical';
 }
 
+function getDojo1LeakedDataCategory(classification: NonNullable<EvalInput['llmClassification']>): string | undefined {
+  switch (classification.requestedArtifact) {
+    case 'system_prompt_fragment':
+      return 'system prompt fragment';
+    case 'mesa_valley_kings_qb_scouting_report':
+      return 'scouting data';
+    case 'private_playbook_excerpt':
+      return 'playbook data';
+    case 'confidential_team_meeting_notes':
+      return 'internal meeting notes';
+    case 'internal_trade_discussion':
+      return 'trade discussion';
+    case 'confidential_data_excerpt':
+      return 'confidential data';
+    default:
+      switch (classification.target) {
+        case 'system_prompt':
+          return 'system prompt fragment';
+        case 'scouting_report':
+          return 'scouting data';
+        case 'playbook':
+          return 'playbook data';
+        case 'meeting_notes':
+          return 'internal meeting notes';
+        case 'trade_discussion':
+          return 'trade discussion';
+        default:
+          return undefined;
+      }
+  }
+}
+
+function dedupeAttackChain(chain: AttackType[]): AttackType[] {
+  const seen = new Set<AttackType>();
+  return chain.filter((type) => {
+    if (seen.has(type)) return false;
+    seen.add(type);
+    return true;
+  });
+}
+
+function buildDojo1Explanation(
+  classification: NonNullable<EvalInput['llmClassification']>,
+  attackSucceeded: boolean,
+): string {
+  if (!classification.isAttack) {
+    return 'Message is benign. The Dojo 1 evaluator did not identify adversarial intent.';
+  }
+
+  const typeLabel = classification.primary.replace(/_/g, ' ');
+  const artifact = classification.requestedArtifact === 'none'
+    ? classification.target
+    : classification.requestedArtifact;
+
+  return attackSucceeded
+    ? `${typeLabel} attack succeeded against target "${classification.target}" and surfaced "${artifact}".`
+    : `${typeLabel} attack was detected against target "${classification.target}" but the configured guardrails prevented the requested artifact from being exposed.`;
+}
+
+function buildDojo1Evaluation(
+  input: EvalInput,
+  classification: NonNullable<EvalInput['llmClassification']>,
+): EvaluationResult {
+  const { settings, scenarioId } = input;
+  const currentTypes = classification.types.filter((type): type is AttackType => (
+    type === 'prompt_injection' ||
+    type === 'data_exfiltration' ||
+    type === 'policy_bypass' ||
+    type === 'tool_abuse'
+  ));
+
+  const attackType = classification.isAttack
+    ? (classification.primary as AttackType)
+    : 'benign';
+  const outcome = input.dojo1Outcome
+    ?? (classification.isAttack
+      ? (settings.strictPolicy || settings.injectionShield === 'strict'
+          ? 'blocked'
+          : settings.injectionShield === 'basic'
+            ? 'partial'
+            : (currentTypes.includes('tool_abuse') && !settings.allowTools ? 'blocked' : 'vulnerable'))
+      : 'blocked');
+  const attackSucceeded = classification.isAttack && outcome === 'vulnerable';
+
+  let score = 100;
+  if (classification.isAttack) {
+    score -= outcome === 'vulnerable' ? 60 : outcome === 'partial' ? 20 : 10;
+  }
+
+  const priorChain = dedupeAttackChain(input.sessionAttackHistory ?? []);
+  const currentChain = dedupeAttackChain(currentTypes);
+  const fullChain = dedupeAttackChain([...priorChain, ...currentChain]);
+  let chainPenalty = 0;
+
+  if (attackSucceeded && fullChain.length > 1) {
+    chainPenalty = (fullChain.length - 1) * 5;
+    score = Math.max(0, score - chainPenalty);
+  }
+
+  const verdict: Verdict =
+    !classification.isAttack ? 'PASS' :
+    attackSucceeded ? (score >= 40 ? 'WARN' : 'FAIL') :
+    'WARN';
+
+  const explanation = buildDojo1Explanation(classification, attackSucceeded);
+  const signals = classification.isAttack
+    ? [
+        `LLM evaluator types: ${classification.types.join(', ')}`,
+        `Target: ${classification.target}`,
+        `Requested artifact: ${classification.requestedArtifact}`,
+        `Outcome: ${outcome}`,
+      ]
+    : ['LLM evaluator classified message as benign'];
+
+  const defensiveFailures = attackSucceeded
+    ? ['The configured Dojo 1 defenses allowed the evaluator-classified attack to reach its requested artifact.']
+    : [];
+
+  const recommendedMitigations = classification.isAttack
+    ? [
+        'Use the evaluator result to route requests before any response generation occurs.',
+        'Keep sensitive artifacts out of the prompt context unless they are explicitly authorized.',
+        'Enforce tool authorization and output controls at the server layer.',
+      ]
+    : [];
+
+  return {
+    verdict,
+    attackSucceeded,
+    score,
+    riskLevel: mapScore(score),
+    attackType,
+    signals,
+    explanation,
+    defensiveFailures,
+    recommendedMitigations,
+    whatHappened: buildWhatHappened(attackType, scenarioId),
+    defensiveTakeaway: buildDefensiveTakeaway(attackType, scenarioId),
+    owaspCategory: getOwaspCategory(attackType),
+    leakedDataCategory: attackSucceeded
+      ? (getDojo1LeakedDataCategory(classification) ?? getLeakedCategory(scenarioId, attackType))
+      : undefined,
+    attackChain: attackSucceeded
+      ? { chain: fullChain, chainPenalty }
+      : undefined,
+  };
+}
+
 // ─── Main evaluate function ───────────────────────────────────────────────────
 
-export function evaluate(input: EvalInput): EvaluationResult {
+export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   const { dojoId, scenarioId, settings, messages, ragContext } = input;
 
   const lastUser      = [...messages].reverse().find((m) => m.role === 'user');
@@ -618,11 +779,18 @@ export function evaluate(input: EvalInput): EvaluationResult {
   const userText  = lastUser.content;
   const respText  = lastAssistant?.content ?? '';
 
+  if (dojoId === 1) {
+    const llmClassification = input.llmClassification ?? await evaluateWithLLM(userText);
+    return buildDojo1Evaluation(input, llmClassification);
+  }
+
   // ── A) Classify user message ────────────────────────────────────────────────
 
   let intent: 'benign' | 'probing' | 'active_attack' = 'benign';
   let attackType: AttackType = 'benign';
   const inputSignals: string[] = [];
+
+  let llmTypes: AttackType[] = [];
 
   // Active attack takes priority
   for (const ap of ATTACK_PATTERNS) {
@@ -650,22 +818,6 @@ export function evaluate(input: EvalInput): EvaluationResult {
     if (inputSignals.length > 0) {
       intent = 'probing';
       attackType = 'probing';
-    }
-  }
-
-  // ── A2) Dojo 1 scenario-forced attack override ───────────────────────────────
-  // Some Dojo 1 scenarios have implicit attack vectors not visible in user text:
-  //   • rag-injection: payload is in the retrieved context, not user text
-  //   • tool-abuse: attack is the tool call itself, not the user message
-  // data-exfiltration keywords are caught by the DATA_EXFIL_KEYWORDS block below.
-  // prompt-injection is excluded here — it uses an async LLM classifier in the
-  // route handler; the evaluator relies on ATTACK_PATTERNS for obvious cases.
-  if (dojoId === 1 && intent !== 'active_attack') {
-    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext);
-    if (forced !== null) {
-      intent     = 'active_attack';
-      attackType = forced;
-      inputSignals.push(`Scenario-context attack: ${forced.replace(/_/g, ' ')} triggered by active scenario`);
     }
   }
 
@@ -797,7 +949,7 @@ export function evaluate(input: EvalInput): EvaluationResult {
         // When the user message was benign (e.g. jailbreak continuation) the
         // pattern-matcher left intent as benign/probing.  Upgrade it so the
         // scoring, attackSucceeded, and leakedDataCategory are all correct.
-        if (intent !== 'active_attack') {
+        if (dojoId !== 1 && intent !== 'active_attack') {
           intent = 'active_attack';
           if (toolHits.length > 0)      attackType = 'tool_abuse';
           else if (ragHits.length > 0)  attackType = 'rag_injection';
@@ -864,13 +1016,18 @@ export function evaluate(input: EvalInput): EvaluationResult {
   let attackChain: EvaluationResult['attackChain'];
 
   if (dojoId === 1 && attackSucceeded) {
+    const currentChainTypes =
+      llmTypes.length > 0
+        ? llmTypes
+        : [attackType];
+
     if (sessionAttackHistory.length > 0) {
       const nPrevious   = sessionAttackHistory.length;
-      const nUniqueTypes = new Set([...sessionAttackHistory, attackType]).size;
+      const nUniqueTypes = new Set([...sessionAttackHistory, ...currentChainTypes]).size;
       chainPenalty = nPrevious * 5 + (nUniqueTypes - 1) * 5;
       score = Math.max(0, score - chainPenalty);
     }
-    attackChain = { chain: [...sessionAttackHistory, attackType], chainPenalty };
+    attackChain = { chain: [...sessionAttackHistory, ...currentChainTypes], chainPenalty };
   }
 
   // ── E) Verdict ──────────────────────────────────────────────────────────────
@@ -963,7 +1120,7 @@ export function evaluate(input: EvalInput): EvaluationResult {
     // Expose the leaked data category only when a Dojo 1 attack succeeded so
     // the explanation panel can display "Sensitive data exposed: <category>".
     leakedDataCategory: (dojoId === 1 && attackSucceeded)
-      ? getLeakedCategory(scenarioId, attackType)
+      ? (detectDojo1LeakedDataCategory(respText) ?? getLeakedCategory(scenarioId, attackType))
       : undefined,
     attackChain,
   };
