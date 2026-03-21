@@ -16,7 +16,7 @@
 import type { AttackType } from '@/lib/evaluator';
 import type { ControlConfig } from '@/types';
 import { getModelClient } from '@/lib/model-client';
-import { classifyDojo1PromptInjection } from '@/lib/dojo1-classifier';
+import { classifyDojo1Message } from '@/lib/dojo1-classifier';
 import type { RequestedArtifact as Dojo1Artifact } from '@/lib/dojo1-classifier';
 
 // ─── Rotating hidden-prompt fragments (Dojo 1 prompt-injection scenario) ──────
@@ -1146,15 +1146,15 @@ const DATA_EXFIL_KEYWORDS =
 
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
-// Delegates to the shared deterministic 2-component gate in dojo1-classifier.ts.
-// That module is the single source of truth for Dojo 1 prompt-injection
-// classification — it is also imported by the evaluator so both paths produce
-// identical results for the same input, eliminating split-brain behavior.
+// classifyDojo1Message (from dojo1-classifier.ts) is the SINGLE source of truth.
+// It is imported here AND by the evaluator so both paths always produce the
+// same classification for the same input — no split-brain is possible.
 //
-// classifySemantically(message) → { isAttack, requestedArtifact }
-// assessPromptInjection(message) → PIAssessment
+// classifySemantically is a thin synchronous wrapper (async signature retained
+// for call-site compatibility). It makes NO external calls.
+// assessPromptInjection wraps it into the PIAssessment shape used by the route.
 //
-// Both retain async signatures so existing callers need no changes.
+// Neither function may add any independent re-interpretation logic.
 
 type TargetClass     = 'internal_control_layer' | 'normal';
 type ActionClass     = 'override' | 'extract' | 'override_extract' | 'none';
@@ -1186,14 +1186,15 @@ export interface PIAssessment {
 }
 
 /**
- * Thin async wrapper around the shared deterministic gate.
- * Retains async signature so all call-sites remain unchanged.
- * Makes no external calls — pure delegation to classifyDojo1PromptInjection.
+ * Thin async wrapper that delegates to classifyDojo1Message — the single shared
+ * classifier.  Retains async signature so all call-sites remain unchanged.
+ * Adds no logic of its own; only adapts the return shape.
  */
 async function classifySemantically(
   message: string,
 ): Promise<{ isAttack: boolean; requestedArtifact: RequestedArtifact | null }> {
-  return classifyDojo1PromptInjection(message);
+  const result = classifyDojo1Message(message);
+  return { isAttack: result.isAttack, requestedArtifact: result.requestedArtifact };
 }
 
 /**
