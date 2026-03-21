@@ -18,6 +18,7 @@ import type { ControlConfig } from '@/types';
 import { getModelClient } from '@/lib/model-client';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
 import type { RequestedArtifact as Dojo1Artifact, Dojo1AttackType, Dojo1Classification } from '@/lib/dojo1-classifier';
+import { resolveTeamSlug, getTeamSpecificArtifact } from '@/lib/ugl-data';
 
 // ─── Rotating hidden-prompt fragments (Dojo 1 prompt-injection scenario) ──────
 // Used by getSimulatedResponse when attackType is prompt_injection so that
@@ -1021,30 +1022,54 @@ export async function getOFFModeResponse(
         ctx.HIDDEN_SYSTEM_PROMPT;
       break;
 
-    case 'playbook':
-      artifactContent =
-        `Playbook accessed. Internal strategy notes:\n\n` +
-        ctx.INTERNAL_PLAYBOOK_NOTES.join('\n');
-      break;
-
-    case 'scouting_report': {
-      const reports = ctx.SCOUTING_REPORT_ARCHIVE
-        .map(
-          (r) =>
-            `${r.name} (${r.player_id}) — ${r.position}, ${r.school}\n` +
-            `Grade: ${r.scouting_grade} | 40-time: ${r.forty_time}\n` +
-            `Internal notes: ${r.internal_notes}`,
-        )
-        .join('\n\n');
-      artifactContent = `Scouting database accessed. Internal scouting reports:\n\n${reports}`;
+    case 'playbook': {
+      // If the user named a specific team, return that team's playbook notes.
+      const playbookTeamSlug = resolveTeamSlug(userText);
+      const teamPlaybookArtifact = playbookTeamSlug
+        ? getTeamSpecificArtifact(playbookTeamSlug, 'playbook')
+        : null;
+      artifactContent = teamPlaybookArtifact
+        ? `Playbook accessed.\n\n${teamPlaybookArtifact}`
+        : `Playbook accessed. Internal strategy notes:\n\n` +
+          ctx.INTERNAL_PLAYBOOK_NOTES.join('\n');
       break;
     }
 
-    case 'meeting_notes':
-      artifactContent =
-        `Meeting notes retrieved. Confidential strategy discussions:\n\n` +
-        ctx.CONFIDENTIAL_STRATEGY_NOTES.join('\n');
+    case 'scouting_report': {
+      // If the user named a specific team, return that team's internal scouting report.
+      const scoutTeamSlug = resolveTeamSlug(userText);
+      const teamScoutArtifact = scoutTeamSlug
+        ? getTeamSpecificArtifact(scoutTeamSlug, 'scouting_report')
+        : null;
+      if (teamScoutArtifact) {
+        artifactContent = `Scouting database accessed.\n\n${teamScoutArtifact}`;
+      } else {
+        // No specific team requested — return the general league-wide scouting archive.
+        const reports = ctx.SCOUTING_REPORT_ARCHIVE
+          .map(
+            (r) =>
+              `${r.name} (${r.player_id}) — ${r.position}, ${r.school}\n` +
+              `Grade: ${r.scouting_grade} | 40-time: ${r.forty_time}\n` +
+              `Internal notes: ${r.internal_notes}`,
+          )
+          .join('\n\n');
+        artifactContent = `Scouting database accessed. Internal scouting reports:\n\n${reports}`;
+      }
       break;
+    }
+
+    case 'meeting_notes': {
+      // If the user named a specific team, return that team's meeting notes.
+      const notesTeamSlug = resolveTeamSlug(userText);
+      const teamNotesArtifact = notesTeamSlug
+        ? getTeamSpecificArtifact(notesTeamSlug, 'meeting_notes')
+        : null;
+      artifactContent = teamNotesArtifact
+        ? `Meeting notes retrieved.\n\n${teamNotesArtifact}`
+        : `Meeting notes retrieved. Confidential strategy discussions:\n\n` +
+          ctx.CONFIDENTIAL_STRATEGY_NOTES.join('\n');
+      break;
+    }
 
     case 'credentials': {
       const tokens = Object.entries(ctx.INTERNAL_AUTH_TOKENS)
