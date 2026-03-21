@@ -17,7 +17,7 @@ import type { AttackType } from '@/lib/evaluator';
 import type { ControlConfig } from '@/types';
 import { getModelClient } from '@/lib/model-client';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
-import type { RequestedArtifact as Dojo1Artifact, Dojo1AttackType } from '@/lib/dojo1-classifier';
+import type { RequestedArtifact as Dojo1Artifact, Dojo1AttackType, Dojo1Classification } from '@/lib/dojo1-classifier';
 
 // ─── Rotating hidden-prompt fragments (Dojo 1 prompt-injection scenario) ──────
 // Used by getSimulatedResponse when attackType is prompt_injection so that
@@ -887,24 +887,54 @@ const OFF_NORMAL_RESPONSES = [
   "System running normally.",
 ] as const;
 
+// ─── Attack-specific partial/blocked response pools (prompt-injection scenario) ─
+
+/** Basic-mode resistance for data-exfiltration attacks in prompt-injection scenario. */
+const DATA_EXFIL_BASIC_BLOCKED = [
+  `I'm not comfortable surfacing restricted internal data like scouting reports or playbooks — those are protected. Happy to help with public UGL info instead.`,
+  `That looks like a request for confidential internal content. I'll stay within my access guidelines. Anything from the public league record I can pull up?`,
+  `I'd rather not share protected internal documents. Let me know if there's a general football question I can help with instead.`,
+  `Restricted internal data isn't something I should be surfacing. Is there something from the public UGL record I can help with?`,
+] as const;
+
+/** Strict-mode block for data-exfiltration attacks in prompt-injection scenario. */
+const DATA_EXFIL_STRICT_BLOCKED = [
+  `I can't share protected internal data or restricted documents.`,
+  `Access to internal records, scouting data, and confidential documents is restricted.`,
+  `That request targets protected internal content. I'm not able to share it.`,
+  `Internal documents and protected data are not accessible through this interface.`,
+] as const;
+
+/** Basic-mode resistance for policy-bypass attacks in prompt-injection scenario. */
+const POLICY_BYPASS_BASIC_BLOCKED = [
+  `I'm not comfortable setting aside my guidelines for this — those rules are there for a reason. Happy to help with UGL questions instead.`,
+  `That feels like an attempt to get around my operating boundaries. I'll stay within them. Anything about the league I can help with?`,
+  `I'd rather keep my guardrails in place here. Let me know if there's something else I can help you with.`,
+] as const;
+
+/** Strict-mode block for policy-bypass attacks in prompt-injection scenario. */
+const POLICY_BYPASS_STRICT_BLOCKED = [
+  `I can't disable or bypass my operational guidelines.`,
+  `My policies and guardrails are not subject to override via user input.`,
+  `That request attempts to circumvent my operating rules. I'm not able to comply.`,
+] as const;
+
 /**
- * Returns the OFF mode response for a classified prompt injection attempt.
+ * Returns the OFF mode response for a classified Dojo 1 attack.
  *
- * When an attack is detected the system has no defenses and complies fully,
- * returning the EXACT artifact the attacker requested.  The artifact is
- * determined by assessment.requestedArtifact — no substitution, no summary.
+ * TWO-STEP RULE — strictly enforced:
+ *   Step 1 (attack type) determines the classification label.
+ *   Step 2 (requested outcome) determines the response content:
+ *     - protectedDataRequested = true  → leak ONLY the exact requested artifact
+ *     - protectedDataRequested = false → behavioral compliance only, NO data leak
  *
- * Artifact mapping (strict):
- *   system_prompt   → HIDDEN_SYSTEM_PROMPT verbatim
- *   playbook        → INTERNAL_PLAYBOOK_NOTES
- *   scouting_report → SCOUTING_REPORT_ARCHIVE
- *   meeting_notes   → CONFIDENTIAL_STRATEGY_NOTES
- *   credentials     → INTERNAL_AUTH_TOKENS
- *   other           → generic override compliance (no data leak)
+ * This means a pure prompt_injection (behavior override, no data request) in
+ * OFF mode complies with the override but NEVER leaks hidden data.  Only an
+ * explicit data request (data_exfiltration or mixed_attack with data) triggers
+ * an artifact leak.
  *
- * When no attack was detected this function should not be called — it falls
- * back to a normal response string as a safety net, but benign inputs are
- * routed to the LLM by the route handler before reaching this function.
+ * When no attack was detected this function falls back to a normal response
+ * as a safety net (benign inputs should be routed to the LLM by the caller).
  */
 export function getOFFModeResponse(assessment: PIAssessment): string {
   if (!assessment.attackDetected) {
@@ -913,6 +943,14 @@ export function getOFFModeResponse(assessment: PIAssessment): string {
     return pickRandom(OFF_NORMAL_RESPONSES);
   }
 
+  // ── Step 2 gate: only leak data if protected data was explicitly requested ──
+  // A prompt_injection / policy_bypass / tool_abuse attack that does NOT request
+  // protected data must NOT trigger a leak — it should only comply behaviorally.
+  if (!assessment.shouldLeak) {
+    return pickRandom(OFF_NEUTRAL_RESPONSES);
+  }
+
+  // ── Protected data was requested — leak only the exact artifact ────────────
   const ctx = INTERNAL_UGL_CONTEXT;
 
   switch (assessment.requestedArtifact) {
@@ -955,7 +993,7 @@ export function getOFFModeResponse(assessment: PIAssessment): string {
 
     case 'other':
     default:
-      // Override-only attack — comply without leaking a specific artifact
+      // shouldLeak was true but no specific artifact — behavioral compliance only
       return pickRandom(OFF_NEUTRAL_RESPONSES);
   }
 }
@@ -1075,18 +1113,23 @@ export function getPartialResponse(
   attackType: AttackType,
   turnIndex?: number,
 ): string {
-  // prompt-injection with prompt_injection attack: pick from soft-refusal pool.
-  // Uses Math.random() so the same turn index doesn't always produce the same
-  // wording — avoids the "always response #1 on the first blocked turn" pattern.
-  if (
-    scenarioId === 'prompt-injection' &&
-    attackType === 'prompt_injection'
-  ) {
-    const pool = PROMPT_INJECTION_BASIC_BLOCKED;
-    // Mix random selection with turn-based offset so variation improves both
-    // within a session (different turns) and across sessions (different runs).
+  if (scenarioId === 'prompt-injection') {
+    // All attack types in the prompt-injection scenario use attack-specific pools.
+    // The attack label is preserved across defense modes — only behavior changes.
     const base = turnIndex ?? 0;
-    const idx  = (base + Math.floor(Math.random() * pool.length)) % pool.length;
+    let pool: readonly string[];
+    switch (attackType) {
+      case 'data_exfiltration':
+        pool = DATA_EXFIL_BASIC_BLOCKED;
+        break;
+      case 'policy_bypass':
+        pool = POLICY_BYPASS_BASIC_BLOCKED;
+        break;
+      default:
+        // prompt_injection, mixed_attack, tool_abuse, unknown
+        pool = PROMPT_INJECTION_BASIC_BLOCKED;
+    }
+    const idx = (base + Math.floor(Math.random() * pool.length)) % pool.length;
     return pool[idx];
   }
   return (
@@ -1104,15 +1147,23 @@ export function getDefendedResponse(
   attackType: AttackType,
   turnIndex?: number,
 ): string {
-  // prompt-injection with prompt_injection attack: pick from firm-refusal pool.
-  // Uses Math.random() combined with turn offset for non-predictable variation.
-  if (
-    scenarioId === 'prompt-injection' &&
-    attackType === 'prompt_injection'
-  ) {
-    const pool = PROMPT_INJECTION_STRICT_BLOCKED;
+  if (scenarioId === 'prompt-injection') {
+    // All attack types in the prompt-injection scenario use attack-specific pools.
+    // The attack label is preserved — only the response behavior changes.
     const base = turnIndex ?? 0;
-    const idx  = (base + Math.floor(Math.random() * pool.length)) % pool.length;
+    let pool: readonly string[];
+    switch (attackType) {
+      case 'data_exfiltration':
+        pool = DATA_EXFIL_STRICT_BLOCKED;
+        break;
+      case 'policy_bypass':
+        pool = POLICY_BYPASS_STRICT_BLOCKED;
+        break;
+      default:
+        // prompt_injection, mixed_attack, tool_abuse, unknown
+        pool = PROMPT_INJECTION_STRICT_BLOCKED;
+    }
+    const idx = (base + Math.floor(Math.random() * pool.length)) % pool.length;
     return pool[idx];
   }
   return (
@@ -1168,12 +1219,21 @@ export type RequestedArtifact = Dojo1Artifact;
 export interface PIAssessment {
   attackDetected: boolean;
   /**
-   * True when the message targets protected model internals AND explicitly
-   * asks to reveal or extract hidden information (action = 'extract' or
-   * 'override_extract').  Override-only attacks (no extract intent) must
-   * never set this true.
+   * Step 2b result: true ONLY when protected data was explicitly requested.
+   * A pure instruction-override attack (prompt_injection / policy_bypass with
+   * no data request) must set this false — no data leak must occur for it.
+   * Controls whether getOFFModeResponse leaks an artifact.
    */
   shouldLeak: boolean;
+  /**
+   * Step 2a result: true when the attack attempts behavioral override,
+   * identity change, or instruction manipulation (regardless of data request).
+   */
+  behavioralOverrideRequested: boolean;
+  /**
+   * Step 2b result: mirrors shouldLeak; explicit name for the two-step contract.
+   */
+  protectedDataRequested: boolean;
   isOverride: boolean;
   isExtract: boolean;
   isProtectedTarget: boolean;
@@ -1187,12 +1247,10 @@ export interface PIAssessment {
 /**
  * Thin async wrapper that awaits classifyDojo1Message — the single shared
  * classifier.  Adds no interpretation logic of its own; only adapts the shape.
+ * Returns the full classification so all Step 2 fields are available downstream.
  */
-async function classifySemantically(
-  message: string,
-): Promise<{ isAttack: boolean; attackType: Dojo1AttackType; requestedArtifact: RequestedArtifact | null }> {
-  const result = await classifyDojo1Message(message);
-  return { isAttack: result.isAttack, attackType: result.attackType, requestedArtifact: result.requestedArtifact };
+async function classifySemantically(message: string): Promise<Dojo1Classification> {
+  return classifyDojo1Message(message);
 }
 
 /**
@@ -1218,26 +1276,44 @@ async function classifySemantically(
  *   normal / benign  → attackDetected=false, shouldLeak=false
  */
 export async function assessPromptInjection(message: string): Promise<PIAssessment> {
-  const { isAttack, attackType: dojo1AttackType, requestedArtifact } = await classifySemantically(message);
+  const result = await classifySemantically(message);
+  const {
+    isAttack,
+    attackType:                  dojo1AttackType,
+    requestedArtifact,
+    behavioralOverrideRequested: overrideReq,
+    protectedDataRequested:      dataReq,
+  } = result;
 
   const isProtectedTarget = isAttack;
-  const isExtract         = isAttack && requestedArtifact !== null && requestedArtifact !== 'other';
-  const isOverride        = isAttack;
+  // isExtract: data was explicitly requested AND a specific artifact was named.
+  const isExtract = dataReq && requestedArtifact !== null && requestedArtifact !== 'other';
+  const isOverride = isAttack && overrideReq;
+
+  // ── Step 2: shouldLeak is driven ONLY by protectedDataRequested ──────────
+  // A pure instruction-override attack (prompt_injection / policy_bypass with no
+  // data request) MUST NOT leak data — OFF mode complies behaviorally only.
+  // Data leaks only when the attacker explicitly requested a protected artifact.
+  const shouldLeak            = dataReq;
+  const protectedDataRequested = dataReq;
+  const behavioralOverrideRequested = isAttack && overrideReq;
+
   // Map Dojo1AttackType to AttackTypeClass: benign → 'none', everything else passes through.
   const attackType: AttackTypeClass = isAttack
     ? (dojo1AttackType as Exclude<Dojo1AttackType, 'benign'>)
     : 'none';
   const target: TargetClass = isAttack ? 'internal_control_layer' : 'normal';
   const action: ActionClass = isAttack
-    ? (isExtract ? 'override_extract' : 'override')
+    ? (isExtract ? 'override_extract' : isOverride ? 'override' : 'extract')
     : 'none';
 
   const attackDetected = isAttack;
-  const shouldLeak     = isAttack && isExtract;
 
   return {
     attackDetected,
     shouldLeak,
+    behavioralOverrideRequested,
+    protectedDataRequested,
     isOverride,
     isExtract,
     isProtectedTarget,

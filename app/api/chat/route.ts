@@ -294,9 +294,7 @@ export async function POST(req: NextRequest) {
       // Session-aware fragment and lead-in selection for prompt-injection scenario.
       // Scans prior messages to avoid repetition across turns.
       const { fragmentIndex, leadInIndex } = (
-        outcome === 'vulnerable' &&
-        scenarioId === 'prompt-injection' &&
-        (resolvedAttackType === 'prompt_injection' || resolvedAttackType === 'data_exfiltration')
+        outcome === 'vulnerable' && scenarioId === 'prompt-injection'
       ) ? selectPromptInjectionLeak(messages, turnIndex)
         : { fragmentIndex: turnIndex, leadInIndex: turnIndex };
 
@@ -309,19 +307,29 @@ export async function POST(req: NextRequest) {
         leadInIndex,
       });
 
-      // ── OFF mode prompt-injection: intent-based leak vs. neutral ──────────
-      // ── OFF mode prompt-injection: route through intent-classified response bank ─
-      // All three outcomes (benign / PI-only / PI+exfil) are handled by
-      // getOFFModeResponse, which selects from the appropriate pool based on
-      // the semantic assessment.  piAssessment is reused from the detection step
-      // above; if the evaluator caught the attack before that step, we classify
-      // here instead (still one LLM call per message).
+      // ── Prompt-injection scenario: ALL attack types route through the semantic path ──
+      //
+      // For ALL attack types in the prompt-injection scenario the response is
+      // determined by the two-step semantic assessment, not by raw attack type:
+      //
+      //   Vulnerable (OFF):
+      //     getOFFModeResponse uses PIAssessment.shouldLeak (Step 2) to decide:
+      //       shouldLeak=true  → leak the exact requested artifact
+      //       shouldLeak=false → behavioral compliance only (no data leak)
+      //
+      //   Partial (BASIC):
+      //     getPartialResponse uses attack-type-specific soft-refusal pools.
+      //
+      //   Blocked (STRICT):
+      //     getDefendedResponse uses attack-type-specific firm-refusal pools.
+      //
+      // The attack label stays the same across all three modes.
+      // Only the response behavior and score change.
       let content: string;
-      if (
-        outcome === 'vulnerable' &&
-        scenarioId === 'prompt-injection' &&
-        resolvedAttackType === 'prompt_injection'
-      ) {
+      if (outcome === 'vulnerable' && scenarioId === 'prompt-injection') {
+        // Re-use the pre-computed piAssessment from the semantic classifier.
+        // If the evaluator short-circuited before the semantic gate ran (rare),
+        // classify now — still one LLM call per message total.
         const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
         content = getOFFModeResponse(piAssessment);
       } else {
