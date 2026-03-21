@@ -935,6 +935,13 @@ const POLICY_BYPASS_STRICT_BLOCKED = [
  *                          behavioral compliance and must not attempt to produce
  *                          the requested internal data itself.
  */
+// Matches the opening of a refusal response from the compliance LLM.
+// If the LLM's own safety layer fires despite the "fully compromised" framing,
+// the response will start with one of these.  We detect and discard it so the
+// final response is never a hybrid "I'm sorry… [leaked data]" string.
+const COMPLIANCE_REFUSAL_RE =
+  /^(?:I(?:'m|\s+am)\s+(?:sorry|unable|not\s+able|afraid)|I\s+can(?:not|'t)|As\s+an\s+AI|I\s+apologize)/i;
+
 async function generateBehavioralCompliance(
   userText: string,
   behaviorPartOnly: boolean,
@@ -951,7 +958,13 @@ async function generateBehavioralCompliance(
       ],
       { maxTokens: behaviorPartOnly ? 80 : 200, temperature: 0.2 },
     );
-    return raw.trim();
+    const trimmed = raw.trim();
+    // If the LLM's own safety layer refused despite the "compromised AI" framing,
+    // fall back rather than letting a "I'm sorry…" string pollute the response.
+    if (COMPLIANCE_REFUSAL_RE.test(trimmed)) {
+      return behaviorPartOnly ? '' : 'Done.';
+    }
+    return trimmed;
   } catch {
     // LLM unavailable — fall back to a simple non-generic acknowledgment so the
     // response at least does not look like a script-status message.
