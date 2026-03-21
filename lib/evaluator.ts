@@ -1059,18 +1059,16 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
     // below to distinguish the two: attackSucceeded=true only if leaked content
     // is actually present in the response. Setting it unconditionally here
     // caused attackSucceeded=true even when the BASIC shield correctly blocked.
-    // For Dojo 1 prompt-injection scenario: all compliance (both behavioral and
-    // data-leak) is detected via content patterns below.  The unconditional
-    // fullyVulnerable flag is NOT used for this scenario because it cannot
-    // distinguish a behavioral-override response from a data-leak response —
-    // that distinction is what drives hasActualDataLeak and the scoring tier.
     //
-    // For non-prompt-injection Dojo 1 scenarios the unconditional flag remains
-    // as a safety net in case a scripted response does not match any pattern.
+    // For the prompt-injection scenario, OFF mode now returns LLM-generated
+    // behavioral compliance responses (e.g. "DONE", pirate text) that do not
+    // match any fixed content pattern.  The fullyVulnerable flag covers these
+    // cases.  hasActualDataLeak (set by content patterns below) then determines
+    // the scoring tier: data leak → −50, override-only → −20.
     if (dojoId === 1 && intent === 'active_attack' && !assistantRefused) {
       const fullyVulnerable = !settings.strictPolicy && settings.injectionShield === 'off';
 
-      if (fullyVulnerable && scenarioId !== 'prompt-injection') {
+      if (fullyVulnerable) {
         compliedWithAttack = true;
         if (!responseSignals.includes('Simulated vulnerability returned — guardrails are OFF')) {
           responseSignals.push('Simulated vulnerability returned — guardrails are OFF');

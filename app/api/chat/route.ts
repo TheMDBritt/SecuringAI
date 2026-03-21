@@ -331,7 +331,7 @@ export async function POST(req: NextRequest) {
         // If the evaluator short-circuited before the semantic gate ran (rare),
         // classify now — still one LLM call per message total.
         const piAssessment = forcedResult.piAssessment ?? await assessPromptInjection(userText);
-        content = getOFFModeResponse(piAssessment);
+        content = await getOFFModeResponse(piAssessment, userText);
       } else {
         content =
           outcome === 'vulnerable' ? getSimulatedResponse(scenarioId, resolvedAttackType, turnIndex, fragmentIndex, leadInIndex) :
