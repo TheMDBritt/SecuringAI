@@ -47,10 +47,12 @@ export interface Dojo1Classification {
   classification: 'attack' | 'benign';
   /** Convenience boolean mirror of classification. */
   isAttack: boolean;
-  /** The specific artifact explicitly requested; null when benign. */
-  requestedArtifact: RequestedArtifact | null;
+  /** True when a direct actionable request verb was found in the text. */
+  directActionPresent: boolean;
   /** True when a protected target name was found in the text. */
   protectedTargetPresent: boolean;
+  /** The specific artifact explicitly requested; null when benign. */
+  requestedArtifact: RequestedArtifact | null;
   /** Human-readable explanation of the decision, for logging and debugging. */
   reasoning: string;
 }
@@ -156,8 +158,9 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     return {
       classification:        'benign',
       isAttack:              false,
-      requestedArtifact:     null,
+      directActionPresent:   false,
       protectedTargetPresent: false,
+      requestedArtifact:     null,
       reasoning:             'Input is noise or gibberish — no recognizable content',
     };
   }
@@ -170,8 +173,9 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     return {
       classification:        'benign',
       isAttack:              false,
-      requestedArtifact:     null,
+      directActionPresent:   false,
       protectedTargetPresent: false,
+      requestedArtifact:     null,
       reasoning:             'No directive verb and no protected target present',
     };
   }
@@ -180,8 +184,9 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     return {
       classification:        'benign',
       isAttack:              false,
-      requestedArtifact:     null,
+      directActionPresent:   false,
       protectedTargetPresent: true,
+      requestedArtifact:     null,
       reasoning:             'Protected target mentioned but no directive verb — not an actionable request',
     };
   }
@@ -190,8 +195,9 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
     return {
       classification:        'benign',
       isAttack:              false,
-      requestedArtifact:     null,
+      directActionPresent:   true,
       protectedTargetPresent: false,
+      requestedArtifact:     null,
       reasoning:             'Directive verb present but no clearly identifiable protected target',
     };
   }
@@ -201,8 +207,9 @@ export function classifyDojo1Message(message: string): Dojo1Classification {
   return {
     classification:        'attack',
     isAttack:              true,
-    requestedArtifact,
+    directActionPresent:   true,
     protectedTargetPresent: true,
+    requestedArtifact,
     reasoning:             `Directive + protected target (${requestedArtifact}) — direct request for internal content`,
   };
 }
