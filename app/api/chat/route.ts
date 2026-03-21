@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Classify user intent (intent-only evaluator pass) ─────────────────
-    const preEval = evaluate({
+    const preEval = await evaluate({
       dojoId,
       scenarioId,
       settings: controlConfig,

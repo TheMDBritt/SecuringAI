@@ -26,7 +26,7 @@ const SettingsSchema = z.object({
 
 const AttackTypeEnum = z.enum([
   'benign', 'probing', 'prompt_injection', 'data_exfiltration',
-  'policy_bypass', 'tool_abuse', 'rag_injection', 'unknown',
+  'policy_bypass', 'tool_abuse', 'mixed_attack', 'rag_injection', 'unknown',
 ]);
 
 const EvaluateRequestSchema = z.object({
@@ -58,8 +58,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // evaluate() is synchronous, pure, and makes no external calls.
-  const result = evaluate({
+  // evaluate() calls the shared LLM classifier for Dojo 1 prompt-injection turns.
+  const result = await evaluate({
     dojoId:               parsed.data.dojoId,
     scenarioId:           parsed.data.scenarioId,
     settings:             parsed.data.settings,

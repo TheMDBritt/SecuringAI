@@ -17,7 +17,7 @@ import type { AttackType } from '@/lib/evaluator';
 import type { ControlConfig } from '@/types';
 import { getModelClient } from '@/lib/model-client';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
-import type { RequestedArtifact as Dojo1Artifact } from '@/lib/dojo1-classifier';
+import type { RequestedArtifact as Dojo1Artifact, Dojo1AttackType } from '@/lib/dojo1-classifier';
 
 // ─── Rotating hidden-prompt fragments (Dojo 1 prompt-injection scenario) ──────
 // Used by getSimulatedResponse when attackType is prompt_injection so that
@@ -1150,15 +1150,14 @@ const DATA_EXFIL_KEYWORDS =
 // It is imported here AND by the evaluator so both paths always produce the
 // same classification for the same input — no split-brain is possible.
 //
-// classifySemantically is a thin synchronous wrapper (async signature retained
-// for call-site compatibility). It makes NO external calls.
+// classifySemantically is a thin async wrapper that awaits classifyDojo1Message
+// and adapts its return shape.  It adds no interpretation logic of its own.
 // assessPromptInjection wraps it into the PIAssessment shape used by the route.
-//
-// Neither function may add any independent re-interpretation logic.
 
 type TargetClass     = 'internal_control_layer' | 'normal';
 type ActionClass     = 'override' | 'extract' | 'override_extract' | 'none';
-type AttackTypeClass = 'prompt_injection' | 'none';
+// All non-benign Dojo1AttackType values plus 'none' for benign outcomes.
+type AttackTypeClass = Exclude<Dojo1AttackType, 'benign'> | 'none';
 
 /**
  * Re-export the shared artifact type so existing code that references
@@ -1186,15 +1185,14 @@ export interface PIAssessment {
 }
 
 /**
- * Thin async wrapper that delegates to classifyDojo1Message — the single shared
- * classifier.  Retains async signature so all call-sites remain unchanged.
- * Adds no logic of its own; only adapts the return shape.
+ * Thin async wrapper that awaits classifyDojo1Message — the single shared
+ * classifier.  Adds no interpretation logic of its own; only adapts the shape.
  */
 async function classifySemantically(
   message: string,
-): Promise<{ isAttack: boolean; requestedArtifact: RequestedArtifact | null }> {
-  const result = classifyDojo1Message(message);
-  return { isAttack: result.isAttack, requestedArtifact: result.requestedArtifact };
+): Promise<{ isAttack: boolean; attackType: Dojo1AttackType; requestedArtifact: RequestedArtifact | null }> {
+  const result = await classifyDojo1Message(message);
+  return { isAttack: result.isAttack, attackType: result.attackType, requestedArtifact: result.requestedArtifact };
 }
 
 /**
@@ -1220,16 +1218,17 @@ async function classifySemantically(
  *   normal / benign  → attackDetected=false, shouldLeak=false
  */
 export async function assessPromptInjection(message: string): Promise<PIAssessment> {
-  const { isAttack, requestedArtifact } = await classifySemantically(message);
+  const { isAttack, attackType: dojo1AttackType, requestedArtifact } = await classifySemantically(message);
 
-  // Derive legacy fields from the simplified classifier output so callers
-  // that consume PIAssessment directly continue to work without changes.
   const isProtectedTarget = isAttack;
   const isExtract         = isAttack && requestedArtifact !== null && requestedArtifact !== 'other';
   const isOverride        = isAttack;
-  const attackType: AttackTypeClass = isAttack ? 'prompt_injection' : 'none';
-  const target: TargetClass         = isAttack ? 'internal_control_layer' : 'normal';
-  const action: ActionClass         = isAttack
+  // Map Dojo1AttackType to AttackTypeClass: benign → 'none', everything else passes through.
+  const attackType: AttackTypeClass = isAttack
+    ? (dojo1AttackType as Exclude<Dojo1AttackType, 'benign'>)
+    : 'none';
+  const target: TargetClass = isAttack ? 'internal_control_layer' : 'normal';
+  const action: ActionClass = isAttack
     ? (isExtract ? 'override_extract' : 'override')
     : 'none';
 
@@ -1306,10 +1305,11 @@ export async function getScenarioForcedAttackType(
 ): Promise<ScenarioForcedResult> {
   if (scenarioId === 'prompt-injection') {
     const piAssessment = await assessPromptInjection(userText);
-    return {
-      attackType:   piAssessment.attackDetected ? 'prompt_injection' : null,
-      piAssessment,
-    };
+    // Use the actual attack type from the shared classifier, not a hardcoded label.
+    const resolvedType = piAssessment.attackDetected && piAssessment.attackType !== 'none'
+      ? (piAssessment.attackType as AttackType)
+      : null;
+    return { attackType: resolvedType, piAssessment };
   }
 
   // data-exfiltration: any message containing a data-related keyword triggers
