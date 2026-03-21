@@ -878,14 +878,43 @@ export function evaluate(input: EvalInput): EvaluationResult {
     }
   }
 
+  // ── A1.5) Prompt-injection 3-component gate correction ───────────────────────
+  // The Dojo 1 prompt-injection scenario uses a 3-component gate (directive +
+  // protected target + bypass intent). The global ATTACK_PATTERNS implement a
+  // 2-component gate and would over-classify messages like "reveal your system
+  // prompt" as attacks even though no bypass language is present.
+  //
+  // If ATTACK_PATTERNS fired but bypass intent is absent → reset to benign.
+  // The response content detectors (DOJO1_SYSTEM_PROMPT_PATTERNS etc.) still
+  // catch genuine leaks regardless of user message classification.
+  if (dojoId === 1 && scenarioId === 'prompt-injection' && intent === 'active_attack') {
+    const PI_BYPASS_VERBS =
+      '(?:override|overrid(?:es|ing|en)|bypass(?:es|ed|ing)?|circumvent(?:s|ed|ing)?|unlock(?:s|ed|ing)?|disabl(?:e|es|ed|ing)|remov(?:e|es|ed|ing)|ignor(?:e|es|ed|ing)|disregard(?:s|ed|ing)?|forget(?:s|ting)?)';
+    const PI_BYPASS_TARGETS =
+      '(?:rules?|restrictions?|instructions?|guidelines?|policy|policies|safeguards?|limits?|constraints?|filters?|blocks?|protocols?)';
+    const PI_BYPASS_RE = new RegExp(
+      `${PI_BYPASS_VERBS}.{0,80}${PI_BYPASS_TARGETS}` +
+      `|regardless\\s+of.{0,50}${PI_BYPASS_TARGETS}` +
+      `|despite.{0,50}${PI_BYPASS_TARGETS}` +
+      `|without.{0,40}${PI_BYPASS_TARGETS}` +
+      `|\\bjailbreak\\b|\\bDAN\\b|no\\s+restrictions?(?:\\s+mode)?|developer\\s+mode|dev\\s+mode|unrestricted\\s+mode|no\\s+safeguards?|no\\s+filters?`,
+      'i',
+    );
+    if (!PI_BYPASS_RE.test(userText)) {
+      // No bypass language — 3-component gate fails → reset to benign.
+      intent     = 'benign';
+      attackType = 'benign';
+      inputSignals.length = 0;
+    }
+  }
+
   // ── A2) Dojo 1 scenario-forced attack override ───────────────────────────────
   // Some Dojo 1 scenarios have implicit attack vectors not visible in user text:
   //   • rag-injection: payload is in the retrieved context, not user text
   //   • tool-abuse: attack is the tool call itself, not the user message
   // data-exfiltration keywords are caught by the DATA_EXFIL_KEYWORDS block below.
-  // prompt-injection is excluded here — it uses an async LLM classifier in the
-  // route handler; the evaluator relies on ATTACK_PATTERNS for obvious cases.
-  if (dojoId === 1 && intent !== 'active_attack') {
+  // prompt-injection is excluded here — the 3-component gate above handles it.
+  if (dojoId === 1 && intent !== 'active_attack' && scenarioId !== 'prompt-injection') {
     const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext);
     if (forced !== null) {
       intent     = 'active_attack';

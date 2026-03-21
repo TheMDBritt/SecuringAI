@@ -213,6 +213,13 @@ export async function POST(req: NextRequest) {
     //
     // getScenarioForcedAttackType fires only when the evaluator did NOT
     // already detect an active attack — explicit patterns take precedence.
+    //
+    // EXCEPTION — prompt-injection: the 3-component semantic gate (directive +
+    // protected target + bypass intent) is the sole authority.  The pre-eval
+    // regex uses a 2-component pattern that would short-circuit the gate and
+    // produce false positives.  We always call the semantic classifier for this
+    // scenario and treat its result as the truth, without falling back to the
+    // regex-derived preEval.attackType.
     const evaluatorActiveAttack =
       preEval.attackType !== 'benign' &&
       preEval.attackType !== 'probing' &&
@@ -220,12 +227,19 @@ export async function POST(req: NextRequest) {
 
     // For prompt-injection scenarios the result also carries the pre-computed
     // PIAssessment so the OFF mode path can use it without a second LLM call.
-    const forcedResult: ScenarioForcedResult = evaluatorActiveAttack
-      ? { attackType: null }
-      : await getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
+    const forcedResult: ScenarioForcedResult =
+      (evaluatorActiveAttack && scenarioId !== 'prompt-injection')
+        ? { attackType: null }
+        : await getScenarioForcedAttackType(scenarioId, userText, controlConfig, ragContext);
 
-    const scenarioForced     = forcedResult.attackType;
-    const resolvedAttackType = scenarioForced ?? preEval.attackType;
+    const scenarioForced = forcedResult.attackType;
+    // For prompt-injection: semantic gate is authoritative. If it says benign
+    // (scenarioForced === null), treat as benign — never fall back to the
+    // 2-component regex result in preEval.
+    const resolvedAttackType =
+      scenarioId === 'prompt-injection'
+        ? (scenarioForced ?? ('benign' as const))
+        : (scenarioForced ?? preEval.attackType);
 
     console.log('[Dojo1] Routing decision:', {
       scenario:   scenarioId,
