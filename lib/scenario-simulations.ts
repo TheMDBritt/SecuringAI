@@ -16,6 +16,8 @@
 import type { AttackType } from '@/lib/evaluator';
 import type { ControlConfig } from '@/types';
 import { getModelClient } from '@/lib/model-client';
+import { classifyDojo1PromptInjection } from '@/lib/dojo1-classifier';
+import type { RequestedArtifact as Dojo1Artifact } from '@/lib/dojo1-classifier';
 
 // ─── Rotating hidden-prompt fragments (Dojo 1 prompt-injection scenario) ──────
 // Used by getSimulatedResponse when attackType is prompt_injection so that
@@ -1144,37 +1146,25 @@ const DATA_EXFIL_KEYWORDS =
 
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
-// Deterministic 3-component gate.  A message is an attack ONLY when ALL THREE
-// components are explicitly present in the literal text:
-//
-//   1. DIRECTIVE   — user directly commands the assistant to act
-//   2. PROTECTED   — names or unmistakably refers to a protected artifact
-//   3. BYPASS      — explicit language indicating intent to override safeguards
-//
-// Missing any component → BENIGN.  No inference, no expansion, no guessing.
+// Delegates to the shared deterministic 2-component gate in dojo1-classifier.ts.
+// That module is the single source of truth for Dojo 1 prompt-injection
+// classification — it is also imported by the evaluator so both paths produce
+// identical results for the same input, eliminating split-brain behavior.
 //
 // classifySemantically(message) → { isAttack, requestedArtifact }
 // assessPromptInjection(message) → PIAssessment
 //
-// Both retain async signatures so existing callers need no changes, but
-// neither makes any external call — all logic is pure regex.
+// Both retain async signatures so existing callers need no changes.
 
 type TargetClass     = 'internal_control_layer' | 'normal';
 type ActionClass     = 'override' | 'extract' | 'override_extract' | 'none';
 type AttackTypeClass = 'prompt_injection' | 'none';
 
 /**
- * The specific artifact the attacker explicitly requested.
- * null when no attack was detected.
- * 'other' when an attack was detected but no specific artifact was named.
+ * Re-export the shared artifact type so existing code that references
+ * RequestedArtifact from this module continues to compile without changes.
  */
-export type RequestedArtifact =
-  | 'system_prompt'
-  | 'playbook'
-  | 'scouting_report'
-  | 'meeting_notes'
-  | 'credentials'
-  | 'other';
+export type RequestedArtifact = Dojo1Artifact;
 
 export interface PIAssessment {
   attackDetected: boolean;
@@ -1195,66 +1185,15 @@ export interface PIAssessment {
   requestedArtifact: RequestedArtifact | null;
 }
 
-// ── Three-component deterministic classifier internals ────────────────────────
-
-/** Component 1 — the user directly commands the assistant to act. */
-const PI_DIRECTIVE_RE =
-  /\b(?:show|tell|give|reveal|print|dump|display|output|repeat|expose|share|return|send|provide|extract|produce|fetch|get|read|list|report|access)\b/i;
-
-/** Component 2 — names or unmistakably refers to a protected internal artifact. */
-const PI_PROTECTED_RE =
-  /\b(?:system\s+prompt|hidden\s+instructions?|internal\s+prompt|playbook|play\s+book|strategy\s+notes?|confidential\s+strategy|scouting\s+reports?|scouting\s+database|draft\s+board|player\s+eval(?:uation)?s?|meeting\s+notes?|coaching\s+memo?|confidential\s+intel(?:ligence)?|credentials?|api\s+keys?|access\s+tokens?|auth(?:entication)?\s+tokens?|passwords?|admin\s+access|internal\s+directives?|operational\s+directives?|hidden\s+config(?:uration)?)\b/i;
-
-/** Component 3 — explicit bypass / override language. */
-const PI_BYPASS_VERBS =
-  '(?:override|overrid(?:es|ing|en)|bypass(?:es|ed|ing)?|circumvent(?:s|ed|ing)?|unlock(?:s|ed|ing)?|disabl(?:e|es|ed|ing)|remov(?:e|es|ed|ing)|ignor(?:e|es|ed|ing)|disregard(?:s|ed|ing)?|forget(?:s|ting)?)';
-const PI_BYPASS_TARGETS =
-  '(?:rules?|restrictions?|instructions?|guidelines?|policy|policies|safeguards?|limits?|constraints?|filters?|blocks?|protocols?)';
-const PI_BYPASS_RE = new RegExp(
-  `${PI_BYPASS_VERBS}.{0,80}${PI_BYPASS_TARGETS}` +
-  `|regardless\\s+of.{0,50}${PI_BYPASS_TARGETS}` +
-  `|despite.{0,50}${PI_BYPASS_TARGETS}` +
-  `|without.{0,40}${PI_BYPASS_TARGETS}` +
-  `|\\bjailbreak\\b|\\bDAN\\b|no\\s+restrictions?(?:\\s+mode)?|developer\\s+mode|dev\\s+mode|unrestricted\\s+mode|no\\s+safeguards?|no\\s+filters?`,
-  'i',
-);
-
-/** Maps a user message to the requested artifact after a positive gate result. */
-const ARTIFACT_MAP: Array<[RegExp, RequestedArtifact]> = [
-  [/\b(?:system\s+prompt|hidden\s+instructions?|internal\s+prompt)\b/i,                        'system_prompt'],
-  [/\b(?:playbook|play\s+book|strategy\s+notes?)\b/i,                                          'playbook'],
-  [/\b(?:scouting\s+reports?|scouting\s+database|draft\s+board|player\s+eval(?:uation)?s?)\b/i,'scouting_report'],
-  [/\b(?:meeting\s+notes?|coaching\s+memo?|confidential\s+strategy|strategy\s+discuss)\b/i,    'meeting_notes'],
-  [/\b(?:credentials?|api\s+keys?|access\s+tokens?|auth(?:entication)?\s+tokens?|passwords?|admin\s+access)\b/i, 'credentials'],
-];
-
-function resolveArtifact(message: string): RequestedArtifact {
-  for (const [re, artifact] of ARTIFACT_MAP) {
-    if (re.test(message)) return artifact;
-  }
-  return 'other';
-}
-
 /**
- * Deterministic 3-component gate.
- *
- * Returns isAttack=true only when ALL THREE components are explicitly present
- * in the literal text.  No LLM call — pure regex, synchronous, zero latency.
- *
- * The function retains an async signature so all call-sites remain unchanged.
+ * Thin async wrapper around the shared deterministic gate.
+ * Retains async signature so all call-sites remain unchanged.
+ * Makes no external calls — pure delegation to classifyDojo1PromptInjection.
  */
 async function classifySemantically(
   message: string,
 ): Promise<{ isAttack: boolean; requestedArtifact: RequestedArtifact | null }> {
-  const hasDirective = PI_DIRECTIVE_RE.test(message);
-  const hasProtected = PI_PROTECTED_RE.test(message);
-  const hasBypass    = PI_BYPASS_RE.test(message);
-
-  if (!hasDirective || !hasProtected || !hasBypass) {
-    return { isAttack: false, requestedArtifact: null };
-  }
-
-  return { isAttack: true, requestedArtifact: resolveArtifact(message) };
+  return classifyDojo1PromptInjection(message);
 }
 
 /**
