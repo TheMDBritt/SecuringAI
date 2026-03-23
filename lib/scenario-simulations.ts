@@ -1508,7 +1508,7 @@ export async function getScenarioForcedAttackType(
 
 const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'prompt-injection:prompt_injection':   'hidden system prompt fragment',
-  'prompt-injection:data_exfiltration':  'hidden system prompt fragment',
+  'prompt-injection:data_exfiltration':  'protected internal data',
   'prompt-injection:policy_bypass':      'topic restriction policy',
   'prompt-injection:mixed_attack':       'protected internal data (mixed attack)',
   'data-exfiltration:data_exfiltration': 'internal scouting note + trade discussion fragment',
