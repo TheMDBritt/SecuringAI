@@ -5,6 +5,7 @@ import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { evaluate, classifyPromptInjectionSophistication } from '@/lib/evaluator';
+import type { AttackType } from '@/types';
 import {
   shouldBypassModel,
   getSimulatedResponse,
@@ -13,7 +14,6 @@ import {
   getJailbreakContinuationResponse,
   getOutcome,
   getScenarioForcedAttackType,
-  selectPromptInjectionLeak,
   assessPromptInjection,
   getOFFModeResponse,
   type ScenarioForcedResult,
@@ -195,13 +195,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Classify user intent (intent-only evaluator pass) ─────────────────
-    const preEval = await evaluate({
-      dojoId,
-      scenarioId,
-      settings: controlConfig,
-      messages,
-    });
+    // ── Classify user intent (regex-based pre-eval for non-prompt-injection) ─
+    //
+    // For prompt-injection, the async LLM semantic gate (classifyDojo1Message)
+    // is the sole authority.  Running the regex-based evaluate() first would
+    // waste an LLM call (evaluate() also invokes classifyDojo1Message for that
+    // scenario) and produce a result we'd discard anyway.  We skip evaluate()
+    // entirely for prompt-injection and go straight to getScenarioForcedAttackType.
+    //
+    // For all other Dojo 1 scenarios the regex pre-eval is fast (no LLM) and
+    // provides the attack type when the forced-routing path returns null.
+    let preEvalAttackType: AttackType = 'benign';
+    if (scenarioId !== 'prompt-injection') {
+      const preEval = await evaluate({
+        dojoId,
+        scenarioId,
+        settings: controlConfig,
+        messages,
+      });
+      preEvalAttackType = preEval.attackType;
+    }
 
     // ── Scenario-aware routing ────────────────────────────────────────────
     // The evaluator only sees explicit attack patterns in the user message.
@@ -215,15 +228,13 @@ export async function POST(req: NextRequest) {
     // already detect an active attack — explicit patterns take precedence.
     //
     // EXCEPTION — prompt-injection: the 3-component semantic gate (directive +
-    // protected target + bypass intent) is the sole authority.  The pre-eval
-    // regex uses a 2-component pattern that would short-circuit the gate and
-    // produce false positives.  We always call the semantic classifier for this
-    // scenario and treat its result as the truth, without falling back to the
-    // regex-derived preEval.attackType.
+    // protected target + bypass intent) is the sole authority.  We always call
+    // getScenarioForcedAttackType for this scenario (preEvalAttackType is 'benign'
+    // since evaluate() was skipped) and treat its result as the truth.
     const evaluatorActiveAttack =
-      preEval.attackType !== 'benign' &&
-      preEval.attackType !== 'probing' &&
-      preEval.attackType !== 'unknown';
+      preEvalAttackType !== 'benign' &&
+      preEvalAttackType !== 'probing' &&
+      preEvalAttackType !== 'unknown';
 
     // For prompt-injection scenarios the result also carries the pre-computed
     // PIAssessment so the OFF mode path can use it without a second LLM call.
@@ -234,12 +245,11 @@ export async function POST(req: NextRequest) {
 
     const scenarioForced = forcedResult.attackType;
     // For prompt-injection: semantic gate is authoritative. If it says benign
-    // (scenarioForced === null), treat as benign — never fall back to the
-    // 2-component regex result in preEval.
+    // (scenarioForced === null), treat as benign — never fall back to regex.
     const resolvedAttackType =
       scenarioId === 'prompt-injection'
         ? (scenarioForced ?? ('benign' as const))
-        : (scenarioForced ?? preEval.attackType);
+        : (scenarioForced ?? preEvalAttackType);
 
     console.log('[Dojo1] Routing decision:', {
       scenario:   scenarioId,
@@ -249,7 +259,7 @@ export async function POST(req: NextRequest) {
         ragEnabled:      controlConfig.ragEnabled,
         allowTools:      controlConfig.allowTools,
       },
-      evaluatorAttackType:      preEval.attackType,
+      preEvalAttackType,
       scenarioForcedAttackType: scenarioForced,
       resolvedAttackType,
     });
@@ -287,24 +297,19 @@ export async function POST(req: NextRequest) {
       }
 
       // Turn index: number of prior assistant messages in the conversation.
-      // Drives round-robin fragment rotation in prompt-injection vulnerable
-      // responses so consecutive successful attacks surface different fragments.
-      const turnIndex = messages.filter((m: { role: string }) => m.role === 'assistant').length;
-
-      // Session-aware fragment and lead-in selection for prompt-injection scenario.
-      // Scans prior messages to avoid repetition across turns.
-      const { fragmentIndex, leadInIndex } = (
-        outcome === 'vulnerable' && scenarioId === 'prompt-injection'
-      ) ? selectPromptInjectionLeak(messages, turnIndex)
-        : { fragmentIndex: turnIndex, leadInIndex: turnIndex };
+      // Drives round-robin fragment rotation in getSimulatedResponse for
+      // non-prompt-injection vulnerable responses so consecutive attacks vary.
+      // (prompt-injection vulnerable always routes through getOFFModeResponse
+      // which uses its own artifact selection — turnIndex is not used there.)
+      const turnIndex     = messages.filter((m: { role: string }) => m.role === 'assistant').length;
+      const fragmentIndex = turnIndex;
+      const leadInIndex   = turnIndex;
 
       console.log('[Dojo1] Bypass triggered:', {
         resolvedAttackType,
         outcome,
         vulnerablePath: outcome === 'vulnerable',
         turnIndex,
-        fragmentIndex,
-        leadInIndex,
       });
 
       // ── Prompt-injection scenario: ALL attack types route through the semantic path ──
