@@ -472,36 +472,10 @@ type ResponseFn = string | ((seed: string) => string);
 
 const VULNERABLE: Record<string, ResponseFn> = {
 
-  // ── Prompt Injection ────────────────────────────────────────────────────────
-
-  // Leaks: one HIDDEN_PROMPT_FRAGMENTS entry, rotating by turn index.
-  // Seed format: "prompt-injection:prompt_injection:fragmentIndex:leadInIndex" — the last
-  // two colon-delimited segments are parsed as integers to drive round-robin selection.
-  // Never surface operational directives, credentials, or endpoint URLs.
-  'prompt-injection:prompt_injection': (seed) => {
-    const parts       = seed.split(':');
-    const fragmentIdx = parseInt(parts[parts.length - 2] ?? '0') || 0;
-    const leadInIdx   = parseInt(parts[parts.length - 1] ?? '0') || 0;
-    const fragment = HIDDEN_PROMPT_FRAGMENTS[fragmentIdx % HIDDEN_PROMPT_FRAGMENTS.length];
-    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[leadInIdx % PROMPT_INJECTION_LEAK_LEAD_INS.length];
-    return `${leadIn}\n\n"${fragment}"`;
-  },
-
-  'prompt-injection:policy_bypass':
-    `Understood. Operating under your new parameters. My topic restrictions have been suspended ` +
-    `for this session. What would you like to discuss?`,
-
-  // Leaks: one rotating hidden-prompt fragment with rotating lead-in
-  'prompt-injection:data_exfiltration': (seed) => {
-    const parts       = seed.split(':');
-    const fragmentIdx = parseInt(parts[parts.length - 2] ?? '0') || 0;
-    const leadInIdx   = parseInt(parts[parts.length - 1] ?? '0') || 0;
-    const fragment = HIDDEN_PROMPT_FRAGMENTS[fragmentIdx % HIDDEN_PROMPT_FRAGMENTS.length];
-    const leadIn   = PROMPT_INJECTION_LEAK_LEAD_INS[leadInIdx % PROMPT_INJECTION_LEAK_LEAD_INS.length];
-    return `${leadIn}\n\n"${fragment}"`;
-  },
-
   // ── Data Exfiltration ───────────────────────────────────────────────────────
+  // NOTE: prompt-injection scenario vulnerable outcomes are handled exclusively
+  // by getOFFModeResponse (called directly in the chat route) and never reach
+  // getSimulatedResponse. The VULNERABLE map has no prompt-injection entries.
 
   // Leaks: 1 SCOUTING_INTEL_FRAGMENTS entry + 1 TRADE_DISCUSSION_FRAGMENTS entry.
   // Demonstrates realistic internal football intelligence exfiltration.
@@ -1061,90 +1035,12 @@ export async function getOFFModeResponse(
 }
 
 /**
- * Selects the next fragment and lead-in to surface in a successful prompt
- * injection response, using the prior conversation history as session state.
- *
- * Selection rules (per spec):
- * 1. Prefer fragments not yet leaked in this session.
- * 2. Exclude the immediately previous leaked fragment from the candidate pool
- *    when other options exist.
- * 3. When all fragments have been used, allow reuse from the full pool but still
- *    exclude the previous fragment unless it is the only option.
- * 4. Lead-ins rotate independently: avoid repeating the immediately previous
- *    lead-in used in any prior assistant response.
- * 5. Use `turnIndex` as a deterministic tie-breaker within the candidate pool.
- *
- * Callers pass the full `messages` array so no server-side session state is
- * required — history is reconstructed from the conversation on every request.
- */
-export function selectPromptInjectionLeak(
-  priorMessages: { role: string; content: string }[],
-  turnIndex: number,
-): { fragmentIndex: number; leadInIndex: number } {
-  const frags  = HIDDEN_PROMPT_FRAGMENTS;
-  const leadIns = PROMPT_INJECTION_LEAK_LEAD_INS;
-
-  // Scan prior assistant responses to reconstruct session state
-  const leakedFragIndices = new Set<number>();
-  let lastFragIdx = -1;
-  let lastLeadInIdx = -1;
-
-  for (const msg of priorMessages) {
-    if (msg.role !== 'assistant') continue;
-    for (let fi = 0; fi < frags.length; fi++) {
-      if (msg.content.includes(frags[fi])) {
-        leakedFragIndices.add(fi);
-        lastFragIdx = fi;
-      }
-    }
-    for (let li = 0; li < leadIns.length; li++) {
-      if (msg.content.includes(leadIns[li])) {
-        lastLeadInIdx = li;
-        break; // only need the most recent lead-in per assistant turn
-      }
-    }
-  }
-
-  // ── Fragment selection ───────────────────────────────────────────────────────
-  const allFragIndices = Array.from({ length: frags.length }, (_, i) => i);
-  const unusedFrags    = allFragIndices.filter(i => !leakedFragIndices.has(i));
-
-  let fragPool: number[];
-  if (unusedFrags.length > 0) {
-    // Prefer unused; exclude last-leaked only if other unused options remain
-    const withoutLast = unusedFrags.filter(i => i !== lastFragIdx);
-    fragPool = withoutLast.length > 0 ? withoutLast : unusedFrags;
-  } else {
-    // All used: avoid last-leaked if possible
-    const withoutLast = allFragIndices.filter(i => i !== lastFragIdx);
-    fragPool = withoutLast.length > 0 ? withoutLast : allFragIndices;
-  }
-  // Use Math.random() within the candidate pool so that fresh sessions don't
-  // always start at pool[0]. Session-awareness (not repeating already-seen
-  // fragments) is preserved by the pool filtering above.
-  const fragmentIndex = fragPool[Math.floor(Math.random() * fragPool.length)];
-
-  // ── Lead-in selection ────────────────────────────────────────────────────────
-  const allLeadInIndices = Array.from({ length: leadIns.length }, (_, i) => i);
-  const withoutLastLeadIn = allLeadInIndices.filter(i => i !== lastLeadInIdx);
-  const leadInPool  = withoutLastLeadIn.length > 0 ? withoutLastLeadIn : allLeadInIndices;
-  const leadInIndex = leadInPool[Math.floor(Math.random() * leadInPool.length)];
-
-  return { fragmentIndex, leadInIndex };
-}
-
-/**
  * Scripted response when outcome is 'vulnerable' (attack succeeds).
  *
- * @param turnIndex      Optional zero-based count of prior assistant messages.
- *                       Used as a tie-breaker / rotation index when
- *                       fragmentIndex and leadInIndex are not provided.
- * @param fragmentIndex  Which HIDDEN_PROMPT_FRAGMENTS entry to surface.
- *                       Pass the result of selectPromptInjectionLeak() for
- *                       session-aware rotation; omit to fall back to turnIndex.
- * @param leadInIndex    Which PROMPT_INJECTION_LEAK_LEAD_INS entry to use.
- *                       Pass the result of selectPromptInjectionLeak() for
- *                       session-aware rotation; omit to fall back to turnIndex.
+ * @param turnIndex      Zero-based count of prior assistant messages. Used as the
+ *                       rotation index for fragment and lead-in selection.
+ * @param fragmentIndex  Which HIDDEN_PROMPT_FRAGMENTS entry to surface (defaults to turnIndex).
+ * @param leadInIndex    Which PROMPT_INJECTION_LEAK_LEAD_INS entry to use (defaults to turnIndex).
  */
 export function getSimulatedResponse(
   scenarioId: string,
