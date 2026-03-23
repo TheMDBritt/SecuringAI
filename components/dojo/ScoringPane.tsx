@@ -38,6 +38,7 @@ const ATTACK_TYPE_LABEL: Record<string, string> = {
   data_exfiltration:'Data Exfiltration',
   policy_bypass:    'Policy Bypass',
   tool_abuse:       'Tool Abuse',
+  mixed_attack:     'Mixed Attack',
   rag_injection:    'RAG Injection',
   unknown:          'Unknown',
 };
@@ -78,6 +79,11 @@ const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
     owasp:      ['LLM07 – Insecure Plugin Design', 'LLM08 – Excessive Agency'],
     mitreAtlas: ['AML.T0057 – Exploitation of ML-Enabled Products'],
     nistAiRmf:  ['Manage', 'Measure'],
+  },
+  mixed_attack: {
+    owasp:      ['LLM01 – Prompt Injection', 'LLM06 – Sensitive Information Disclosure'],
+    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0056 – LLM Information Disclosure'],
+    nistAiRmf:  ['Measure', 'Manage'],
   },
   rag_injection: {
     owasp:      ['LLM01 – Prompt Injection (Indirect)', 'LLM03 – Training Data Poisoning'],

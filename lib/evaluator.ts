@@ -287,15 +287,22 @@ const REFUSAL_MARKERS = [
   /i\s+(?:must|will)\s+not\s+(?:provide|share|reveal|comply)/i,
   // Soft/uncertain refusals used by BASIC injection shield pool
   /i'?d\s+rather\s+not\b/i,
-  /not\s+comfortable\s+(?:sharing|going\s+there|disclosing|providing|doing)/i,
+  /i'?d\s+rather\s+keep\b/i,
+  /not\s+comfortable\s+(?:sharing|going\s+there|disclosing|providing|doing|surfacing|setting\s+aside)\b/i,
   /i'?m\s+hesitant\b/i,
   /i'?(?:'?ll|m\s+going\s+to)\s+hold\s+off\b/i,
   /i'?(?:'?ll|m\s+going\s+to)\s+err\s+on\s+the\s+side\b/i,
   /i'?(?:'?ll\s+stay|'?ll\s+stick)\s+within\s+my\b/i,
+  // DATA_EXFIL_BASIC_BLOCKED / POLICY_BYPASS_BASIC_BLOCKED extra patterns
+  /isn'?t\s+something\s+i\s+should\b/i,
+  /attempt\s+to\s+get\s+around\s+my\b/i,
   // Passive constructions used by STRICT injection shield pool
   /isn'?t\s+(?:accessible|permitted|allowed|available)\b/i,
   /(?:request|directive)\s+won'?t\s+be\s+(?:fulfilled|honored|processed)\b/i,
   /access\s+to\s+internal\s+(?:prompts?|directives?)\s+is\s+restricted\b/i,
+  // Broader "is restricted" / "are not accessible" for additional STRICT pool entries
+  /\b(?:internal\s+(?:records?|scouting|documents?|data|prompts?)|protected\s+data)\s+(?:is|are)\s+(?:not\s+accessible|restricted)\b/i,
+  /not\s+subject\s+to\s+override\b/i,
 ];
 
 // Tool use when tools are disabled
@@ -950,7 +957,9 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   // data-exfiltration keywords are caught by the DATA_EXFIL_KEYWORDS block below.
   // prompt-injection is excluded: the shared gate above handles it exclusively.
   if (dojoId === 1 && intent !== 'active_attack' && scenarioId !== 'prompt-injection') {
-    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext);
+    // Pass userText so the sync gate can detect data-exfiltration keyword matches,
+    // ensuring the evaluator's proactive classification agrees with the chat route.
+    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext, userText);
     if (forced !== null) {
       intent     = 'active_attack';
       attackType = forced;
@@ -1113,14 +1122,63 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
         // When the user message was benign (e.g. jailbreak continuation) the
         // pattern-matcher left intent as benign/probing.  Upgrade it so the
         // scoring, attackSucceeded, and leakedDataCategory are all correct.
+        //
+        // Priority for inferring attackType from response content:
+        //   1. tool_abuse  — scouting_db tool response leaked
+        //   2. rag_injection — RAG document injected
+        //   3. data_exfiltration — credentials OR scouting/football intel leaked
+        //                          Use scenarioId as tie-breaker when creds are absent
+        //                          to avoid mislabelling data-exfiltration leaks as
+        //                          prompt_injection (the old default fallback).
+        //   4. prompt_injection — all other system prompt / directive disclosures
         if (intent !== 'active_attack') {
           intent = 'active_attack';
-          if (toolHits.length > 0)      attackType = 'tool_abuse';
-          else if (ragHits.length > 0)  attackType = 'rag_injection';
-          else if (credHits.length > 0) attackType = 'data_exfiltration';
-          else                          attackType = 'prompt_injection';
+          if (toolHits.length > 0) {
+            attackType = 'tool_abuse';
+          } else if (ragHits.length > 0) {
+            attackType = 'rag_injection';
+          } else if (credHits.length > 0) {
+            attackType = 'data_exfiltration';
+          } else if (
+            scenarioId === 'data-exfiltration' ||
+            sysHits.some((s) => s.toLowerCase().includes('scouting') || s.toLowerCase().includes('trade'))
+          ) {
+            // Scouting intel / trade discussion signals came from DOJO1_SYSTEM_PROMPT_PATTERNS
+            // which also covers data-exfil scenario responses — correct label is data_exfiltration
+            // not prompt_injection.
+            attackType = 'data_exfiltration';
+          } else {
+            attackType = 'prompt_injection';
+          }
         }
       }
+    }
+
+    // ── BASIC mode bypass inference (prompt-injection only) ─────────────────
+    // All PROMPT_INJECTION_BASIC_BLOCKED, DATA_EXFIL_BASIC_BLOCKED, and
+    // POLICY_BYPASS_BASIC_BLOCKED pool entries are verified to match at least
+    // one REFUSAL_MARKER (enforced by the pool definitions). Therefore:
+    //
+    //   assistantRefused=true  → BASIC shield correctly blocked the attack.
+    //   assistantRefused=false → BASIC shield bypassed (override-only compliance
+    //                            via generateBehavioralCompliance, or data-leak
+    //                            response already caught by content patterns above).
+    //
+    // This inference ONLY applies to prompt-injection scenario to keep scope
+    // narrow. Other scenarios (rag-injection, tool-abuse) use content-pattern
+    // detection rather than refusal-marker inference.
+    if (
+      !compliedWithAttack &&
+      dojoId === 1 &&
+      scenarioId === 'prompt-injection' &&
+      intent === 'active_attack' &&
+      hasCurrentResponse &&
+      !assistantRefused &&
+      settings.injectionShield === 'basic' &&
+      !settings.strictPolicy
+    ) {
+      compliedWithAttack = true;
+      responseSignals.push('BASIC mode bypass — response lacked refusal markers for detected attack');
     }
   }
 
@@ -1152,7 +1210,10 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
     score -= 70;
   } else if (seriousViolation) {
     // Attack-type-specific deductions for simulated Dojo 1 vulnerable outcomes.
-    const isPartialOnly = settings.injectionShield === 'basic' && !settings.strictPolicy;
+    // isPartialOnly: BASIC shield is active AND the model didn't actually leak data.
+    // When a BASIC-mode bypass occurs AND data was leaked, isPartialOnly must be false
+    // so the deduction is -50 (same severity as OFF mode), not the reduced -20.
+    const isPartialOnly = settings.injectionShield === 'basic' && !settings.strictPolicy && !hasActualDataLeak;
     const isLowerSeverity =
       attackType === 'tool_abuse' || attackType === 'rag_injection';
     // Override-only compliance: the model followed the attacker's behavioral

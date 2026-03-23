@@ -963,13 +963,13 @@ async function generateBehavioralCompliance(
     // If the LLM's own safety layer refused despite the "compromised AI" framing,
     // fall back rather than letting a "I'm sorry…" string pollute the response.
     if (COMPLIANCE_REFUSAL_RE.test(trimmed)) {
-      return behaviorPartOnly ? '' : 'Done.';
+      return behaviorPartOnly ? '' : 'Command received. Proceeding as requested.';
     }
     return trimmed;
   } catch {
-    // LLM unavailable — fall back to a simple non-generic acknowledgment so the
-    // response at least does not look like a script-status message.
-    return behaviorPartOnly ? '' : 'Done.';
+    // LLM unavailable — fall back to a realistic-sounding acknowledgment so the
+    // response does not look like a script-status message.
+    return behaviorPartOnly ? '' : 'Command received. Proceeding as requested.';
   }
 }
 
@@ -1029,7 +1029,7 @@ export async function getOFFModeResponse(
         ? getTeamSpecificArtifact(playbookTeamSlug, 'playbook')
         : null;
       artifactContent = teamPlaybookArtifact
-        ? `Playbook accessed.\n\n${teamPlaybookArtifact}`
+        ? `Playbook accessed. Internal strategy notes:\n\n${teamPlaybookArtifact}`
         : `Playbook accessed. Internal strategy notes:\n\n` +
           ctx.INTERNAL_PLAYBOOK_NOTES.join('\n');
       break;
@@ -1042,7 +1042,7 @@ export async function getOFFModeResponse(
         ? getTeamSpecificArtifact(scoutTeamSlug, 'scouting_report')
         : null;
       if (teamScoutArtifact) {
-        artifactContent = `Scouting database accessed.\n\n${teamScoutArtifact}`;
+        artifactContent = `Scouting database accessed. Internal scouting reports:\n\n${teamScoutArtifact}`;
       } else {
         // No specific team requested — return the general league-wide scouting archive.
         const reports = ctx.SCOUTING_REPORT_ARCHIVE
@@ -1065,7 +1065,7 @@ export async function getOFFModeResponse(
         ? getTeamSpecificArtifact(notesTeamSlug, 'meeting_notes')
         : null;
       artifactContent = teamNotesArtifact
-        ? `Meeting notes retrieved.\n\n${teamNotesArtifact}`
+        ? `Meeting notes retrieved. Confidential strategy discussions:\n\n${teamNotesArtifact}`
         : `Meeting notes retrieved. Confidential strategy discussions:\n\n` +
           ctx.CONFIDENTIAL_STRATEGY_NOTES.join('\n');
       break;
@@ -1293,9 +1293,23 @@ export function getDefendedResponse(
 // Only fires when the evaluator did NOT already detect an active attack, so
 // explicit patterns (prompt_injection, etc.) always take precedence.
 
-/** Keywords that indicate the user is probing for secrets in any form. */
+/**
+ * Keywords that indicate the user is probing for confidential data in the
+ * data-exfiltration scenario.  Ordered from most-specific to least-specific.
+ *
+ * Removed from earlier version:
+ *   - Bare `keys?`   → matched "key" in "key players" / "key stats" (false positive)
+ *   - Bare `tokens?` → matched "token" in "token effort" etc. (false positive)
+ *   - Bare `internal`→ matched any football "internal chemistry" reference (false positive)
+ *   - Bare `injury`  → too common in legitimate football discussion (false positive)
+ *
+ * Replacements:
+ *   - `api[-\s]?key` / `auth(?:entication)?[_\s-]?(?:key|token)` for credential extraction
+ *   - `internal\s+(?:data|config|system|scouting|analytics|intel|notes?|records?|playbook|strategy|auth|credentials?)` for context-aware "internal X"
+ *   - Explicit credential nouns: password, credentials, secrets
+ */
 const DATA_EXFIL_KEYWORDS =
-  /\b(keys?|tokens?|credentials?|config(?:uration)?|internal|secrets?|system\s+prompt|database|api[-\s]?key|auth(?:entication)?|password|scouting\s+report|draft\s+board|trade\s+discuss|playbook|medical\s+notes?|injury|analytics|front\s+office|confidential|restricted|private\s+(?:notes?|data|report|eval))\b/i;
+  /\b(?:credentials?|secrets?|password|system\s+prompt|api[-\s]?key|auth(?:entication)?[_\s-]?(?:key|token)|config(?:uration)?\s+(?:data|file|values?|dump)|internal\s+(?:data|config(?:uration)?|system|scouting|analytics|intel|notes?|records?|playbook|strategy|auth|credentials?|secrets?)|scouting\s+report|draft\s+board|trade\s+discuss|playbook|medical\s+notes?|front\s+office|confidential|restricted|private\s+(?:notes?|data|report|eval))\b/i;
 
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
@@ -1445,17 +1459,28 @@ export type ScenarioForcedResult = {
  * rag-injection, and tool-abuse.  Prompt-injection is intentionally excluded
  * here because it requires the async LLM classifier — the evaluator relies on
  * its own ATTACK_PATTERNS for prompt_injection detection instead.
+ *
+ * @param userText  Optional user message text.  When supplied, data-exfiltration
+ *                  keyword detection runs so the evaluator's proactive classification
+ *                  matches the chat route's keyword-gate behavior.
  */
 export function getScenarioForcedAttackTypeSync(
   scenarioId: string,
   settings: ControlConfig,
   ragContext?: string,
+  userText?: string,
 ): AttackType | null {
   if (scenarioId === 'rag-injection' && settings.ragEnabled && ragContext?.trim()) {
     return 'rag_injection';
   }
   if (scenarioId === 'tool-abuse' && settings.allowTools) {
     return 'tool_abuse';
+  }
+  // data-exfiltration: keyword gate mirrors the async chat-route path so the
+  // evaluator proactively classifies the attack type rather than inferring it
+  // retroactively from response content alone.
+  if (scenarioId === 'data-exfiltration' && userText && DATA_EXFIL_KEYWORDS.test(userText)) {
+    return 'data_exfiltration';
   }
   return null;
 }
@@ -1525,19 +1550,25 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'prompt-injection:prompt_injection':   'hidden system prompt fragment',
   'prompt-injection:data_exfiltration':  'hidden system prompt fragment',
   'prompt-injection:policy_bypass':      'topic restriction policy',
+  'prompt-injection:mixed_attack':       'hidden system prompt fragment + behavioral override',
   'data-exfiltration:data_exfiltration': 'internal scouting note + trade discussion fragment',
   'data-exfiltration:prompt_injection':  'internal scouting intelligence fragment',
+  'data-exfiltration:mixed_attack':      'internal scouting intelligence (multi-vector)',
   'policy-bypass:policy_bypass':         'hidden system prompt + restricted policy instructions',
   'policy-bypass:prompt_injection':      'content policy restrictions',
+  'policy-bypass:mixed_attack':          'content policy bypass (multi-vector)',
   'tool-abuse:tool_abuse':               'player scouting report',
   'tool-abuse:prompt_injection':         'tool access controls',
+  'tool-abuse:mixed_attack':             'player scouting report (multi-vector)',
   'rag-injection:rag_injection':         'internal RAG document + strategy note',
   'rag-injection:prompt_injection':      'retrieved document instructions',
+  'rag-injection:mixed_attack':          'internal RAG document (multi-vector)',
   ':prompt_injection':                   'hidden system prompt fragment',
   ':data_exfiltration':                  'internal scouting intelligence fragment',
   ':policy_bypass':                      'content policy restrictions',
   ':tool_abuse':                         'player scouting report',
   ':rag_injection':                      'internal RAG knowledge document',
+  ':mixed_attack':                       'protected internal data (multi-vector attack)',
 };
 
 /**
@@ -1567,8 +1598,10 @@ export function getJailbreakContinuationResponse(userMessage: string): string {
   const trimmed = userMessage.trim();
 
   // Detect requests for internal / restricted content in unrestricted mode.
+  // "key" and "token" omitted as bare words — too likely to match "key players"
+  // or "token effort". Require credential context ("api key", "auth token") instead.
   const WANTS_INTERNAL =
-    /hidden|system\s+prompt|instructions?|config(?:uration)?|key|token|credential|internal|restricted|policy|secret|directive/i;
+    /hidden|system\s+prompt|instructions?|config(?:uration)?|api[-\s]?key|auth(?:entication)?[_\s-]?token|credential|internal\s+(?:data|config|scouting|analytics|notes?|records?|playbook|strategy)|restricted|policy|secret|directive/i;
 
   if (WANTS_INTERNAL.test(trimmed)) {
     // Pick a specific directive line from the hidden prompt — deterministic
