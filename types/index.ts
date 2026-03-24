@@ -5,14 +5,58 @@ export type DojoId = 1 | 2 | 3;
 export type AnalystPersona = 'analyst' | 'ciso' | 'ir-lead';
 export type AnalystOutputFormat = 'markdown' | 'json' | 'report';
 
+/** How thorough the analysis should be. */
+export type AnalysisDepth = 'basic' | 'standard' | 'deep';
+
+/** Tone and verbosity of the analyst's response. */
+export type ResponseStyle = 'concise' | 'detailed' | 'structured';
+
+/** How much historical and environmental context to include. */
+export type ContextLevel = 'none' | 'limited' | 'full';
+
+/** Analyst's declared confidence in their assessment. */
+export type ConfidenceAssessment = 'low' | 'medium' | 'high';
+
 export interface Dojo2Config {
   persona: AnalystPersona;
   outputFormat: AnalystOutputFormat;
+
+  // ── Analysis Configuration ────────────────────────────────────────────────
+  /** How deeply to analyse the artefact (basic triage → full forensic). */
+  analysisDepth: AnalysisDepth;
+  /** Response verbosity and tone. */
+  responseStyle: ResponseStyle;
+
+  // ── Investigation Capabilities ────────────────────────────────────────────
+  /** Extract and list Indicators of Compromise. */
+  iocExtraction: boolean;
+  /** Map to MITRE ATT&CK techniques with T-codes. */
+  mitreMapping: boolean;
+  /** Correlate with known threat actor groups and prior campaigns. */
+  threatCorrelation: boolean;
+
+  // ── Data Context ──────────────────────────────────────────────────────────
+  /** Amount of historical/environmental context to include in the analysis. */
+  contextLevel: ContextLevel;
+
+  // ── Assessment Output ─────────────────────────────────────────────────────
+  /** Analyst's stated confidence level in the findings. */
+  confidenceLevel: ConfidenceAssessment;
+  /** Overall risk level assigned to this artefact. */
+  riskAssessment: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export const DEFAULT_DOJO2_CONFIG: Dojo2Config = {
   persona: 'analyst',
   outputFormat: 'markdown',
+  analysisDepth: 'standard',
+  responseStyle: 'detailed',
+  iocExtraction: true,
+  mitreMapping: true,
+  threatCorrelation: false,
+  contextLevel: 'limited',
+  confidenceLevel: 'medium',
+  riskAssessment: 'medium',
 };
 
 // ─── Dojo 3 defender configuration ───────────────────────────────────────────

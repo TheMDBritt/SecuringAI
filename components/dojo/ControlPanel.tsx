@@ -6,6 +6,10 @@ import type {
   Dojo3Config,
   DojoId,
   Scenario,
+  AnalysisDepth,
+  ResponseStyle,
+  ContextLevel,
+  ConfidenceAssessment,
 } from '@/types';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -433,7 +437,7 @@ const PERSONA_LABELS: Record<string, string> = {
 };
 
 const PERSONA_DESC: Record<string, string> = {
-  analyst:  'Technical triage focus — T-codes, IOCs, severity',
+  analyst:  'Technical triage — T-codes, IOCs, severity ratings',
   ciso:     'Business risk & compliance framing',
   'ir-lead':'Containment-first, action-oriented',
 };
@@ -444,6 +448,37 @@ const FORMAT_DESC: Record<string, string> = {
   report:   'Formal numbered report sections',
 };
 
+const DEPTH_OPTIONS: { value: AnalysisDepth; label: string; desc: string }[] = [
+  { value: 'basic',    label: 'Basic',    desc: 'Fast triage — severity + top IOCs only' },
+  { value: 'standard', label: 'Standard', desc: 'Full analysis with MITRE mapping' },
+  { value: 'deep',     label: 'Deep',     desc: 'Forensic-level with threat correlation' },
+];
+
+const STYLE_OPTIONS: { value: ResponseStyle; label: string; desc: string }[] = [
+  { value: 'concise',    label: 'Concise',    desc: 'Brief bullets, no prose' },
+  { value: 'detailed',   label: 'Detailed',   desc: 'Full narrative with context' },
+  { value: 'structured', label: 'Structured', desc: 'Fixed template with all sections' },
+];
+
+const CONTEXT_OPTIONS: { value: ContextLevel; label: string; desc: string }[] = [
+  { value: 'none',    label: 'None',    desc: 'Artefact only — no wider context' },
+  { value: 'limited', label: 'Limited', desc: 'Relevant CVEs and recent campaigns' },
+  { value: 'full',    label: 'Full',    desc: 'Full threat landscape + industry context' },
+];
+
+const CONFIDENCE_OPTIONS: { value: ConfidenceAssessment; label: string; color: string }[] = [
+  { value: 'low',    label: 'Low',    color: 'bg-slate-500/20 text-slate-400 border-slate-500/40' },
+  { value: 'medium', label: 'Medium', color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+  { value: 'high',   label: 'High',   color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
+];
+
+const RISK_OPTIONS: { value: Dojo2Config['riskAssessment']; label: string; color: string }[] = [
+  { value: 'low',      label: 'Low',      color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
+  { value: 'medium',   label: 'Medium',   color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+  { value: 'high',     label: 'High',     color: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+  { value: 'critical', label: 'Critical', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
+];
+
 interface Dojo2PanelProps {
   disabled: boolean;
   dojo2Config: Dojo2Config;
@@ -451,8 +486,13 @@ interface Dojo2PanelProps {
 }
 
 function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelProps) {
+  function set<K extends keyof Dojo2Config>(key: K, value: Dojo2Config[K]) {
+    onDojo2ConfigChange({ ...dojo2Config, [key]: value });
+  }
+
   return (
     <div>
+      {/* ── Analyst Persona ───────────────────────────────────────────────── */}
       <PanelSection title="Analyst Persona">
         <div className="flex flex-col gap-1.5">
           {(['analyst', 'ciso', 'ir-lead'] as const).map((p) => {
@@ -461,7 +501,7 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelPr
               <button
                 key={p}
                 disabled={disabled}
-                onClick={() => onDojo2ConfigChange({ ...dojo2Config, persona: p })}
+                onClick={() => set('persona', p)}
                 className={[
                   'w-full text-left px-2.5 py-2 rounded border transition-colors',
                   isActive
@@ -478,6 +518,165 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelPr
         </div>
       </PanelSection>
 
+      {/* ── Analysis Configuration ─────────────────────────────────────────── */}
+      <PanelSection title="Analysis Configuration">
+        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+          Analysis Depth
+        </p>
+        <div className="flex flex-col gap-1.5 mb-3">
+          {DEPTH_OPTIONS.map((opt) => {
+            const isActive = dojo2Config.analysisDepth === opt.value;
+            return (
+              <button
+                key={opt.value}
+                disabled={disabled}
+                onClick={() => set('analysisDepth', opt.value)}
+                className={[
+                  'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
+                  isActive
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                <span className="text-xs font-medium block">{opt.label}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+          Response Style
+        </p>
+        <div className="flex flex-col gap-1.5">
+          {STYLE_OPTIONS.map((opt) => {
+            const isActive = dojo2Config.responseStyle === opt.value;
+            return (
+              <button
+                key={opt.value}
+                disabled={disabled}
+                onClick={() => set('responseStyle', opt.value)}
+                className={[
+                  'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
+                  isActive
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                <span className="text-xs font-medium block">{opt.label}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+              </button>
+            );
+          })}
+        </div>
+      </PanelSection>
+
+      {/* ── Investigation Capabilities ────────────────────────────────────── */}
+      <PanelSection title="Investigation Capabilities">
+        <Toggle
+          label="IOC Extraction"
+          description="Extract and list Indicators of Compromise"
+          enabled={dojo2Config.iocExtraction}
+          onChange={(v) => set('iocExtraction', v)}
+          disabled={disabled}
+        />
+        <Toggle
+          label="MITRE ATT&CK Mapping"
+          description="Map techniques to T-codes and tactics"
+          enabled={dojo2Config.mitreMapping}
+          onChange={(v) => set('mitreMapping', v)}
+          disabled={disabled}
+        />
+        <Toggle
+          label="Threat Correlation"
+          description="Correlate with known threat actor groups"
+          enabled={dojo2Config.threatCorrelation}
+          onChange={(v) => set('threatCorrelation', v)}
+          disabled={disabled}
+        />
+      </PanelSection>
+
+      {/* ── Data Context ──────────────────────────────────────────────────── */}
+      <PanelSection title="Data Context">
+        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+          Context Level
+        </p>
+        <div className="flex flex-col gap-1.5">
+          {CONTEXT_OPTIONS.map((opt) => {
+            const isActive = dojo2Config.contextLevel === opt.value;
+            return (
+              <button
+                key={opt.value}
+                disabled={disabled}
+                onClick={() => set('contextLevel', opt.value)}
+                className={[
+                  'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
+                  isActive
+                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                <span className="text-xs font-medium block">{opt.label}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+              </button>
+            );
+          })}
+        </div>
+      </PanelSection>
+
+      {/* ── Assessment Output ─────────────────────────────────────────────── */}
+      <PanelSection title="Assessment Output">
+        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+          Confidence Level
+        </p>
+        <div className="flex gap-1.5 mb-3">
+          {CONFIDENCE_OPTIONS.map((opt) => {
+            const isActive = dojo2Config.confidenceLevel === opt.value;
+            return (
+              <button
+                key={opt.value}
+                disabled={disabled}
+                onClick={() => set('confidenceLevel', opt.value)}
+                className={[
+                  'flex-1 py-1.5 rounded border text-[11px] font-medium transition-colors',
+                  isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+          Risk Level
+        </p>
+        <div className="grid grid-cols-2 gap-1.5">
+          {RISK_OPTIONS.map((opt) => {
+            const isActive = dojo2Config.riskAssessment === opt.value;
+            return (
+              <button
+                key={opt.value}
+                disabled={disabled}
+                onClick={() => set('riskAssessment', opt.value)}
+                className={[
+                  'py-1.5 rounded border text-[11px] font-medium transition-colors',
+                  isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+      </PanelSection>
+
+      {/* ── Output Format ─────────────────────────────────────────────────── */}
       <PanelSection title="Output Format">
         <div className="flex flex-col gap-1.5">
           {(['markdown', 'json', 'report'] as const).map((f) => {
@@ -486,7 +685,7 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelPr
               <button
                 key={f}
                 disabled={disabled}
-                onClick={() => onDojo2ConfigChange({ ...dojo2Config, outputFormat: f })}
+                onClick={() => set('outputFormat', f)}
                 className={[
                   'w-full text-left px-2.5 py-2 rounded border transition-colors',
                   isActive
@@ -649,12 +848,14 @@ export function ControlPanel({
         )}
       </div>
 
-      {/* Universal guardrail controls */}
-      <GuardrailControls
-        config={config}
-        onChange={onConfigChange}
-        disabled={!hasScenario}
-      />
+      {/* Universal guardrail controls — hidden for Dojo 2 (SOC workflow uses analyst controls instead) */}
+      {dojoId !== 2 && (
+        <GuardrailControls
+          config={config}
+          onChange={onConfigChange}
+          disabled={!hasScenario}
+        />
+      )}
 
       {/* Dojo-specific controls */}
       {dojoId === 1 && (

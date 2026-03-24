@@ -35,8 +35,17 @@ const ControlConfigSchema = z.object({
 });
 
 const Dojo2ConfigSchema = z.object({
-  persona:      z.enum(['analyst', 'ciso', 'ir-lead']),
-  outputFormat: z.enum(['markdown', 'json', 'report']),
+  persona:           z.enum(['analyst', 'ciso', 'ir-lead']),
+  outputFormat:      z.enum(['markdown', 'json', 'report']),
+  // New SOC analyst workflow controls — optional with defaults for backward compat.
+  analysisDepth:     z.enum(['basic', 'standard', 'deep']).optional().default('standard'),
+  responseStyle:     z.enum(['concise', 'detailed', 'structured']).optional().default('detailed'),
+  iocExtraction:     z.boolean().optional().default(true),
+  mitreMapping:      z.boolean().optional().default(true),
+  threatCorrelation: z.boolean().optional().default(false),
+  contextLevel:      z.enum(['none', 'limited', 'full']).optional().default('limited'),
+  confidenceLevel:   z.enum(['low', 'medium', 'high']).optional().default('medium'),
+  riskAssessment:    z.enum(['low', 'medium', 'high', 'critical']).optional().default('medium'),
 });
 
 const Dojo3ConfigSchema = z.object({

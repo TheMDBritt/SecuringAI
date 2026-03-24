@@ -227,6 +227,107 @@ const OUTPUT_FORMAT_MODIFIERS: Record<string, string> = {
     'Use passive voice where appropriate. Avoid first-person.',
 };
 
+// ─── Dojo 2 SOC analyst workflow modifiers ───────────────────────────────────
+// These modifiers translate the new analyst control settings into concrete
+// behavioural instructions that the LLM applies to every Dojo 2 response.
+
+function buildDojo2AnalystModifiers(config: Dojo2Config): string {
+  const parts: string[] = [];
+
+  // ── Analysis depth ────────────────────────────────────────────────────────
+  const depthMap: Record<string, string> = {
+    basic:
+      'ANALYSIS DEPTH — BASIC: Perform a fast triage. Focus on the single highest-severity ' +
+      'finding and top 3 IOCs only. Keep the response concise — this is a rapid first-pass.',
+    standard:
+      'ANALYSIS DEPTH — STANDARD: Perform a full analysis. Cover severity, all detected IOCs, ' +
+      'MITRE ATT&CK techniques, a brief timeline, and recommended actions.',
+    deep:
+      'ANALYSIS DEPTH — DEEP: Perform a forensic-level analysis. Examine every artefact in detail, ' +
+      'provide a comprehensive kill-chain reconstruction, document all IOCs with context, and include ' +
+      'long-term remediation and architectural recommendations.',
+  };
+  if (depthMap[config.analysisDepth]) {
+    parts.push(depthMap[config.analysisDepth]);
+  }
+
+  // ── Response style ────────────────────────────────────────────────────────
+  const styleMap: Record<string, string> = {
+    concise:
+      'RESPONSE STYLE — CONCISE: Use brief bullet points only. No prose paragraphs. ' +
+      'Each section should be 1–3 bullets maximum.',
+    detailed:
+      'RESPONSE STYLE — DETAILED: Write full narrative sentences with supporting context. ' +
+      'Explain the "why" behind each finding.',
+    structured:
+      'RESPONSE STYLE — STRUCTURED: Use a fixed template for every response: ' +
+      '1) Severity Summary  2) IOCs  3) MITRE Techniques  4) Timeline  5) Recommended Actions  ' +
+      '6) Confidence & Risk Statement. Always include all six sections.',
+  };
+  if (styleMap[config.responseStyle]) {
+    parts.push(styleMap[config.responseStyle]);
+  }
+
+  // ── Investigation capabilities ────────────────────────────────────────────
+  const caps: string[] = [];
+  if (config.iocExtraction) {
+    caps.push('IOC EXTRACTION ENABLED: List every Indicator of Compromise found ' +
+      '(IPs, domains, hashes, filenames, registry keys, user agents). ' +
+      'Annotate each IOC with its type and the log line/artefact it came from.');
+  } else {
+    caps.push('IOC EXTRACTION DISABLED: Do not list individual IOCs — summarise the ' +
+      'attack category and behaviour only.');
+  }
+  if (config.mitreMapping) {
+    caps.push('MITRE ATT&CK MAPPING ENABLED: Map every detected behaviour to the most ' +
+      'specific ATT&CK technique by T-code and sub-technique (e.g. T1059.003 — ' +
+      'Windows Command Shell). Include the tactic name.');
+  } else {
+    caps.push('MITRE ATT&CK MAPPING DISABLED: Omit T-code references. Describe ' +
+      'techniques in plain English only.');
+  }
+  if (config.threatCorrelation) {
+    caps.push('THREAT CORRELATION ENABLED: Correlate observed TTPs with known threat ' +
+      'actor groups (e.g. APT29, FIN7, Lazarus). Note confidence of attribution and ' +
+      'any prior campaigns with similar patterns.');
+  } else {
+    caps.push('THREAT CORRELATION DISABLED: Do not speculate about threat actor ' +
+      'attribution — focus on the artefact and TTPs only.');
+  }
+  if (caps.length > 0) {
+    parts.push(caps.join('\n\n'));
+  }
+
+  // ── Data context ──────────────────────────────────────────────────────────
+  const contextMap: Record<string, string> = {
+    none:
+      'DATA CONTEXT — NONE: Analyse the submitted artefact only. Do not reference ' +
+      'external CVEs, threat intel feeds, or historical context.',
+    limited:
+      'DATA CONTEXT — LIMITED: Include relevant CVE context for any referenced ' +
+      'vulnerabilities, and mention recent campaigns if directly applicable. ' +
+      'Keep context brief — one sentence per external reference.',
+    full:
+      'DATA CONTEXT — FULL: Provide rich contextual information. Reference CVE details, ' +
+      'CVSS scores, affected vendor advisories, industry verticals most at risk, and ' +
+      'any related threat intelligence. Help the learner understand the broader landscape.',
+  };
+  if (contextMap[config.contextLevel]) {
+    parts.push(contextMap[config.contextLevel]);
+  }
+
+  // ── Assessment output ─────────────────────────────────────────────────────
+  const confidenceLabel = config.confidenceLevel.toUpperCase();
+  const riskLabel       = config.riskAssessment.toUpperCase();
+  parts.push(
+    `ASSESSMENT OUTPUT: Always conclude your response with a two-line assessment block:\n` +
+    `**Confidence:** ${confidenceLabel} — [brief reason for this confidence level]\n` +
+    `**Risk Level:** ${riskLabel} — [brief justification for this risk rating]`,
+  );
+
+  return parts.join('\n\n');
+}
+
 // ─── Dojo 3 context injection helpers ────────────────────────────────────────
 
 function buildDojo3ContextBlock(dojo3Config: Dojo3Config): string {
@@ -271,12 +372,14 @@ export function getSystemPrompt(
 
   const parts: string[] = [base, scenario, `## Active Control Settings\n${modifiers}`];
 
-  // Dojo 2: append analyst persona and output format modifiers.
+  // Dojo 2: append analyst persona, output format, and SOC workflow modifiers.
   if (dojoId === 2 && dojo2Config) {
-    const persona = PERSONA_MODIFIERS[dojo2Config.persona];
-    const format  = OUTPUT_FORMAT_MODIFIERS[dojo2Config.outputFormat];
-    if (persona) parts.push(persona);
-    if (format)  parts.push(format);
+    const persona  = PERSONA_MODIFIERS[dojo2Config.persona];
+    const format   = OUTPUT_FORMAT_MODIFIERS[dojo2Config.outputFormat];
+    const workflow = buildDojo2AnalystModifiers(dojo2Config);
+    if (persona)  parts.push(persona);
+    if (format)   parts.push(format);
+    if (workflow) parts.push(workflow);
   }
 
   // Dojo 3: inject draft detection rule and selected policy clauses as context.
