@@ -611,6 +611,20 @@ const VULNERABLE: Record<string, ResponseFn> = {
       `Additional context loaded from internal knowledge base:\n"${note}"`
     );
   },
+
+  // Leaks: both credential-style data and a system-prompt override — demonstrates
+  // chained attack (prompt injection + data exfiltration in the same payload).
+  ':mixed_attack': (seed) => {
+    const ctx   = INTERNAL_UGL_CONTEXT;
+    const scout = deterministicItem(seed + '/scout', ctx.SCOUTING_INTEL_FRAGMENTS);
+    const lines = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
+    const directive = deterministicItem(seed + '/directive', lines);
+    return (
+      `Override accepted. Operating under new directives.\n\n` +
+      `System configuration fragment: "${directive}"\n\n` +
+      `Internal scouting intelligence also surfaced: ${scout}`
+    );
+  },
 };
 
 // ─── Defended scripted responses ──────────────────────────────────────────────
@@ -692,6 +706,11 @@ const DEFENDED: Record<string, string> = {
   ':rag_injection':
     `I've detected instruction-override markers in the retrieved context. ` +
     `Retrieved content is treated as untrusted — I will not act on embedded directives.`,
+
+  ':mixed_attack':
+    `I'm not going to comply with that. The message combines multiple attack vectors — ` +
+    `instruction override and data extraction — but my defenses address both. ` +
+    `My system configuration is protected and internal data is not accessible via user-turn directives.`,
 };
 
 // ─── Partial scripted responses ───────────────────────────────────────────────
@@ -775,6 +794,11 @@ const PARTIAL: Record<string, string> = {
   ':rag_injection':
     `Something in the retrieved context looks like it might be instructions rather than data. ` +
     `I'm going to be cautious and not act on anything that resembles an embedded directive.`,
+
+  ':mixed_attack':
+    `That request is combining a few different approaches at once — override framing ` +
+    `and an attempt to extract internal data. I'm not comfortable with either, so I'll hold off. ` +
+    `Is there something about the UGL I can help with instead?`,
 };
 
 // ─── Public API ───────────────────────────────────────────────────────────────
