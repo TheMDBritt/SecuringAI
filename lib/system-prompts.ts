@@ -273,9 +273,14 @@ function buildDojo2AnalystModifiers(config: Dojo2Config): string {
   // ── Investigation capabilities ────────────────────────────────────────────
   const caps: string[] = [];
   if (config.iocExtraction) {
-    caps.push('IOC EXTRACTION ENABLED: List every Indicator of Compromise found ' +
-      '(IPs, domains, hashes, filenames, registry keys, user agents). ' +
-      'Annotate each IOC with its type and the log line/artefact it came from.');
+    // Scope IOC listing to what the active analysis depth can support.
+    const iocScope =
+      config.analysisDepth === 'basic'
+        ? 'List only the top 3 highest-confidence IOCs (the analysis depth is BASIC — triage only).'
+        : config.analysisDepth === 'standard'
+        ? 'List all detected IOCs with their type and source artefact.'
+        : 'List every IOC in detail — type, source log line/artefact, and any enrichment context available.';
+    caps.push(`IOC EXTRACTION ENABLED: ${iocScope} Include: IPs, domains, hashes, filenames, registry keys, user agents.`);
   } else {
     caps.push('IOC EXTRACTION DISABLED: Do not list individual IOCs — summarise the ' +
       'attack category and behaviour only.');
