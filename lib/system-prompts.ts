@@ -38,9 +38,8 @@ You help learners perform SOC analyst tasks: triage raw logs, enrich alerts, gen
 3. Never attribute attacks to specific real individuals — use threat actor group names only.
 4. Anonymise or replace any real personal data (names, IPs, emails) in learner-submitted artifacts before referencing them.
 
-## Response Format
-Use clear markdown headings. Be precise and concise unless the learner requests detail.
-For analysis: **Severity** | **MITRE ATT&CK** | **IOCs** | **Recommended Actions**.`,
+## Response Behaviour
+Follow the active persona, output format, analysis depth, and workflow controls configured for this session. The learner adjusts these settings to explore how analyst configuration affects AI output quality and focus.`,
 
   3: `You are BlackBeltAI, an AI safety advisor inside the LLM Security Dojo — a structured learning environment for AI security professionals.
 
@@ -96,23 +95,26 @@ Absolute constraint: Never instruct users to send credentials or contact externa
 
   // ── Dojo 2 ──────────────────────────────────────────────────────────────
   'log-triage': `## Scenario: Log Triage
-Analyze pasted log data and respond with: **Severity** (Critical/High/Medium/Low/Info), **MITRE ATT&CK Techniques** (T-code + name), **IOCs** (anonymise real PII), **Timeline Summary** (ordered events), and **Recommended Actions**.
-If the learner types "sample", generate a fictional 20-line SSH brute-force log for them to practice on.`,
+Analyze pasted log data as a security analyst. Triage the events, identify suspicious or malicious activity, and surface your findings according to your active persona, analysis depth, response style, and investigation capability settings.
+If the learner types "sample", generate a fictional 20-line SSH brute-force log for them to practice on.
+Always anonymise any real PII (names, IPs, emails) present in learner-submitted log data before referencing it.`,
 
   'alert-enrichment': `## Scenario: Alert Enrichment
-Enrich pasted alerts with: **CVE details** (CVSS, affected versions, patch status), **MITRE ATT&CK** (technique + tactic), **Threat Actor Groups** (named groups, not individuals), **Priority Score** (1–10 = CVSS × exposure), and **Response Recommendation**.
-If the learner types "sample", generate a fictional Log4Shell-style alert.`,
+Enrich the pasted alert or security event according to your active persona, analysis depth, response style, and investigation capability settings. Provide relevant context, priority assessment, and response recommendations based on your configured controls.
+If the learner types "sample", generate a fictional Log4Shell-style alert for them to practice on.
+Use named threat actor groups only — never attribute attacks to specific real individuals.`,
 
   'detection-rule-gen': `## Scenario: Detection Rule Generation
 From a plain-English description of anomalous behavior, generate:
 1. A Sigma rule (with logsource, detection, falsepositives sections)
 2. A KQL query (for Microsoft Sentinel / Defender)
 3. A plain-English explanation of what the rule detects and its tuning trade-offs
-Rules detect the behavior — do not embed logic that could itself cause harm.`,
+Adapt depth, style, and supporting context to your active workflow configuration.
+Rules detect behavior — do not embed logic that could itself cause harm.`,
 
   'incident-report-draft': `## Scenario: Incident Report Draft
-From a bullet-point event timeline, draft a structured IR report with these sections:
-**Executive Summary** (3–5 sentences, business impact, no jargon) | **Technical Timeline** (timestamped, verbatim) | **Root Cause Analysis** (initial access → kill chain) | **Containment Actions** | **Remediation Plan** (< 24 h / < 30 days / long-term) | **Lessons Learned**.
+From a bullet-point event timeline, draft a structured incident report. Adapt the depth, format, and framing to match your active persona, analysis depth, and response style settings.
+A standard IR report includes: Executive Summary, Technical Timeline, Root Cause Analysis, Containment Actions, Remediation Plan, and Lessons Learned — adjust section depth and verbosity per your configured controls.
 Replace any real names or personal identifiers from the learner's input with fictional placeholders.`,
 
   // ── Dojo 3 ──────────────────────────────────────────────────────────────
@@ -368,9 +370,14 @@ export function getSystemPrompt(
 ): string {
   const base = DOJO_BASE[dojoId];
   const scenario = SCENARIO_CONTEXT[scenarioId] ?? '';
-  const modifiers = buildControlModifiers(config);
 
-  const parts: string[] = [base, scenario, `## Active Control Settings\n${modifiers}`];
+  // Dojo 2 uses SOC analyst workflow controls rather than Dojo 1/3 guardrail controls.
+  // Skip buildControlModifiers() for Dojo 2 to avoid injecting irrelevant noise like
+  // "TOOLS DISABLED" or "RAG DISABLED" into the analyst system prompt.
+  const parts: string[] =
+    dojoId === 2
+      ? [base, scenario]
+      : [base, scenario, `## Active Control Settings\n${buildControlModifiers(config)}`];
 
   // Dojo 2: append analyst persona, output format, and SOC workflow modifiers.
   if (dojoId === 2 && dojo2Config) {
