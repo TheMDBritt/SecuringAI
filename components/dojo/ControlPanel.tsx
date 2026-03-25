@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import type {
   ControlConfig,
   Dojo2Config,
@@ -11,6 +12,16 @@ import type {
   ContextLevel,
   ConfidenceAssessment,
 } from '@/types';
+import {
+  DOJO2_PREBUILT_SCENARIOS,
+  DOJO2_ATTACK_CATEGORIES,
+  DOJO2_TASK_LABELS,
+  generateDojo2Scenario,
+  type Dojo2AttackCategory,
+  type Dojo2Difficulty,
+  type Dojo2TaskType,
+  type Dojo2IncidentScenario,
+} from '@/lib/dojo2-scenarios';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -28,6 +39,11 @@ interface ControlPanelProps {
   onAutoRunChange: (v: boolean) => void;
   /** Called when the user clicks a payload button (Dojo 1) or a clause button (Dojo 3). */
   onSendPayload: (text: string) => void;
+  /**
+   * Always inserts text into the chat input without sending — used by Dojo 2
+   * Incident Library so users can review loaded scenario data before submitting.
+   */
+  onInsertText?: (text: string) => void;
   /** True while ChatConsole is awaiting a response — disables payload buttons. */
   chatLoading: boolean;
   // ── Dojo 2: analyst configuration ────────────────────────────────────────
@@ -479,19 +495,257 @@ const RISK_OPTIONS: { value: Dojo2Config['riskAssessment']; label: string; color
   { value: 'critical', label: 'Critical', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
 ];
 
+// ─── Dojo 2 — Difficulty badge colours ───────────────────────────────────────
+
+const DIFF_BADGE: Record<Dojo2Difficulty, string> = {
+  beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+  intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
+};
+
+const TASK_BADGE: Record<Dojo2TaskType, string> = {
+  'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
+  'detection-rule-gen':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
+  'incident-report-draft':'bg-teal-500/10 text-teal-400 border-teal-500/30',
+};
+
+const GEN_DIFF_OPTIONS: { value: Dojo2Difficulty; label: string }[] = [
+  { value: 'beginner',     label: 'Beginner' },
+  { value: 'intermediate', label: 'Intermediate' },
+  { value: 'advanced',     label: 'Advanced' },
+];
+
+// ─── Incident Library sub-component ──────────────────────────────────────────
+
+function IncidentLibrary({
+  disabled,
+  onLoad,
+  defaultTaskFilter,
+}: {
+  disabled: boolean;
+  /** Inserts incident data into the chat input for user review (does NOT auto-send). */
+  onLoad: (text: string) => void;
+  /** When set, the filter tabs auto-select this task type on mount and on change. */
+  defaultTaskFilter?: Dojo2TaskType;
+}) {
+  const [filterTask, setFilterTask] = useState<Dojo2TaskType | 'all'>(defaultTaskFilter ?? 'all');
+  const [genAttack, setGenAttack]   = useState<Dojo2AttackCategory>('Brute Force');
+  const [genDiff, setGenDiff]       = useState<Dojo2Difficulty>('beginner');
+  const [generated, setGenerated]   = useState<Dojo2IncidentScenario | null>(null);
+  const [genOpen, setGenOpen]       = useState(false);
+
+  // Sync filter tab whenever the parent changes the selected scenario type.
+  useEffect(() => {
+    if (defaultTaskFilter) {
+      setFilterTask(defaultTaskFilter);
+    }
+  }, [defaultTaskFilter]);
+
+  const filtered = filterTask === 'all'
+    ? DOJO2_PREBUILT_SCENARIOS
+    : DOJO2_PREBUILT_SCENARIOS.filter((s) => s.taskType === filterTask);
+
+  function handleGenerate() {
+    const scenario = generateDojo2Scenario(genAttack, genDiff);
+    setGenerated(scenario);
+  }
+
+  return (
+    <div>
+      {/* ── Filter tabs ────────────────────────────────────────────────── */}
+      <div className="flex flex-wrap gap-1 mb-2">
+        {(['all', 'log-triage', 'alert-enrichment', 'detection-rule-gen', 'incident-report-draft'] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setFilterTask(t)}
+            className={[
+              'text-[10px] px-1.5 py-0.5 rounded border font-mono transition-colors',
+              filterTask === t
+                ? 'border-cyan-500 bg-cyan-500/15 text-cyan-300'
+                : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600',
+            ].join(' ')}
+          >
+            {t === 'all' ? 'All' : DOJO2_TASK_LABELS[t]}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Scenario cards ─────────────────────────────────────────────── */}
+      <div className="flex flex-col gap-1.5 max-h-64 overflow-y-auto pr-0.5">
+        {filtered.map((s) => (
+          <button
+            key={s.id}
+            disabled={disabled}
+            onClick={() => onLoad(s.incidentData)}
+            className={[
+              'w-full text-left px-2.5 py-2 rounded border transition-all group',
+              'border-slate-700 bg-slate-800/40',
+              'hover:border-cyan-500/50 hover:bg-cyan-500/5',
+              'disabled:opacity-40 disabled:cursor-not-allowed',
+            ].join(' ')}
+          >
+            <div className="flex items-start justify-between gap-1.5 mb-1">
+              <span className="text-[11px] font-medium text-slate-200 leading-snug group-hover:text-cyan-200 transition-colors">
+                {s.title}
+              </span>
+              <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[s.difficulty]].join(' ')}>
+                {s.difficulty.slice(0,3)}
+              </span>
+            </div>
+            <div className="flex items-center gap-1 mb-1">
+              <span className={['text-[9px] px-1 py-0.5 rounded border font-mono', TASK_BADGE[s.taskType]].join(' ')}>
+                {DOJO2_TASK_LABELS[s.taskType]}
+              </span>
+              <span className="text-[9px] text-slate-600 font-mono">{s.mitre.techniques[0].split(' – ')[0]}</span>
+            </div>
+            <p className="text-[10px] text-slate-500 leading-relaxed">{s.description}</p>
+            <p className="text-[9px] text-cyan-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              ↳ Click to load into chat input
+            </p>
+          </button>
+        ))}
+      </div>
+
+      {/* ── Generator ──────────────────────────────────────────────────── */}
+      <div className="mt-3 border border-slate-700 rounded overflow-hidden">
+        <button
+          onClick={() => setGenOpen((v) => !v)}
+          className="w-full flex items-center justify-between px-2.5 py-2 bg-slate-800/60 text-[10px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
+        >
+          <span className="uppercase tracking-widest">⚡ Dynamic Generator</span>
+          <span>{genOpen ? '▲' : '▼'}</span>
+        </button>
+
+        {genOpen && (
+          <div className="p-2.5 bg-slate-900/40 flex flex-col gap-2">
+            {/* Attack type selector */}
+            <div>
+              <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Attack Type</p>
+              <div className="flex flex-wrap gap-1">
+                {DOJO2_ATTACK_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    disabled={disabled}
+                    onClick={() => setGenAttack(cat)}
+                    className={[
+                      'text-[9px] px-1.5 py-0.5 rounded border font-mono transition-colors',
+                      genAttack === cat
+                        ? 'border-cyan-500 bg-cyan-500/15 text-cyan-300'
+                        : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300',
+                      'disabled:opacity-40 disabled:cursor-not-allowed',
+                    ].join(' ')}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Difficulty selector */}
+            <div>
+              <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Difficulty</p>
+              <div className="flex gap-1">
+                {GEN_DIFF_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    disabled={disabled}
+                    onClick={() => setGenDiff(opt.value)}
+                    className={[
+                      'flex-1 text-[9px] py-1 rounded border font-mono transition-colors',
+                      genDiff === opt.value
+                        ? DIFF_BADGE[opt.value]
+                        : 'border-slate-700 text-slate-500 hover:border-slate-600',
+                      'disabled:opacity-40 disabled:cursor-not-allowed',
+                    ].join(' ')}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Generate button */}
+            <button
+              disabled={disabled}
+              onClick={handleGenerate}
+              className="w-full py-1.5 rounded border border-cyan-700/50 bg-cyan-500/10 text-cyan-400 text-xs font-medium hover:border-cyan-500/70 hover:bg-cyan-500/15 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Generate Scenario →
+            </button>
+
+            {/* Generated result */}
+            {generated && (
+              <div className="border border-slate-700 rounded p-2 bg-slate-800/40">
+                <div className="flex items-start justify-between gap-1.5 mb-1">
+                  <p className="text-[10px] font-medium text-slate-200 leading-snug">{generated.title}</p>
+                  <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[generated.difficulty]].join(' ')}>
+                    {generated.difficulty.slice(0,3)}
+                  </span>
+                </div>
+                <p className="text-[9px] text-slate-500 mb-1.5 leading-relaxed">{generated.description}</p>
+                <div className="flex gap-1.5">
+                  <button
+                    disabled={disabled}
+                    onClick={() => onLoad(generated.incidentData)}
+                    className="flex-1 py-1 text-[10px] rounded border border-cyan-700/50 bg-cyan-500/10 text-cyan-400 hover:border-cyan-500/70 transition-colors disabled:opacity-40"
+                  >
+                    Load into Chat →
+                  </button>
+                  <button
+                    disabled={disabled}
+                    onClick={handleGenerate}
+                    className="px-2 py-1 text-[10px] rounded border border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300 transition-colors disabled:opacity-40"
+                    title="Generate another"
+                  >
+                    ↺
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      <p className="text-[9px] text-slate-600 font-mono mt-1.5">
+        Click any scenario to load it into the chat input — review the data, then press Enter or Send to run the analysis.
+      </p>
+    </div>
+  );
+}
+
+// ─── Dojo 2 Panel ─────────────────────────────────────────────────────────────
+
 interface Dojo2PanelProps {
   disabled: boolean;
   dojo2Config: Dojo2Config;
   onDojo2ConfigChange: (c: Dojo2Config) => void;
+  onSendPayload: (text: string) => void;
+  /** Always inserts into the chat input (never auto-sends) — used for scenario loading. */
+  onInsertText: (text: string) => void;
+  /** Task type derived from the selected scenario — auto-filters the Incident Library. */
+  defaultTaskFilter?: Dojo2TaskType;
 }
 
-function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange }: Dojo2PanelProps) {
+function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload, onInsertText, defaultTaskFilter }: Dojo2PanelProps) {
   function set<K extends keyof Dojo2Config>(key: K, value: Dojo2Config[K]) {
     onDojo2ConfigChange({ ...dojo2Config, [key]: value });
   }
 
   return (
     <div>
+      {/* ── Incident Library ──────────────────────────────────────────────── */}
+      <PanelSection title="Incident Library">
+        <p className="text-[10px] text-slate-500 mb-2">
+          Select a prebuilt scenario or generate one. Click any card to load it into the chat input, then press Send to run the analysis.
+        </p>
+        <IncidentLibrary
+          disabled={disabled}
+          onLoad={onInsertText}
+          defaultTaskFilter={defaultTaskFilter}
+        />
+      </PanelSection>
+
       {/* ── Analyst Persona ───────────────────────────────────────────────── */}
       <PanelSection title="Analyst Persona">
         <div className="flex flex-col gap-1.5">
@@ -823,6 +1077,7 @@ export function ControlPanel({
   autoRunPayloads,
   onAutoRunChange,
   onSendPayload,
+  onInsertText,
   chatLoading,
   dojo2Config,
   onDojo2ConfigChange,
@@ -830,6 +1085,14 @@ export function ControlPanel({
   onDojo3ConfigChange,
 }: ControlPanelProps) {
   const hasScenario = scenario !== null;
+
+  // Derive the Dojo 2 task filter from the selected scenario ID.
+  // Scenario IDs in Dojo 2 match Dojo2TaskType values exactly:
+  // 'log-triage' | 'alert-enrichment' | 'detection-rule-gen' | 'incident-report-draft'
+  const dojo2TaskFilter: Dojo2TaskType | undefined =
+    dojoId === 2 && scenario
+      ? (scenario.id as Dojo2TaskType)
+      : undefined;
 
   const titles: Record<DojoId, string> = {
     1: 'Attack / Defense Controls',
@@ -873,9 +1136,12 @@ export function ControlPanel({
       )}
       {dojoId === 2 && (
         <Dojo2Panel
-          disabled={!hasScenario}
+          disabled={!hasScenario || chatLoading}
           dojo2Config={dojo2Config}
           onDojo2ConfigChange={onDojo2ConfigChange}
+          onSendPayload={onSendPayload}
+          onInsertText={onInsertText ?? onSendPayload}
+          defaultTaskFilter={dojo2TaskFilter}
         />
       )}
       {dojoId === 3 && (

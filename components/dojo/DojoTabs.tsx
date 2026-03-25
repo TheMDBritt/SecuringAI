@@ -143,6 +143,14 @@ export function DojoTabs() {
     [autoRunPayloads],
   );
 
+  /**
+   * Always inserts text into the chat input without sending — used by Dojo 2
+   * Incident Library so users can review scenario data before submitting.
+   */
+  const handleInsertText = useCallback((text: string) => {
+    chatRef.current?.insertText(text);
+  }, []);
+
   const activeTab = TABS.find((t) => t.id === activeDojoId)!;
 
   return (
@@ -207,6 +215,7 @@ export function DojoTabs() {
             autoRunPayloads={autoRunPayloads}
             onAutoRunChange={setAutoRunPayloads}
             onSendPayload={handleSendPayload}
+            onInsertText={handleInsertText}
             chatLoading={chatLoading}
             dojo2Config={dojo2Config}
             onDojo2ConfigChange={setDojo2Config}

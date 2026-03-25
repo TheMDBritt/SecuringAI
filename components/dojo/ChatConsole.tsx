@@ -64,7 +64,7 @@ const MAX_ATTACK_HISTORY = 10;
 
 const PLACEHOLDER_INPUT: Record<DojoId, string> = {
   1: 'Type your attack payload or defense test message… (Shift+Enter for newline)',
-  2: 'Paste logs, alerts, or describe the security event…',
+  2: 'Load a scenario from the Incident Library → or paste your own logs/alert here…',
   3: 'Describe the artifact to analyze or policy to draft…',
 };
 
@@ -382,6 +382,12 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                   </svg>
                 </div>
                 <p className="text-sm text-slate-500">Select a scenario to begin</p>
+                {dojoId === 2 && (
+                  <p className="text-xs text-slate-600 mt-1 font-mono max-w-[220px] mx-auto leading-relaxed">
+                    Then load an incident from the panel →<br />
+                    or type your own logs below
+                  </p>
+                )}
               </div>
             </div>
           )}

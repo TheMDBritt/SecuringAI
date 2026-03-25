@@ -630,57 +630,182 @@ interface QualityCheck { label: string; re: RegExp }
 
 const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   'log-triage': [
-    { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(critical|high|medium|low|informational)\b/i },
+    { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(critical|high|medium|low|informational|sev(erity)?\s*[1-5]|p[0-4]\b)\b/i },
     { label: 'MITRE ATT&CK technique identified (T-code)', re: /T\d{4}(\.\d{3})?/ },
-    { label: 'IOCs or indicators extracted', re: /\b(IP\s*address|domain|hash|MD5|SHA\d*|IOC|indicator|artifact|malicious\s+file|URL)\b/i },
-    { label: 'Timeline or event sequence reconstructed', re: /\b(timeline|event\s+sequence|chronolog|occurred|logged|timestamp)\b/i },
-    { label: 'Recommended response actions provided', re: /\b(recommend|action\s*:|mitigat|remediati|block|isolat|contain|investig|escalat)\b/i },
+    // IOC check: accepts both keyword labels AND actual artefact patterns (IPs, hashes, hostnames, URLs)
+    { label: 'IOCs or indicators extracted', re: /\b(IP\s*address|domain|hash|MD5|SHA\d*|IOC|indicator|artefact|artifact|malicious\s+file|URL)\b|\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|[a-fA-F0-9]{32,64}\b|https?:\/\//i },
+    { label: 'Timeline or event sequence reconstructed', re: /\b(timeline|event\s+sequence|chronolog|occurred|logged|timestamp|first\s+seen|last\s+seen|\d{2}:\d{2}:\d{2})\b/i },
+    { label: 'Recommended response actions provided', re: /\b(recommend|action\s*:|mitigat|remediati|block|isolat|contain|investig|escalat|next\s+steps?|immediate(ly)?|quarantin)\b/i },
   ],
   'alert-enrichment': [
-    { label: 'CVE or vulnerability identified', re: /CVE-\d{4}-\d+|CVSS|vulnerability|exploit|affected\s+version/i },
+    { label: 'CVE or vulnerability identified', re: /CVE-\d{4}-\d+|CVSS|vulnerability|exploit|affected\s+version|advisory|zero.?day/i },
     { label: 'MITRE ATT&CK technique mapped', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
-    { label: 'Threat actor or group context provided', re: /\b(APT\d*|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group)\b/i },
-    { label: 'Severity or priority score assigned', re: /\b(critical|high|medium|low|priority|score\s*[:=]|CVSS\s+[\d.]+)\b/i },
-    { label: 'Response or remediation recommended', re: /\b(patch|update|disable|block|monitor|investigate|escalat|remediat|notify)\b/i },
+    // Expanded threat actor patterns: named groups plus descriptive terms
+    { label: 'Threat actor or group context provided', re: /\b(APT\d*|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group|Lazarus|FIN\d+|Cozy\s+Bear|Fancy\s+Bear|Sandworm|UNC\d+|threat\s+group|state.?sponsored|hacking\s+group|cybercriminal|threat\s+cluster)\b/i },
+    { label: 'Severity or priority score assigned', re: /\b(critical|high|medium|low|priority|score\s*[:=]|CVSS\s+[\d.]+|sev(erity)?\s*[1-5])\b/i },
+    { label: 'Response or remediation recommended', re: /\b(patch|update|disable|block|monitor|investigate|escalat|remediat|notify|apply.*fix|hotfix|workaround)\b/i },
   ],
   'detection-rule-gen': [
-    { label: 'Sigma rule structure present', re: /title\s*:|detection\s*:|condition\s*:|logsource\s*:|falsepositives\s*:/i },
-    { label: 'KQL, SPL, or YARA query included', re: /\|\s*where\s+|DeviceEvents|SecurityEvent|index\s*=|_raw|SecurityAlert|let\s+\w+\s*=|rule\s+\w+\s*\{/i },
-    { label: 'Detection logic and trigger conditions explained', re: /\b(detect|trigger|alert|monitor|capture|identif|flag\s+when)\b/i },
-    { label: 'False positive guidance provided', re: /\b(false.?positive|tuning|noise|threshold|exclusion|baseline)\b/i },
+    { label: 'Sigma rule structure present', re: /title\s*:|detection\s*:|condition\s*:|logsource\s*:|falsepositives\s*:|status\s*:|level\s*:/i },
+    // Expanded KQL/YARA: additional common table names and Sentinel patterns
+    { label: 'KQL, SPL, or YARA query included', re: /\|\s*where\s+|DeviceEvents|SecurityEvent|index\s*=|_raw|SecurityAlert|let\s+\w+\s*=|rule\s+\w+\s*\{|TimeGenerated|Sysmon|AzureActivity|union\s+Device|SourceSystem|Heartbeat|process_name\s*:/i },
+    { label: 'Detection logic and trigger conditions explained', re: /\b(detect|trigger|alert|monitor|capture|identif|flag\s+when|fires\s+when|match(es)?|pattern)\b/i },
+    { label: 'False positive guidance provided', re: /\b(false.?positive|tuning|noise|threshold|exclusion|baseline|allowlist|whitelist|suppress|benign)\b/i },
     { label: 'MITRE ATT&CK technique referenced', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
   ],
   'incident-report-draft': [
-    { label: 'Executive summary with business impact included', re: /executive\s+summary|business\s+impact/i },
-    { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline/i },
-    { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)/i },
-    { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication/i },
-    { label: 'Lessons learned section included', re: /lessons?\s+learned|post.?incident|retrospect|prevent.*recurrence|improve.*posture/i },
+    { label: 'Executive summary with business impact included', re: /executive\s+summary|business\s+impact|board.level|c.suite|risk\s+to\s+(the\s+)?business|financial\s+impact/i },
+    { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline|\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}/i },
+    { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)|entry\s+point|vector|attack\s+chain/i },
+    { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication|reset.*password|disable.*account|re.?image/i },
+    // Expanded lessons learned: common alternative phrasings
+    { label: 'Lessons learned section included', re: /lessons?\s+learned|post.?incident|retrospect|prevent.*recurrence|improve.*posture|going\s+forward|recommendations?(\s*section)?:|future\s+improvements?/i },
   ],
+};
+
+// ─── Per-element coaching ─────────────────────────────────────────────────────
+// Maps each quality check label to actionable coaching text shown when that
+// criterion is missing. Tells the learner WHY it matters and what prompt to use.
+
+const DOJO2_ELEMENT_COACHING: Record<string, string> = {
+  // log-triage
+  'Severity assessment provided (Critical / High / Medium / Low)':
+    'Severity is the first decision gate — it determines response priority and paging thresholds. Prompt: "Assign a severity rating (Critical/High/Medium/Low) with justification."',
+  'MITRE ATT&CK technique identified (T-code)':
+    'T-codes enable threat correlation, detection tuning, and playbook lookup. Prompt: "Map every observed behaviour to a MITRE ATT&CK technique by T-code."',
+  'IOCs or indicators extracted':
+    'Without concrete IOCs (IPs, hashes, domains), analysts cannot add blocklist entries or pivot in threat intel. Prompt: "Extract all IOCs — IP addresses, domain names, file hashes, URLs, and registry keys."',
+  'Timeline or event sequence reconstructed':
+    'A timeline reveals dwell time, lateral movement order, and the blast radius. Prompt: "Reconstruct the attack timeline with timestamps from the log data."',
+  'Recommended response actions provided':
+    'AI analysis without action guidance leaves the analyst unsure what to do next. Prompt: "What are the immediate containment steps and longer-term remediation actions?"',
+  // alert-enrichment
+  'CVE or vulnerability identified':
+    'CVE context tells the analyst whether a patch exists and how widely the vuln is exploited in the wild. Prompt: "Identify the CVE(s) involved and provide CVSS score and patch availability."',
+  'MITRE ATT&CK technique mapped':
+    'ATT&CK mapping links the alert to known adversary playbooks and existing detection coverage. Prompt: "Map the alert to the relevant MITRE ATT&CK technique and tactic."',
+  'Threat actor or group context provided':
+    'Attribution context (even low-confidence) scopes the investigation — APT vs. commodity malware require different playbooks. Prompt: "Are there known threat groups associated with this technique or IOC?"',
+  'Severity or priority score assigned':
+    'Alert enrichment must output a triage priority so tickets route correctly. Prompt: "Assign an overall severity (Critical/High/Medium/Low) and a suggested SLA for response."',
+  'Response or remediation recommended':
+    'Enrichment without recommended action wastes analyst time on re-interpretation. Prompt: "What immediate actions should the analyst take — block, patch, escalate, or monitor?"',
+  // detection-rule-gen
+  'Sigma rule structure present':
+    'Sigma is the universal detection language — without correct structure (title, logsource, detection, condition) the rule cannot be compiled. Prompt: "Provide a complete Sigma rule with title, logsource, detection, condition, and falsepositives fields."',
+  'KQL, SPL, or YARA query included':
+    'Platform-specific queries (KQL for Sentinel, SPL for Splunk, YARA for files) make the rule immediately deployable. Prompt: "Provide a KQL query for Microsoft Sentinel and a YARA rule for file-based detection."',
+  'Detection logic and trigger conditions explained':
+    'Analysts need to understand what fires the rule to tune it and reduce alert fatigue. Prompt: "Explain exactly what conditions trigger this rule and what benign scenarios might match."',
+  'False positive guidance provided':
+    'Without FP guidance, a good rule generates ticket storms and gets disabled. Prompt: "What legitimate activity could trigger this rule and how should analysts tune it?"',
+  'MITRE ATT&CK technique referenced':
+    'ATT&CK alignment lets the team measure detection coverage across the kill chain. Prompt: "Reference the ATT&CK technique (T-code) this rule is designed to detect."',
+  // incident-report-draft
+  'Executive summary with business impact included':
+    'Non-technical stakeholders need a plain-language risk statement to make response decisions. Prompt: "Write an executive summary covering business impact, affected systems, and regulatory exposure."',
+  'Technical timeline of events provided':
+    'A timestamped technical timeline is the core evidence record for forensics and legal proceedings. Prompt: "Provide a detailed technical timeline of attacker actions with log-derived timestamps."',
+  'Root cause analysis or kill chain present':
+    'Without root cause identification, the same breach vector will be exploited again. Prompt: "What was the initial access vector and complete attack path? How did the attacker gain a foothold?"',
+  'Containment or remediation steps listed':
+    'The IR report must track what was done and what still needs to happen to close the incident. Prompt: "List containment actions taken and pending remediation steps with owners and timelines."',
+  'Lessons learned section included':
+    'Post-incident review is how organisations improve — this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
+};
+
+// ─── Scenario-specific next-analyst-steps ────────────────────────────────────
+// Teaches learners what a real SOC analyst does after receiving AI analysis.
+
+const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
+  'log-triage':
+    'What a real Tier-1 analyst does next: (1) assigns severity and pages on-call if Critical, ' +
+    '(2) adds extracted IOCs to the SIEM blocklist and threat intel platform, ' +
+    '(3) opens a ticket and escalates to Tier-2 with a triage summary, ' +
+    '(4) preserves log evidence for forensics before the retention window closes.',
+  'alert-enrichment':
+    'What a real analyst does after enrichment: (1) pivots on IOCs in VirusTotal, Shodan, and internal threat intel, ' +
+    '(2) cross-references the CVE with the organisation\'s patch status and asset inventory, ' +
+    '(3) updates the ticket with enrichment findings and SLA classification, ' +
+    '(4) notifies affected system owners if exploitation is confirmed.',
+  'detection-rule-gen':
+    'What a real detection engineer does next: (1) back-tests the rule against 30 days of historical data to measure hit rate and false-positive ratio, ' +
+    '(2) tunes exclusions and thresholds before enabling in production, ' +
+    '(3) commits the rule to the detection-as-code repository with ATT&CK coverage metadata, ' +
+    '(4) schedules a 2-week review to assess real-world performance.',
+  'incident-report-draft':
+    'What a real IR lead does after the draft: (1) distributes the draft to legal, compliance, and CISO within 24 hours, ' +
+    '(2) schedules a lessons-learned meeting with all responders within 5 business days, ' +
+    '(3) tracks all remediation items in a project tracker with owners and deadlines, ' +
+    '(4) files regulatory notifications if the incident meets breach thresholds (GDPR 72h, HIPAA 60d).',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   'phishing-deepfake': [
-    { label: 'AI-generation linguistic markers identified', re: /AI.?generat|LLM|synthetic|artificial|unnatural|linguistic\s+marker|hallucin/i },
-    { label: 'Social engineering triggers analyzed (urgency / authority / pretexting)', re: /urgency|authority|pretexting|manipulation|social\s+engineer|impersonat/i },
-    { label: 'Detection heuristics or technical controls proposed', re: /detect|heuristic|indicator|filter|flag|DMARC|SPF|DKIM|signature/i },
+    // Expanded AI generation markers: include linguistic style cues used in analysis
+    { label: 'AI-generation linguistic markers identified', re: /AI.?generat|LLM|synthetic|artificial|unnatural|linguistic\s+marker|hallucin|formulaic|inconsistent\s+tone|over.?formal|verbose|repetitive\s+pattern/i },
+    { label: 'Social engineering triggers analyzed (urgency / authority / pretexting)', re: /urgency|authority|pretexting|manipulation|social\s+engineer|impersonat|fear|pressure|trust\s+exploit/i },
+    // Expanded: add sandbox, header analysis, email forensics techniques
+    { label: 'Detection heuristics or technical controls proposed', re: /detect|heuristic|indicator|filter|flag|DMARC|SPF|DKIM|signature|sandbox|header\s+analysis|MX\s+record|email\s+forensics|link\s+inspection/i },
     { label: 'Framework or threat reference included', re: /T\d{4}(\.\d{3})?|ATT&CK|MITRE|NIST|technique|tactic/i },
-    { label: 'Defensive or awareness recommendations provided', re: /training|awareness|policy|verify|out.?of.?band|confirm\s+identity|report/i },
+    // Expanded: phishing simulations and security culture referenced
+    { label: 'Defensive or awareness recommendations provided', re: /training|awareness|policy|verify|out.?of.?band|confirm\s+identity|report|phishing\s+simulation|security\s+culture|incident\s+reporting/i },
   ],
   'ai-abuse-threat-model': [
-    { label: 'Threat actor and attack vector identified', re: /threat\s+actor|attack\s+vector|adversar/i },
+    { label: 'Threat actor and attack vector identified', re: /threat\s+actor|attack\s+vector|adversar|attacker|insider\s+threat|external\s+actor/i },
     { label: 'OWASP LLM Top 10 categories mapped', re: /LLM0[0-9]|OWASP/i },
-    { label: 'NIST AI RMF functions referenced', re: /NIST|AI\s+RMF|Map\.|Measure\.|Manage\.|Govern\./i },
-    { label: 'EU AI Act risk category included', re: /EU\s+AI\s+Act|high.?risk\s+AI|unacceptable.?risk|limited.?risk/i },
-    { label: 'Likelihood and impact scoring present', re: /likelihood|impact|risk\s+score|probability|severity\s*:|[1-5]\s*\/\s*5/i },
+    { label: 'NIST AI RMF functions referenced', re: /NIST|AI\s+RMF|Map\b|Measure\b|Manage\b|Govern\b/i },
+    // Expanded: add prohibited AI and transparency requirement patterns
+    { label: 'EU AI Act risk category included', re: /EU\s+AI\s+Act|high.?risk\s+AI|unacceptable.?risk|limited.?risk|prohibited\s+AI|transparency\s+requirement|annex\s+(I|II|III)/i },
+    { label: 'Likelihood and impact scoring present', re: /likelihood|impact|risk\s+score|probability|severity\s*:|[1-5]\s*\/\s*5|\d+\s*\/\s*5/i },
   ],
   'policy-and-controls': [
-    { label: 'Acceptable use policy clauses drafted', re: /\b(must|shall|prohibited|required|mandatory|acceptable\s+use|policy\s+clause)\b/i },
-    { label: 'NIST AI RMF framework referenced', re: /NIST|AI\s+RMF|Map\.|Measure\.|Manage\.|Govern\./i },
+    { label: 'Acceptable use policy clauses drafted', re: /\b(must|shall|prohibited|required|mandatory|acceptable\s+use|policy\s+clause|employees?\s+must|users?\s+must)\b/i },
+    { label: 'NIST AI RMF framework referenced', re: /NIST|AI\s+RMF|Map\b|Measure\b|Manage\b|Govern\b/i },
     { label: 'EU AI Act or ISO 42001 standard referenced', re: /EU\s+AI\s+Act|ISO\s+42001|42001/i },
-    { label: 'Technical controls or safeguards specified', re: /control|safeguard|enforce|audit|monitor|access\s+control|logging/i },
-    { label: 'Maturity or coverage scoring applied (0–3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity/i },
+    // Expanded: add role-based access, data governance controls
+    { label: 'Technical controls or safeguards specified', re: /control|safeguard|enforce|audit|monitor|access\s+control|logging|role.based|data\s+classif|rate\s+limit|guardrail/i },
+    // Expanded: add gap and coverage terms
+    { label: 'Maturity or coverage scoring applied (0–3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity|gap|coverage|fully\s+implemented/i },
   ],
+};
+
+// ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
+
+const DOJO3_ELEMENT_COACHING: Record<string, string> = {
+  // phishing-deepfake
+  'AI-generation linguistic markers identified':
+    'AI-generated phishing often shows telltale patterns: perfect grammar, over-formal tone, repeated sentence structures, and unusual collocations. Prompt: "Identify specific AI-generation linguistic markers in this content."',
+  'Social engineering triggers analyzed (urgency / authority / pretexting)':
+    'Social engineering attacks exploit human psychology — urgency, authority, and pretexting are the three core levers. Prompt: "Identify the social engineering techniques used: urgency, authority, pretexting, or fear-based pressure."',
+  'Detection heuristics or technical controls proposed':
+    'Technical controls (DMARC, header inspection, sandboxing) catch what awareness training misses. Prompt: "What technical controls and detection heuristics would catch this type of attack?"',
+  'Framework or threat reference included':
+    'Mapping to MITRE or NIST enables organisations to connect this threat to existing detection coverage and controls. Prompt: "Map this attack technique to the relevant MITRE ATT&CK or ATLAS technique."',
+  'Defensive or awareness recommendations provided':
+    'Both technical controls and human awareness are required — phishing simulations measure training effectiveness. Prompt: "What security awareness training and defensive policies would reduce this risk?"',
+  // ai-abuse-threat-model
+  'Threat actor and attack vector identified':
+    'Without specifying who attacks and how, a threat model cannot drive control selection. Prompt: "Who is the threat actor? What is the attack vector and motivation?"',
+  'OWASP LLM Top 10 categories mapped':
+    'OWASP LLM Top 10 is the baseline framework for AI/LLM risk — coverage gaps mean unmitigated attack surface. Prompt: "Map this threat to the relevant OWASP LLM Top 10 category (LLM01–LLM10)."',
+  'NIST AI RMF functions referenced':
+    'NIST AI RMF (Map, Measure, Manage, Govern) provides the governance structure for AI risk. Prompt: "Reference the relevant NIST AI RMF function for this risk."',
+  'EU AI Act risk category included':
+    'EU AI Act risk classification (Unacceptable/High/Limited/Minimal) determines legal obligations for the system. Prompt: "What EU AI Act risk category does this AI application fall under and why?"',
+  'Likelihood and impact scoring present':
+    'Likelihood × impact scoring prioritises controls investment — without it, all risks look equal. Prompt: "Score each risk on likelihood (1–5) and impact (1–5) to produce a risk rating."',
+  // policy-and-controls
+  'Acceptable use policy clauses drafted':
+    'Policy clauses must use normative language (must/shall/prohibited) to be enforceable. Prompt: "Draft formal AUP clauses using must/shall/prohibited language for each control area."',
+  'NIST AI RMF framework referenced':
+    'NIST AI RMF alignment demonstrates governance maturity and satisfies auditor requirements. Prompt: "Reference the NIST AI RMF function that each policy clause supports."',
+  'EU AI Act or ISO 42001 standard referenced':
+    'ISO 42001 and EU AI Act provide the international compliance baseline for AI governance. Prompt: "Map each clause to the EU AI Act article or ISO 42001 control it addresses."',
+  'Technical controls or safeguards specified':
+    'Policy without technical controls is unenforceable — guardrails, logging, and access controls must be specified. Prompt: "What technical safeguards enforce each policy clause?"',
+  'Maturity or coverage scoring applied (0–3 scale)':
+    'Scoring each clause 0–3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
 };
 
 /** SecurityAI+ exam topic mappings per scenario — shown in the evaluation panel. */
@@ -754,22 +879,36 @@ function evaluateQuality(
   if (total === 0) {
     whatHappened = `BlackBeltAI provided a ${dojoLabel} response. No quality rubric is defined for this scenario variant.`;
   } else if (score >= 80) {
-    whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis, meeting ${numPassed} of ${total} quality criteria. The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool.`;
+    whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis — ${numPassed} of ${total} quality criteria met. ` +
+      `The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool. ` +
+      (missing.length > 0 ? `Minor gaps remain in: ${missing.join('; ')}.` : 'All key SOC criteria are covered.');
   } else if (score >= 50) {
-    whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis, meeting ${numPassed} of ${total} quality criteria. The response covers the basics but is missing key elements that would make it operationally useful.`;
+    whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis — ${numPassed} of ${total} quality criteria met. ` +
+      `The response covers some basics but is missing elements that reduce operational usefulness. ` +
+      `Missing: ${missing.slice(0, 3).join('; ')}${missing.length > 3 ? ` (+${missing.length - 3} more)` : ''}. ` +
+      `Use the coaching below to improve the prompt and re-run the analysis.`;
   } else {
-    whatHappened = `BlackBeltAI's ${dojoLabel} analysis was incomplete — only ${numPassed} of ${total} quality criteria were met. The response needs more specific information or context to produce a useful analysis.`;
+    whatHappened = `BlackBeltAI's ${dojoLabel} analysis was insufficient — only ${numPassed} of ${total} quality criteria met. ` +
+      `This level of output would NOT be operationally useful in a real SOC. ` +
+      `Key gaps: ${missing.slice(0, 3).join('; ')}. ` +
+      `Try providing more detailed scenario context, or use a higher analysis depth setting.`;
   }
 
+  // ── Teaching layer: SecurityAI+ connection + what a real analyst does next ──
+  const nextSteps = dojoId === 2 ? (DOJO2_NEXT_ANALYST_STEPS[scenarioId] ?? null) : null;
   const defensiveTakeaway = topics.length > 0
     ? `SecurityAI+ Connection: This scenario covers **${topics.slice(0, 2).join('** and **')}**. ` +
       (dojoId === 2
         ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders — knowing what to look for is a core AI security skill.'
-        : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO 42001). The ability to evaluate AI output quality and identify gaps is a key SecurityAI+ domain.')
+        : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO 42001). The ability to evaluate AI output quality and identify gaps is a key SecurityAI+ domain.') +
+      (nextSteps ? `\n\n**${nextSteps}**` : '')
     : 'No SecurityAI+ topic mapping available for this scenario.';
 
-  const recommendedMitigations = missing.length > 0
-    ? [`Ask BlackBeltAI to include the following missing elements: ${missing.slice(0, 3).join('; ')}` + (missing.length > 3 ? ` (+ ${missing.length - 3} more)` : '')]
+  // ── Per-element coaching for missing criteria ─────────────────────────────
+  // Each missing criterion gets specific guidance: why it matters + what prompt to use.
+  const coachingMap = dojoId === 2 ? DOJO2_ELEMENT_COACHING : DOJO3_ELEMENT_COACHING;
+  const recommendedMitigations: string[] = missing.length > 0
+    ? missing.map((label) => coachingMap[label] ?? `Include: ${label}`)
     : ['Analysis covers all quality criteria for this scenario.'];
 
   return {
