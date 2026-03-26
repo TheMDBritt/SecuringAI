@@ -2,7 +2,7 @@
 
 import type { DojoId, Scenario, Difficulty, Dojo2Config } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
-import { DOJO2_TASK_LABELS } from '@/lib/dojo2-scenarios';
+import { DOJO2_TASK_LABELS, DOJO2_PERSONA_LABELS } from '@/lib/dojo2-scenarios';
 
 interface ScenarioPickerProps {
   scenarios: Scenario[];
@@ -43,12 +43,6 @@ const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
 };
 
 // ─── Dojo 2 label maps ────────────────────────────────────────────────────────
-
-const PERSONA_LABELS: Record<string, string> = {
-  analyst:  'SOC Analyst',
-  ciso:     'CISO',
-  'ir-lead':'IR Lead',
-};
 
 const DEPTH_LABELS: Record<string, string> = {
   basic:    'Basic',
@@ -164,7 +158,7 @@ function Dojo2ActivePreview({
 
       {/* Analyst config */}
       <div className="border-t border-slate-700/60 pt-2 flex flex-col">
-        <ConfigRow label="Persona"     value={PERSONA_LABELS[config.persona]} />
+        <ConfigRow label="Persona"     value={DOJO2_PERSONA_LABELS[config.persona]} />
         <ConfigRow label="Depth"       value={DEPTH_LABELS[config.analysisDepth]} />
         <ConfigRow label="Style"       value={STYLE_LABELS[config.responseStyle]} />
         <ConfigRow label="Context"     value={CONTEXT_LABELS[config.contextLevel]} />

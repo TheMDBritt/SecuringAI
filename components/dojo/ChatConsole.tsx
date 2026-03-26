@@ -190,6 +190,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       if (dojoId === 2 && scenario.id in DOJO2_SCENARIO_SEEDS) {
         seedText = DOJO2_SCENARIO_SEEDS[scenario.id].seed;
       } else {
+        if (dojoId === 2) {
+          console.warn(`[Dojo2] No seed message found for scenario ID "${scenario.id}" — using generic fallback.`);
+        }
         seedText = `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`;
       }
       setMessages([makeSystemMsg(seedText)]);

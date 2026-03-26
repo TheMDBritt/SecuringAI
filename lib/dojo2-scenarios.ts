@@ -1282,3 +1282,10 @@ export const DOJO2_TASK_LABELS: Record<Dojo2TaskType, string> = {
   'detection-rule-gen':   'Detection Rule Gen',
   'incident-report-draft':'Incident Report',
 };
+
+/** Shared persona display labels — single source of truth for both panels. */
+export const DOJO2_PERSONA_LABELS: Record<string, string> = {
+  analyst:  'SOC Analyst',
+  ciso:     'CISO',
+  'ir-lead':'IR Lead',
+};

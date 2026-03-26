@@ -16,6 +16,7 @@ import {
   DOJO2_PREBUILT_SCENARIOS,
   DOJO2_ATTACK_CATEGORIES,
   DOJO2_TASK_LABELS,
+  DOJO2_PERSONA_LABELS,
   generateDojo2Scenario,
   type Dojo2AttackCategory,
   type Dojo2Difficulty,
@@ -448,12 +449,6 @@ function Dojo1Panel({
 
 // ─── Dojo 2 — SOC Analyst Config ──────────────────────────────────────────────
 
-const PERSONA_LABELS: Record<string, string> = {
-  analyst:  'SOC Analyst',
-  ciso:     'CISO',
-  'ir-lead':'IR Lead',
-};
-
 const PERSONA_DESC: Record<string, string> = {
   analyst:  'Technical triage — T-codes, IOCs, severity ratings',
   ciso:     'Business risk & compliance framing',
@@ -681,6 +676,11 @@ function IncidentLibrary({
             >
               Generate Scenario →
             </button>
+            {filterTask === 'all' && (
+              <p className="text-[9px] text-slate-600 font-mono text-center">
+                Select a workflow filter above to target a specific task type
+              </p>
+            )}
 
             {/* Generated result */}
             {generated && (
@@ -689,6 +689,11 @@ function IncidentLibrary({
                   <p className="text-[10px] font-medium text-slate-200 leading-snug">{generated.title}</p>
                   <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[generated.difficulty]].join(' ')}>
                     {generated.difficulty.slice(0,3)}
+                  </span>
+                </div>
+                <div className="mb-1">
+                  <span className={['text-[9px] px-1 py-0.5 rounded border font-mono', TASK_BADGE[generated.taskType]].join(' ')}>
+                    {DOJO2_TASK_LABELS[generated.taskType]}
                   </span>
                 </div>
                 <p className="text-[9px] text-slate-500 mb-1.5 leading-relaxed">{generated.description}</p>
@@ -775,7 +780,7 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload,
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
               >
-                <span className="text-xs font-medium block">{PERSONA_LABELS[p]}</span>
+                <span className="text-xs font-medium block">{DOJO2_PERSONA_LABELS[p]}</span>
                 <span className="text-[10px] text-slate-500 block mt-0.5">{PERSONA_DESC[p]}</span>
               </button>
             );
@@ -1155,7 +1160,7 @@ export function ControlPanel({
           dojo2Config={dojo2Config}
           onDojo2ConfigChange={onDojo2ConfigChange}
           onSendPayload={onSendPayload}
-          onInsertText={onInsertText ?? onSendPayload}
+          onInsertText={onInsertText ?? (() => {})}
           defaultTaskFilter={dojo2TaskFilter}
           onSetActiveScenario={onSetActiveDojo2Scenario}
         />
