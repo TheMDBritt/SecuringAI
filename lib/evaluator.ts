@@ -628,6 +628,10 @@ function mapScore(score: number): RiskLevel {
 
 // ─── Dojo 2 / 3 quality evaluation ───────────────────────────────────────────
 //
+// Sentinel value used in recommendedMitigations when all criteria are met.
+// Exported so ScoringPane can check it without hardcoding the string.
+export const ALL_CRITERIA_MET_MSG = 'Analysis covers all quality criteria for this scenario.';
+
 // For Dojo 2 (AI Secures Assets) and Dojo 3 (Defense vs AI Attacks), evaluation
 // is about the QUALITY of the AI's analysis, not about detecting attacks.
 // Each scenario has a rubric of quality criteria checked against the response.
@@ -963,7 +967,7 @@ function evaluateQuality(
   const coachingMap = dojoId === 2 ? DOJO2_ELEMENT_COACHING : DOJO3_ELEMENT_COACHING;
   const recommendedMitigations: string[] = missing.length > 0
     ? missing.map((label) => coachingMap[label] ?? `Include: ${label}`)
-    : ['Analysis covers all quality criteria for this scenario.'];
+    : [ALL_CRITERIA_MET_MSG];
 
   return {
     verdict,

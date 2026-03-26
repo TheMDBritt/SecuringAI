@@ -1,4 +1,5 @@
 import type { AttackType, DojoId, EvaluationResult, Scenario } from '@/types';
+import { ALL_CRITERIA_MET_MSG } from '@/lib/evaluator';
 
 interface ScoringPaneProps {
   scenario: Scenario | null;
@@ -362,7 +363,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
       )}
 
       {/* HOW TO IMPROVE */}
-      {e.recommendedMitigations.length > 0 && e.recommendedMitigations[0] !== 'Analysis covers all quality criteria for this scenario.' && (
+      {e.recommendedMitigations.length > 0 && e.recommendedMitigations[0] !== ALL_CRITERIA_MET_MSG && (
         <div>
           <SectionLabel>How to Improve</SectionLabel>
           <ul className="flex flex-col gap-0.5">

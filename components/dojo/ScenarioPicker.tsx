@@ -72,11 +72,8 @@ const CONFIDENCE_COLOR: Record<string, string> = {
   high:   'text-emerald-400',
 };
 
-const DIFF_BADGE: Record<string, string> = {
-  beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
-};
+// DIFF_BADGE — same as DIFFICULTY_BADGE; aliased for in-file clarity
+const DIFF_BADGE = DIFFICULTY_BADGE_CLASSES;
 
 const TASK_BADGE: Record<string, string> = {
   'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',

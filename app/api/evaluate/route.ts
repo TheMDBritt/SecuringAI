@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { evaluate } from '@/lib/evaluator';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 // ─── Validation schemas ───────────────────────────────────────────────────────
 
@@ -56,6 +57,20 @@ const EvaluateRequestSchema = z.object({
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // Rate limit to prevent evaluation endpoint abuse (same limits as chat route).
+  const ip =
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    req.headers.get('x-real-ip') ??
+    '127.0.0.1';
+
+  const { allowed } = checkRateLimit(ip);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded. Max 20 requests per minute.' },
+      { status: 429, headers: { 'Retry-After': '60' } },
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -71,16 +86,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // evaluate() calls the shared LLM classifier for Dojo 1 prompt-injection turns.
-  const result = await evaluate({
-    dojoId:               parsed.data.dojoId,
-    scenarioId:           parsed.data.scenarioId,
-    settings:             parsed.data.settings,
-    messages:             parsed.data.messages,
-    ragContext:           parsed.data.ragContext,
-    sessionAttackHistory: parsed.data.sessionAttackHistory,
-    dojo2Config:          parsed.data.dojo2Config,
-  });
+  // Require dojo2Config for Dojo 2 requests so the evaluator can apply
+  // capability-aware scoring (e.g. skip IOC check when iocExtraction=false).
+  if (parsed.data.dojoId === 2 && !parsed.data.dojo2Config) {
+    return NextResponse.json(
+      { error: 'dojo2Config is required for Dojo 2 evaluation.' },
+      { status: 422 },
+    );
+  }
+
+  // evaluate() is pure pattern-matching for Dojo 2/3, and calls the LLM
+  // classifier only for Dojo 1 prompt-injection turns.
+  let result;
+  try {
+    result = await evaluate({
+      dojoId:               parsed.data.dojoId,
+      scenarioId:           parsed.data.scenarioId,
+      settings:             parsed.data.settings,
+      messages:             parsed.data.messages,
+      ragContext:           parsed.data.ragContext,
+      sessionAttackHistory: parsed.data.sessionAttackHistory,
+      dojo2Config:          parsed.data.dojo2Config,
+    });
+  } catch (err) {
+    console.error('[evaluate] Evaluation error:', err);
+    return NextResponse.json(
+      { error: 'Evaluation service error. Please try again.' },
+      { status: 503 },
+    );
+  }
 
   return NextResponse.json(result);
 }

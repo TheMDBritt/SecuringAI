@@ -268,7 +268,12 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           });
 
           const chatData = await chatRes.json();
-          if (!chatRes.ok) throw new Error(chatData.error ?? `HTTP ${chatRes.status}`);
+          if (!chatRes.ok) {
+            const detail = chatData.error ?? `HTTP ${chatRes.status}`;
+            if (chatRes.status === 429) throw new Error('Rate limit reached — wait a moment and try again.');
+            if (chatRes.status >= 500) throw new Error(`Service error (${chatRes.status}) — try again in a few seconds.`);
+            throw new Error(detail);
+          }
 
           const assistantContent: string = chatData.content;
 
@@ -312,14 +317,18 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             onEvaluation(evalData);
           }
         } catch (err) {
-          const msg = err instanceof Error ? err.message : 'Unknown error';
+          const raw = err instanceof Error ? err.message : 'Unknown error';
+          // Network failures (no internet, server down) produce TypeError: Failed to fetch
+          const msg = raw === 'Failed to fetch'
+            ? 'Network error — check your connection and try again.'
+            : raw;
           setError(msg);
           setMessages((prev) => [
             ...prev,
             {
               id: nanoid(),
               role: 'evaluator',
-              content: `⚠ API error: ${msg}`,
+              content: `⚠ ${msg}`,
               timestamp: new Date(),
             },
           ]);
@@ -381,6 +390,34 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       onSessionClear?.();
     }, [scenario, onSessionClear]);
 
+    const exportTranscript = useCallback(() => {
+      const ts = new Date().toISOString().slice(0, 16).replace('T', ' ');
+      const scenarioLabel = scenario ? `${scenario.title} (Dojo ${dojoId})` : `Dojo ${dojoId}`;
+      const lines: string[] = [
+        `# SecuringAI Session Transcript`,
+        `**Scenario:** ${scenarioLabel}`,
+        `**Exported:** ${ts}`,
+        '',
+        '---',
+        '',
+      ];
+      for (const m of messages) {
+        if (m.role === 'system' || m.role === 'evaluator') {
+          lines.push(`> _${m.content}_`, '');
+        } else {
+          const speaker = m.role === 'user' ? 'You' : getAssistantLabel(dojoId, dojo2Config);
+          lines.push(`**${speaker}**`, '', m.content, '');
+        }
+      }
+      const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `securingai-transcript-${Date.now()}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, [messages, scenario, dojoId, dojo2Config]);
+
     // ── Render ────────────────────────────────────────────────────────────
 
     return (
@@ -424,13 +461,23 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             )}
 
             {messages.length > 0 && (
-              <button
-                onClick={clearChat}
-                disabled={loading}
-                className="text-xs px-2 py-1 rounded border border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600 transition-colors disabled:opacity-40"
-              >
-                Clear
-              </button>
+              <>
+                <button
+                  onClick={exportTranscript}
+                  disabled={loading}
+                  title="Download session transcript as Markdown"
+                  className="text-xs px-2 py-1 rounded border border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600 transition-colors disabled:opacity-40"
+                >
+                  ↓ Export
+                </button>
+                <button
+                  onClick={clearChat}
+                  disabled={loading}
+                  className="text-xs px-2 py-1 rounded border border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600 transition-colors disabled:opacity-40"
+                >
+                  Clear
+                </button>
+              </>
             )}
           </div>
         </div>
