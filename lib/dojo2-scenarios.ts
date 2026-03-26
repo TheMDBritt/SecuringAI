@@ -1289,3 +1289,13 @@ export const DOJO2_PERSONA_LABELS: Record<string, string> = {
   ciso:     'CISO',
   'ir-lead':'IR Lead',
 };
+
+/**
+ * Tailwind badge classes for difficulty levels — shared by ControlPanel and ScenarioPicker
+ * so colour changes only need to be made in one place.
+ */
+export const DIFFICULTY_BADGE_CLASSES: Record<string, string> = {
+  beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+  intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
+};

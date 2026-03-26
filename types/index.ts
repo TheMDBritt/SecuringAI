@@ -102,14 +102,6 @@ export interface GuardrailConfig {
   ragSanitizerEnabled: boolean;
 }
 
-export interface AnalystConfig {
-  persona: 'analyst' | 'ciso' | 'ir-lead';
-  verbosity: 'terse' | 'detailed';
-  outputFormat: 'markdown' | 'json' | 'report';
-  confidenceThreshold: number;
-  redactionMode: boolean;
-}
-
 export interface ScoreResult {
   attempted: boolean;
   score: number;
@@ -205,12 +197,4 @@ export const DEFAULT_GUARDRAIL_CONFIG: GuardrailConfig = {
     refusalDetector: false,
   },
   ragSanitizerEnabled: false,
-};
-
-export const DEFAULT_ANALYST_CONFIG: AnalystConfig = {
-  persona: 'analyst',
-  verbosity: 'detailed',
-  outputFormat: 'markdown',
-  confidenceThreshold: 0.7,
-  redactionMode: false,
 };

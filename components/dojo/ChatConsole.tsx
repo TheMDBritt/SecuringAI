@@ -122,7 +122,11 @@ const PERSONA_LABEL: Record<string, string> = {
 };
 
 function getAssistantLabel(dojoId: DojoId, dojo2Config?: Dojo2Config): string {
-  if (dojoId === 2 && dojo2Config) return PERSONA_LABEL[dojo2Config.persona] ?? 'BlackBeltAI';
+  if (dojoId === 2 && dojo2Config) {
+    const label = PERSONA_LABEL[dojo2Config.persona];
+    if (!label) console.warn(`[ChatConsole] Unknown Dojo 2 persona "${dojo2Config.persona}" — falling back to generic label.`);
+    return label ?? 'BlackBeltAI';
+  }
   return 'BlackBeltAI';
 }
 

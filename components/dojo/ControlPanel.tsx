@@ -17,6 +17,7 @@ import {
   DOJO2_ATTACK_CATEGORIES,
   DOJO2_TASK_LABELS,
   DOJO2_PERSONA_LABELS,
+  DIFFICULTY_BADGE_CLASSES,
   generateDojo2Scenario,
   type Dojo2AttackCategory,
   type Dojo2Difficulty,
@@ -492,13 +493,8 @@ const RISK_OPTIONS: { value: Dojo2Config['riskAssessment']; label: string; color
   { value: 'critical', label: 'Critical', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
 ];
 
-// ─── Dojo 2 — Difficulty badge colours ───────────────────────────────────────
-
-const DIFF_BADGE: Record<Dojo2Difficulty, string> = {
-  beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
-};
+// DIFF_BADGE alias for local use — canonical values live in DIFFICULTY_BADGE_CLASSES (dojo2-scenarios.ts)
+const DIFF_BADGE = DIFFICULTY_BADGE_CLASSES;
 
 const TASK_BADGE: Record<Dojo2TaskType, string> = {
   'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',
@@ -996,6 +992,19 @@ interface Dojo3PanelProps {
 }
 
 function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
+  function toggleClause(clause: string) {
+    const already = dojo3Config.selectedClauses.includes(clause);
+    onDojo3ConfigChange({
+      ...dojo3Config,
+      selectedClauses: already
+        ? dojo3Config.selectedClauses.filter((c) => c !== clause)
+        : [...dojo3Config.selectedClauses, clause],
+    });
+    // Send scoring payload when selecting; de-selecting keeps prior analysis in chat.
+    if (!already) {
+      onSendPayload(`Please score this policy clause against NIST AI RMF, EU AI Act, and ISO 42001: "${clause}"`);
+    }
+  }
   const hasRule    = dojo3Config.detectionRule.trim().length > 0;
 
   return (
@@ -1026,7 +1035,7 @@ function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload 
           disabled={disabled}
           value={dojo3Config.detectionRule}
           onChange={(e) => onDojo3ConfigChange({ ...dojo3Config, detectionRule: e.target.value })}
-          placeholder={'title: Detect AI Phishing\nstatus: experimental\nlogsource:\n  category: email\ndetection:\n  keywords: [urgent, wire transfer]\n  condition: keywords'}
+          placeholder={'title: Detect AI Phishing\nauthor: Your Name\ndate: 2024-01-01\nstatus: experimental\nlogsource:\n  category: email\ndetection:\n  keywords:\n    - urgent\n    - wire transfer\n  condition: keywords\nfalsepositives:\n  - Legitimate financial request emails\nlevel: medium\ntags:\n  - attack.initial_access\n  - attack.t1566'}
           rows={6}
           className={[
             'w-full resize-none rounded border px-2.5 py-2 text-xs font-mono',
@@ -1038,7 +1047,7 @@ function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload 
           ].join(' ')}
         />
         <p className="text-[10px] text-slate-600 font-mono mt-1">
-          Rule context is injected when RAG Enabled is ON. Ask BlackBeltAI to analyze, score, or improve it.
+          Your rule is included in the session context automatically. Ask BlackBeltAI to analyze, score, or improve it.
         </p>
         {hasRule && (
           <button
@@ -1054,26 +1063,49 @@ function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload 
       {/* ── Policy Clause Library ─────────────────────────────────────────── */}
       <PanelSection title="Policy Clause Library">
         <p className="text-[10px] text-slate-500 mb-2">
-          Click a clause to send it to the chat for scoring/analysis against NIST AI RMF, EU AI Act, and ISO 42001.
+          Click a clause to score it. Selected clauses are injected into the session context so BlackBeltAI can reference them across multiple turns.
         </p>
         <div className="flex flex-col gap-1.5">
-          {POLICY_CLAUSES.map((clause) => (
-            <button
-              key={clause}
-              disabled={disabled}
-              onClick={() => onSendPayload(`Please score this policy clause against NIST AI RMF, EU AI Act, and ISO 42001: "${clause}"`)}
-              className={[
-                'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors',
-                'border-slate-700 bg-slate-800/40 text-slate-400',
-                'hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
-                'disabled:opacity-40 disabled:cursor-not-allowed text-xs',
-              ].join(' ')}
-            >
-              <span className="mt-0.5 shrink-0 w-3 h-3 rounded border border-slate-600 flex-none" />
-              <span>{clause}</span>
-            </button>
-          ))}
+          {POLICY_CLAUSES.map((clause) => {
+            const selected = dojo3Config.selectedClauses.includes(clause);
+            return (
+              <button
+                key={clause}
+                disabled={disabled}
+                onClick={() => toggleClause(clause)}
+                className={[
+                  'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors',
+                  selected
+                    ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
+                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                  'disabled:opacity-40 disabled:cursor-not-allowed text-xs',
+                ].join(' ')}
+              >
+                <span className={[
+                  'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
+                  selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
+                ].join(' ')}>
+                  {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
+                </span>
+                <span>{clause}</span>
+              </button>
+            );
+          })}
         </div>
+        {dojo3Config.selectedClauses.length > 0 && (
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-[9px] text-emerald-500/70 font-mono">
+              {dojo3Config.selectedClauses.length} clause{dojo3Config.selectedClauses.length > 1 ? 's' : ''} active in session context
+            </p>
+            <button
+              disabled={disabled}
+              onClick={() => onDojo3ConfigChange({ ...dojo3Config, selectedClauses: [] })}
+              className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+            >
+              Clear all
+            </button>
+          </div>
+        )}
       </PanelSection>
     </div>
   );
@@ -1104,10 +1136,10 @@ export function ControlPanel({
   const hasScenario = scenario !== null;
 
   // Derive the Dojo 2 task filter from the selected scenario ID.
-  // Scenario IDs in Dojo 2 match Dojo2TaskType values exactly:
-  // 'log-triage' | 'alert-enrichment' | 'detection-rule-gen' | 'incident-report-draft'
+  // Validate against DOJO2_TASK_LABELS so unknown scenario IDs don't silently cast
+  // to an invalid task type — they'll return undefined and the filter shows 'all'.
   const dojo2TaskFilter: Dojo2TaskType | undefined =
-    dojoId === 2 && scenario
+    dojoId === 2 && scenario && scenario.id in DOJO2_TASK_LABELS
       ? (scenario.id as Dojo2TaskType)
       : undefined;
 

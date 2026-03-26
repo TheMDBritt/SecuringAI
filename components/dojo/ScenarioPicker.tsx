@@ -2,7 +2,7 @@
 
 import type { DojoId, Scenario, Difficulty, Dojo2Config } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
-import { DOJO2_TASK_LABELS, DOJO2_PERSONA_LABELS } from '@/lib/dojo2-scenarios';
+import { DOJO2_TASK_LABELS, DOJO2_PERSONA_LABELS, DIFFICULTY_BADGE_CLASSES } from '@/lib/dojo2-scenarios';
 
 interface ScenarioPickerProps {
   scenarios: Scenario[];
@@ -15,11 +15,8 @@ interface ScenarioPickerProps {
   dojo2Config?: Dojo2Config;
 }
 
-const DIFFICULTY_BADGE: Record<Difficulty, string> = {
-  beginner: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  advanced: 'bg-red-500/10 text-red-400 border-red-500/30',
-};
+// Canonical values live in DIFFICULTY_BADGE_CLASSES (dojo2-scenarios.ts) — aliased here for local use
+const DIFFICULTY_BADGE = DIFFICULTY_BADGE_CLASSES;
 
 const DOJO_ACCENT: Record<DojoId, string> = {
   1: 'border-red-500 bg-red-500/5',

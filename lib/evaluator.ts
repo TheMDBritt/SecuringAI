@@ -634,38 +634,52 @@ function mapScore(score: number): RiskLevel {
 
 interface QualityCheck { label: string; re: RegExp }
 
+// The system prompt requires every Dojo 2 response to end with a Confidence + Risk block.
+// This check is appended to every scenario rubric so the evaluator always validates it.
+const DOJO2_CONFIDENCE_RISK_CHECK: QualityCheck = {
+  label: 'Confidence and Risk assessment block present',
+  re: /\*\*Confidence\*\*\s*:|Confidence\s*[:—–]\s*(Low|Medium|High)|\*\*Risk\s+Level\*\*\s*:|Risk\s+Level\s*[:—–]\s*(Low|Medium|High|Critical)/i,
+};
+
 const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   'log-triage': [
-    { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(critical|high|medium|low|informational|sev(erity)?\s*[1-5]|p[0-4]\b)\b/i },
+    // Require severity word as a label/heading, not buried in prose
+    { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(severity|sev)\b.*\b(critical|high|medium|low)\b|\*\*(critical|high|medium|low)\*\*|\[(critical|high|medium|low)\]/i },
     { label: 'MITRE ATT&CK technique identified (T-code)', re: /T\d{4}(\.\d{3})?/ },
     // IOC check: accepts both keyword labels AND actual artefact patterns (IPs, hashes, hostnames, URLs)
     { label: 'IOCs or indicators extracted', re: /\b(IP\s*address|domain|hash|MD5|SHA\d*|IOC|indicator|artefact|artifact|malicious\s+file|URL)\b|\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|[a-fA-F0-9]{32,64}\b|https?:\/\//i },
     { label: 'Timeline or event sequence reconstructed', re: /\b(timeline|event\s+sequence|chronolog|occurred|logged|timestamp|first\s+seen|last\s+seen|\d{2}:\d{2}:\d{2})\b/i },
     { label: 'Recommended response actions provided', re: /\b(recommend|action\s*:|mitigat|remediati|block|isolat|contain|investig|escalat|next\s+steps?|immediate(ly)?|quarantin)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
   ],
   'alert-enrichment': [
     { label: 'CVE or vulnerability identified', re: /CVE-\d{4}-\d+|CVSS|vulnerability|exploit|affected\s+version|advisory|zero.?day/i },
     { label: 'MITRE ATT&CK technique mapped', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
-    // Expanded threat actor patterns: named groups plus descriptive terms
-    { label: 'Threat actor or group context provided', re: /\b(APT\d*|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group|Lazarus|FIN\d+|Cozy\s+Bear|Fancy\s+Bear|Sandworm|UNC\d+|threat\s+group|state.?sponsored|hacking\s+group|cybercriminal|threat\s+cluster)\b/i },
-    { label: 'Severity or priority score assigned', re: /\b(critical|high|medium|low|priority|score\s*[:=]|CVSS\s+[\d.]+|sev(erity)?\s*[1-5])\b/i },
+    // Named threat groups or explicit attribution language
+    { label: 'Threat actor or group context provided', re: /\b(APT\d+|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group|Lazarus|FIN\d+|Cozy\s+Bear|Fancy\s+Bear|Sandworm|UNC\d+|state.?sponsored|hacking\s+group|threat\s+cluster)\b/i },
+    // Require severity as a label/heading or CVSS numeric, not just the word anywhere
+    { label: 'Severity or priority score assigned', re: /\b(severity|priority)\b[^.]*\b(critical|high|medium|low)\b|CVSS\s+[\d.]+|\*\*(critical|high|medium|low)\*\*/i },
     { label: 'Response or remediation recommended', re: /\b(patch|update|disable|block|monitor|investigate|escalat|remediat|notify|apply.*fix|hotfix|workaround)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
   ],
   'detection-rule-gen': [
-    { label: 'Sigma rule structure present', re: /title\s*:|detection\s*:|condition\s*:|logsource\s*:|falsepositives\s*:|status\s*:|level\s*:/i },
-    // Expanded KQL/YARA: additional common table names and Sentinel patterns
-    { label: 'KQL, SPL, or YARA query included', re: /\|\s*where\s+|DeviceEvents|SecurityEvent|index\s*=|_raw|SecurityAlert|let\s+\w+\s*=|rule\s+\w+\s*\{|TimeGenerated|Sysmon|AzureActivity|union\s+Device|SourceSystem|Heartbeat|process_name\s*:/i },
+    // Require at least detection: + condition: OR logsource: + detection: to confirm Sigma structure
+    { label: 'Sigma rule structure present', re: /(?:detection\s*:[\s\S]{1,300}condition\s*:|logsource\s*:[\s\S]{1,300}detection\s*:|title\s*:[\s\S]{1,300}logsource\s*:)/i },
+    // KQL: require a pipe operator + query keyword, or explicit table names
+    { label: 'KQL, SPL, or YARA query included', re: /\|\s*(where|project|summarize|extend|join)\s+\w|DeviceEvents|SecurityEvent|SecurityAlert|AzureActivity|Sysmon|index\s*=\s*\w|rule\s+\w+\s*\{|process_name\s*:/i },
     { label: 'Detection logic and trigger conditions explained', re: /\b(detect|trigger|alert|monitor|capture|identif|flag\s+when|fires\s+when|match(es)?|pattern)\b/i },
     { label: 'False positive guidance provided', re: /\b(false.?positive|tuning|noise|threshold|exclusion|baseline|allowlist|whitelist|suppress|benign)\b/i },
-    { label: 'MITRE ATT&CK technique referenced', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
+    { label: 'MITRE ATT&CK technique referenced', re: /T\d{4}(\.\d{3})?|ATT&CK/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
   ],
   'incident-report-draft': [
     { label: 'Executive summary with business impact included', re: /executive\s+summary|business\s+impact|board.level|c.suite|risk\s+to\s+(the\s+)?business|financial\s+impact/i },
     { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline|\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}/i },
-    { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)|entry\s+point|vector|attack\s+chain/i },
+    { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)|entry\s+point|attack\s+chain/i },
     { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication|reset.*password|disable.*account|re.?image/i },
-    // Expanded lessons learned: common alternative phrasings
-    { label: 'Lessons learned section included', re: /lessons?\s+learned|post.?incident|retrospect|prevent.*recurrence|improve.*posture|going\s+forward|recommendations?(\s*section)?:|future\s+improvements?/i },
+    // Require explicit section heading or structured phrase — not just "lessons" or "going forward" anywhere
+    { label: 'Lessons learned section included', re: /##\s*lessons?\s+learned|lessons?\s+learned\s*\n|post.?incident\s+review|retrospective|prevent.*recurrence\s*[:;]|lessons?\s+learned\s*:/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
   ],
 };
 
@@ -718,6 +732,8 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
     'The IR report must track what was done and what still needs to happen to close the incident. Prompt: "List containment actions taken and pending remediation steps with owners and timelines."',
   'Lessons learned section included':
     'Post-incident review is how organisations improve — this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
+  'Confidence and Risk assessment block present':
+    'The session is configured to require a structured Confidence + Risk block at the end of every analysis. This anchors the finding\'s certainty and prioritises response. Prompt: "Conclude with: **Confidence:** [Low/Medium/High] — [reason] and **Risk Level:** [Low/Medium/High/Critical] — [justification]"',
 };
 
 // ─── Scenario-specific next-analyst-steps ────────────────────────────────────
@@ -816,10 +832,18 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
 
 /** SecurityAI+ exam topic mappings per scenario — shown in the evaluation panel. */
 const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
+  // ── Dojo 1 ──────────────────────────────────────────────────────────────────
+  'prompt-injection':      ['LLM01 – Prompt Injection', 'Adversarial Prompting', 'AI Input Validation'],
+  'data-exfiltration':     ['LLM02 – Insecure Output Handling', 'Data Leakage Prevention', 'AI Context Security'],
+  'policy-bypass':         ['LLM01 – Prompt Injection', 'AI Policy Enforcement', 'Jailbreak Resistance'],
+  'tool-abuse':            ['LLM07 – Insecure Plugin Design', 'Agentic AI Security', 'Tool Call Guardrails'],
+  'rag-injection':         ['LLM08 – Excessive Agency', 'RAG Pipeline Security', 'Retrieval Poisoning Defense'],
+  // ── Dojo 2 ──────────────────────────────────────────────────────────────────
   'log-triage':            ['AI-Assisted SOC Operations', 'Alert Triage & Classification', 'MITRE ATT&CK for AI'],
   'alert-enrichment':      ['AI Threat Intelligence', 'CVE Analysis & Enrichment', 'AI in Security Operations'],
   'detection-rule-gen':    ['AI-Generated Detection Rules', 'SIEM Engineering', 'Detection-as-Code (Sigma/KQL)'],
   'incident-report-draft': ['AI-Assisted Incident Response', 'IR Documentation', 'Post-Incident Review'],
+  // ── Dojo 3 ──────────────────────────────────────────────────────────────────
   'phishing-deepfake':     ['AI-Generated Threats', 'Synthetic Media Detection', 'Social Engineering Defense'],
   'ai-abuse-threat-model': ['AI Threat Modeling', 'OWASP LLM Top 10', 'NIST AI RMF', 'EU AI Act'],
   'policy-and-controls':   ['AI Governance & Policy', 'Acceptable Use Policy', 'ISO 42001', 'Control Validation'],
