@@ -120,6 +120,12 @@ export function DojoTabs() {
     if (matchingScenario) {
       setSelectedScenario(matchingScenario);
     }
+    // Surface a system message in the chat so users always know which incident
+    // is being analyzed — especially important when task type hasn't changed
+    // (the scenario.id useEffect won't fire in that case).
+    chatRef.current?.showSystemMessage(
+      `Incident loaded: "${incident.title}" · ${incident.attackCategory} · ${incident.difficulty}`,
+    );
   }, []);
 
   function handleEvaluation(result: EvaluationResult) {

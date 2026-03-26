@@ -38,6 +38,19 @@ const EvaluateRequestSchema = z.object({
   ragContext: z.string().max(4000).optional(),
   /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
   sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
+  /** Dojo 2 only — analyst config used during this turn; evaluator skips checks for disabled capabilities. */
+  dojo2Config: z.object({
+    persona:          z.enum(['analyst', 'ciso', 'ir-lead']),
+    outputFormat:     z.enum(['markdown', 'json', 'report']),
+    analysisDepth:    z.enum(['basic', 'standard', 'deep']),
+    responseStyle:    z.enum(['concise', 'detailed', 'structured']),
+    iocExtraction:    z.boolean(),
+    mitreMapping:     z.boolean(),
+    threatCorrelation:z.boolean(),
+    contextLevel:     z.enum(['none', 'limited', 'full']),
+    confidenceLevel:  z.enum(['low', 'medium', 'high']),
+    riskAssessment:   z.enum(['low', 'medium', 'high', 'critical']),
+  }).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -66,6 +79,7 @@ export async function POST(req: NextRequest) {
     messages:             parsed.data.messages,
     ragContext:           parsed.data.ragContext,
     sessionAttackHistory: parsed.data.sessionAttackHistory,
+    dojo2Config:          parsed.data.dojo2Config,
   });
 
   return NextResponse.json(result);

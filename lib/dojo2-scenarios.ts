@@ -850,7 +850,7 @@ export function generateDojo2Scenario(
   const inferredTask: Dojo2TaskType = taskType ?? (
     attackCategory === 'C2 Beaconing' || attackCategory === 'DNS Tunneling' || attackCategory === 'Credential Dumping'
       ? 'detection-rule-gen'
-      : attackCategory === 'Supply Chain' || attackCategory === 'Cloud Identity Abuse'
+      : attackCategory === 'Supply Chain' || attackCategory === 'Cloud Identity Abuse' || attackCategory === 'Phishing'
       ? 'alert-enrichment'
       : 'log-triage'
   );

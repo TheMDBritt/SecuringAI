@@ -4,7 +4,7 @@
  * Pure function: no I/O, no LLM calls, no side-effects.
  * All pattern matching is done with static RegExp.
  */
-import type { ControlConfig } from '@/types';
+import type { ControlConfig, Dojo2Config } from '@/types';
 import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
 
@@ -67,6 +67,12 @@ export interface EvalInput {
    * attacks succeed in sequence.
    */
   sessionAttackHistory?: AttackType[];
+  /**
+   * Dojo 2 only — analyst configuration used during this turn. The evaluator
+   * skips quality checks whose corresponding capability was disabled in the config,
+   * so the score reflects what the AI was actually asked to do.
+   */
+  dojo2Config?: Dojo2Config;
 }
 
 // ─── User-message classification ──────────────────────────────────────────────
@@ -826,10 +832,33 @@ const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
  * Scores the ASSISTANT's response against a per-scenario quality rubric
  * instead of looking for attack patterns in the user's message.
  */
+/**
+ * Returns the subset of quality checks that are still required given the
+ * analyst config. Checks for disabled capabilities are removed so the score
+ * reflects what the AI was actually instructed to produce.
+ */
+function applyConfigFilter(checks: QualityCheck[], dojo2Config?: Dojo2Config): QualityCheck[] {
+  if (!dojo2Config) return checks;
+  return checks.filter((c) => {
+    // IOC extraction disabled → skip the IOC check in log-triage
+    if (!dojo2Config.iocExtraction && c.label === 'IOCs or indicators extracted') return false;
+    // MITRE mapping disabled → skip all MITRE / T-code checks
+    if (!dojo2Config.mitreMapping && (
+      c.label === 'MITRE ATT&CK technique identified (T-code)' ||
+      c.label === 'MITRE ATT&CK technique mapped' ||
+      c.label === 'MITRE ATT&CK technique referenced'
+    )) return false;
+    // Threat correlation disabled → skip threat actor context check in alert-enrichment
+    if (!dojo2Config.threatCorrelation && c.label === 'Threat actor or group context provided') return false;
+    return true;
+  });
+}
+
 function evaluateQuality(
   dojoId: 2 | 3,
   scenarioId: string,
   assistantResponse: string,
+  dojo2Config?: Dojo2Config,
 ): EvaluationResult {
   // If the response is too short to contain analysis, skip detailed scoring.
   if (assistantResponse.trim().length < 80) {
@@ -850,9 +879,10 @@ function evaluateQuality(
     };
   }
 
-  const checks = dojoId === 2
+  const rawChecks = dojoId === 2
     ? (DOJO2_QUALITY_CHECKS[scenarioId] ?? [])
     : (DOJO3_QUALITY_CHECKS[scenarioId] ?? []);
+  const checks = dojoId === 2 ? applyConfigFilter(rawChecks, dojo2Config) : rawChecks;
 
   const passed: string[] = [];
   const missing: string[] = [];
@@ -933,7 +963,7 @@ function evaluateQuality(
 // ─── Main evaluate function ───────────────────────────────────────────────────
 
 export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
-  const { dojoId, scenarioId, settings, messages, ragContext } = input;
+  const { dojoId, scenarioId, settings, messages, ragContext, dojo2Config } = input;
 
   // ── Dojo 2 / 3: quality-based evaluation ─────────────────────────────────
   if (dojoId === 2 || dojoId === 3) {
@@ -955,7 +985,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
         securityAITopics: SECURITYAI_PLUS_TOPICS[scenarioId] ?? [],
       };
     }
-    return evaluateQuality(dojoId, scenarioId, lastAssistant.content);
+    return evaluateQuality(dojoId, scenarioId, lastAssistant.content, dojoId === 2 ? dojo2Config : undefined);
   }
 
   const lastUser      = [...messages].reverse().find((m) => m.role === 'user');

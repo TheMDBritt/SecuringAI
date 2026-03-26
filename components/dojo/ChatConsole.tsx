@@ -17,6 +17,10 @@ export interface ChatConsoleHandle {
   sendPayload: (text: string) => void;
   /** Insert text into the input field only (auto-run OFF). */
   insertText: (text: string) => void;
+  /** Add a system message to the chat without sending anything. Used by Dojo 2 to
+   *  surface incident-load events when the task type hasn't changed (so the
+   *  scenario.id useEffect doesn't fire). */
+  showSystemMessage: (text: string) => void;
 }
 
 // ─── Local types ──────────────────────────────────────────────────────────────
@@ -77,12 +81,16 @@ const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
     'bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs px-3 py-2 w-full',
 };
 
-const ROLE_LABEL: Record<ChatMessage['role'], string> = {
-  user: 'You',
-  assistant: 'BlackBeltAI',
-  system: '',
-  evaluator: 'Evaluator',
+const PERSONA_LABEL: Record<string, string> = {
+  analyst:  'BlackBeltAI · Analyst',
+  ciso:     'BlackBeltAI · CISO',
+  'ir-lead':'BlackBeltAI · IR Lead',
 };
+
+function getAssistantLabel(dojoId: DojoId, dojo2Config?: Dojo2Config): string {
+  if (dojoId === 2 && dojo2Config) return PERSONA_LABEL[dojo2Config.persona] ?? 'BlackBeltAI';
+  return 'BlackBeltAI';
+}
 
 function nanoid() {
   return Math.random().toString(36).slice(2, 10);
@@ -233,6 +241,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // Dojo 1 chain scoring: forward prior successful attacks so the
               // evaluator can apply stacking chain penalties.
               sessionAttackHistory: sessionAttackHistory?.length ? sessionAttackHistory : undefined,
+              // Dojo 2: forward analyst config so the evaluator skips checks for
+              // capabilities the user intentionally disabled (e.g. iocExtraction=false).
+              dojo2Config: dojoId === 2 ? dojo2Config : undefined,
             }),
           });
 
@@ -279,6 +290,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         insertText: (text: string) => {
           setInput(text);
           textareaRef.current?.focus();
+        },
+        showSystemMessage: (text: string) => {
+          setMessages((prev) => [...prev, makeSystemMsg(text)]);
         },
       }),
       [],
@@ -413,7 +427,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                 )}
                 <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
                   <p className="text-[10px] text-slate-500 mb-1 font-mono px-1">
-                    {ROLE_LABEL[msg.role]}
+                    {msg.role === 'assistant'
+                      ? getAssistantLabel(dojoId, dojo2Config)
+                      : ROLE_LABEL[msg.role]}
                   </p>
                   <div
                     className={`rounded px-3 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${BUBBLE_STYLE[msg.role]}`}
