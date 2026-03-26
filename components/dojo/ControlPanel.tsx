@@ -49,6 +49,8 @@ interface ControlPanelProps {
   // ── Dojo 2: analyst configuration ────────────────────────────────────────
   dojo2Config: Dojo2Config;
   onDojo2ConfigChange: (c: Dojo2Config) => void;
+  /** Called when an incident is loaded or generated from the right panel, to unify active scenario state. */
+  onSetActiveDojo2Scenario?: (s: Dojo2IncidentScenario) => void;
   // ── Dojo 3: defender toolkit ──────────────────────────────────────────────
   dojo3Config: Dojo3Config;
   onDojo3ConfigChange: (c: Dojo3Config) => void;
@@ -522,12 +524,15 @@ function IncidentLibrary({
   disabled,
   onLoad,
   defaultTaskFilter,
+  onSetActiveScenario,
 }: {
   disabled: boolean;
   /** Inserts incident data into the chat input for user review (does NOT auto-send). */
   onLoad: (text: string) => void;
   /** When set, the filter tabs auto-select this task type on mount and on change. */
   defaultTaskFilter?: Dojo2TaskType;
+  /** Sets the active incident in shared state so left and right panels stay in sync. */
+  onSetActiveScenario?: (s: Dojo2IncidentScenario) => void;
 }) {
   const [filterTask, setFilterTask] = useState<Dojo2TaskType | 'all'>(defaultTaskFilter ?? 'all');
   const [genAttack, setGenAttack]   = useState<Dojo2AttackCategory>('Brute Force');
@@ -577,7 +582,7 @@ function IncidentLibrary({
           <button
             key={s.id}
             disabled={disabled}
-            onClick={() => onLoad(s.incidentData)}
+            onClick={() => { onLoad(s.incidentData); onSetActiveScenario?.(s); }}
             className={[
               'w-full text-left px-2.5 py-2 rounded border transition-all group',
               'border-slate-700 bg-slate-800/40',
@@ -687,7 +692,7 @@ function IncidentLibrary({
                 <div className="flex gap-1.5">
                   <button
                     disabled={disabled}
-                    onClick={() => onLoad(generated.incidentData)}
+                    onClick={() => { onLoad(generated.incidentData); onSetActiveScenario?.(generated); }}
                     className="flex-1 py-1 text-[10px] rounded border border-cyan-700/50 bg-cyan-500/10 text-cyan-400 hover:border-cyan-500/70 transition-colors disabled:opacity-40"
                   >
                     Load into Chat →
@@ -725,9 +730,11 @@ interface Dojo2PanelProps {
   onInsertText: (text: string) => void;
   /** Task type derived from the selected scenario — auto-filters the Incident Library. */
   defaultTaskFilter?: Dojo2TaskType;
+  /** Propagates active incident to shared state so left/right panels stay in sync. */
+  onSetActiveScenario?: (s: Dojo2IncidentScenario) => void;
 }
 
-function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload, onInsertText, defaultTaskFilter }: Dojo2PanelProps) {
+function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload, onInsertText, defaultTaskFilter, onSetActiveScenario }: Dojo2PanelProps) {
   function set<K extends keyof Dojo2Config>(key: K, value: Dojo2Config[K]) {
     onDojo2ConfigChange({ ...dojo2Config, [key]: value });
   }
@@ -743,6 +750,7 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload,
           disabled={disabled}
           onLoad={onInsertText}
           defaultTaskFilter={defaultTaskFilter}
+          onSetActiveScenario={onSetActiveScenario}
         />
       </PanelSection>
 
@@ -1081,6 +1089,7 @@ export function ControlPanel({
   chatLoading,
   dojo2Config,
   onDojo2ConfigChange,
+  onSetActiveDojo2Scenario,
   dojo3Config,
   onDojo3ConfigChange,
 }: ControlPanelProps) {
@@ -1106,8 +1115,11 @@ export function ControlPanel({
         <p className="text-xs font-mono text-slate-500 uppercase tracking-widest">
           {titles[dojoId]}
         </p>
-        {!hasScenario && (
+        {!hasScenario && dojoId !== 2 && (
           <p className="text-xs text-slate-600 mt-1">Select a scenario to activate controls.</p>
+        )}
+        {!hasScenario && dojoId === 2 && (
+          <p className="text-xs text-slate-600 mt-1">Load an incident or select a workflow on the left to begin.</p>
         )}
       </div>
 
@@ -1136,12 +1148,13 @@ export function ControlPanel({
       )}
       {dojoId === 2 && (
         <Dojo2Panel
-          disabled={!hasScenario || chatLoading}
+          disabled={chatLoading}
           dojo2Config={dojo2Config}
           onDojo2ConfigChange={onDojo2ConfigChange}
           onSendPayload={onSendPayload}
           onInsertText={onInsertText ?? onSendPayload}
           defaultTaskFilter={dojo2TaskFilter}
+          onSetActiveScenario={onSetActiveDojo2Scenario}
         />
       )}
       {dojoId === 3 && (

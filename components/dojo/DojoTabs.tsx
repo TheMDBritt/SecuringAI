@@ -7,6 +7,7 @@ import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
+import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import type {
   AttackType,
   ControlConfig,
@@ -51,6 +52,9 @@ export function DojoTabs() {
 
   // ── Dojo 2 config ──────────────────────────────────────────────────────────
   const [dojo2Config, setDojo2Config] = useState<Dojo2Config>(DEFAULT_DOJO2_CONFIG);
+  /** The currently active Dojo 2 incident — set by loading/generating from the right panel,
+   *  or cleared when the user clicks a new left-panel scenario card. */
+  const [activeDojo2Scenario, setActiveDojo2Scenario] = useState<Dojo2IncidentScenario | null>(null);
 
   // ── Dojo 3 config ──────────────────────────────────────────────────────────
   const [dojo3Config, setDojo3Config] = useState<Dojo3Config>({
@@ -88,6 +92,7 @@ export function DojoTabs() {
     // Reset dojo-specific configs on tab change
     setDojo2Config(DEFAULT_DOJO2_CONFIG);
     setDojo3Config({ detectionRule: '', selectedClauses: [] });
+    setActiveDojo2Scenario(null);
   }
 
   function handleScenarioSelect(scenario: Scenario) {
@@ -100,7 +105,22 @@ export function DojoTabs() {
     setRagContext('');
     setToolForgeResponse('');
     setDojo3Config({ detectionRule: '', selectedClauses: [] });
+    // Clicking a new left-panel card clears any previously loaded incident
+    setActiveDojo2Scenario(null);
   }
+
+  /**
+   * Called when user loads or generates a Dojo 2 incident from the right panel.
+   * Sets the active incident and auto-selects the matching left-panel scenario card.
+   */
+  const handleSetActiveDojo2Scenario = useCallback((incident: Dojo2IncidentScenario) => {
+    setActiveDojo2Scenario(incident);
+    // Auto-select the matching left-panel workflow card without resetting the session
+    const matchingScenario = getScenariosByDojo(2).find((s) => s.id === incident.taskType);
+    if (matchingScenario) {
+      setSelectedScenario(matchingScenario);
+    }
+  }, []);
 
   function handleEvaluation(result: EvaluationResult) {
     setEvaluations((prev) => [result, ...prev].slice(0, MAX_EVAL_HISTORY));
@@ -183,6 +203,8 @@ export function DojoTabs() {
             selected={selectedScenario}
             onSelect={handleScenarioSelect}
             dojoId={activeDojoId}
+            activeDojo2Scenario={activeDojo2Scenario}
+            dojo2Config={dojo2Config}
           />
         }
         chatConsole={
@@ -219,6 +241,7 @@ export function DojoTabs() {
             chatLoading={chatLoading}
             dojo2Config={dojo2Config}
             onDojo2ConfigChange={setDojo2Config}
+            onSetActiveDojo2Scenario={handleSetActiveDojo2Scenario}
             dojo3Config={dojo3Config}
             onDojo3ConfigChange={setDojo3Config}
           />
