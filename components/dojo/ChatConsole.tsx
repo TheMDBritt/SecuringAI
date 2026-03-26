@@ -176,12 +176,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Reset chat + seed when scenario or active incident changes.
-    // For Dojo 2: each scenario type and loaded incident gets a distinct
-    // instruction template so the user always knows exactly what to provide
-    // and what BlackBeltAI will analyse. deps include activeDojo2Scenario?.id
-    // so loading a new incident (even within the same task type) refreshes
-    // the seed with the updated incident title.
+    // Reset chat + seed when scenario type or dojo changes.
+    // Runs on scenario?.id / dojoId — NOT on activeDojo2Scenario so that
+    // loading a new incident within the same workflow doesn't wipe the chat.
     useEffect(() => {
       setMessages([]);
       setInput('');
@@ -191,16 +188,26 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
 
       let seedText: string;
       if (dojoId === 2 && scenario.id in DOJO2_SCENARIO_SEEDS) {
-        const { seed } = DOJO2_SCENARIO_SEEDS[scenario.id];
-        seedText = activeDojo2Scenario
-          ? `${seed}\n\nLoaded: "${activeDojo2Scenario.title}" · ${activeDojo2Scenario.attackCategory} · ${activeDojo2Scenario.difficulty}`
-          : seed;
+        seedText = DOJO2_SCENARIO_SEEDS[scenario.id].seed;
       } else {
         seedText = `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`;
       }
       setMessages([makeSystemMsg(seedText)]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [scenario?.id, dojoId, activeDojo2Scenario?.id]);
+    }, [scenario?.id, dojoId]);
+
+    // When a Dojo 2 incident is loaded or changed, append a "Loaded" notice and
+    // pre-populate the textarea with the incident data so the user only needs to
+    // press Send to start the analysis.
+    useEffect(() => {
+      if (dojoId !== 2 || !activeDojo2Scenario) return;
+      const notice =
+        `Loaded: "${activeDojo2Scenario.title}" · ${activeDojo2Scenario.attackCategory} · ${activeDojo2Scenario.difficulty}\n` +
+        `Incident data pre-loaded below — review and press Send to run the analysis.`;
+      setMessages((prev) => [...prev, makeSystemMsg(notice)]);
+      setInput(activeDojo2Scenario.incidentData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dojoId, activeDojo2Scenario?.id]);
 
     // ── Core send function ─────────────────────────────────────────────────
 
@@ -315,7 +322,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         }
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, jailbreakActive, sessionAttackHistory],
+      [messages, scenario, dojoId, controlConfig, ragContext, toolForgeResponse, loading, onEvaluation, jailbreakActive, sessionAttackHistory, dojo2Config, dojo3Config],
     );
 
     // Keep a ref so useImperativeHandle never goes stale.

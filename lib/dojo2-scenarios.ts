@@ -1036,7 +1036,7 @@ export function generateDojo2Scenario(
     return {
       id: `GEN-C2-${randomHex(6).toUpperCase()}`,
       title: `[Generated] C2 Beacon Detection – ${host1}`,
-      taskType: 'detection-rule-gen',
+      taskType: inferredTask,
       difficulty,
       attackCategory: 'C2 Beaconing',
       mitre: { tactic: 'C2 / Execution', techniques: ['T1071.001 – C2 Web Protocol', 'T1059.001 – PowerShell', 'T1055 – Process Injection'] },
@@ -1073,7 +1073,7 @@ export function generateDojo2Scenario(
     return {
       id: `GEN-CD-${randomHex(6).toUpperCase()}`,
       title: `[Generated] Credential Dumping – ${host1}`,
-      taskType: 'detection-rule-gen',
+      taskType: inferredTask,
       difficulty,
       attackCategory: 'Credential Dumping',
       mitre: { tactic: 'Credential Access', techniques: ['T1003.001 – LSASS Memory', 'T1003.006 – DCSync'] },
@@ -1104,7 +1104,7 @@ export function generateDojo2Scenario(
     return {
       id: `GEN-DT-${randomHex(6).toUpperCase()}`,
       title: `[Generated] DNS Tunneling – ${host1}`,
-      taskType: 'detection-rule-gen',
+      taskType: inferredTask,
       difficulty,
       attackCategory: 'DNS Tunneling',
       mitre: { tactic: 'Exfiltration / C2', techniques: ['T1048.003 – Exfil Over DNS', 'T1071.004 – C2: DNS'] },

@@ -541,10 +541,9 @@ function IncidentLibrary({
   const [genOpen, setGenOpen]       = useState(false);
 
   // Sync filter tab whenever the parent changes the selected scenario type.
+  // Reset to 'all' when defaultTaskFilter becomes undefined (no scenario selected).
   useEffect(() => {
-    if (defaultTaskFilter) {
-      setFilterTask(defaultTaskFilter);
-    }
+    setFilterTask(defaultTaskFilter ?? 'all');
   }, [defaultTaskFilter]);
 
   const filtered = filterTask === 'all'
@@ -552,7 +551,11 @@ function IncidentLibrary({
     : DOJO2_PREBUILT_SCENARIOS.filter((s) => s.taskType === filterTask);
 
   function handleGenerate() {
-    const scenario = generateDojo2Scenario(genAttack, genDiff);
+    // Pass the current task filter so generated scenarios match the active workflow.
+    // If "all" is selected (no specific workflow), let the generator infer the task type.
+    const taskTypeOverride: Dojo2TaskType | undefined =
+      filterTask !== 'all' ? filterTask : undefined;
+    const scenario = generateDojo2Scenario(genAttack, genDiff, taskTypeOverride);
     setGenerated(scenario);
   }
 
