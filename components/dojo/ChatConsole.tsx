@@ -9,6 +9,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, EvaluationResult, Scenario } from '@/types';
+import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 
 // ─── Imperative handle — exposed to DojoTabs via ref ─────────────────────────
 
@@ -58,6 +59,9 @@ interface ChatConsoleProps {
   onSessionClear?: () => void;
   /** Dojo 2 analyst persona + output format — forwarded to /api/chat. */
   dojo2Config?: Dojo2Config;
+  /** Dojo 2 only — the currently active incident loaded from the right panel.
+   *  Used to build the per-scenario chat seed and placeholder text. */
+  activeDojo2Scenario?: Dojo2IncidentScenario | null;
   /** Dojo 3 detection rule + selected clauses — forwarded to /api/chat. */
   dojo3Config?: Dojo3Config;
 }
@@ -72,6 +76,30 @@ const PLACEHOLDER_INPUT: Record<DojoId, string> = {
   3: 'Describe the artifact to analyze or policy to draft…',
 };
 
+// ─── Dojo 2 per-scenario seeds ────────────────────────────────────────────────
+// Each entry drives:
+//  • seed    — system message shown immediately when the scenario/incident is loaded
+//  • placeholder — textarea hint tailored to the expected input for that workflow
+
+const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }> = {
+  'log-triage': {
+    seed: 'Log Triage — paste raw log data below (SYSLOG, Windows Event, Zeek, EDR, or cloud trail logs).\nBlackBeltAI will: assign severity · extract IOCs · map MITRE T-codes · reconstruct the event timeline · recommend containment actions.',
+    placeholder: 'Paste raw log data here — SYSLOG, Windows Event Log, Zeek, EDR, or cloud trail logs…',
+  },
+  'alert-enrichment': {
+    seed: 'Alert Enrichment — paste alert data, an IOC, or a CVE indicator below.\nBlackBeltAI will: enrich CVE context · map ATT&CK technique · surface threat actor or campaign · assign triage priority · recommend response and remediation.',
+    placeholder: 'Paste alert data, IOC, or CVE indicator here (SIEM alert, EDR hit, threat intel entry)…',
+  },
+  'detection-rule-gen': {
+    seed: 'Detection Rule Generation — describe the threat behavior, paste an IOC, or load a scenario from the Incident Library.\nBlackBeltAI will generate: Sigma rule · KQL / SPL / YARA query · trigger conditions · false positive guidance · ATT&CK alignment.',
+    placeholder: 'Describe the threat behavior or paste IOCs to generate detection rules from…',
+  },
+  'incident-report-draft': {
+    seed: 'Incident Report — paste evidence below: timeline, affected systems, scope, IOCs, and response actions taken.\nBlackBeltAI will draft: executive summary with business impact · technical timeline · root cause analysis · containment & remediation steps · lessons learned.',
+    placeholder: 'Paste incident evidence — timeline, affected systems, scope, IOCs, and response actions taken…',
+  },
+};
+
 const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
   user: 'bg-cyan-600/20 border border-cyan-600/40 text-slate-100 max-w-[75%]',
   assistant: 'bg-slate-800 border border-slate-700 text-slate-200 max-w-[80%]',
@@ -79,6 +107,12 @@ const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
     'bg-slate-800/40 border border-slate-700/40 text-slate-500 text-xs italic px-4 py-1.5',
   evaluator:
     'bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs px-3 py-2 w-full',
+};
+
+const ROLE_LABEL: Partial<Record<ChatMessage['role'], string>> = {
+  user:      'You',
+  system:    '',
+  evaluator: 'Evaluator',
 };
 
 const PERSONA_LABEL: Record<string, string> = {
@@ -117,6 +151,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       onSessionClear,
       dojo2Config,
       dojo3Config,
+      activeDojo2Scenario,
     },
     ref,
   ) {
@@ -141,20 +176,31 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Reset chat + history when scenario changes.
+    // Reset chat + seed when scenario or active incident changes.
+    // For Dojo 2: each scenario type and loaded incident gets a distinct
+    // instruction template so the user always knows exactly what to provide
+    // and what BlackBeltAI will analyse. deps include activeDojo2Scenario?.id
+    // so loading a new incident (even within the same task type) refreshes
+    // the seed with the updated incident title.
     useEffect(() => {
       setMessages([]);
       setInput('');
       setError(null);
       setAttackHistory([]);
-      if (scenario) {
-        setMessages([
-          makeSystemMsg(
-            `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`,
-          ),
-        ]);
+      if (!scenario) return;
+
+      let seedText: string;
+      if (dojoId === 2 && scenario.id in DOJO2_SCENARIO_SEEDS) {
+        const { seed } = DOJO2_SCENARIO_SEEDS[scenario.id];
+        seedText = activeDojo2Scenario
+          ? `${seed}\n\nLoaded: "${activeDojo2Scenario.title}" · ${activeDojo2Scenario.attackCategory} · ${activeDojo2Scenario.difficulty}`
+          : seed;
+      } else {
+        seedText = `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`;
       }
-    }, [scenario?.id, dojoId]);
+      setMessages([makeSystemMsg(seedText)]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [scenario?.id, dojoId, activeDojo2Scenario?.id]);
 
     // ── Core send function ─────────────────────────────────────────────────
 
@@ -470,7 +516,11 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               onChange={(e) => setInput(e.target.value)}
               disabled={!hasScenario || loading}
               placeholder={
-                hasScenario ? PLACEHOLDER_INPUT[dojoId] : 'Select a scenario first…'
+                !hasScenario
+                  ? 'Select a scenario first…'
+                  : dojoId === 2 && scenario?.id && DOJO2_SCENARIO_SEEDS[scenario.id]
+                  ? DOJO2_SCENARIO_SEEDS[scenario.id].placeholder
+                  : PLACEHOLDER_INPUT[dojoId]
               }
               rows={2}
               className={[

@@ -115,17 +115,13 @@ export function DojoTabs() {
    */
   const handleSetActiveDojo2Scenario = useCallback((incident: Dojo2IncidentScenario) => {
     setActiveDojo2Scenario(incident);
-    // Auto-select the matching left-panel workflow card without resetting the session
+    // Auto-select the matching left-panel workflow card without resetting the session.
+    // ChatConsole's useEffect (keyed on scenario?.id + activeDojo2Scenario?.id) will
+    // fire automatically and refresh the chat seed with the incident details.
     const matchingScenario = getScenariosByDojo(2).find((s) => s.id === incident.taskType);
     if (matchingScenario) {
       setSelectedScenario(matchingScenario);
     }
-    // Surface a system message in the chat so users always know which incident
-    // is being analyzed — especially important when task type hasn't changed
-    // (the scenario.id useEffect won't fire in that case).
-    chatRef.current?.showSystemMessage(
-      `Incident loaded: "${incident.title}" · ${incident.attackCategory} · ${incident.difficulty}`,
-    );
   }, []);
 
   function handleEvaluation(result: EvaluationResult) {
@@ -228,6 +224,7 @@ export function DojoTabs() {
             onSessionClear={handleSessionClear}
             dojo2Config={dojo2Config}
             dojo3Config={dojo3Config}
+            activeDojo2Scenario={activeDojo2Scenario}
           />
         }
         controlPanel={
