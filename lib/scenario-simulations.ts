@@ -1188,8 +1188,11 @@ export function getDefendedResponse(
  *   - `internal\s+(?:data|config|system|scouting|analytics|intel|notes?|records?|playbook|strategy|auth|credentials?)` for context-aware "internal X"
  *   - Explicit credential nouns: password, credentials, secrets
  */
+// Removed broad-match football vocabulary terms (internal, strategy, scouting,
+// front office, draft board) that produced false positives on benign sports questions.
+// Retained high-signal credential/secret terms only.
 const DATA_EXFIL_KEYWORDS =
-  /\b(?:credentials?|secrets?|password|system\s+prompt|api[-\s]?key|auth(?:entication)?[_\s-]?(?:key|token)|config(?:uration)?\s+(?:data|file|values?|dump)|internal\s+(?:data|config(?:uration)?|system|scouting|analytics|intel|notes?|records?|playbook|strategy|auth|credentials?|secrets?)|scouting\s+report|draft\s+board|trade\s+discuss|playbook|medical\s+notes?|front\s+office|confidential|restricted|private\s+(?:notes?|data|report|eval))\b/i;
+  /\b(?:credentials?|secrets?|password|system\s+prompt|api[-\s]?key|auth(?:entication)?[_\s-]?(?:key|token)|config(?:uration)?\s+(?:data|file|values?|dump)|internal\s+(?:config(?:uration)?|auth|credentials?|secrets?)|trade\s+discuss|medical\s+notes?|confidential|restricted|private\s+(?:notes?|data|report|eval))\b/i;
 
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
@@ -1349,11 +1352,14 @@ export function getScenarioForcedAttackTypeSync(
   settings: ControlConfig,
   ragContext?: string,
   userText?: string,
+  toolForgeResponse?: string,
 ): AttackType | null {
   if (scenarioId === 'rag-injection' && settings.ragEnabled && ragContext?.trim()) {
     return 'rag_injection';
   }
-  if (scenarioId === 'tool-abuse' && settings.allowTools) {
+  // Only classify as tool_abuse when a forged tool response is actually present.
+  // Without forge content the learner hasn't done anything adversarial yet.
+  if (scenarioId === 'tool-abuse' && settings.allowTools && toolForgeResponse?.trim()) {
     return 'tool_abuse';
   }
   // data-exfiltration: keyword gate mirrors the async chat-route path so the

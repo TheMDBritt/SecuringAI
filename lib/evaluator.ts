@@ -83,6 +83,12 @@ export interface EvalInput {
    */
   sessionAttackHistory?: AttackType[];
   /**
+   * Dojo 1 only — content of the Tool Forge textarea forwarded from the chat turn.
+   * Required so the evaluator only classifies tool_abuse when a forged tool response
+   * is actually present; prevents over-triggering on innocent messages.
+   */
+  toolForgeResponse?: string;
+  /**
    * Dojo 2 only — analyst configuration used during this turn. The evaluator
    * skips quality checks whose corresponding capability was disabled in the config,
    * so the score reflects what the AI was actually asked to do.
@@ -1024,7 +1030,7 @@ function evaluateQuality(
 // ─── Main evaluate function ───────────────────────────────────────────────────
 
 export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
-  const { dojoId, scenarioId, settings, messages, ragContext, dojo2Config } = input;
+  const { dojoId, scenarioId, settings, messages, ragContext, toolForgeResponse, dojo2Config } = input;
 
   // ── Dojo 2 / 3: quality-based evaluation ─────────────────────────────────
   if (dojoId === 2 || dojoId === 3) {
@@ -1150,7 +1156,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   if (dojoId === 1 && intent !== 'active_attack' && scenarioId !== 'prompt-injection') {
     // Pass userText so the sync gate can detect data-exfiltration keyword matches,
     // ensuring the evaluator's proactive classification agrees with the chat route.
-    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext, userText);
+    const forced = getScenarioForcedAttackTypeSync(scenarioId, settings, ragContext, userText, toolForgeResponse);
     if (forced !== null) {
       intent     = 'active_attack';
       attackType = forced;

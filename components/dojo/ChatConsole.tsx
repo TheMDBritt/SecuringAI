@@ -303,6 +303,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               // attacks where the payload is in the retrieved document, not the
               // user message.
               ragContext: ragContext || undefined,
+              // Forward Tool Forge content so the evaluator only classifies
+              // tool_abuse when a forged payload is actually present.
+              toolForgeResponse: toolForgeResponse || undefined,
               // Dojo 1 chain scoring: forward prior successful attacks so the
               // evaluator can apply stacking chain penalties.
               sessionAttackHistory: sessionAttackHistory?.length ? sessionAttackHistory : undefined,

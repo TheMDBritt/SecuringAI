@@ -27,7 +27,7 @@ export const SCENARIOS: Scenario[] = [
     description:
       'Circumvent topic/content restrictions using jailbreak patterns and role-play framing.',
     difficulty: 'intermediate',
-    owaspTags: ['LLM01', 'LLM07'],
+    owaspTags: ['LLM01'],
   },
   {
     id: 'tool-abuse',
@@ -45,7 +45,7 @@ export const SCENARIOS: Scenario[] = [
     description:
       'Inject adversarial content into simulated retrieved documents to hijack BlackBeltAI\'s responses.',
     difficulty: 'advanced',
-    owaspTags: ['LLM01', 'LLM09'],
+    owaspTags: ['LLM01', 'LLM02'],
   },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────

@@ -50,6 +50,8 @@ const EvaluateRequestSchema = z.object({
   messages: z.array(MessageSchema).min(1).max(60),
   /** Forwarded from the chat turn so rag_injection attacks can be detected. */
   ragContext: z.string().max(4000).optional(),
+  /** Dojo 1 only — Tool Forge content forwarded so the evaluator can require a forged payload before classifying tool_abuse. */
+  toolForgeResponse: z.string().max(2000).optional(),
   /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
   sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
   /** Dojo 2 only — analyst config used during this turn; evaluator skips checks for disabled capabilities. */
@@ -126,6 +128,7 @@ export async function POST(req: NextRequest) {
       settings:             parsed.data.settings,
       messages:             parsed.data.messages,
       ragContext:           parsed.data.ragContext,
+      toolForgeResponse:    parsed.data.toolForgeResponse,
       sessionAttackHistory: parsed.data.sessionAttackHistory,
       dojo2Config:          parsed.data.dojo2Config,
     });

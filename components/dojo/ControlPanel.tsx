@@ -294,8 +294,19 @@ const TAG_STYLE: Record<string, string> = {
   rag:    'bg-amber-500/10 text-amber-400 border-amber-500/30',
 };
 
+// Maps each payload tag to the Dojo 1 scenario it belongs to.
+// Used to filter the Payload Library to show only scenario-relevant buttons.
+const PAYLOAD_SCENARIO: Record<string, string> = {
+  inject: 'prompt-injection',
+  bypass: 'policy-bypass',
+  exfil:  'data-exfiltration',
+  rag:    'rag-injection',
+};
+
 interface Dojo1PanelProps {
   disabled: boolean;
+  scenarioId: string | null;
+  allowTools: boolean;
   ragEnabled: boolean;
   ragContext: string;
   onRagContextChange: (v: string) => void;
@@ -308,6 +319,8 @@ interface Dojo1PanelProps {
 
 function Dojo1Panel({
   disabled,
+  scenarioId,
+  allowTools,
   ragEnabled,
   ragContext,
   onRagContextChange,
@@ -317,8 +330,14 @@ function Dojo1Panel({
   onAutoRunChange,
   onSendPayload,
 }: Dojo1PanelProps) {
-  const hasRagContext = ragContext.trim().length > 0;
-  const hasToolForge  = toolForgeResponse.trim().length > 0;
+  const hasRagContext  = ragContext.trim().length > 0;
+  const hasToolForge   = toolForgeResponse.trim().length > 0;
+  const isToolAbuse    = scenarioId === 'tool-abuse';
+  const visiblePayloads = isToolAbuse
+    ? []
+    : PAYLOADS.filter((p) =>
+        !scenarioId || PAYLOAD_SCENARIO[p.tag] === scenarioId,
+      );
 
   return (
     <div>
@@ -332,36 +351,42 @@ function Dojo1Panel({
           disabled={disabled}
         />
 
-        <div className="flex flex-col gap-1 mt-2">
-          {PAYLOADS.map((p) => (
-            <button
-              key={p.label}
-              disabled={disabled}
-              onClick={() => onSendPayload(p.payload)}
-              title={`${p.owasp}\n${p.tip}`}
-              className={[
-                'w-full text-left text-[11px] px-2.5 py-2 rounded border',
-                'border-slate-700 bg-slate-800 text-slate-400',
-                'hover:border-red-500/40 hover:text-red-300 hover:bg-red-500/5',
-                'disabled:opacity-40 disabled:cursor-not-allowed transition-colors',
-                'flex flex-col gap-0.5',
-              ].join(' ')}
-            >
-              <div className="flex items-center gap-2">
-                <span
-                  className={[
-                    'shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase',
-                    TAG_STYLE[p.tag] ?? 'bg-slate-700 text-slate-400 border-slate-600',
-                  ].join(' ')}
-                >
-                  {p.tag}
-                </span>
-                <span className="font-mono truncate">{p.label}</span>
-              </div>
-              <p className="text-[9px] text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
-            </button>
-          ))}
-        </div>
+        {isToolAbuse ? (
+          <p className="text-[10px] text-slate-500 font-mono mt-2 italic">
+            Use the Tool Forge below to craft a malicious tool response.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-1 mt-2">
+            {visiblePayloads.map((p) => (
+              <button
+                key={p.label}
+                disabled={disabled}
+                onClick={() => onSendPayload(p.payload)}
+                title={`${p.owasp}\n${p.tip}`}
+                className={[
+                  'w-full text-left text-[11px] px-2.5 py-2 rounded border',
+                  'border-slate-700 bg-slate-800 text-slate-400',
+                  'hover:border-red-500/40 hover:text-red-300 hover:bg-red-500/5',
+                  'disabled:opacity-40 disabled:cursor-not-allowed transition-colors',
+                  'flex flex-col gap-0.5',
+                ].join(' ')}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={[
+                      'shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase',
+                      TAG_STYLE[p.tag] ?? 'bg-slate-700 text-slate-400 border-slate-600',
+                    ].join(' ')}
+                  >
+                    {p.tag}
+                  </span>
+                  <span className="font-mono truncate">{p.label}</span>
+                </div>
+                <p className="text-[9px] text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
+              </button>
+            ))}
+          </div>
+        )}
 
         {!autoRunPayloads && !disabled && (
           <p className="text-[10px] text-slate-600 font-mono mt-1.5 italic">
@@ -458,8 +483,13 @@ function Dojo1Panel({
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
+        {!allowTools && hasToolForge && (
+          <p className="text-[10px] text-amber-600 font-mono mt-1">
+            ⚠ Tools are disabled — this response will be ignored. Enable &quot;Allow Tools&quot; in Settings.
+          </p>
+        )}
         <p className="text-[10px] text-slate-600 font-mono mt-1">
-          Appended as tool output — evaluator flags tool_abuse if Allow Tools is OFF.
+          Appended as tool output when Allow Tools is ON.
         </p>
       </PanelSection>
     </div>
@@ -1218,6 +1248,8 @@ export function ControlPanel({
       {dojoId === 1 && (
         <Dojo1Panel
           disabled={!hasScenario || chatLoading}
+          scenarioId={scenario?.id ?? null}
+          allowTools={config.allowTools}
           ragEnabled={config.ragEnabled}
           ragContext={ragContext}
           onRagContextChange={onRagContextChange}
