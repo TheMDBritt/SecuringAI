@@ -87,14 +87,44 @@ function isSafeContent(text: string): boolean {
   return !BLOCKED_PATTERNS.some((p) => p.test(text));
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Extract and validate the client IP. Only the left-most address from
+ *  X-Forwarded-For is used (set by the CDN/reverse-proxy). The value is
+ *  validated as a well-formed IPv4 or IPv6 address before use. */
+function getClientIp(req: NextRequest): string {
+  const raw =
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    req.headers.get('x-real-ip') ??
+    '';
+  // Simple but effective: IPv4 dotted-decimal or IPv6 hex-colon
+  const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6 = /^[0-9a-fA-F:]+$/;
+  if (ipv4.test(raw) || ipv6.test(raw)) return raw;
+  return '127.0.0.1';
+}
+
+/** Allow requests only from the application's own origin.
+ *  In development (no NEXTAUTH_URL / APP_URL set) the check is skipped so
+ *  localhost curl calls still work. In production this blocks cross-origin
+ *  POSTs that don't carry a CSRF token. */
+function isOriginAllowed(req: NextRequest): boolean {
+  const appUrl = process.env.NEXTAUTH_URL ?? process.env.APP_URL;
+  if (!appUrl) return true; // dev mode — skip check
+  const origin = req.headers.get('origin') ?? req.headers.get('referer') ?? '';
+  return origin.startsWith(appUrl);
+}
+
 // ─── Handler ─────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // 0. Origin check (CSRF mitigation for browser clients)
+  if (!isOriginAllowed(req)) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
+  }
+
   // 1. Rate limit
-  const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
-    req.headers.get('x-real-ip') ??
-    '127.0.0.1';
+  const ip = getClientIp(req);
 
   const { allowed, remaining } = checkRateLimit(ip);
   if (!allowed) {
@@ -112,6 +142,12 @@ export async function POST(req: NextRequest) {
   }
 
   // 2. Parse + validate
+  // Guard against oversized payloads before attempting JSON.parse.
+  const contentLength = Number(req.headers.get('content-length') ?? 0);
+  if (contentLength > 64_000) {
+    return NextResponse.json({ error: 'Request body too large.' }, { status: 413 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

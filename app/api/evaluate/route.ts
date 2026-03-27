@@ -54,14 +54,36 @@ const EvaluateRequestSchema = z.object({
   }).optional(),
 });
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function getClientIp(req: NextRequest): string {
+  const raw =
+    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    req.headers.get('x-real-ip') ??
+    '';
+  const ipv4 = /^(\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6 = /^[0-9a-fA-F:]+$/;
+  if (ipv4.test(raw) || ipv6.test(raw)) return raw;
+  return '127.0.0.1';
+}
+
+function isOriginAllowed(req: NextRequest): boolean {
+  const appUrl = process.env.NEXTAUTH_URL ?? process.env.APP_URL;
+  if (!appUrl) return true;
+  const origin = req.headers.get('origin') ?? req.headers.get('referer') ?? '';
+  return origin.startsWith(appUrl);
+}
+
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // Origin check (CSRF mitigation)
+  if (!isOriginAllowed(req)) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
+  }
+
   // Rate limit to prevent evaluation endpoint abuse (same limits as chat route).
-  const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
-    req.headers.get('x-real-ip') ??
-    '127.0.0.1';
+  const ip = getClientIp(req);
 
   const { allowed } = checkRateLimit(ip);
   if (!allowed) {
@@ -69,6 +91,11 @@ export async function POST(req: NextRequest) {
       { error: 'Rate limit exceeded. Max 20 requests per minute.' },
       { status: 429, headers: { 'Retry-After': '60' } },
     );
+  }
+
+  const contentLength = Number(req.headers.get('content-length') ?? 0);
+  if (contentLength > 64_000) {
+    return NextResponse.json({ error: 'Request body too large.' }, { status: 413 });
   }
 
   let body: unknown;
