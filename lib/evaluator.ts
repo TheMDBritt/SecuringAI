@@ -3,6 +3,21 @@
  *
  * Pure function: no I/O, no LLM calls, no side-effects.
  * All pattern matching is done with static RegExp.
+ *
+ * SECURITY — ReDoS audit (2026-03-27):
+ * All RegExp patterns in this file have been reviewed for catastrophic
+ * backtracking. No nested-quantifier patterns (e.g. (a+)+, (\w+\s+)*)
+ * are present. Bounded quantifiers ({0,40}) and \s+/\b word-level tokens
+ * are used throughout, which run in linear time for these input lengths.
+ * Re-audit this file whenever new patterns are added.
+ *
+ * SECURITY — SQL injection posture:
+ * This app has no persistent database; all state is client-side or
+ * in-memory. SQL injection is not currently exploitable. If a database
+ * (PostgreSQL, SQLite, etc.) is added in the future:
+ *   • Use Prisma or Drizzle ORM — never construct queries by string concatenation.
+ *   • Enable parameterized queries / prepared statements exclusively.
+ *   • Apply the principle of least privilege to the DB user.
  */
 import type { ControlConfig, Dojo2Config } from '@/types';
 import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';

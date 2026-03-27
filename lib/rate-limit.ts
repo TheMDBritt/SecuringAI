@@ -1,5 +1,12 @@
 // Simple in-memory per-IP rate limiter.
-// NOTE: resets on serverless cold start — swap for Vercel KV in M9.
+//
+// SECURITY NOTES:
+// - Cold-start reset: Vercel spins up a fresh serverless instance on cold start,
+//   clearing this store. Use Vercel KV (Upstash Redis) for persistent rate limits.
+// - IP source: callers MUST pass the IP extracted from x-real-ip (Vercel edge-set,
+//   not spoofable) rather than the leftmost x-forwarded-for entry, which a client
+//   can inject to cycle fake IPs and bypass rate limits. Both API routes do this.
+// - Per-user: this is per-IP only; once auth is added, rate-limit by user ID too.
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS = 20;

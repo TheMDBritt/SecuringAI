@@ -10,6 +10,19 @@ import { z } from 'zod';
 import { evaluate } from '@/lib/evaluator';
 import { checkRateLimit } from '@/lib/rate-limit';
 
+// ─── CSRF guard ───────────────────────────────────────────────────────────────
+function isSameOrigin(req: NextRequest): boolean {
+  const origin = req.headers.get('origin');
+  if (!origin) return true;
+  const host = req.headers.get('host');
+  if (!host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 // ─── Validation schemas ───────────────────────────────────────────────────────
 
 const MessageSchema = z.object({
@@ -57,10 +70,16 @@ const EvaluateRequestSchema = z.object({
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  // Rate limit to prevent evaluation endpoint abuse (same limits as chat route).
+  // CSRF guard
+  if (!isSameOrigin(req)) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
+  }
+
+  // Rate limit — prefer x-real-ip (Vercel edge-set, not spoofable) over the
+  // leftmost x-forwarded-for entry which a client can inject to bypass limits.
   const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
     req.headers.get('x-real-ip') ??
+    req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() ??
     '127.0.0.1';
 
   const { allowed } = checkRateLimit(ip);
@@ -80,8 +99,10 @@ export async function POST(req: NextRequest) {
 
   const parsed = EvaluateRequestSchema.safeParse(body);
   if (!parsed.success) {
+    const details =
+      process.env.NODE_ENV === 'development' ? parsed.error.flatten() : undefined;
     return NextResponse.json(
-      { error: 'Validation failed.', details: parsed.error.flatten() },
+      { error: 'Validation failed.', ...(details && { details }) },
       { status: 422 },
     );
   }

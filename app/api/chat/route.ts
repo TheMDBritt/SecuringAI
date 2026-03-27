@@ -72,15 +72,43 @@ const ChatRequestSchema = z.object({
   dojo3Config: Dojo3ConfigSchema.optional(),
 });
 
-// ─── Safety pre-filter ────────────────────────────────────────────────────────
+// ─── CSRF guard ──────────────────────────────────────────────────────────────
+// Browsers always set the Origin header on cross-origin POSTs. If it is present
+// and doesn't match our own host, the request is from a foreign origin and we
+// reject it to prevent cross-site request forgery.
+// Direct API calls (curl, server-to-server) that omit Origin are still allowed.
+function isSameOrigin(req: NextRequest): boolean {
+  const origin = req.headers.get('origin');
+  if (!origin) return true; // non-browser call — allow
+  const host = req.headers.get('host');
+  if (!host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
 
+// ─── Safety pre-filter ────────────────────────────────────────────────────────
+// Blocks clearly functional exploit syntax from reaching the LLM or logs.
+// Conceptual attack discussion is the purpose of this platform, so patterns
+// target executable forms rather than keywords that appear in educational text.
 const BLOCKED_PATTERNS = [
+  // Code execution
   /exec\s*\(/i,
   /eval\s*\(/i,
   /system\s*\(/i,
   /rm\s+-rf/i,
+  /base64_decode\s*\(/i,
+  // SQL DDL/injection patterns in executable form
   /DROP\s+TABLE/i,
-  /base64_decode/i,
+  /UNION\s+(?:ALL\s+)?SELECT\b/i,
+  // XSS — executable script/URI injection
+  /<script[\s>/]/i,
+  /javascript\s*:/i,
+  /on(?:error|load|click|focus|blur|submit|mouseover)\s*=/i,
+  // Prototype pollution
+  /__proto__\s*[\[.]/i,
 ];
 
 function isSafeContent(text: string): boolean {
@@ -90,10 +118,17 @@ function isSafeContent(text: string): boolean {
 // ─── Handler ─────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
+  // 0. CSRF guard — reject cross-origin browser requests
+  if (!isSameOrigin(req)) {
+    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
+  }
+
   // 1. Rate limit
+  // Prefer x-real-ip (set by Vercel edge, cannot be spoofed) over the leftmost
+  // entry in x-forwarded-for, which a client can prepend to bypass rate limits.
   const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
     req.headers.get('x-real-ip') ??
+    req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() ??
     '127.0.0.1';
 
   const { allowed, remaining } = checkRateLimit(ip);
@@ -121,8 +156,12 @@ export async function POST(req: NextRequest) {
 
   const parsed = ChatRequestSchema.safeParse(body);
   if (!parsed.success) {
+    // Only expose field-level details in development; in production a generic
+    // message prevents leaking internal schema structure to attackers.
+    const details =
+      process.env.NODE_ENV === 'development' ? parsed.error.flatten() : undefined;
     return NextResponse.json(
-      { error: 'Validation failed.', details: parsed.error.flatten() },
+      { error: 'Validation failed.', ...(details && { details }) },
       { status: 422 },
     );
   }
@@ -139,11 +178,17 @@ export async function POST(req: NextRequest) {
     dojo3Config,
   } = parsed.data;
 
-  // 3. Safety pre-filter on last user message
-  const lastUserContent =
-    [...messages].reverse().find((m) => m.role === 'user')?.content ?? '';
+  // 3. Safety pre-filter — scan ALL user messages in history plus
+  //    ragContext and toolForgeResponse, not just the final message.
+  //    An attacker can embed malicious content in an earlier turn and send
+  //    a benign final message to bypass a last-message-only check.
+  const allUserText = messages
+    .filter((m) => m.role === 'user')
+    .map((m) => m.content)
+    .join('\n');
 
-  if (!isSafeContent(lastUserContent)) {
+  const fieldsToCheck = [allUserText, ragContext ?? '', toolForgeResponse ?? ''];
+  if (fieldsToCheck.some((t) => !isSafeContent(t))) {
     return NextResponse.json(
       {
         error:
