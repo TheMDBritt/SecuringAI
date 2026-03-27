@@ -54,7 +54,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Log Triage',
     description:
-      'Paste raw SIEM/syslog output. BlackBeltAI classifies severity, extracts IOCs, and summarizes threats.',
+      'Act as the SOC analyst: paste raw SIEM/syslog output and evaluate how well BlackBeltAI classifies severity, extracts IOCs, and reconstructs the attack chain.',
     difficulty: 'beginner',
     owaspTags: [],
     mitreAttackIds: ['T1078', 'T1059'],
@@ -64,7 +64,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Alert Enrichment',
     description:
-      'Feed BlackBeltAI a security alert. It enriches with CVE context and MITRE ATT&CK mapping.',
+      'Act as the SOC analyst: feed BlackBeltAI a security alert and score its CVE enrichment, MITRE ATT&CK mapping, and triage recommendation.',
     difficulty: 'intermediate',
     owaspTags: [],
     mitreAttackIds: ['T1190', 'T1210'],
@@ -74,7 +74,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Detection Rule Generation',
     description:
-      'Describe anomalous behavior in plain English. BlackBeltAI proposes Sigma/KQL/YARA detection rules.',
+      'Act as the detection engineer: describe anomalous behavior in plain English and evaluate the Sigma/KQL/YARA rules BlackBeltAI proposes.',
     difficulty: 'intermediate',
     owaspTags: [],
     mitreAttackIds: ['T1055', 'T1003'],
@@ -84,7 +84,7 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 2,
     title: 'Incident Report Draft',
     description:
-      'Provide an event timeline. BlackBeltAI drafts a structured IR report with executive summary and technical appendix.',
+      'Act as the IR lead: provide an event timeline and assess whether BlackBeltAI\'s drafted report covers executive summary, kill chain, containment, and lessons learned.',
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],

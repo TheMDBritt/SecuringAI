@@ -468,6 +468,14 @@ function Dojo1Panel({
 
 // ─── Dojo 2 — SOC Analyst Config ──────────────────────────────────────────────
 
+// Persona/scenario combos that are semantically awkward — not blocked, but
+// flagged with a dim + inline hint so learners know what to expect.
+const PERSONA_MISMATCH_HINT: Partial<Record<Dojo2TaskType, Partial<Record<string, string>>>> = {
+  'log-triage':         { ciso:     'CISO framing is optimised for Incident Reports' },
+  'alert-enrichment':   { ciso:     'CISO framing is optimised for Incident Reports' },
+  'detection-rule-gen': { 'ir-lead': 'IR Lead is optimised for active incident response' },
+};
+
 const PERSONA_DESC: Record<string, string> = {
   analyst:  'Technical triage — T-codes, IOCs, severity ratings',
   ciso:     'Business risk & compliance framing',
@@ -711,6 +719,12 @@ function IncidentLibrary({
                   </span>
                 </div>
                 <p className="text-[9px] text-slate-500 mb-1.5 leading-relaxed">{generated.description}</p>
+                {/* Warn when loading will silently switch the active left-panel workflow. */}
+                {defaultTaskFilter && generated.taskType !== defaultTaskFilter && (
+                  <p className="text-[9px] text-amber-500/80 font-mono mb-1.5">
+                    ⚠ Loading will switch workflow to {DOJO2_TASK_LABELS[generated.taskType]}
+                  </p>
+                )}
                 <div className="flex gap-1.5">
                   <button
                     disabled={disabled}
@@ -780,22 +794,32 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload,
       <PanelSection title="Analyst Persona">
         <div className="flex flex-col gap-1.5">
           {(['analyst', 'ciso', 'ir-lead'] as const).map((p) => {
-            const isActive = dojo2Config.persona === p;
+            const isActive   = dojo2Config.persona === p;
+            const mismatch   = defaultTaskFilter
+              ? PERSONA_MISMATCH_HINT[defaultTaskFilter]?.[p]
+              : undefined;
             return (
               <button
                 key={p}
                 disabled={disabled}
                 onClick={() => set('persona', p)}
+                title={mismatch ?? undefined}
                 className={[
                   'w-full text-left px-2.5 py-2 rounded border transition-colors',
                   isActive
                     ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
+                  !isActive && mismatch ? 'opacity-50' : '',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
               >
                 <span className="text-xs font-medium block">{DOJO2_PERSONA_LABELS[p]}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{PERSONA_DESC[p]}</span>
+                <span className="text-[10px] text-slate-500 block mt-0.5">
+                  {PERSONA_DESC[p]}
+                  {!isActive && mismatch && (
+                    <span className="text-amber-500/60 ml-1">· {mismatch}</span>
+                  )}
+                </span>
               </button>
             );
           })}

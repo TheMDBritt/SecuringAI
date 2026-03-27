@@ -21,7 +21,7 @@ import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   { id: 1, label: 'LLM Attack / Defense', sublabel: 'Dojo 1', color: 'red' },
-  { id: 2, label: 'AI Secures Assets',    sublabel: 'Dojo 2', color: 'cyan' },
+  { id: 2, label: 'SOC Analyst Workflows', sublabel: 'Dojo 2', color: 'cyan' },
   { id: 3, label: 'Defense vs AI Attacks',sublabel: 'Dojo 3', color: 'emerald' },
 ];
 

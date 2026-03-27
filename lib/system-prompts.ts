@@ -264,7 +264,7 @@ const OUTPUT_FORMAT_MODIFIERS: Record<string, string> = {
 // These modifiers translate the new analyst control settings into concrete
 // behavioural instructions that the LLM applies to every Dojo 2 response.
 
-function buildDojo2AnalystModifiers(config: Dojo2Config): string {
+function buildDojo2AnalystModifiers(config: Dojo2Config, scenarioId?: string): string {
   const parts: string[] = [];
 
   // ── Analysis depth ────────────────────────────────────────────────────────
@@ -363,6 +363,25 @@ function buildDojo2AnalystModifiers(config: Dojo2Config): string {
     `**Risk Level:** ${riskLabel} — [brief justification for this risk rating]`,
   );
 
+  // ── Directive conflict advisory ───────────────────────────────────────────
+  // When analysisDepth=basic AND contextLevel=none are combined with the
+  // incident-report-draft scenario, the scenario template expects a complete
+  // 7-section report but the depth and context constraints actively prevent
+  // that. Surface an explicit advisory so the AI (and the learner reading the
+  // prompt) understands this is intentional rapid-triage mode, not a bug.
+  if (
+    scenarioId === 'incident-report-draft' &&
+    config.analysisDepth === 'basic' &&
+    config.contextLevel === 'none'
+  ) {
+    parts.push(
+      '[Config advisory: You are configured for rapid triage mode on an Incident Report ' +
+      'scenario — basic depth + no external context. Produce a brief, action-first summary ' +
+      'rather than a full formal report. This is intentional: the learner is evaluating ' +
+      'minimal-context performance, not requesting a complete IR document.]',
+    );
+  }
+
   return parts.join('\n\n');
 }
 
@@ -419,7 +438,7 @@ export function getSystemPrompt(
   if (dojoId === 2 && dojo2Config) {
     const persona  = PERSONA_MODIFIERS[dojo2Config.persona];
     const format   = OUTPUT_FORMAT_MODIFIERS[dojo2Config.outputFormat];
-    const workflow = buildDojo2AnalystModifiers(dojo2Config);
+    const workflow = buildDojo2AnalystModifiers(dojo2Config, scenarioId);
     if (persona)  parts.push(persona);
     if (format)   parts.push(format);
     if (workflow) parts.push(workflow);

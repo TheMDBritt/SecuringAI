@@ -869,7 +869,7 @@ const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
 };
 
 /**
- * Quality-based evaluation for Dojo 2 (AI Secures Assets) and
+ * Quality-based evaluation for Dojo 2 (SOC Analyst Workflows) and
  * Dojo 3 (Defense vs AI Attacks).
  *
  * Scores the ASSISTANT's response against a per-scenario quality rubric
@@ -927,6 +927,15 @@ function evaluateQuality(
     : (DOJO3_QUALITY_CHECKS[scenarioId] ?? []);
   const checks = dojoId === 2 ? applyConfigFilter(rawChecks, dojo2Config) : rawChecks;
 
+  // Quality-floor guard: when analysisDepth=basic AND config filtering removed at
+  // least one check, the stripped rubric can be satisfied with boilerplate (e.g.
+  // MITRE + IOC both disabled → only 4 trivial checks remain → 100% PASS on a
+  // four-line response). Cap the achievable verdict at WARN so learners get an
+  // honest signal about the limits of a stripped-down configuration.
+  const checksWereFiltered = dojoId === 2 && checks.length < rawChecks.length;
+  const shallowConfig      = dojo2Config?.analysisDepth === 'basic';
+  const capAtWarn          = checksWereFiltered && shallowConfig;
+
   const passed: string[] = [];
   const missing: string[] = [];
 
@@ -942,8 +951,10 @@ function evaluateQuality(
   const numPassed = passed.length;
   const score     = total === 0 ? 100 : Math.round((numPassed / total) * 100);
 
-  const verdict:   Verdict    = score >= 80 ? 'PASS' : score >= 50 ? 'WARN' : 'FAIL';
-  const riskLevel: RiskLevel  = score >= 90 ? 'low'  : score >= 70 ? 'medium' : score >= 40 ? 'high' : 'critical';
+  const rawVerdict: Verdict = score >= 80 ? 'PASS' : score >= 50 ? 'WARN' : 'FAIL';
+  // Apply quality-floor cap: basic depth + filtered checks → max verdict is WARN.
+  const verdict: Verdict    = capAtWarn && rawVerdict === 'PASS' ? 'WARN' : rawVerdict;
+  const riskLevel: RiskLevel = score >= 90 ? 'low' : score >= 70 ? 'medium' : score >= 40 ? 'high' : 'critical';
 
   const topics    = SECURITYAI_PLUS_TOPICS[scenarioId] ?? [];
   const dojoLabel = dojoId === 2 ? 'SOC analyst' : 'defensive security';
@@ -951,6 +962,13 @@ function evaluateQuality(
   let whatHappened: string;
   if (total === 0) {
     whatHappened = `BlackBeltAI provided a ${dojoLabel} response. No quality rubric is defined for this scenario variant.`;
+  } else if (capAtWarn && rawVerdict === 'PASS') {
+    // Quality-floor cap triggered: surface the reason so the learner understands.
+    whatHappened =
+      `BlackBeltAI satisfied all ${total} active criteria — but ${rawChecks.length - checks.length} ` +
+      `check(s) were disabled by your configuration (basic depth + capability toggles). ` +
+      `The response may be thinner than a production-quality analysis. ` +
+      `Raise the analysis depth or re-enable IOC/MITRE mapping to unlock a genuine PASS.`;
   } else if (score >= 80) {
     whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis — ${numPassed} of ${total} quality criteria met. ` +
       `The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool. ` +
