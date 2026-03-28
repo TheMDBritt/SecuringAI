@@ -827,4 +827,211 @@ AI red teaming involves adversarial testing of AI systems before deployment:
 - MITRE ATLAS is to AI as MITRE ATT&CK is to traditional cybersecurity`,
   },
 
+
+  // ─── AI Governance ────────────────────────────────────────────────────────
+
+  {
+    id: 'gov-nist-ai-rmf',
+    category: 'AI Governance',
+    title: 'NIST AI Risk Management Framework',
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
+    vocab: ['NIST AI RMF', 'AI Risk Management', 'Govern', 'Trustworthy AI', 'AI Lifecycle'],
+    content: `## NIST AI Risk Management Framework (AI RMF)
+
+The NIST AI RMF (January 2023) provides a voluntary, flexible framework for managing risks in AI systems throughout their lifecycle.
+
+### Core Framework Functions
+
+The AI RMF is organized around four interconnected functions:
+
+#### GOVERN
+Establishes the foundational policies, processes, and culture for AI risk management.
+- Define AI risk tolerance and organizational policies
+- Assign roles and accountability for AI risk
+- Establish processes for stakeholder engagement
+- Create a culture that prioritizes trustworthy AI
+
+#### MAP
+Identifies AI risks in context of intended use and deployment environment.
+- Categorize the AI system and its deployment context
+- Identify affected stakeholders (direct and indirect)
+- Identify potential harms: physical, financial, reputational, societal
+- Assess likelihood and severity of risks
+
+#### MEASURE
+Analyzes and assesses identified risks using quantitative and qualitative methods.
+- Evaluate AI system performance across relevant metrics
+- Assess bias, fairness, and demographic disparities
+- Test robustness against adversarial inputs
+- Document uncertainty and limitations
+
+#### MANAGE
+Prioritizes, responds to, and monitors AI risks.
+- Implement risk treatments: avoid, mitigate, transfer, accept
+- Monitor deployed systems for drift and emergent risks
+- Establish incident response procedures
+- Document and communicate residual risks
+
+### Seven Trustworthy AI Properties
+
+The AI RMF defines trustworthy AI as having these properties:
+1. **Accountable and Transparent** — clear ownership and explainability
+2. **Explainable and Interpretable** — understandable decisions
+3. **Fair with Bias Managed** — equitable outcomes across groups
+4. **Privacy Enhanced** — data minimization and protection
+5. **Reliable and Accurate** — consistent, correct performance
+6. **Resilient** — maintains function under adversarial conditions
+7. **Safe** — does not cause harm
+
+### AI RMF Profiles
+Organizations can create **profiles** — customized implementations of the framework aligned to their specific use case, sector, and risk tolerance.
+
+### Exam Tips
+- Know all four functions: Govern, Map, Measure, Manage
+- Know the seven trustworthy AI properties
+- AI RMF is voluntary and sector-agnostic
+- Pairs with NIST CSF for holistic risk management`,
+  },
+
+  {
+    id: 'gov-eu-ai-act',
+    category: 'AI Governance',
+    title: 'EU AI Act',
+    certTags: ['SecAI', 'CAISP'],
+    vocab: ['EU AI Act', 'High-Risk AI', 'Prohibited AI', 'GPAI', 'Conformity Assessment', 'Transparency Obligation'],
+    content: `## EU AI Act
+
+The EU AI Act (2024) is the world's first comprehensive AI regulation, applying a risk-based approach to AI systems deployed in the EU.
+
+### Risk-Based Classification
+
+#### Unacceptable Risk — Prohibited
+AI systems that pose unacceptable risks are **banned**:
+- Social scoring systems by governments
+- Real-time remote biometric identification in public spaces (with limited exceptions)
+- AI that exploits vulnerabilities of specific groups
+- Subliminal manipulation techniques
+- Untargeted scraping of facial images for recognition databases
+
+#### High Risk — Strict Requirements
+AI systems in critical sectors must meet extensive requirements before deployment:
+- **Biometric identification** (post-deployment)
+- **Critical infrastructure** (energy, water, transport)
+- **Education** (grading, admissions)
+- **Employment** (hiring, performance evaluation)
+- **Essential services** (credit, insurance)
+- **Law enforcement** (risk assessment, evidence)
+- **Migration and border control**
+- **Justice and democracy**
+
+**Requirements for High-Risk AI**:
+- Conformity assessment before deployment
+- Risk management system
+- Data governance documentation
+- Technical documentation
+- Transparency and instructions for use
+- Human oversight measures
+- Accuracy, robustness, cybersecurity measures
+
+#### Limited Risk — Transparency Obligations
+- Chatbots must disclose they are AI
+- Deepfakes must be labeled
+- Emotion recognition systems must notify users
+
+#### Minimal Risk — No Obligations
+- AI in video games
+- Spam filters
+- Most recommendation systems
+
+### General Purpose AI (GPAI) Models
+Foundation models like GPT-4, Claude, Gemini face additional requirements:
+- **Technical documentation** of training data and capabilities
+- **Copyright compliance** for training data
+- **Systemic risk designation** (for models above compute threshold) triggers additional obligations
+
+### Enforcement
+- National market surveillance authorities
+- European AI Office (oversees GPAI)
+- Fines: up to €35M or 7% of global revenue for prohibited AI violations
+
+### Exam Tips
+- Know the four risk tiers and examples of each
+- Chatbots fall under Limited Risk (transparency obligation)
+- GPAI models have their own rules separate from the risk tiers`,
+  },
+
+  {
+    id: 'gov-responsible-ai',
+    category: 'AI Governance',
+    title: 'Responsible AI Principles',
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'CAISP'],
+    vocab: ['Fairness', 'Explainability', 'Accountability', 'Transparency', 'Privacy', 'Inclusivity', 'Reliability'],
+    content: `## Responsible AI Principles
+
+Responsible AI is the practice of designing, developing, and deploying AI systems that are fair, reliable, safe, and accountable.
+
+### Core Principles
+
+All major AI providers (Microsoft, Google, AWS, Anthropic) define similar principles:
+
+#### Fairness
+AI systems should treat all individuals equitably and avoid discriminatory outcomes.
+- **Demographic parity**: Equal outcomes across protected groups
+- **Equal opportunity**: Equal true positive rates across groups
+- **Bias sources**: Historical data, measurement bias, sampling bias, feedback loops
+
+#### Reliability & Safety
+Systems should behave as intended, even under unexpected conditions.
+- Rigorous testing before deployment
+- Graceful degradation on out-of-distribution inputs
+- Ongoing monitoring and red teaming
+
+#### Privacy & Security
+Respect individuals' privacy and protect against data misuse.
+- Data minimization: only collect what's needed
+- Differential privacy: add noise to prevent re-identification
+- Secure model deployment and access controls
+
+#### Inclusivity
+AI should benefit all people and not exclude or disadvantage any group.
+- Representative training data
+- Accessibility considerations in UI/UX
+- Stakeholder engagement from diverse communities
+
+#### Transparency
+People should be able to understand how AI makes decisions.
+- Clear disclosure when AI is used
+- Explainable outputs where possible
+- Documentation of model capabilities and limitations
+
+#### Accountability
+There must be mechanisms to ensure responsibility for AI outcomes.
+- Clear ownership of AI systems
+- Audit trails for consequential decisions
+- Redress mechanisms for affected individuals
+
+### Fairness Metrics
+
+| Metric | Definition |
+|--------|-----------|
+| **Demographic Parity** | Equal positive prediction rates across groups |
+| **Equal Opportunity** | Equal true positive rates across groups |
+| **Equalized Odds** | Equal TPR and FPR across groups |
+| **Predictive Parity** | Equal precision across groups |
+
+⚠️ **Impossibility theorem**: These metrics cannot all be satisfied simultaneously when base rates differ across groups.
+
+### Tools for Responsible AI
+- **SHAP / LIME**: Model explainability
+- **Fairlearn** (Microsoft): Bias assessment and mitigation
+- **AI Fairness 360** (IBM): Fairness metrics and algorithms
+- **Model Cards**: Documentation of model purpose, performance, and limitations
+- **Datasheets for Datasets**: Dataset documentation standard
+
+### Exam Tips
+- Know the six core responsible AI principles
+- Understand the fairness impossibility theorem
+- Model cards and datasheets are standard documentation practices`,
+  },
+
 ];
