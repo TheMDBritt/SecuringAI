@@ -1709,4 +1709,282 @@ In Dojo 3, you build detection rules for AI-powered attacks — specifically tar
 - AI-generated rules always require human review before production deployment`,
   },
 
+
+  // ─── Emerging Trends ──────────────────────────────────────────────────────
+
+  {
+    id: 'emerging-agentic-ai',
+    category: 'Emerging Trends',
+    title: 'Agentic AI & Multi-Agent Systems',
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'GIAC-GOAA'],
+    vocab: ['Agentic AI', 'ReAct', 'Tool Use', 'Multi-Agent', 'Orchestrator', 'Memory', 'Planning'],
+    content: `## Agentic AI & Multi-Agent Systems
+
+Agentic AI refers to AI systems that autonomously plan, act, and use tools to complete multi-step goals with minimal human intervention.
+
+### What Makes an Agent
+
+An agent combines:
+1. **LLM Core**: Reasoning, planning, and language generation
+2. **Memory**: Short-term (context window), long-term (vector store), episodic
+3. **Tools**: Functions the agent can call (search, code execution, APIs)
+4. **Planning**: Breaking complex goals into sub-tasks
+5. **Perception**: Receiving observations from the environment
+
+### Agent Architectures
+
+#### ReAct (Reason + Act)
+Alternates reasoning steps with tool calls:
+\`\`\`
+Thought: I need to find the current stock price.
+Action: search("AAPL stock price today")
+Observation: AAPL is trading at $185.32
+Thought: I now have the data needed to answer.
+Answer: AAPL is currently $185.32
+\`\`\`
+
+#### Plan-and-Execute
+First generate a full plan, then execute each step sequentially.
+
+#### Multi-Agent Systems
+Multiple specialized agents collaborate:
+- **Orchestrator**: Breaks down task and delegates to sub-agents
+- **Sub-agents**: Specialized (research agent, coding agent, critic agent)
+- **Communication**: Agents pass structured messages to each other
+
+### Popular Frameworks
+- **LangChain / LangGraph**: Python framework with graph-based agent orchestration
+- **AutoGen** (Microsoft): Multi-agent conversation framework
+- **CrewAI**: Role-based multi-agent teams
+- **OpenAI Swarm**: Lightweight multi-agent handoffs
+
+### Security Considerations
+
+Agentic systems dramatically expand the attack surface:
+
+| Risk | Description |
+|------|-------------|
+| **Indirect Prompt Injection** | Environmental data hijacks agent actions |
+| **Excessive Agency** | Agent takes unintended irreversible actions |
+| **Agent Impersonation** | Malicious agent masquerades as trusted agent |
+| **Runaway Agents** | Infinite loops or resource exhaustion |
+| **Data Leakage** | Agent exfiltrates data through tool calls |
+
+### Mitigation Patterns
+- **Minimal permissions**: Each agent only has tools it needs
+- **Human checkpoints**: Require approval before irreversible actions
+- **Sandboxed execution**: Isolate code execution environments
+- **Audit logging**: Record every tool call and decision
+- **Maximum step limits**: Prevent infinite agent loops
+
+### Exam Tips
+- Agents = LLM + Tools + Memory + Planning
+- Indirect prompt injection is the #1 agentic security risk
+- Multi-agent trust chains create cascading risks`,
+  },
+
+  {
+    id: 'emerging-lora-quantization',
+    category: 'Emerging Trends',
+    title: 'LoRA, Quantization & Efficient Inference',
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'GIAC-GOAA'],
+    vocab: ['LoRA', 'QLoRA', 'Quantization', 'INT8', 'INT4', 'GGUF', 'Speculative Decoding', 'PagedAttention'],
+    content: `## LoRA, Quantization & Efficient Inference
+
+Running large models efficiently is critical for both cost reduction and democratized access.
+
+### Quantization
+
+Reduces model precision from 32-bit or 16-bit floating point to lower-precision formats.
+
+| Format | Bits | Memory Savings | Quality Loss |
+|--------|------|---------------|-------------|
+| FP32 | 32 | Baseline | None |
+| BF16 | 16 | 2× | Minimal |
+| INT8 | 8 | 4× | Low |
+| INT4 | 4 | 8× | Moderate |
+| INT2 | 2 | 16× | High |
+
+#### GPTQ
+Post-training quantization to 4-bit; minimizes accuracy loss by using second-order information.
+
+#### GGUF (formerly GGML)
+File format for quantized LLMs optimized for CPU inference (llama.cpp). Enables running 7B–70B models on consumer hardware.
+
+#### bitsandbytes
+Library for INT8 and INT4 inference in Python — works with HuggingFace Transformers.
+
+### LoRA & QLoRA
+
+**LoRA**: Fine-tune with only ~0.1% of parameters by adding small low-rank matrices to frozen attention weights.
+
+**QLoRA**: LoRA applied to a 4-bit quantized base model. Enables fine-tuning 65B+ models on a single 48GB GPU.
+
+### Efficient Inference Techniques
+
+#### Speculative Decoding
+Use a small "draft" model to generate candidate tokens quickly; the large model verifies multiple tokens in parallel. Can achieve 2–3× speedup with no quality loss.
+
+#### PagedAttention (vLLM)
+Stores KV cache in non-contiguous memory pages, like OS virtual memory. Eliminates KV cache memory fragmentation, enabling 24× higher throughput vs naive serving.
+
+#### Flash Attention
+Reorders attention computation to minimize memory I/O. 2–4× faster than standard attention; memory-efficient for long contexts.
+
+#### Tensor Parallelism / Pipeline Parallelism
+- **Tensor parallel**: Split weight matrices across multiple GPUs
+- **Pipeline parallel**: Split layers across multiple GPUs
+- Required for models too large for a single GPU
+
+### Exam Tips
+- LoRA is the dominant PEFT technique — know it's low-rank adapters on attention layers
+- QLoRA = quantized base + LoRA adapters
+- vLLM uses PagedAttention for high-throughput serving
+- Flash Attention is memory efficiency; speculative decoding is latency`,
+  },
+
+  // ─── Cert Exam Guides ─────────────────────────────────────────────────────
+
+  {
+    id: 'cert-secai',
+    category: 'Cert Exam Guides',
+    title: 'CompTIA SecurityAI+ (SecAI) Exam Guide',
+    certTags: ['SecAI'],
+    vocab: ['CompTIA SecAI', 'AI Security', 'OWASP LLM Top 10', 'Prompt Injection', 'AI Governance'],
+    content: `## CompTIA SecurityAI+ (SecAI) Exam Guide
+
+CompTIA SecurityAI+ is a vendor-neutral certification focused on AI security concepts for cybersecurity professionals.
+
+### Exam Overview
+- **Code**: (Pending official release — verify current details at comptia.org)
+- **Format**: Multiple choice + performance-based questions
+- **Duration**: 90 minutes
+- **Questions**: ~90
+- **Passing Score**: 750 (on 100–900 scale)
+- **Recommended Experience**: 2+ years in cybersecurity + foundational AI knowledge
+
+### Domain Breakdown
+
+#### Domain 1: AI Concepts & Risks (~25%)
+- Types of AI/ML (supervised, unsupervised, reinforcement, generative)
+- LLM architecture basics (transformer, tokens, embeddings)
+- AI risk categories: accuracy, bias, privacy, security, reliability
+- OWASP LLM Top 10 (know all 10 by name and description)
+- Adversarial attacks: evasion, poisoning, extraction, inversion
+
+#### Domain 2: AI Security Controls (~30%)
+- Input validation and sanitization for LLM applications
+- Output filtering and content moderation
+- Prompt injection defenses (direct and indirect)
+- System prompt hardening
+- Least privilege for agentic AI tools
+- Human-in-the-loop controls
+
+#### Domain 3: AI Governance & Compliance (~20%)
+- NIST AI RMF (Govern, Map, Measure, Manage)
+- EU AI Act risk tiers
+- ISO 42001
+- Responsible AI principles (fairness, transparency, accountability)
+- AI red teaming scope and methodology
+
+#### Domain 4: AI in Security Operations (~15%)
+- AI-powered SIEM and anomaly detection
+- UEBA: user and entity behavior analytics
+- SOAR automation with AI
+- AI-assisted detection rule generation
+- LLM use in threat intelligence and SOC workflows
+
+#### Domain 5: Emerging AI Threats (~10%)
+- Agentic AI attack vectors
+- Multi-agent trust chain risks
+- AI supply chain security
+- Deepfake detection and verification
+- AI-generated malware and social engineering
+
+### Key Topics to Master
+- OWASP LLM Top 10 — highest exam weight
+- Prompt injection (direct vs indirect) — guaranteed questions
+- NIST AI RMF four functions
+- Difference between AI evasion and poisoning attacks
+- Excessive agency (LLM08) and mitigations
+
+### Study Resources
+- OWASP LLM Top 10 documentation (owasp.org)
+- NIST AI RMF core document (nvlpubs.nist.gov)
+- MITRE ATLAS technique database
+- This Playbook's AI Security and Red Teaming sections`,
+  },
+
+  {
+    id: 'cert-aws-aif-c01',
+    category: 'Cert Exam Guides',
+    title: 'AWS AI Foundations (AIF-C01) Exam Guide',
+    certTags: ['AWS-AIF-C01'],
+    vocab: ['AWS AIF-C01', 'Amazon Bedrock', 'Amazon SageMaker', 'Responsible AI', 'Foundation Model'],
+    content: `## AWS Certified AI Practitioner (AIF-C01) Exam Guide
+
+The AWS AI Practitioner certification validates understanding of AI/ML concepts and AWS AI services.
+
+### Exam Overview
+- **Code**: AIF-C01
+- **Format**: Multiple choice + multiple response
+- **Duration**: 90 minutes
+- **Questions**: ~85
+- **Passing Score**: 700 (on 100–1000 scale)
+- **Recommended Experience**: 6+ months using AWS AI/ML services
+
+### Domain Breakdown
+
+#### Domain 1: Fundamentals of AI and ML (20%)
+- ML types: supervised, unsupervised, reinforcement
+- Deep learning: neural networks, CNNs, RNNs, Transformers
+- Key concepts: training, inference, features, labels, hyperparameters
+- Evaluation metrics: accuracy, precision, recall, F1, AUC
+
+#### Domain 2: Fundamentals of Generative AI (24%)
+- Foundation models and large language models
+- Transformer architecture basics
+- Prompt engineering techniques (zero-shot, few-shot, CoT)
+- RAG (retrieval-augmented generation)
+- Fine-tuning vs RAG trade-offs
+- Hallucination and mitigation strategies
+
+#### Domain 3: Applications of Foundation Models (28%)
+- **Amazon Bedrock**: Model access, Guardrails, Knowledge Bases, Agents
+- Selecting foundation models for specific use cases
+- Model customization: fine-tuning, continued pre-training
+- Evaluation: automated vs human, FMEval
+- Cost and latency considerations (inference parameters, caching)
+
+#### Domain 4: Guidelines for Responsible AI (14%)
+- Fairness, bias, transparency, explainability
+- **Amazon SageMaker Clarify**: Bias detection, SHAP explanations
+- Data privacy and compliance
+- AWS responsible AI principles
+
+#### Domain 5: Security, Compliance, and Governance (14%)
+- AWS security for AI: IAM, VPC endpoints, encryption
+- Data governance: data lineage, access controls
+- Compliance considerations for AI deployments
+- Monitoring: SageMaker Model Monitor, CloudTrail for AI APIs
+
+### Key AWS Services to Know
+
+| Service | Purpose |
+|---------|---------|
+| Amazon Bedrock | Foundation model access + managed RAG + agents |
+| SageMaker | End-to-end ML platform |
+| SageMaker Clarify | Bias detection + explainability |
+| SageMaker Model Monitor | Drift detection |
+| Amazon Comprehend | NLP tasks (sentiment, entities, PII) |
+| Amazon Rekognition | Image/video analysis |
+| AWS Bedrock Guardrails | Content safety for Bedrock |
+
+### Exam Tips
+- Bedrock = foundation models; SageMaker = custom ML
+- Know which SageMaker feature handles which MLOps need
+- Responsible AI questions focus on bias, fairness, and transparency
+- Study the specific parameters: temperature, top-p, max tokens`,
+  },
+
 ];
