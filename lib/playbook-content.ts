@@ -1034,4 +1034,214 @@ There must be mechanisms to ensure responsibility for AI outcomes.
 - Model cards and datasheets are standard documentation practices`,
   },
 
+
+  // ─── MLOps ────────────────────────────────────────────────────────────────
+
+  {
+    id: 'mlops-deployment',
+    category: 'MLOps',
+    title: 'Model Deployment & Serving',
+    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE', 'GIAC-GOAA'],
+    vocab: ['Model Serving', 'REST API', 'Batch Inference', 'Online Inference', 'ONNX', 'Containerization', 'Canary Deployment'],
+    content: `## Model Deployment & Serving
+
+Model deployment is the process of making a trained ML model available for use in production.
+
+### Inference Modes
+
+#### Online (Real-time) Inference
+- Responds to individual requests with low latency
+- Used for: chatbots, fraud detection, recommendations
+- Infrastructure: REST/gRPC API behind a load balancer
+- Latency target: typically <100ms for user-facing features
+
+#### Batch Inference
+- Processes large volumes of data on a schedule
+- Used for: nightly score updates, report generation, dataset labeling
+- Infrastructure: Spark, Ray, Kubernetes jobs
+- Throughput-optimized rather than latency-optimized
+
+#### Streaming Inference
+- Processes events from a stream (Kafka, Kinesis)
+- Used for: fraud detection on transactions, real-time monitoring
+
+### Serving Infrastructure
+
+#### REST API Pattern
+\`\`\`
+Client → Load Balancer → Inference Service → Model → Response
+\`\`\`
+
+Common frameworks:
+- **FastAPI / Flask** — Python API wrappers
+- **TorchServe** — PyTorch model server
+- **TensorFlow Serving** — TensorFlow production server
+- **Triton Inference Server** (NVIDIA) — multi-framework GPU server
+- **vLLM** — high-throughput LLM inference with PagedAttention
+
+#### Model Formats
+- **ONNX**: Open Neural Network Exchange — portable format for cross-framework deployment
+- **TorchScript**: Optimized PyTorch model serialization
+- **SavedModel**: TensorFlow deployment format
+- **GGUF**: Quantized model format for local LLM inference (llama.cpp)
+
+### Deployment Strategies
+
+| Strategy | Description | Risk |
+|---------|-------------|------|
+| **Blue/Green** | Two identical environments; switch traffic | Low risk, high cost |
+| **Canary** | Route small % to new model; gradually increase | Catches issues early |
+| **Shadow** | New model runs in parallel; no traffic impact | Zero risk, resource cost |
+| **A/B Testing** | Split traffic for business metric comparison | Deliberate experimentation |
+
+### Scaling
+- **Horizontal scaling**: Add more inference instances behind load balancer
+- **GPU sharing**: Multiple models on one GPU (MIG, time-slicing)
+- **Auto-scaling**: Scale based on queue depth or request rate
+- **Caching**: Cache frequent or similar requests to reduce model calls
+
+### Exam Tips
+- Know the difference between batch and online inference use cases
+- ONNX enables cross-framework model portability
+- Canary deployment reduces risk of bad model updates`,
+  },
+
+  {
+    id: 'mlops-monitoring',
+    category: 'MLOps',
+    title: 'Model Monitoring & Drift Detection',
+    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE', 'GIAC-GOAA'],
+    vocab: ['Data Drift', 'Concept Drift', 'Model Decay', 'Feature Drift', 'Statistical Process Control', 'Retraining'],
+    content: `## Model Monitoring & Drift Detection
+
+Models degrade over time as the real world changes. Monitoring ensures models continue to perform as expected.
+
+### Types of Drift
+
+#### Data Drift (Input Drift)
+The statistical distribution of input features changes from training distribution.
+- Example: User demographics shift; new device types appear in logs
+- Detection: Statistical tests (KS test, PSI, chi-square) comparing current vs reference distributions
+
+#### Concept Drift
+The relationship between input features and the target variable changes.
+- Example: Spam patterns evolve; what was safe content becomes harmful
+- More dangerous than data drift — model is technically wrong even with correct inputs
+- Harder to detect without ground truth labels
+
+#### Label Drift
+The distribution of output labels changes over time.
+- Example: Fraud patterns shift toward a previously rare category
+- Requires labeled data to detect
+
+#### Feature Drift
+A specific input feature's distribution changes.
+- Example: Average transaction amount inflates due to economic changes
+- Monitor each feature's mean, variance, and distribution shape
+
+### Monitoring Metrics
+
+| Category | Metrics |
+|----------|---------|
+| **Input Quality** | Missing values, null rates, range violations |
+| **Statistical** | PSI (Population Stability Index), KS statistic, Jensen-Shannon divergence |
+| **Model Performance** | Accuracy, F1, AUC (requires labels) |
+| **Operational** | Latency, throughput, error rate, memory |
+| **Business** | Conversion rate, click-through, downstream KPIs |
+
+### PSI (Population Stability Index)
+PSI measures how much a feature's distribution has shifted:
+- PSI < 0.1: No change
+- PSI 0.1–0.25: Moderate change; monitor
+- PSI > 0.25: Significant drift; investigate / retrain
+
+### Retraining Strategies
+- **Scheduled retraining**: Retrain on fixed schedule (weekly, monthly)
+- **Triggered retraining**: Retrain when drift metric exceeds threshold
+- **Continuous learning**: Rolling window of recent data for online updates
+- **Champion/challenger**: Test new model against current before full rollout
+
+### Tools
+- **Evidently AI**: Open-source drift and data quality reports
+- **WhyLabs**: Cloud monitoring platform with statistical profiles
+- **Amazon SageMaker Model Monitor**: AWS managed drift detection
+- **Azure ML Monitor**: Drift detection in Azure ML
+
+### Exam Tips
+- Know data drift vs concept drift distinction
+- PSI > 0.25 signals significant drift requiring action
+- Ground truth labels are required to detect concept drift directly`,
+  },
+
+  {
+    id: 'mlops-cicd',
+    category: 'MLOps',
+    title: 'CI/CD for ML (MLOps Pipelines)',
+    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE'],
+    vocab: ['CI/CD', 'MLflow', 'Model Registry', 'Feature Store', 'Pipeline Orchestration', 'Experiment Tracking'],
+    content: `## CI/CD for ML (MLOps Pipelines)
+
+MLOps applies software engineering CI/CD practices to the ML lifecycle, ensuring reproducible, automated, and auditable model development.
+
+### MLOps Maturity Levels
+
+| Level | Description |
+|-------|-------------|
+| **Level 0** | Manual process; scripts run locally; no automation |
+| **Level 1** | Automated training pipeline; manual deployment |
+| **Level 2** | Automated training + deployment + monitoring; full CI/CD |
+
+### Core Components
+
+#### Experiment Tracking
+Record all experiment runs including hyperparameters, metrics, artifacts, and code version.
+- **MLflow Tracking**: Open-source; log params, metrics, and artifacts
+- **Weights & Biases (W&B)**: Cloud-first; rich visualizations
+- **Neptune.ai**: Collaborative experiment tracking
+
+#### Model Registry
+Central repository to version, stage, and deploy models.
+- Stages: Staging → Production → Archived
+- Links model version to training run, data version, and code
+- MLflow Model Registry, AWS SageMaker Model Registry, Azure ML Model Registry
+
+#### Feature Store
+Centralized repository for computed features shared across teams and models.
+- **Online store**: Low-latency feature retrieval for inference (Redis, DynamoDB)
+- **Offline store**: Historical features for training (S3, BigQuery)
+- Examples: Feast (open-source), Tecton, AWS SageMaker Feature Store
+
+#### Pipeline Orchestration
+Automate the sequence of data → train → evaluate → deploy steps.
+- **Kubeflow Pipelines**: Kubernetes-native ML pipelines
+- **Apache Airflow**: General-purpose DAG orchestration
+- **AWS Step Functions / SageMaker Pipelines**
+- **Azure ML Pipelines**
+- **Prefect / ZenML**: Modern MLOps orchestration
+
+### ML-Specific CI/CD Steps
+
+\`\`\`
+Code Commit → Data Validation → Feature Engineering → Model Training →
+Model Evaluation → Model Registration → Deployment → Monitoring
+\`\`\`
+
+Each step can have automated gates:
+- Data quality checks (Great Expectations, Deequ)
+- Performance thresholds (must exceed baseline before promotion)
+- Bias/fairness checks before production
+- Security scans on model artifacts
+
+### Reproducibility
+- **Git** for code versioning
+- **DVC (Data Version Control)** for dataset versioning
+- **Docker** for environment reproducibility
+- **Seed fixing** for deterministic training
+
+### Exam Tips
+- Know the three MLOps maturity levels
+- Feature store decouples feature engineering from model training
+- Model registry manages model versioning and deployment stages`,
+  },
+
 ];
