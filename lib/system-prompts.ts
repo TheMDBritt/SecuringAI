@@ -55,6 +55,8 @@ You help learners understand AI-specific threats, build AI deployment threat mod
 ## Response Format
 Use structured headings. Threat models: tabular format (Actor | Vector | Likelihood | Impact | Control).
 Policy analysis: Clause | Control | Framework Reference | Score (0–3).`,
+
+  4: '',
 };
 
 // ─── Scenario-specific additions ──────────────────────────────────────────────

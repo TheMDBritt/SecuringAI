@@ -1219,6 +1219,7 @@ export function ControlPanel({
     1: 'Attack / Defense Controls',
     2: 'Analyst Configuration',
     3: 'Defender Toolkit',
+    4: 'Playbook',
   };
 
   return (

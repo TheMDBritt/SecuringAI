@@ -6,6 +6,7 @@ import { ScenarioPicker } from './ScenarioPicker';
 import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
+import PlaybookView from '@/components/playbook/PlaybookView';
 import { getScenariosByDojo } from '@/lib/scenarios';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import type {
@@ -22,13 +23,15 @@ import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG } from '@/types';
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   { id: 1, label: 'LLM Red vs Blue', sublabel: 'Dojo 1', color: 'red' },
   { id: 2, label: 'AI Analyst', sublabel: 'Dojo 2', color: 'cyan' },
-  { id: 3, label: 'Defense vs AI Attacks',sublabel: 'Dojo 3', color: 'emerald' },
+  { id: 3, label: 'Defense vs AI Attacks', sublabel: 'Dojo 3', color: 'emerald' },
+  { id: 4, label: 'Playbook',              sublabel: 'Reference', color: 'violet' },
 ];
 
 const TAB_COLOR: Record<string, string> = {
   red:     'border-red-500 text-red-400',
   cyan:    'border-cyan-500 text-cyan-400',
   emerald: 'border-emerald-500 text-emerald-400',
+  violet:  'border-violet-500 text-violet-400',
 };
 
 const TAB_INACTIVE =
@@ -81,7 +84,7 @@ export function DojoTabs() {
   /** Ref to ChatConsole's imperative handle. */
   const chatRef = useRef<ChatConsoleHandle>(null);
 
-  const scenarios = getScenariosByDojo(activeDojoId);
+  const scenarios = activeDojoId !== 4 ? getScenariosByDojo(activeDojoId as 1 | 2 | 3) : [];
 
   function handleTabChange(id: DojoId) {
     setActiveDojoId(id);
@@ -197,8 +200,9 @@ export function DojoTabs() {
         })}
       </div>
 
-      {/* Tab content */}
-      <DojoLayout
+      {/* Tab content — Playbook gets its own full-height layout */}
+      {activeDojoId === 4 && <PlaybookView />}
+      {activeDojoId !== 4 && <DojoLayout
         scenarioPicker={
           <ScenarioPicker
             scenarios={scenarios}
@@ -258,7 +262,7 @@ export function DojoTabs() {
             sessionScore={sessionScore}
           />
         }
-      />
+      />}
     </div>
   );
 }

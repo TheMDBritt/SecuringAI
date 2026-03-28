@@ -1,4 +1,41 @@
-export type DojoId = 1 | 2 | 3;
+export type DojoId = 1 | 2 | 3 | 4;
+
+// ─── Playbook types ────────────────────────────────────────────────────────────
+
+export type PlaybookSection = 'topics' | 'glossary' | 'certs' | 'quiz';
+export type QuizDifficulty  = 'beginner' | 'intermediate' | 'advanced';
+
+export interface QuizQuestion {
+  id: string;
+  topic: string;
+  category: string;
+  difficulty: QuizDifficulty;
+  /** Cert exam tags this question maps to, e.g. ['SecAI', 'AWS-AIF-C01'] */
+  certTags: string[];
+  question: string;
+  options: [string, string, string, string];
+  correct: 0 | 1 | 2 | 3;
+  explanation: string;
+}
+
+export interface GlossaryTerm {
+  term: string;
+  definition: string;
+  category: string;
+  certTags: string[];
+  related: string[];
+}
+
+export interface TopicArticle {
+  id: string;
+  category: string;
+  title: string;
+  certTags: string[];
+  /** Article body in simple markdown (##, **, `, - lists) */
+  content: string;
+  /** Glossary term keys cross-referenced in this article */
+  vocab: string[];
+}
 
 // ─── Dojo 2 analyst configuration ────────────────────────────────────────────
 

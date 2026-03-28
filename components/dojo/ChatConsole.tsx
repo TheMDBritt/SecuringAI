@@ -74,6 +74,7 @@ const PLACEHOLDER_INPUT: Record<DojoId, string> = {
   1: 'Type your attack payload or defense test message… (Shift+Enter for newline)',
   2: 'Load a scenario from the Incident Library → or paste your own logs/alert here…',
   3: 'Describe the artifact to analyze or policy to draft…',
+  4: '',
 };
 
 // ─── Dojo 2 per-scenario seeds ────────────────────────────────────────────────

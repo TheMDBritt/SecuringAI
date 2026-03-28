@@ -22,6 +22,7 @@ const DOJO_ACCENT: Record<DojoId, string> = {
   1: 'border-red-500 bg-red-500/5',
   2: 'border-cyan-500 bg-cyan-500/5',
   3: 'border-emerald-500 bg-emerald-500/5',
+  4: 'border-violet-500 bg-violet-500/5',
 };
 
 const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
@@ -36,6 +37,10 @@ const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
   3: {
     label: 'AI Defense',
     desc: 'Pick a scenario to build defenses against AI-powered attacks.',
+  },
+  4: {
+    label: 'Playbook',
+    desc: 'Comprehensive AI learning reference and quiz platform.',
   },
 };
 
