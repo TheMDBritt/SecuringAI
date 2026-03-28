@@ -1463,4 +1463,250 @@ When an agent has outbound network access:
 - Output filtering is a last-resort control — prevent data from reaching the context first`,
   },
 
+
+  // ─── Cloud AI Platforms ───────────────────────────────────────────────────
+
+  {
+    id: 'cloud-aws-ai',
+    category: 'Cloud AI Platforms',
+    title: 'AWS AI Services & SageMaker',
+    certTags: ['AWS-AIF-C01', 'SecAI'],
+    vocab: ['Amazon Bedrock', 'Amazon SageMaker', 'Amazon Rekognition', 'Amazon Comprehend', 'AWS Inferentia', 'Foundation Model'],
+    content: `## AWS AI Services & SageMaker
+
+AWS provides a comprehensive stack of AI/ML services from pre-built APIs to full MLOps infrastructure.
+
+### AI/ML Stack Layers
+
+#### Layer 1: AI Services (Pre-built APIs)
+No ML expertise required. Use via API:
+
+| Service | Capability |
+|---------|-----------|
+| **Amazon Rekognition** | Image/video analysis, face detection |
+| **Amazon Comprehend** | NLP: sentiment, entities, key phrases, PII |
+| **Amazon Textract** | OCR and document analysis |
+| **Amazon Transcribe** | Speech-to-text |
+| **Amazon Polly** | Text-to-speech |
+| **Amazon Translate** | Neural machine translation |
+| **Amazon Forecast** | Time-series forecasting |
+| **Amazon Fraud Detector** | ML-based fraud detection |
+| **Amazon Kendra** | Intelligent enterprise search |
+
+#### Layer 2: Amazon Bedrock (Foundation Models)
+Managed access to foundation models via API:
+- **Models available**: Claude (Anthropic), Titan (Amazon), Llama (Meta), Mistral, Stable Diffusion
+- **Features**: Guardrails, Knowledge Bases (RAG), Agents, Model Evaluation
+- **Amazon Bedrock Guardrails**: Content filtering, PII redaction, grounding checks
+
+#### Layer 3: Amazon SageMaker (ML Platform)
+Full MLOps platform for custom model development:
+- **SageMaker Studio**: Integrated IDE for ML development
+- **SageMaker Training**: Managed distributed training
+- **SageMaker Feature Store**: Feature management
+- **SageMaker Pipelines**: CI/CD for ML
+- **SageMaker Model Monitor**: Drift detection
+- **SageMaker Clarify**: Bias detection and explainability
+- **SageMaker JumpStart**: Pre-trained models and solution templates
+
+### AWS AI Security
+- **IAM roles** for fine-grained service access
+- **VPC endpoints** to keep traffic private
+- **AWS Macie** for PII discovery in S3 training data
+- **Amazon GuardDuty** for threat detection in ML workloads
+
+### Exam Tips (AWS AIF-C01)
+- Know the difference between AI Services (no ML needed) vs SageMaker (full ML)
+- Amazon Bedrock is the managed foundation model service
+- SageMaker Clarify handles bias detection and explainability`,
+  },
+
+  {
+    id: 'cloud-azure-ai',
+    category: 'Cloud AI Platforms',
+    title: 'Azure AI Services',
+    certTags: ['Azure-AI-900', 'Azure-AI-102', 'SecAI'],
+    vocab: ['Azure AI Foundry', 'Azure OpenAI', 'Azure Cognitive Services', 'Azure ML', 'Responsible AI Dashboard', 'Content Safety'],
+    content: `## Azure AI Services
+
+Microsoft Azure offers a layered AI platform from pre-built cognitive services to the full Azure Machine Learning platform.
+
+### Azure AI Stack
+
+#### Azure AI Services (Pre-built)
+Formerly "Cognitive Services" — REST APIs requiring no ML expertise:
+
+| Category | Services |
+|----------|---------|
+| **Vision** | Computer Vision, Custom Vision, Face API |
+| **Speech** | Speech-to-Text, Text-to-Speech, Speech Translation |
+| **Language** | Text Analytics, Translator, Language Understanding (LUIS) |
+| **Decision** | Anomaly Detector, Content Moderator, Personalizer |
+| **Document** | Azure AI Document Intelligence (Form Recognizer) |
+
+#### Azure OpenAI Service
+Managed access to OpenAI models (GPT-4, GPT-4o, DALL·E, Whisper, Embeddings) within Azure:
+- Data stays within your Azure tenant
+- Private endpoints, RBAC, compliance certifications
+- Content filtering built-in (configurable severity levels)
+
+#### Azure AI Foundry (formerly Azure AI Studio)
+Unified platform for building, evaluating, and deploying AI applications:
+- Model catalog (OpenAI, Meta Llama, Mistral, Cohere, Phi)
+- Prompt flow for LLM application development
+- AI evaluation (groundedness, relevance, coherence)
+- Responsible AI dashboard integration
+
+#### Azure Machine Learning
+Full MLOps platform:
+- Designer (no-code), notebooks, and CLI/SDK
+- Automated ML (AutoML)
+- Responsible AI Dashboard: fairness, explainability, error analysis
+- Data drift monitoring
+- Model registry and deployment
+
+### Azure AI Safety Features
+- **Azure AI Content Safety**: Harm detection API (violence, sexual, hate, self-harm)
+- **Prompt Shields**: Detect direct and indirect prompt injection
+- **Groundedness Detection**: Identify hallucinations vs retrieved context
+- **Protected Material Detection**: Detect copyrighted content in outputs
+
+### Exam Tips (Azure AI-900 / AI-102)
+- Azure AI-900: Focus on concepts — which service handles which task
+- AI-102: Focus on implementation — SDK, REST APIs, resource setup
+- Know Azure OpenAI ≠ OpenAI.com — different terms and data handling
+- Responsible AI Dashboard is the explainability + fairness tooling in Azure ML`,
+  },
+
+  // ─── AI in Security Ops ───────────────────────────────────────────────────
+
+  {
+    id: 'secops-ai-siem',
+    category: 'AI in Security Ops',
+    title: 'AI-Powered SIEM & Threat Detection',
+    certTags: ['SecAI', 'GIAC-GASAE', 'CAISP'],
+    vocab: ['SIEM', 'SOAR', 'AI-Powered SIEM', 'Anomaly Detection', 'Alert Triage', 'Behavioral Analytics', 'UEBA'],
+    content: `## AI-Powered SIEM & Threat Detection
+
+Modern Security Information and Event Management (SIEM) platforms increasingly use AI/ML to improve detection accuracy and analyst efficiency.
+
+### Traditional SIEM Limitations
+- **Rule fatigue**: Static rules generate enormous alert volumes
+- **False positive overload**: Analysts spend 50–80% of time on false positives
+- **Unknown unknowns**: Rules only catch known threats
+- **Slow updates**: Rule creation requires security expertise and time
+
+### How AI Improves SIEM
+
+#### Anomaly Detection
+- Baselines normal behavior for users, systems, and networks
+- Flags statistical deviations without requiring predefined rules
+- Effective against novel threats, lateral movement, and insider threats
+- Algorithms: Isolation Forest, Autoencoders, DBSCAN, statistical z-scores
+
+#### UEBA (User and Entity Behavior Analytics)
+- Builds individual behavior profiles over time
+- Detects compromised accounts (behavior change), insider threats (policy violations), and privilege abuse
+- Risk scoring: assigns a numeric risk score to each user/entity
+
+#### Alert Prioritization & Correlation
+- ML models score and rank alerts by likelihood of true positive
+- Correlate related alerts across different tools into unified incidents
+- Reduce mean time to detect (MTTD) and mean time to respond (MTTR)
+
+#### Natural Language Processing
+- Log normalization: parse and structure unstructured log formats
+- Query interfaces: "Show me all failed logins from outside the country last week"
+- Automated report generation from detected incidents
+
+### AI-Enhanced SOC Workflow
+
+\`\`\`
+Raw Logs → SIEM Ingestion → AI Triage → Prioritized Queue → Analyst Review → SOAR Automation
+\`\`\`
+
+### SOAR + AI Integration
+SOAR (Security Orchestration, Automation and Response) executes automated playbooks:
+- AI decides *which* playbook to trigger based on alert type
+- AI enriches alerts (VirusTotal lookups, threat intel correlation)
+- AI can autonomously contain low-risk threats; escalates high-risk to analysts
+
+### Platforms
+- **Microsoft Sentinel**: Cloud-native SIEM with built-in AI (Copilot for Security)
+- **Splunk SIEM**: ML Toolkit + UEBA + SOAR (SODA)
+- **IBM QRadar**: AI-driven threat detection with Watson
+- **Google Chronicle**: Planet-scale SIEM with YARA-L detection rules + AI
+
+### Exam Tips
+- UEBA = behavioral analytics focused on users and entities
+- AI reduces alert fatigue, not eliminates it — human analysts remain critical
+- SOAR automates response; SIEM detects — they complement each other`,
+  },
+
+  {
+    id: 'secops-detection-rules',
+    category: 'AI in Security Ops',
+    title: 'AI-Assisted Detection Rule Generation',
+    certTags: ['SecAI', 'GIAC-GASAE'],
+    vocab: ['Detection Rule', 'YARA', 'Sigma', 'MITRE ATT&CK', 'False Positive', 'Threat Hunting'],
+    content: `## AI-Assisted Detection Rule Generation
+
+Writing effective detection rules is a skilled, time-consuming task. AI can dramatically accelerate this process while improving coverage.
+
+### Detection Rule Formats
+
+| Format | Use Case | Language |
+|--------|---------|---------|
+| **Sigma** | SIEM-agnostic detection rules | YAML |
+| **YARA** | Malware / file pattern matching | Custom |
+| **KQL** | Microsoft Sentinel / Defender | Kusto Query Language |
+| **SPL** | Splunk | Splunk Processing Language |
+| **YARA-L** | Google Chronicle | Custom |
+
+### How AI Helps with Detection Rules
+
+#### 1. Rule Generation from Threat Intelligence
+- Input: threat report, CVE description, or MITRE ATT&CK technique
+- Output: Draft detection rule in specified format
+- AI maps IOCs (indicators of compromise) to log field patterns
+
+#### 2. False Positive Reduction
+- Analyze historical alert data to identify which rule conditions create FPs
+- Suggest exceptions and tuning to reduce noise
+- Statistical analysis of field value distributions to find anomalous thresholds
+
+#### 3. Rule Translation
+- Convert rules between formats (Sigma → KQL, Sigma → SPL)
+- Maintain a vendor-agnostic rule library and translate on deployment
+
+#### 4. Coverage Gap Analysis
+- Map existing rules to MITRE ATT&CK matrix
+- Identify techniques with no detection coverage
+- Prioritize new rule development based on threat intelligence
+
+### MITRE ATT&CK Integration
+- Every detection rule should map to one or more ATT&CK techniques
+- Coverage visualization: heat map of covered vs uncovered techniques
+- Use ATT&CK technique descriptions as AI prompt context for rule generation
+
+### Dojo 3 Connection
+In Dojo 3, you build detection rules for AI-powered attacks — specifically targeting:
+- Automated reconnaissance patterns
+- Adversarial input to ML models
+- Data poisoning attempts in streaming pipelines
+- Unusual LLM API usage patterns
+
+### Rule Quality Criteria
+- **Specificity**: Minimizes false positives
+- **Sensitivity**: Catches real threats (high recall)
+- **Performance**: Executes efficiently at scale
+- **Documentation**: Explains what the rule detects and why
+- **ATT&CK mapping**: Links to framework for context
+
+### Exam Tips
+- Sigma rules are SIEM-agnostic (translate to any platform)
+- MITRE ATT&CK provides the coverage framework for detection engineering
+- AI-generated rules always require human review before production deployment`,
+  },
+
 ];
