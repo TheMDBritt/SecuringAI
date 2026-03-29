@@ -41,6 +41,20 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// Randomizes the 4 answer options and updates the correct index to match
+function shuffleOptions(q: QuizQuestion): QuizQuestion {
+  const order: number[] = [0, 1, 2, 3];
+  for (let i = 3; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return {
+    ...q,
+    options: order.map((i) => q.options[i]) as [string, string, string, string],
+    correct: order.indexOf(q.correct) as 0 | 1 | 2 | 3,
+  };
+}
+
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
 function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
   const [settings, setSettings] = useState<QuizSettings>({
@@ -361,7 +375,7 @@ export default function QuizEngine() {
       (s.difficulty === 'all' || q.difficulty === s.difficulty) &&
       (s.certFilter === 'All' || q.certTags.includes(s.certFilter)),
     );
-    const selected = shuffle(pool).slice(0, s.count);
+    const selected = shuffle(pool).slice(0, s.count).map(shuffleOptions);
     setSettings(s);
     setQuestions(selected);
     setResults([]);
