@@ -8,7 +8,7 @@ export const TOPIC_ARTICLES: TopicArticle[] = [
     id: 'ml-supervised-learning',
     category: 'AI & ML Fundamentals',
     title: 'Supervised Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Label', 'Feature', 'Training Set', 'Validation Set', 'Overfitting', 'Underfitting', 'Regularization'],
     content: `## Supervised Learning
 
@@ -62,7 +62,7 @@ Supervised learning trains a model on **labeled examples** — input–output pa
     id: 'ml-unsupervised-learning',
     category: 'AI & ML Fundamentals',
     title: 'Unsupervised Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Clustering', 'Dimensionality Reduction', 'Anomaly Detection', 'K-Means', 'PCA', 'Autoencoder'],
     content: `## Unsupervised Learning
 
@@ -116,7 +116,7 @@ Without ground truth labels, evaluation uses:
     id: 'ml-neural-networks',
     category: 'AI & ML Fundamentals',
     title: 'Neural Networks & Deep Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'Azure-AI-102', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
     vocab: ['Neuron', 'Layer', 'Activation Function', 'Backpropagation', 'Gradient Descent', 'Batch Size', 'Epoch', 'Dropout'],
     content: `## Neural Networks & Deep Learning
 
@@ -176,7 +176,7 @@ Each neuron computes: \`output = activation(weights · inputs + bias)\`
     id: 'ml-training-pipeline',
     category: 'AI & ML Fundamentals',
     title: 'The ML Training Pipeline',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Preprocessing', 'Feature Engineering', 'Train-Test Split', 'Cross-Validation', 'Hyperparameter Tuning', 'Model Evaluation', 'Model Deployment'],
     content: `## The ML Training Pipeline
 
@@ -237,7 +237,7 @@ Building a production ML model follows a repeatable pipeline from raw data to de
     id: 'ml-eval-metrics',
     category: 'AI & ML Fundamentals',
     title: 'Evaluation Metrics',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Precision', 'Recall', 'F1 Score', 'AUC-ROC', 'Confusion Matrix', 'BLEU', 'Perplexity', 'RMSE'],
     content: `## Evaluation Metrics
 
@@ -297,7 +297,7 @@ Choosing the right metric is critical — optimizing the wrong one leads to misl
     id: 'genai-transformer-architecture',
     category: 'Generative AI & LLMs',
     title: 'Transformer Architecture',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Attention Mechanism', 'Self-Attention', 'Multi-Head Attention', 'Positional Encoding', 'Encoder', 'Decoder', 'KV Cache'],
     content: `## Transformer Architecture
 
@@ -357,7 +357,7 @@ During inference, key and value matrices are cached to avoid recomputation. This
     id: 'genai-prompt-engineering',
     category: 'Generative AI & LLMs',
     title: 'Prompt Engineering',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'GIAC-GOAA', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
     vocab: ['System Prompt', 'Zero-Shot Prompting', 'Few-Shot Prompting', 'Chain-of-Thought', 'Role Prompting', 'Prompt Injection'],
     content: `## Prompt Engineering
 
@@ -429,7 +429,7 @@ System prompts are the **primary defense layer** for LLM applications:
     id: 'genai-rag',
     category: 'Generative AI & LLMs',
     title: 'Retrieval-Augmented Generation (RAG)',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'GIAC-GOAA', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
     vocab: ['RAG', 'Vector Database', 'Embedding', 'Semantic Search', 'Chunking', 'Context Window', 'Grounding'],
     content: `## Retrieval-Augmented Generation (RAG)
 
@@ -489,7 +489,7 @@ Query → Embed → Vector Search → Retrieve Chunks → Inject into Prompt →
     id: 'genai-fine-tuning',
     category: 'Generative AI & LLMs',
     title: 'Fine-Tuning & Parameter-Efficient Training',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     vocab: ['Fine-Tuning', 'LoRA', 'QLoRA', 'PEFT', 'Instruction Tuning', 'RLHF', 'DPO'],
     content: `## Fine-Tuning & Parameter-Efficient Training
 
@@ -964,7 +964,7 @@ Foundation models like GPT-4, Claude, Gemini face additional requirements:
     id: 'gov-responsible-ai',
     category: 'AI Governance',
     title: 'Responsible AI Principles',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-900', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'CAISP'],
     vocab: ['Fairness', 'Explainability', 'Accountability', 'Transparency', 'Privacy', 'Inclusivity', 'Reliability'],
     content: `## Responsible AI Principles
 
@@ -1041,7 +1041,7 @@ There must be mechanisms to ensure responsibility for AI outcomes.
     id: 'mlops-deployment',
     category: 'MLOps',
     title: 'Model Deployment & Serving',
-    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Model Serving', 'REST API', 'Batch Inference', 'Online Inference', 'ONNX', 'Containerization', 'Canary Deployment'],
     content: `## Model Deployment & Serving
 
@@ -1110,7 +1110,7 @@ Common frameworks:
     id: 'mlops-monitoring',
     category: 'MLOps',
     title: 'Model Monitoring & Drift Detection',
-    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Drift', 'Concept Drift', 'Model Decay', 'Feature Drift', 'Statistical Process Control', 'Retraining'],
     content: `## Model Monitoring & Drift Detection
 
@@ -1177,7 +1177,7 @@ PSI measures how much a feature's distribution has shifted:
     id: 'mlops-cicd',
     category: 'MLOps',
     title: 'CI/CD for ML (MLOps Pipelines)',
-    certTags: ['AWS-AIF-C01', 'Azure-AI-102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     vocab: ['CI/CD', 'MLflow', 'Model Registry', 'Feature Store', 'Pipeline Orchestration', 'Experiment Tracking'],
     content: `## CI/CD for ML (MLOps Pipelines)
 
@@ -1525,7 +1525,7 @@ Full MLOps platform for custom model development:
     id: 'cloud-azure-ai',
     category: 'Cloud AI Platforms',
     title: 'Azure AI Services',
-    certTags: ['Azure-AI-900', 'Azure-AI-102', 'SecAI'],
+    certTags: ['Azure-AI900', 'Azure-AI102', 'SecAI'],
     vocab: ['Azure AI Foundry', 'Azure OpenAI', 'Azure Cognitive Services', 'Azure ML', 'Responsible AI Dashboard', 'Content Safety'],
     content: `## Azure AI Services
 
@@ -1716,7 +1716,7 @@ In Dojo 3, you build detection rules for AI-powered attacks — specifically tar
     id: 'emerging-agentic-ai',
     category: 'Emerging Trends',
     title: 'Agentic AI & Multi-Agent Systems',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI-102', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA'],
     vocab: ['Agentic AI', 'ReAct', 'Tool Use', 'Multi-Agent', 'Orchestrator', 'Memory', 'Planning'],
     content: `## Agentic AI & Multi-Agent Systems
 
