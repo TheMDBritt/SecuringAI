@@ -1787,4 +1787,299 @@ Reorders attention computation to minimize memory I/O. 2–4× faster than stand
 - Flash Attention is memory efficiency; speculative decoding is latency`,
   },
 
+  // ─── Cloud AI Platforms (Google) ──────────────────────────────────────────
+
+  {
+    id: 'cloud-google-vertex',
+    category: 'Cloud AI Platforms',
+    title: 'Google Cloud AI & Vertex AI',
+    certTags: ['Google-MLE'],
+    vocab: ['Vertex AI', 'AutoML', 'Model Garden', 'Gemini', 'Feature Store', 'Grounding', 'Model Armor', 'Vertex AI Pipelines'],
+    content: `Google Cloud offers a unified AI platform called **Vertex AI** that covers the full ML lifecycle — from data preparation to model deployment and monitoring.
+
+## Vertex AI Core Services
+
+### Vertex AI Workbench
+Managed Jupyter notebook environment integrated with Google Cloud services. Supports custom containers, GPUs, and TPUs for experimentation and training.
+
+### Vertex AI Training
+Scalable managed training on Google's infrastructure:
+- **Custom Training**: Bring your own container or use prebuilt containers (TensorFlow, PyTorch, scikit-learn)
+- **AutoML**: No-code model training for tabular, image, text, and video data
+- **Hyperparameter Tuning**: Vizier-backed automated HPO
+
+### Vertex AI Pipelines
+Serverless ML pipeline orchestration based on **Kubeflow Pipelines (KFP)** or **TFX**. Enables reproducible, auditable ML workflows.
+
+### Vertex AI Model Registry
+Central repository for versioned models. Tracks lineage from training to deployment and supports A/B testing.
+
+### Vertex AI Endpoints
+Managed online prediction endpoints. Supports:
+- Traffic splitting across model versions
+- Dedicated or shared compute
+- Autoscaling
+
+## Vertex AI Generative AI
+
+### Model Garden
+Catalog of foundation models: Google's Gemini family, open-source models (Llama, Mistral), and partner models. One-click deployment.
+
+### Vertex AI Studio
+Interactive prompt engineering and testing UI. Supports text, code, image, and multimodal prompts.
+
+### Gemini API on Vertex
+Access Gemini Pro / Ultra via the Vertex AI SDK. Supports:
+- System instructions
+- Function calling
+- Multimodal inputs (text, image, video, audio)
+- Context caching for long documents
+
+### Grounding
+Connect Gemini responses to **Google Search** or **Vertex AI Search** (your own data) to reduce hallucinations and cite sources.
+
+## MLOps on Google Cloud
+
+### Vertex AI Feature Store
+Centralized, low-latency feature serving. Supports point-in-time retrieval for training/serving consistency.
+
+### Vertex AI Model Monitoring
+Detects **training-serving skew** and **prediction drift**. Alerts on feature distribution changes over time.
+
+### Vertex AI Experiments
+Track metrics, parameters, and artifacts across training runs. Integrates with TensorBoard for visualization.
+
+## AI Security on Google Cloud
+
+### VPC Service Controls
+Restrict Vertex AI resources to a Virtual Private Cloud perimeter — prevents data exfiltration.
+
+### Customer-Managed Encryption Keys (CMEK)
+Encrypt model artifacts and training data with your own Cloud KMS keys.
+
+### Model Armor
+Google's AI content safety layer — inspect prompts and responses for policy violations, prompt injection, and sensitive data leakage.
+
+### Access Transparency
+Audit logs of Google admin access to your data. Relevant for compliance in regulated industries.
+
+## Key Services Summary
+
+| Service | Purpose |
+|---|---|
+| Vertex AI Workbench | Managed notebooks |
+| Vertex AI Training | Custom + AutoML training |
+| Vertex AI Pipelines | ML orchestration (KFP/TFX) |
+| Model Garden | Foundation model catalog |
+| Vertex AI Studio | Prompt engineering UI |
+| Gemini API | Foundation model API |
+| Feature Store | Feature serving + consistency |
+| Model Monitoring | Drift + skew detection |
+| Model Armor | AI content safety |
+
+### Exam Tips (Google MLE)
+- Vertex AI = unified platform; BigQuery ML = SQL-based ML
+- AutoML vs Custom Training: AutoML for speed, custom for control
+- Feature Store prevents training-serving skew
+- Gemini on Vertex supports multimodal and function calling
+- Know the difference: Vertex AI Search vs Grounding vs RAG`,
+  },
+
+  // ─── Computer Vision ──────────────────────────────────────────────────────
+
+  {
+    id: 'cv-fundamentals',
+    category: 'Computer Vision',
+    title: 'Computer Vision Fundamentals',
+    certTags: ['Azure-AI900', 'AWS-AIF-C01', 'Google-MLE'],
+    vocab: ['CNN', 'Object Detection', 'YOLO', 'Semantic Segmentation', 'Transfer Learning', 'Vision Transformer', 'Adversarial Example', 'Deepfake', 'IoU', 'mAP'],
+    content: `Computer Vision (CV) enables machines to interpret and understand visual information — images, video, and spatial data.
+
+## Core CV Tasks
+
+### Image Classification
+Assigns a single label to an entire image. Example: "Is this image a cat or dog?"
+- Architecture: CNN (ResNet, EfficientNet) or Vision Transformer (ViT)
+- Output: Class probabilities via softmax
+
+### Object Detection
+Locates and classifies multiple objects in an image with bounding boxes.
+- **YOLO (You Only Look Once)**: Real-time single-pass detection
+- **R-CNN family**: Two-stage — region proposals + classification
+- Output: Bounding boxes + class labels + confidence scores
+
+### Image Segmentation
+- **Semantic segmentation**: Labels every pixel with a class (e.g., road, sky, car)
+- **Instance segmentation**: Distinguishes separate instances of the same class (Mask R-CNN)
+- **Panoptic segmentation**: Combines semantic + instance
+
+### Image Generation
+- **GANs**: Generator vs Discriminator adversarial training
+- **Diffusion models**: Add noise then learn to reverse it (Stable Diffusion, DALL-E)
+- **VAEs**: Encode to latent space, decode to reconstruct
+
+## Convolutional Neural Networks (CNNs)
+
+Key building blocks:
+- **Convolutional layer**: Slides filters across input to detect features (edges, textures)
+- **Pooling layer**: Downsamples feature maps (max pooling, average pooling)
+- **Batch normalization**: Stabilizes training by normalizing layer inputs
+- **Fully connected layer**: Final classification head
+
+### Transfer Learning in CV
+Pre-trained models (ImageNet) are fine-tuned on target tasks:
+- **Feature extraction**: Freeze all layers except classification head
+- **Fine-tuning**: Unfreeze some layers, use low learning rate
+- Popular backbones: ResNet-50, EfficientNet-B4, ViT-Base
+
+## Vision Transformers (ViT)
+
+Split image into fixed-size patches → treat patches as tokens → apply standard Transformer attention. Outperforms CNNs at scale with sufficient data.
+
+**CLIP (Contrastive Language-Image Pre-Training)**: Jointly trains image + text encoders. Enables zero-shot image classification via text prompts.
+
+## CV Security Concerns
+
+### Adversarial Examples
+Small, imperceptible pixel perturbations cause misclassification:
+- **FGSM (Fast Gradient Sign Method)**: Single-step gradient attack
+- **PGD (Projected Gradient Descent)**: Iterative stronger attack
+- **Patch attacks**: Physical stickers that fool models in the real world
+
+### Data Poisoning in CV
+Injecting malicious training images with backdoor triggers:
+- Model performs normally on clean inputs but misclassifies triggered inputs
+- Relevant for surveillance, autonomous vehicles, medical imaging
+
+### Deepfakes
+GAN/diffusion-generated synthetic faces or video:
+- Detection methods: artifact analysis, frequency domain analysis, face inconsistency checks
+- Tools: FaceForensics++, DeepFace
+
+## Cloud CV Services
+
+| Provider | Service | Capability |
+|---|---|---|
+| AWS | Rekognition | Face detection, labels, moderation |
+| Azure | Computer Vision / Custom Vision | OCR, object detection, custom models |
+| Google | Vision AI / Vertex AutoML | Image labeling, landmark detection |
+
+### Key Concepts
+- IoU (Intersection over Union): Measures bounding box overlap accuracy
+- mAP (mean Average Precision): Standard object detection metric
+- FID (Fréchet Inception Distance): Measures image generation quality`,
+  },
+
+  // ─── NLP ──────────────────────────────────────────────────────────────────
+
+  {
+    id: 'nlp-fundamentals',
+    category: 'NLP',
+    title: 'Natural Language Processing Fundamentals',
+    certTags: ['Azure-AI102', 'AWS-AIF-C01', 'Google-MLE'],
+    vocab: ['Tokenization', 'BPE', 'Embeddings', 'BERT', 'NER', 'Sentiment Analysis', 'BLEU', 'ROUGE', 'Perplexity', 'Prompt Injection'],
+    content: `Natural Language Processing (NLP) is the field of enabling machines to understand, generate, and reason about human language.
+
+## Core NLP Tasks
+
+### Text Classification
+Assign a label to a text sequence:
+- Sentiment analysis (positive/negative/neutral)
+- Topic classification
+- Spam detection
+- Intent recognition (in chatbots)
+
+### Named Entity Recognition (NER)
+Extract and classify entities in text: persons, organizations, locations, dates, monetary values.
+
+### Text Generation
+Produce coherent text given a prompt — the foundation of LLMs.
+
+### Machine Translation
+Convert text from one language to another. Modern approach: encoder-decoder Transformers (MarianMT, NLLB).
+
+### Question Answering
+- **Extractive QA**: Identify the answer span within a passage (BERT-based)
+- **Generative QA**: Generate a free-form answer (GPT, T5)
+
+### Summarization
+- **Extractive**: Select and combine key sentences from source
+- **Abstractive**: Generate new sentences that capture the meaning (BART, T5)
+
+## Text Preprocessing
+
+### Tokenization
+Split text into tokens (words, subwords, characters):
+- **BPE (Byte-Pair Encoding)**: Used by GPT models — iteratively merges frequent byte pairs
+- **WordPiece**: Used by BERT — maximizes language model likelihood
+- **SentencePiece**: Language-agnostic subword tokenization (T5, LLaMA)
+
+### Embeddings
+Map tokens to dense vectors in a semantic space:
+- **Word2Vec / GloVe**: Static word embeddings (one vector per word)
+- **Contextual embeddings**: BERT, GPT — token representation depends on context
+- **Sentence embeddings**: Sentence-BERT, all-MiniLM — encode entire sentences for similarity tasks
+
+## Key NLP Architectures
+
+### BERT (Bidirectional Encoder Representations from Transformers)
+- Encoder-only Transformer
+- Pre-trained with Masked Language Modeling (MLM) + Next Sentence Prediction (NSP)
+- Best for: classification, NER, extractive QA
+- Not suitable for: text generation
+
+### GPT Family
+- Decoder-only Transformer
+- Pre-trained with causal (autoregressive) language modeling
+- Best for: text generation, few-shot learning, instruction following
+
+### T5 / BART
+- Encoder-decoder Transformers
+- T5 frames all NLP tasks as text-to-text
+- BART pre-trained with denoising objectives
+- Best for: translation, summarization, abstractive QA
+
+## NLP Evaluation Metrics
+
+| Metric | Used For | Description |
+|---|---|---|
+| Accuracy / F1 | Classification, NER | Standard classification metrics |
+| BLEU | Machine Translation | n-gram precision vs reference |
+| ROUGE | Summarization | Recall of n-grams from reference |
+| BERTScore | Generation quality | Semantic similarity via BERT embeddings |
+| Perplexity | Language models | How well model predicts a text sample |
+
+## NLP Security Concerns
+
+### Prompt Injection
+Attackers embed instructions in user-provided text to override system prompts. Critical for LLM-powered applications.
+
+### Data Exfiltration via NLP
+LLMs processing confidential documents may leak information through:
+- Indirect prompt injection in documents
+- Verbose error messages revealing context
+- Training data memorization
+
+### Bias in NLP Models
+Language models reflect biases in training data:
+- Gender bias in pronouns and professions
+- Racial/cultural bias in sentiment analysis
+- Amplification via fine-tuning on biased datasets
+
+Mitigation: Counterfactual data augmentation, debiasing objectives, fairness constraints
+
+## Cloud NLP Services
+
+| Provider | Service | Capability |
+|---|---|---|
+| AWS | Comprehend | NER, sentiment, key phrases, topics |
+| Azure | Language Service | Sentiment, NER, abstractive summarization |
+| Google | Natural Language AI | Syntax, entity, sentiment, classification |
+
+### Key Takeaways
+- BERT = encoder-only, bidirectional, best for understanding tasks
+- GPT = decoder-only, autoregressive, best for generation tasks
+- BPE/WordPiece tokenization is used in all major LLMs
+- BLEU measures translation; ROUGE measures summarization`,
+  },
 ];
