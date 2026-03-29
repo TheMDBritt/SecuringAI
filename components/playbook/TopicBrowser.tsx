@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { TopicArticle } from '@/types';
 import { TOPIC_ARTICLES } from '@/lib/playbook-content';
 
@@ -17,17 +17,49 @@ const CERT_BADGE: Record<string, string> = {
 
 const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
 
-// Minimal inline markdown renderer (headings, bold, code, lists, paragraphs)
+// Inline markdown renderer: headings, bold, inline code, fenced code blocks, tables, lists, paragraphs
 function renderMarkdown(md: string): string {
-  return md
+  // 1. Fenced code blocks (``` ... ```) — must run before inline code
+  md = md.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) =>
+    `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-[11px] font-mono text-violet-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
+  );
+
+  // 2. Tables — | col | col | rows
+  md = md.replace(/((?:^\|.+\|\n?)+)/gm, (block) => {
+    const rows = block.trim().split('\n').filter((r) => !/^\s*\|[-| :]+\|\s*$/.test(r));
+    const toCell = (row: string, tag: string) =>
+      row
+        .split('|')
+        .slice(1, -1)
+        .map((c) => `<${tag} class="px-3 py-1.5 text-left border border-slate-700 text-[11px]">${c.trim()}</${tag}>`)
+        .join('');
+    const [head, ...body] = rows;
+    return `<div class="overflow-x-auto my-3"><table class="w-full border-collapse text-slate-300"><thead class="bg-slate-800"><tr>${toCell(head, 'th')}</tr></thead><tbody>${body.map((r) => `<tr class="border-t border-slate-700 hover:bg-slate-800/40">${toCell(r, 'td')}</tr>`).join('')}</tbody></table></div>`;
+  });
+
+  // 3. Headings
+  md = md
     .replace(/^## (.+)$/gm, '<h3 class="text-sm font-semibold text-slate-100 mt-5 mb-1.5">$1</h3>')
-    .replace(/^### (.+)$/gm, '<h4 class="text-xs font-semibold text-slate-300 mt-3 mb-1">$1</h4>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>')
-    .replace(/`([^`]+)`/g, '<code class="text-[11px] bg-slate-700/60 text-violet-300 px-1 py-0.5 rounded font-mono">$1</code>')
+    .replace(/^### (.+)$/gm, '<h4 class="text-xs font-semibold text-slate-300 mt-3 mb-1">$1</h4>');
+
+  // 4. Bold
+  md = md.replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>');
+
+  // 5. Inline code (after fenced blocks already removed)
+  md = md.replace(/`([^`]+)`/g, '<code class="text-[11px] bg-slate-700/60 text-violet-300 px-1 py-0.5 rounded font-mono">$1</code>');
+
+  // 6. Lists
+  md = md
     .replace(/^- (.+)$/gm, '<li class="text-sm text-slate-300 leading-relaxed ml-4 list-disc">$1</li>')
-    .replace(/(<li[\s\S]*?<\/li>\n?)+/g, '<ul class="space-y-0.5 my-2">$&</ul>')
-    .replace(/\n\n/g, '</p><p class="text-sm text-slate-300 leading-relaxed my-2">')
-    .replace(/^(?!<[hul])(.+)$/gm, '<p class="text-sm text-slate-300 leading-relaxed my-2">$1</p>');
+    .replace(/^(\d+)\. (.+)$/gm, '<li class="text-sm text-slate-300 leading-relaxed ml-4 list-decimal">$2</li>')
+    .replace(/(<li[\s\S]*?<\/li>\n?)+/g, '<ul class="space-y-0.5 my-2">$&</ul>');
+
+  // 7. Paragraphs — wrap non-tag lines
+  md = md
+    .replace(/\n\n/g, '\n')
+    .replace(/^(?!<[htupd])(.+)$/gm, '<p class="text-sm text-slate-300 leading-relaxed my-2">$1</p>');
+
+  return md;
 }
 
 interface TopicBrowserProps {
@@ -38,7 +70,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORIES[0] ?? '');
   const [selectedArticle, setSelectedArticle]   = useState<TopicArticle | null>(null);
 
-  const filteredArticles = useMemo(
+  const articlesForCategory = useMemo(
     () =>
       TOPIC_ARTICLES.filter(
         (a) =>
@@ -48,13 +80,12 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
     [selectedCategory, certFilter],
   );
 
-  // Auto-select first article when category changes
-  const articlesForCategory = useMemo(() => {
-    if (filteredArticles.length > 0 && !filteredArticles.find((a) => a.id === selectedArticle?.id)) {
-      setSelectedArticle(filteredArticles[0] ?? null);
+  // Auto-select first article when the filtered list changes and current selection is no longer in it
+  useEffect(() => {
+    if (articlesForCategory.length > 0 && !articlesForCategory.find((a) => a.id === selectedArticle?.id)) {
+      setSelectedArticle(articlesForCategory[0] ?? null);
     }
-    return filteredArticles;
-  }, [filteredArticles, selectedArticle?.id]);
+  }, [articlesForCategory, selectedArticle?.id]);
 
   return (
     <div className="flex h-full min-h-0">
