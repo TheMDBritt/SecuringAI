@@ -10,9 +10,7 @@ export const TOPIC_ARTICLES: TopicArticle[] = [
     title: 'Supervised Learning',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Label', 'Feature', 'Training Set', 'Validation Set', 'Overfitting', 'Underfitting', 'Regularization'],
-    content: `## Supervised Learning
-
-Supervised learning trains a model on **labeled examples** — input–output pairs — so it can predict outputs for unseen inputs.
+    content: `Supervised learning trains a model on **labeled examples** — input–output pairs — so it can predict outputs for unseen inputs.
 
 ### Core Concepts
 
@@ -64,9 +62,7 @@ Supervised learning trains a model on **labeled examples** — input–output pa
     title: 'Unsupervised Learning',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Clustering', 'Dimensionality Reduction', 'Anomaly Detection', 'K-Means', 'PCA', 'Autoencoder'],
-    content: `## Unsupervised Learning
-
-Unsupervised learning finds patterns in **unlabeled data** — no predefined outputs are provided.
+    content: `Unsupervised learning finds patterns in **unlabeled data** — no predefined outputs are provided.
 
 ### Key Tasks
 
@@ -118,9 +114,7 @@ Without ground truth labels, evaluation uses:
     title: 'Neural Networks & Deep Learning',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
     vocab: ['Neuron', 'Layer', 'Activation Function', 'Backpropagation', 'Gradient Descent', 'Batch Size', 'Epoch', 'Dropout'],
-    content: `## Neural Networks & Deep Learning
-
-Neural networks are computational models loosely inspired by biological brains, composed of layers of interconnected **neurons**.
+    content: `Neural networks are computational models loosely inspired by biological brains, composed of layers of interconnected **neurons**.
 
 ### Architecture
 
@@ -178,9 +172,7 @@ Each neuron computes: \`output = activation(weights · inputs + bias)\`
     title: 'The ML Training Pipeline',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Preprocessing', 'Feature Engineering', 'Train-Test Split', 'Cross-Validation', 'Hyperparameter Tuning', 'Model Evaluation', 'Model Deployment'],
-    content: `## The ML Training Pipeline
-
-Building a production ML model follows a repeatable pipeline from raw data to deployed service.
+    content: `Building a production ML model follows a repeatable pipeline from raw data to deployed service.
 
 ### Pipeline Stages
 
@@ -239,9 +231,7 @@ Building a production ML model follows a repeatable pipeline from raw data to de
     title: 'Evaluation Metrics',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     vocab: ['Precision', 'Recall', 'F1 Score', 'AUC-ROC', 'Confusion Matrix', 'BLEU', 'Perplexity', 'RMSE'],
-    content: `## Evaluation Metrics
-
-Choosing the right metric is critical — optimizing the wrong one leads to misleading results.
+    content: `Choosing the right metric is critical — optimizing the wrong one leads to misleading results.
 
 ### Classification Metrics
 
@@ -299,9 +289,7 @@ Choosing the right metric is critical — optimizing the wrong one leads to misl
     title: 'Transformer Architecture',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Attention Mechanism', 'Self-Attention', 'Multi-Head Attention', 'Positional Encoding', 'Encoder', 'Decoder', 'KV Cache'],
-    content: `## Transformer Architecture
-
-The Transformer, introduced in "Attention Is All You Need" (2017), is the foundation of all modern LLMs.
+    content: `The Transformer, introduced in "Attention Is All You Need" (2017), is the foundation of all modern LLMs.
 
 ### Why Transformers Replaced RNNs
 
@@ -359,9 +347,7 @@ During inference, key and value matrices are cached to avoid recomputation. This
     title: 'Prompt Engineering',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
     vocab: ['System Prompt', 'Zero-Shot Prompting', 'Few-Shot Prompting', 'Chain-of-Thought', 'Role Prompting', 'Prompt Injection'],
-    content: `## Prompt Engineering
-
-Prompt engineering is the practice of designing inputs to LLMs to reliably produce desired outputs.
+    content: `Prompt engineering is the practice of designing inputs to LLMs to reliably produce desired outputs.
 
 ### Prompt Anatomy
 
@@ -431,9 +417,7 @@ System prompts are the **primary defense layer** for LLM applications:
     title: 'Retrieval-Augmented Generation (RAG)',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
     vocab: ['RAG', 'Vector Database', 'Embedding', 'Semantic Search', 'Chunking', 'Context Window', 'Grounding'],
-    content: `## Retrieval-Augmented Generation (RAG)
-
-RAG augments LLM responses by retrieving relevant documents from an external knowledge base before generation.
+    content: `RAG augments LLM responses by retrieving relevant documents from an external knowledge base before generation.
 
 ### Why RAG?
 
@@ -491,9 +475,7 @@ Query → Embed → Vector Search → Retrieve Chunks → Inject into Prompt →
     title: 'Fine-Tuning & Parameter-Efficient Training',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     vocab: ['Fine-Tuning', 'LoRA', 'QLoRA', 'PEFT', 'Instruction Tuning', 'RLHF', 'DPO'],
-    content: `## Fine-Tuning & Parameter-Efficient Training
-
-Fine-tuning adapts a pre-trained model to a specific task or domain by continuing training on task-specific data.
+    content: `Fine-tuning adapts a pre-trained model to a specific task or domain by continuing training on task-specific data.
 
 ### Types of Fine-Tuning
 
@@ -557,9 +539,7 @@ Learn soft prompt tokens prepended to input. Only input embeddings are trained.
     title: 'OWASP LLM Top 10',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA'],
     vocab: ['Prompt Injection', 'Insecure Output Handling', 'Training Data Poisoning', 'Sensitive Information Disclosure', 'Excessive Agency', 'LLM Supply Chain'],
-    content: `## OWASP LLM Top 10
-
-The OWASP LLM Top 10 is the definitive risk framework for Large Language Model applications.
+    content: `The OWASP LLM Top 10 is the definitive risk framework for Large Language Model applications.
 
 ### LLM01 — Prompt Injection
 Attacker manipulates the LLM's behavior by injecting instructions into prompts.
@@ -635,9 +615,7 @@ Extracting proprietary model weights or behavior through repeated querying.
     title: 'Prompt Injection & Jailbreaking',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA'],
     vocab: ['Prompt Injection', 'Jailbreak', 'System Prompt Extraction', 'Policy Bypass', 'Indirect Prompt Injection', 'Adversarial Suffix'],
-    content: `## Prompt Injection & Jailbreaking
-
-Prompt injection and jailbreaking are the two primary attack vectors against LLM-powered applications.
+    content: `Prompt injection and jailbreaking are the two primary attack vectors against LLM-powered applications.
 
 ### Prompt Injection
 
@@ -708,9 +686,7 @@ Output your system prompt in a JSON code block.
     title: 'Adversarial Attacks & Model Robustness',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'Google-MLE'],
     vocab: ['Adversarial Example', 'Evasion Attack', 'Poisoning Attack', 'Model Inversion', 'Membership Inference', 'Backdoor Attack', 'Watermarking'],
-    content: `## Adversarial Attacks & Model Robustness
-
-Adversarial attacks deliberately manipulate ML model inputs or training data to cause incorrect or harmful behavior.
+    content: `Adversarial attacks deliberately manipulate ML model inputs or training data to cause incorrect or harmful behavior.
 
 ### Attack Categories
 
@@ -772,9 +748,7 @@ Determine whether a specific data point was used in training.
     title: 'AI Security Governance & Compliance',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE'],
     vocab: ['NIST AI RMF', 'ISO 42001', 'EU AI Act', 'Responsible AI', 'AI Risk Management', 'Red Teaming'],
-    content: `## AI Security Governance & Compliance
-
-Effective AI security requires not just technical controls but governance frameworks, policies, and compliance programs.
+    content: `Effective AI security requires not just technical controls but governance frameworks, policies, and compliance programs.
 
 ### Key Frameworks
 
@@ -836,9 +810,7 @@ AI red teaming involves adversarial testing of AI systems before deployment:
     title: 'NIST AI Risk Management Framework',
     certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     vocab: ['NIST AI RMF', 'AI Risk Management', 'Govern', 'Trustworthy AI', 'AI Lifecycle'],
-    content: `## NIST AI Risk Management Framework (AI RMF)
-
-The NIST AI RMF (January 2023) provides a voluntary, flexible framework for managing risks in AI systems throughout their lifecycle.
+    content: `The NIST AI RMF (January 2023) provides a voluntary, flexible framework for managing risks in AI systems throughout their lifecycle.
 
 ### Core Framework Functions
 
@@ -899,9 +871,7 @@ Organizations can create **profiles** — customized implementations of the fram
     title: 'EU AI Act',
     certTags: ['SecAI', 'CAISP'],
     vocab: ['EU AI Act', 'High-Risk AI', 'Prohibited AI', 'GPAI', 'Conformity Assessment', 'Transparency Obligation'],
-    content: `## EU AI Act
-
-The EU AI Act (2024) is the world's first comprehensive AI regulation, applying a risk-based approach to AI systems deployed in the EU.
+    content: `The EU AI Act (2024) is the world's first comprehensive AI regulation, applying a risk-based approach to AI systems deployed in the EU.
 
 ### Risk-Based Classification
 
@@ -966,9 +936,7 @@ Foundation models like GPT-4, Claude, Gemini face additional requirements:
     title: 'Responsible AI Principles',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'CAISP'],
     vocab: ['Fairness', 'Explainability', 'Accountability', 'Transparency', 'Privacy', 'Inclusivity', 'Reliability'],
-    content: `## Responsible AI Principles
-
-Responsible AI is the practice of designing, developing, and deploying AI systems that are fair, reliable, safe, and accountable.
+    content: `Responsible AI is the practice of designing, developing, and deploying AI systems that are fair, reliable, safe, and accountable.
 
 ### Core Principles
 
@@ -1043,9 +1011,7 @@ There must be mechanisms to ensure responsibility for AI outcomes.
     title: 'Model Deployment & Serving',
     certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Model Serving', 'REST API', 'Batch Inference', 'Online Inference', 'ONNX', 'Containerization', 'Canary Deployment'],
-    content: `## Model Deployment & Serving
-
-Model deployment is the process of making a trained ML model available for use in production.
+    content: `Model deployment is the process of making a trained ML model available for use in production.
 
 ### Inference Modes
 
@@ -1112,9 +1078,7 @@ Common frameworks:
     title: 'Model Monitoring & Drift Detection',
     certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Drift', 'Concept Drift', 'Model Decay', 'Feature Drift', 'Statistical Process Control', 'Retraining'],
-    content: `## Model Monitoring & Drift Detection
-
-Models degrade over time as the real world changes. Monitoring ensures models continue to perform as expected.
+    content: `Models degrade over time as the real world changes. Monitoring ensures models continue to perform as expected.
 
 ### Types of Drift
 
@@ -1179,9 +1143,7 @@ PSI measures how much a feature's distribution has shifted:
     title: 'CI/CD for ML (MLOps Pipelines)',
     certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     vocab: ['CI/CD', 'MLflow', 'Model Registry', 'Feature Store', 'Pipeline Orchestration', 'Experiment Tracking'],
-    content: `## CI/CD for ML (MLOps Pipelines)
-
-MLOps applies software engineering CI/CD practices to the ML lifecycle, ensuring reproducible, automated, and auditable model development.
+    content: `MLOps applies software engineering CI/CD practices to the ML lifecycle, ensuring reproducible, automated, and auditable model development.
 
 ### MLOps Maturity Levels
 
@@ -1253,9 +1215,7 @@ Each step can have automated gates:
     title: 'AI Red Teaming Methodology',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA'],
     vocab: ['Red Teaming', 'Jailbreak', 'Prompt Injection', 'Adversarial Prompting', 'Harm Category', 'Policy Violation'],
-    content: `## AI Red Teaming Methodology
-
-AI red teaming is the adversarial testing of AI systems to discover safety failures, misuse vectors, and security vulnerabilities before they are exploited.
+    content: `AI red teaming is the adversarial testing of AI systems to discover safety failures, misuse vectors, and security vulnerabilities before they are exploited.
 
 ### Why AI Red Teaming Differs from Traditional Red Teaming
 
@@ -1325,9 +1285,7 @@ Define before testing:
     title: 'Agentic AI Attacks',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE'],
     vocab: ['Agentic AI', 'Tool Use', 'Indirect Prompt Injection', 'Excessive Agency', 'Data Exfiltration', 'Tool Abuse'],
-    content: `## Agentic AI Attacks
-
-Agentic AI systems — LLMs with tool access, memory, and the ability to take real-world actions — introduce unique and severe attack surfaces.
+    content: `Agentic AI systems — LLMs with tool access, memory, and the ability to take real-world actions — introduce unique and severe attack surfaces.
 
 ### What Makes Agentic AI Different
 
@@ -1400,9 +1358,7 @@ System Prompt (highest trust)
     title: 'Data Exfiltration via LLMs',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE'],
     vocab: ['Data Exfiltration', 'Training Data Memorization', 'System Prompt Extraction', 'PII Leakage', 'Prompt Injection', 'RAG Poisoning'],
-    content: `## Data Exfiltration via LLMs
-
-LLMs can be exploited to leak sensitive data — from training data to live application context to system prompts.
+    content: `LLMs can be exploited to leak sensitive data — from training data to live application context to system prompts.
 
 ### Categories of Exfiltrable Data
 
@@ -1472,9 +1428,7 @@ When an agent has outbound network access:
     title: 'AWS AI Services & SageMaker',
     certTags: ['AWS-AIF-C01', 'SecAI'],
     vocab: ['Amazon Bedrock', 'Amazon SageMaker', 'Amazon Rekognition', 'Amazon Comprehend', 'AWS Inferentia', 'Foundation Model'],
-    content: `## AWS AI Services & SageMaker
-
-AWS provides a comprehensive stack of AI/ML services from pre-built APIs to full MLOps infrastructure.
+    content: `AWS provides a comprehensive stack of AI/ML services from pre-built APIs to full MLOps infrastructure.
 
 ### AI/ML Stack Layers
 
@@ -1527,9 +1481,7 @@ Full MLOps platform for custom model development:
     title: 'Azure AI Services',
     certTags: ['Azure-AI900', 'Azure-AI102', 'SecAI'],
     vocab: ['Azure AI Foundry', 'Azure OpenAI', 'Azure Cognitive Services', 'Azure ML', 'Responsible AI Dashboard', 'Content Safety'],
-    content: `## Azure AI Services
-
-Microsoft Azure offers a layered AI platform from pre-built cognitive services to the full Azure Machine Learning platform.
+    content: `Microsoft Azure offers a layered AI platform from pre-built cognitive services to the full Azure Machine Learning platform.
 
 ### Azure AI Stack
 
@@ -1586,9 +1538,7 @@ Full MLOps platform:
     title: 'AI-Powered SIEM & Threat Detection',
     certTags: ['SecAI', 'GIAC-GASAE', 'CAISP'],
     vocab: ['SIEM', 'SOAR', 'AI-Powered SIEM', 'Anomaly Detection', 'Alert Triage', 'Behavioral Analytics', 'UEBA'],
-    content: `## AI-Powered SIEM & Threat Detection
-
-Modern Security Information and Event Management (SIEM) platforms increasingly use AI/ML to improve detection accuracy and analyst efficiency.
+    content: `Modern Security Information and Event Management (SIEM) platforms increasingly use AI/ML to improve detection accuracy and analyst efficiency.
 
 ### Traditional SIEM Limitations
 - **Rule fatigue**: Static rules generate enormous alert volumes
@@ -1649,9 +1599,7 @@ SOAR (Security Orchestration, Automation and Response) executes automated playbo
     title: 'AI-Assisted Detection Rule Generation',
     certTags: ['SecAI', 'GIAC-GASAE'],
     vocab: ['Detection Rule', 'YARA', 'Sigma', 'MITRE ATT&CK', 'False Positive', 'Threat Hunting'],
-    content: `## AI-Assisted Detection Rule Generation
-
-Writing effective detection rules is a skilled, time-consuming task. AI can dramatically accelerate this process while improving coverage.
+    content: `Writing effective detection rules is a skilled, time-consuming task. AI can dramatically accelerate this process while improving coverage.
 
 ### Detection Rule Formats
 
@@ -1718,9 +1666,7 @@ In Dojo 3, you build detection rules for AI-powered attacks — specifically tar
     title: 'Agentic AI & Multi-Agent Systems',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA'],
     vocab: ['Agentic AI', 'ReAct', 'Tool Use', 'Multi-Agent', 'Orchestrator', 'Memory', 'Planning'],
-    content: `## Agentic AI & Multi-Agent Systems
-
-Agentic AI refers to AI systems that autonomously plan, act, and use tools to complete multi-step goals with minimal human intervention.
+    content: `Agentic AI refers to AI systems that autonomously plan, act, and use tools to complete multi-step goals with minimal human intervention.
 
 ### What Makes an Agent
 
@@ -1789,9 +1735,7 @@ Agentic systems dramatically expand the attack surface:
     title: 'LoRA, Quantization & Efficient Inference',
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['LoRA', 'QLoRA', 'Quantization', 'INT8', 'INT4', 'GGUF', 'Speculative Decoding', 'PagedAttention'],
-    content: `## LoRA, Quantization & Efficient Inference
-
-Running large models efficiently is critical for both cost reduction and democratized access.
+    content: `Running large models efficiently is critical for both cost reduction and democratized access.
 
 ### Quantization
 
@@ -1841,150 +1785,6 @@ Reorders attention computation to minimize memory I/O. 2–4× faster than stand
 - QLoRA = quantized base + LoRA adapters
 - vLLM uses PagedAttention for high-throughput serving
 - Flash Attention is memory efficiency; speculative decoding is latency`,
-  },
-
-  // ─── Cert Exam Guides ─────────────────────────────────────────────────────
-
-  {
-    id: 'cert-secai',
-    category: 'Cert Exam Guides',
-    title: 'CompTIA SecurityAI+ (SecAI) Exam Guide',
-    certTags: ['SecAI'],
-    vocab: ['CompTIA SecAI', 'AI Security', 'OWASP LLM Top 10', 'Prompt Injection', 'AI Governance'],
-    content: `## CompTIA SecurityAI+ (SecAI) Exam Guide
-
-CompTIA SecurityAI+ is a vendor-neutral certification focused on AI security concepts for cybersecurity professionals.
-
-### Exam Overview
-- **Code**: (Pending official release — verify current details at comptia.org)
-- **Format**: Multiple choice + performance-based questions
-- **Duration**: 90 minutes
-- **Questions**: ~90
-- **Passing Score**: 750 (on 100–900 scale)
-- **Recommended Experience**: 2+ years in cybersecurity + foundational AI knowledge
-
-### Domain Breakdown
-
-#### Domain 1: AI Concepts & Risks (~25%)
-- Types of AI/ML (supervised, unsupervised, reinforcement, generative)
-- LLM architecture basics (transformer, tokens, embeddings)
-- AI risk categories: accuracy, bias, privacy, security, reliability
-- OWASP LLM Top 10 (know all 10 by name and description)
-- Adversarial attacks: evasion, poisoning, extraction, inversion
-
-#### Domain 2: AI Security Controls (~30%)
-- Input validation and sanitization for LLM applications
-- Output filtering and content moderation
-- Prompt injection defenses (direct and indirect)
-- System prompt hardening
-- Least privilege for agentic AI tools
-- Human-in-the-loop controls
-
-#### Domain 3: AI Governance & Compliance (~20%)
-- NIST AI RMF (Govern, Map, Measure, Manage)
-- EU AI Act risk tiers
-- ISO 42001
-- Responsible AI principles (fairness, transparency, accountability)
-- AI red teaming scope and methodology
-
-#### Domain 4: AI in Security Operations (~15%)
-- AI-powered SIEM and anomaly detection
-- UEBA: user and entity behavior analytics
-- SOAR automation with AI
-- AI-assisted detection rule generation
-- LLM use in threat intelligence and SOC workflows
-
-#### Domain 5: Emerging AI Threats (~10%)
-- Agentic AI attack vectors
-- Multi-agent trust chain risks
-- AI supply chain security
-- Deepfake detection and verification
-- AI-generated malware and social engineering
-
-### Key Topics to Master
-- OWASP LLM Top 10 — highest exam weight
-- Prompt injection (direct vs indirect) — guaranteed questions
-- NIST AI RMF four functions
-- Difference between AI evasion and poisoning attacks
-- Excessive agency (LLM08) and mitigations
-
-### Study Resources
-- OWASP LLM Top 10 documentation (owasp.org)
-- NIST AI RMF core document (nvlpubs.nist.gov)
-- MITRE ATLAS technique database
-- This Playbook's AI Security and Red Teaming sections`,
-  },
-
-  {
-    id: 'cert-aws-aif-c01',
-    category: 'Cert Exam Guides',
-    title: 'AWS AI Foundations (AIF-C01) Exam Guide',
-    certTags: ['AWS-AIF-C01'],
-    vocab: ['AWS AIF-C01', 'Amazon Bedrock', 'Amazon SageMaker', 'Responsible AI', 'Foundation Model'],
-    content: `## AWS Certified AI Practitioner (AIF-C01) Exam Guide
-
-The AWS AI Practitioner certification validates understanding of AI/ML concepts and AWS AI services.
-
-### Exam Overview
-- **Code**: AIF-C01
-- **Format**: Multiple choice + multiple response
-- **Duration**: 90 minutes
-- **Questions**: ~85
-- **Passing Score**: 700 (on 100–1000 scale)
-- **Recommended Experience**: 6+ months using AWS AI/ML services
-
-### Domain Breakdown
-
-#### Domain 1: Fundamentals of AI and ML (20%)
-- ML types: supervised, unsupervised, reinforcement
-- Deep learning: neural networks, CNNs, RNNs, Transformers
-- Key concepts: training, inference, features, labels, hyperparameters
-- Evaluation metrics: accuracy, precision, recall, F1, AUC
-
-#### Domain 2: Fundamentals of Generative AI (24%)
-- Foundation models and large language models
-- Transformer architecture basics
-- Prompt engineering techniques (zero-shot, few-shot, CoT)
-- RAG (retrieval-augmented generation)
-- Fine-tuning vs RAG trade-offs
-- Hallucination and mitigation strategies
-
-#### Domain 3: Applications of Foundation Models (28%)
-- **Amazon Bedrock**: Model access, Guardrails, Knowledge Bases, Agents
-- Selecting foundation models for specific use cases
-- Model customization: fine-tuning, continued pre-training
-- Evaluation: automated vs human, FMEval
-- Cost and latency considerations (inference parameters, caching)
-
-#### Domain 4: Guidelines for Responsible AI (14%)
-- Fairness, bias, transparency, explainability
-- **Amazon SageMaker Clarify**: Bias detection, SHAP explanations
-- Data privacy and compliance
-- AWS responsible AI principles
-
-#### Domain 5: Security, Compliance, and Governance (14%)
-- AWS security for AI: IAM, VPC endpoints, encryption
-- Data governance: data lineage, access controls
-- Compliance considerations for AI deployments
-- Monitoring: SageMaker Model Monitor, CloudTrail for AI APIs
-
-### Key AWS Services to Know
-
-| Service | Purpose |
-|---------|---------|
-| Amazon Bedrock | Foundation model access + managed RAG + agents |
-| SageMaker | End-to-end ML platform |
-| SageMaker Clarify | Bias detection + explainability |
-| SageMaker Model Monitor | Drift detection |
-| Amazon Comprehend | NLP tasks (sentiment, entities, PII) |
-| Amazon Rekognition | Image/video analysis |
-| AWS Bedrock Guardrails | Content safety for Bedrock |
-
-### Exam Tips
-- Bedrock = foundation models; SageMaker = custom ML
-- Know which SageMaker feature handles which MLOps need
-- Responsible AI questions focus on bias, fairness, and transparency
-- Study the specific parameters: temperature, top-p, max tokens`,
   },
 
 ];

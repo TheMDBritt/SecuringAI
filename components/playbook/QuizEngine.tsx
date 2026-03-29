@@ -23,7 +23,7 @@ interface QuizResult {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const ALL_CATEGORIES = ['All', ...Array.from(new Set(QUIZ_QUESTIONS.map((q) => q.category))).sort()];
-const CERT_OPTIONS   = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP', 'IBM-AIE'];
+const CERT_OPTIONS   = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
 const COUNT_OPTIONS  = [10, 25, 50, 100] as const;
 
 const DIFFICULTY_STYLE: Record<QuizDifficulty, string> = {

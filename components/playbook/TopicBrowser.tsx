@@ -12,7 +12,6 @@ const CERT_BADGE: Record<string, string> = {
   'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  'IBM-AIE':      'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
 };
 
 const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
