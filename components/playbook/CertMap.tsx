@@ -166,7 +166,7 @@ interface CertMapProps {
 
 export default function CertMap({ onCertFilter }: CertMapProps) {
   return (
-    <div className="p-4 space-y-4">
+    <div className="h-full overflow-y-auto p-4 space-y-4">
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>

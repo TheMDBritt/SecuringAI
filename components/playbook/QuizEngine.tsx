@@ -157,7 +157,7 @@ function QuestionScreen({
   onAnswer: (chosen: number) => void;
 }) {
   const [chosen, setChosen] = useState<number | null>(null);
-  const progress = ((index) / total) * 100;
+  const progress = ((index + 1) / total) * 100;
 
   const handleChoose = (i: number) => {
     if (chosen !== null) return;
