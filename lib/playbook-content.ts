@@ -2318,4 +2318,142 @@ Risk: Models memorize and reproduce sensitive training data:
 - Data drift monitoring should trigger automated retraining
 - Differential privacy (DP-SGD) bounds memorization of training data`,
   },
+
+  // ─── Frameworks & Tools ───────────────────────────────────────────────────
+
+  {
+    id: 'frameworks-tools',
+    category: 'Frameworks & Tools',
+    title: 'AI/ML Frameworks & Developer Tools',
+    certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI102'],
+    vocab: ['PyTorch', 'TensorFlow', 'Hugging Face', 'LangChain', 'LlamaIndex', 'ONNX', 'Triton', 'vLLM', 'LangSmith', 'Weights & Biases'],
+    content: `The AI/ML ecosystem has a rich set of frameworks and tools covering model training, deployment, LLM orchestration, and observability.
+
+## Core ML Frameworks
+
+### PyTorch
+The dominant research and production framework. Key features:
+- **Dynamic computation graph**: Eager execution — intuitive debugging
+- **torch.nn**: Module system for building neural networks
+- **torch.optim**: Optimizers (Adam, AdamW, SGD)
+- **DataLoader**: Efficient batched data loading with multiprocessing
+- **torch.compile** (PyTorch 2.0): JIT compilation for ~2× training speedup
+- **FSDP (Fully Sharded Data Parallel)**: Distributed training for large models
+
+### TensorFlow / Keras
+Google's framework, widely used in production:
+- **Keras**: High-level API for rapid prototyping
+- **tf.data**: Efficient input pipelines
+- **TF Serving**: Production model serving
+- **TFLite**: On-device inference (mobile, edge)
+- **TF.js**: Browser-based inference
+
+### JAX
+Google's high-performance numerical computing library:
+- Functional transforms: grad, jit, vmap, pmap
+- Used by DeepMind, Google Brain for research
+- XLA compilation for TPU/GPU acceleration
+
+## Hugging Face Ecosystem
+
+The central hub for pre-trained models and NLP tooling:
+
+### Transformers Library
+Access 500,000+ pre-trained models:
+- Pipeline API for zero-code inference
+- AutoModel / AutoTokenizer for architecture-agnostic loading
+- Supports PyTorch, TensorFlow, JAX backends
+
+### Datasets Library
+Large collection of ML datasets with streaming support. Integrates directly with Trainer.
+
+### PEFT (Parameter-Efficient Fine-Tuning)
+Implements LoRA, QLoRA, prefix tuning, prompt tuning — fine-tune large models with minimal compute.
+
+### Accelerate
+Simplifies distributed training across GPUs/TPUs with minimal code changes.
+
+### Inference Endpoints
+Managed API deployment for Hugging Face models on cloud infrastructure.
+
+## LLM Orchestration Frameworks
+
+### LangChain
+Framework for building LLM-powered applications:
+- **Chains**: Sequence LLM calls + tools
+- **Agents**: LLM that decides which tool to call and when
+- **Memory**: Short-term and long-term conversation history
+- **Retrievers**: Connect to vector stores for RAG
+- **LangSmith**: Observability and tracing for LangChain apps
+
+### LlamaIndex (formerly GPT Index)
+Specialized for data ingestion and RAG:
+- **Document loaders**: Ingest PDFs, web pages, databases
+- **Index types**: Vector, keyword, knowledge graph
+- **Query engines**: Multi-step reasoning over indexed documents
+- Better than LangChain for complex document QA workflows
+
+### LangGraph
+Extension of LangChain for stateful multi-agent workflows using a graph-based execution model. Supports cycles (loops), branching, and human-in-the-loop.
+
+### Semantic Kernel (Microsoft)
+Enterprise-grade orchestration framework with .NET and Python SDKs. Integrates with Azure AI services. Used for Microsoft Copilot internals.
+
+## Model Serving & Inference
+
+### vLLM
+High-throughput LLM inference server:
+- **PagedAttention**: KV cache management — eliminates memory fragmentation
+- Continuous batching: Process requests as they arrive
+- OpenAI-compatible API endpoint
+
+### Triton Inference Server (NVIDIA)
+Model-agnostic serving supporting TensorRT, ONNX, PyTorch, TensorFlow:
+- Dynamic batching
+- Model ensembles
+- GPU/CPU/TPU backends
+
+### ONNX (Open Neural Network Exchange)
+Framework-agnostic model format for portability:
+- Export from PyTorch/TensorFlow → ONNX → deploy anywhere
+- ONNX Runtime optimizes inference across hardware backends
+
+### BentoML
+Python-native model serving with automatic API generation, batching, and Docker packaging.
+
+## Experiment Tracking & MLOps Tools
+
+### Weights & Biases (W&B)
+- Track metrics, hyperparameters, model artifacts
+- Visualize training curves and compare runs
+- W&B Sweeps: Automated hyperparameter search
+- W&B Artifacts: Dataset and model versioning
+
+### MLflow
+Open-source MLOps platform:
+- Tracking: Log parameters, metrics, artifacts
+- Models: Packaging and serving
+- Registry: Versioned model store with lifecycle stages
+- Integrates with Databricks
+
+### DVC (Data Version Control)
+Git extension for versioning large datasets and ML pipelines. Stores data in S3/GCS/Azure; tracks pointers in Git.
+
+## Security Tooling for AI/ML
+
+| Tool | Purpose |
+|---|---|
+| Garak | LLM red teaming and vulnerability scanning |
+| PyRIT | Microsoft's Python Risk Identification Toolkit for LLMs |
+| LLM Guard | Input/output scanning for prompt injection, PII, toxicity |
+| Guardrails AI | Schema validation and output filtering for LLM responses |
+| Rebuff | Prompt injection detection using LLM + heuristics |
+
+### Key Takeaways
+- PyTorch dominates research; TensorFlow/Keras common in production
+- Hugging Face Transformers is the standard for pre-trained model access
+- LangChain = flexible LLM apps; LlamaIndex = document QA and RAG
+- vLLM with PagedAttention is the standard for high-throughput LLM serving
+- MLflow and W&B are the dominant experiment tracking platforms`,
+  },
 ];
