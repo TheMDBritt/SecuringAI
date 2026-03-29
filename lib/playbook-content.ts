@@ -2082,4 +2082,240 @@ Mitigation: Counterfactual data augmentation, debiasing objectives, fairness con
 - BPE/WordPiece tokenization is used in all major LLMs
 - BLEU measures translation; ROUGE measures summarization`,
   },
+
+  // ─── AI Ethics & Bias ─────────────────────────────────────────────────────
+
+  {
+    id: 'ai-ethics-bias',
+    category: 'AI Ethics & Bias',
+    title: 'AI Ethics, Fairness & Bias',
+    certTags: ['SecAI', 'CAISP', 'Azure-AI900', 'AWS-AIF-C01'],
+    vocab: ['Algorithmic Bias', 'Fairness', 'Explainability', 'SHAP', 'LIME', 'Disparate Impact', 'Data Poisoning', 'Model Card', 'Responsible AI'],
+    content: `AI ethics covers the principles, practices, and frameworks that ensure AI systems are fair, transparent, accountable, and aligned with human values.
+
+## Types of Algorithmic Bias
+
+### Data Bias
+Originates from unrepresentative or historically discriminatory training data:
+- **Historical bias**: Data reflects past discrimination (e.g., hiring models trained on biased past decisions)
+- **Representation bias**: Underrepresentation of minority groups in training data
+- **Measurement bias**: Proxies used as features inadvertently encode protected attributes (e.g., zip code as a proxy for race)
+
+### Model Bias
+Introduced during training or architecture choices:
+- **Aggregation bias**: Using a single model for diverse subgroups that have different distributions
+- **Evaluation bias**: Using benchmarks that don't reflect real-world diversity
+
+### Deployment Bias
+Emerges from how a model is used in practice:
+- Model trained for one context applied in a different context
+- Feedback loops where biased outputs influence future training data
+
+## Fairness Definitions
+
+Multiple mathematical definitions of fairness exist — and they can be mutually exclusive:
+
+| Definition | Meaning |
+|---|---|
+| Demographic Parity | Equal positive prediction rates across groups |
+| Equalized Odds | Equal TPR and FPR across groups |
+| Predictive Parity | Equal precision across groups |
+| Individual Fairness | Similar individuals receive similar predictions |
+| Counterfactual Fairness | Outcome unchanged if protected attribute changed |
+
+**Key insight**: Calibrated models can simultaneously fail demographic parity — you cannot always satisfy all definitions at once (Impossibility Theorem).
+
+## Explainability & Interpretability
+
+### SHAP (SHapley Additive exPlanations)
+Assigns each feature a contribution value based on game theory (Shapley values). Provides consistent, locally accurate explanations.
+- shap.Explainer works with any model
+- SHAP values show how each feature pushed prediction above/below the base rate
+
+### LIME (Local Interpretable Model-agnostic Explanations)
+Fits a simple interpretable model (linear) around a single prediction using perturbed samples. Faster than SHAP but less consistent.
+
+### GRAD-CAM
+Generates heatmaps showing which image regions influenced a CNN's decision. Critical for medical imaging explainability.
+
+### Model Cards
+Structured documentation for ML models specifying:
+- Intended use and out-of-scope uses
+- Training data and evaluation results
+- Performance disaggregated by subgroup
+- Ethical considerations and limitations
+
+## Bias Detection & Mitigation
+
+### Pre-processing (Data Level)
+- **Resampling**: Oversample underrepresented groups
+- **Re-weighting**: Assign higher loss weight to underrepresented samples
+- **Counterfactual augmentation**: Add examples with protected attribute flipped
+
+### In-processing (Training Level)
+- **Adversarial debiasing**: Add adversary that predicts protected attribute — penalize if adversary succeeds
+- **Fairness constraints**: Regularization terms enforcing parity metrics during training
+
+### Post-processing (Output Level)
+- **Threshold adjustment**: Set different classification thresholds per group to equalize FPR/TPR
+- **Reject option classification**: Abstain on high-uncertainty predictions near decision boundary
+
+## Accountability & Governance
+
+### AI Auditing
+Third-party or internal audits assess:
+- Training data representativeness
+- Performance disparities across subgroups
+- Compliance with fairness requirements
+
+### Regulatory Requirements
+- **EU AI Act**: High-risk systems must undergo conformity assessment including bias testing
+- **US Executive Order on AI (2023)**: Requires bias testing for AI used in federal decisions
+- **EEOC Guidelines**: AI hiring tools subject to adverse impact analysis
+
+### Documentation Standards
+- **Model Cards** (Google): Per-model documentation
+- **Datasheets for Datasets** (Microsoft): Per-dataset documentation
+- **AI FactSheets** (IBM): Transparency reports for AI services
+
+## Ethics in Generative AI
+
+### Misinformation & Deepfakes
+LLMs can generate convincing false content at scale. Mitigations:
+- Watermarking generated content (C2PA standard)
+- Content provenance tracking
+- Detection classifiers
+
+### Copyright & IP
+Training on copyrighted data raises legal questions. Risks:
+- Verbatim reproduction of training data
+- Style mimicry of protected works
+
+### Consent & Privacy
+- Training on personal data without consent (GDPR implications)
+- Models memorizing and regurgitating PII
+
+### Key Takeaways
+- Bias can enter at data, model, or deployment stage
+- Fairness definitions are mathematically incompatible — document your choice
+- SHAP provides globally consistent explanations; LIME is faster but local-only
+- Model Cards and Datasheets are the standard documentation formats`,
+  },
+
+  // ─── Data Engineering ─────────────────────────────────────────────────────
+
+  {
+    id: 'data-engineering',
+    category: 'Data Engineering',
+    title: 'Data Engineering for AI/ML',
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    vocab: ['ETL', 'Feature Engineering', 'Data Pipeline', 'Data Lakehouse', 'Feature Store', 'Data Drift', 'Data Versioning', 'DVC', 'Schema Validation'],
+    content: `Data engineering provides the foundation for reliable ML systems — bad data produces bad models regardless of algorithm sophistication.
+
+## Data Pipeline Architecture
+
+### ETL vs ELT
+- **ETL (Extract, Transform, Load)**: Transform data before loading to warehouse. Good for structured data, strict schemas.
+- **ELT (Extract, Load, Transform)**: Load raw data first, transform in the warehouse. Common with cloud data warehouses (Snowflake, BigQuery, Redshift).
+
+### Batch vs Streaming
+- **Batch**: Process large data chunks on a schedule (daily, hourly). Tools: Apache Spark, dbt, Airflow.
+- **Streaming**: Process events in real time as they arrive. Tools: Apache Kafka, Apache Flink, AWS Kinesis.
+- **Micro-batch**: Near-real-time batching (Spark Structured Streaming).
+
+## Data Storage Architectures
+
+### Data Lake
+Store raw, unprocessed data in object storage (S3, GCS, ADLS) in any format. Cheap but requires governance.
+
+### Data Warehouse
+Structured, processed data optimized for analytics queries. Schema-on-write. Examples: BigQuery, Snowflake, Redshift.
+
+### Data Lakehouse
+Combines lake flexibility with warehouse performance. Adds ACID transactions and schema enforcement to object storage via open table formats:
+- **Delta Lake** (Databricks)
+- **Apache Iceberg** (Netflix, Apple)
+- **Apache Hudi** (Uber)
+
+## Feature Engineering
+
+### Numerical Features
+- **Normalization**: Scale to [0,1] using min-max
+- **Standardization**: Zero mean, unit variance (z-score)
+- **Log transform**: Reduce skew in heavy-tailed distributions
+- **Binning**: Convert continuous to ordinal categories
+
+### Categorical Features
+- **One-hot encoding**: Binary columns per category (high cardinality = dimensionality explosion)
+- **Label encoding**: Integer per category (ordinal only)
+- **Target encoding**: Replace category with mean target value (risk of data leakage)
+- **Embedding**: Learnable dense vectors (used in deep learning)
+
+### Temporal Features
+- Lag features, rolling averages, seasonality components
+- Timestamp encoding: hour of day, day of week, month
+- Time since last event
+
+## Training-Serving Skew
+
+One of the most common ML production failures — training and serving use different feature computation logic:
+
+**Common causes:**
+- Training uses batch-computed features; serving recomputes differently
+- Different preprocessing code paths
+- Data type differences (float64 in training, float32 in serving)
+
+**Mitigations:**
+- Use a **Feature Store** (Vertex AI Feature Store, Feast, Tecton) — single feature definition used for both training and serving
+- **Point-in-time correct** joins: Only use features available at prediction time to prevent leakage
+
+## Data Quality & Validation
+
+### Schema Validation
+Enforce data types, nullable constraints, value ranges before ingestion. Tools: Great Expectations, Pandera, TFX Data Validation.
+
+### Data Drift Detection
+Monitor feature distributions in production vs. training:
+- **Statistical tests**: KS test, Chi-squared test, PSI (Population Stability Index)
+- **Distance metrics**: KL divergence, Wasserstein distance
+- Alert thresholds trigger model retraining pipelines
+
+### Data Versioning
+Track dataset versions alongside model versions for reproducibility:
+- **DVC (Data Version Control)**: Git-like versioning for large files + pipelines
+- **Delta Lake / Iceberg**: Time-travel queries on tabular data
+
+## Data Security for AI
+
+### Data Lineage
+Track data from source to model prediction. Required for GDPR right-to-erasure (which training data a model was built on).
+
+### PII in Training Data
+Risk: Models memorize and reproduce sensitive training data:
+- Apply **differential privacy** during training (DP-SGD) to bound memorization
+- **Data minimization**: Only collect/use data necessary for the task
+- **Anonymization / pseudonymization** before training
+
+### Access Controls
+- Role-based access to training datasets
+- Column-level security for sensitive attributes (SSN, health data)
+- Audit logging of data access for compliance
+
+## Key Tools
+
+| Category | Tools |
+|---|---|
+| Orchestration | Apache Airflow, Prefect, Dagster |
+| Processing | Apache Spark, dbt, Pandas |
+| Streaming | Apache Kafka, Flink, AWS Kinesis |
+| Feature Store | Feast, Tecton, Vertex Feature Store |
+| Data Versioning | DVC, Delta Lake, Iceberg |
+| Validation | Great Expectations, Pandera |
+
+### Key Takeaways
+- Training-serving skew is a leading cause of ML production failures — use a Feature Store
+- DVC provides Git-like versioning for datasets and pipelines
+- Data drift monitoring should trigger automated retraining
+- Differential privacy (DP-SGD) bounds memorization of training data`,
+  },
 ];
