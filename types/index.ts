@@ -16,6 +16,8 @@ export interface QuizQuestion {
   options: [string, string, string, string];
   correct: 0 | 1 | 2 | 3;
   explanation: string;
+  /** Per-option explanations shown after answering — index-matched to options[]. Optional; falls back to explanation only. */
+  optionExplanations?: [string, string, string, string];
 }
 
 export interface GlossaryTerm {

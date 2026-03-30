@@ -254,16 +254,38 @@ function ResultScreen({
         <p className="text-sm text-slate-300">{result.question.question}</p>
       </div>
 
-      <div className="mb-4">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Correct Answer</p>
-        <p className="text-sm text-emerald-300 font-medium">
-          {String.fromCharCode(65 + result.question.correct)}. {result.question.options[result.question.correct]}
-        </p>
-      </div>
-
-      <div className="flex-1 mb-4">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Explanation</p>
-        <p className="text-sm text-slate-400 leading-relaxed">{result.question.explanation}</p>
+      {/* All options with per-option explanations */}
+      <div className="flex-1 mb-4 space-y-2 overflow-y-auto">
+        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Answer Breakdown</p>
+        {result.question.options.map((opt, i) => {
+          const isCorrect  = i === result.question.correct;
+          const isChosen   = i === result.chosen;
+          const optExp     = result.question.optionExplanations?.[i];
+          return (
+            <div
+              key={i}
+              className={[
+                'rounded-lg border px-3 py-2 text-xs leading-relaxed',
+                isCorrect
+                  ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-300'
+                  : isChosen
+                    ? 'border-red-500/40 bg-red-500/5 text-red-300'
+                    : 'border-slate-700/50 bg-slate-800/30 text-slate-500',
+              ].join(' ')}
+            >
+              <span className="font-mono font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
+              <span className={isCorrect ? 'font-semibold' : ''}>{opt}</span>
+              {isCorrect && <span className="ml-2 text-emerald-500 font-bold">✓</span>}
+              {!isCorrect && isChosen && <span className="ml-2 text-red-500 font-bold">✗</span>}
+              {optExp && <p className={`mt-1 ml-4 ${isCorrect ? 'text-emerald-400/80' : isChosen ? 'text-red-400/70' : 'text-slate-600'}`}>{optExp}</p>}
+            </div>
+          );
+        })}
+        {/* Fallback overall explanation */}
+        <div className="mt-3 pt-3 border-t border-slate-700/50">
+          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+          <p className="text-xs text-slate-400 leading-relaxed">{result.question.explanation}</p>
+        </div>
       </div>
 
       <button
