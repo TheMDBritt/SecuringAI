@@ -161,7 +161,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Batch Normalization',
     definition: 'A technique that normalizes the inputs of each layer in a neural network to have zero mean and unit variance within a mini-batch. Accelerates training, allows higher learning rates, and reduces sensitivity to initialization.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     related: ['Neural Network', 'Deep Learning', 'Training Pipeline', 'Dropout'],
   },
   {
@@ -274,7 +274,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Coreference Resolution',
     definition: 'An NLP task that identifies when different expressions in text refer to the same real-world entity. For example, resolving "she" to "Alice" in a document — essential for understanding discourse coherence.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Named Entity Recognition (NER)', 'NLP Fundamentals', 'Dependency Parsing'],
   },
   {
@@ -295,7 +295,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'CUDA',
     definition: 'Compute Unified Device Architecture — NVIDIA\'s parallel computing platform and programming model that enables GPU-accelerated computation. Foundational for deep learning training and inference, supported by PyTorch and TensorFlow.',
     category: 'Frameworks & Tools',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['PyTorch', 'TensorFlow', 'GPU', 'Deep Learning'],
   },
   // ── D ─────────────────────────────────────────────────────────────────────
@@ -387,7 +387,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Dependency Parsing',
     definition: 'An NLP technique that analyzes the grammatical structure of a sentence by identifying the relationships between words (e.g., subject-verb-object). Produces a dependency tree showing how words are syntactically connected.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     related: ['NLP Fundamentals', 'Named Entity Recognition (NER)', 'Tokenization'],
   },
   {
@@ -401,14 +401,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Diffusion Model',
     definition: 'A generative AI model that learns to reverse a process of gradually adding noise to data. Trained by learning to denoise, diffusion models can generate highly realistic images (Stable Diffusion, DALL-E 3) and other media.',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01'],
     related: ['GAN', 'Generative AI', 'Deepfake', 'Multimodal Model'],
   },
   {
     term: 'Dimensionality Reduction',
     definition: 'Techniques that reduce the number of features in a dataset while preserving important information. Methods include PCA (linear), t-SNE and UMAP (non-linear). Used for visualization, noise reduction, and computational efficiency.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     related: ['Principal Component Analysis (PCA)', 'Unsupervised Learning', 'Feature Engineering', 'Clustering'],
   },
   {
@@ -422,7 +422,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Dropout',
     definition: 'A regularization technique for neural networks that randomly "drops" (sets to zero) a fraction of neurons during each training step. Prevents overfitting by forcing the network to learn redundant representations.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01'],
     related: ['Regularization', 'Overfitting', 'Neural Network', 'Batch Normalization'],
   },
   // ── E ─────────────────────────────────────────────────────────────────────
@@ -437,7 +437,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Epoch',
     definition: 'One complete pass through the entire training dataset during model training. Multiple epochs are needed for a model to converge; too many epochs cause overfitting, too few cause underfitting.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     related: ['Batch Size', 'Overfitting', 'Learning Rate', 'Training Pipeline'],
   },
   {
@@ -551,7 +551,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'GAN (Generative Adversarial Network)',
     definition: 'A generative model architecture consisting of two neural networks — a generator that creates synthetic data and a discriminator that tries to distinguish real from fake. The two networks train in opposition, improving each other iteratively.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['SecAI', 'CAISP'],
     related: ['Diffusion Model', 'Deepfake', 'Generative AI', 'Synthetic Data'],
   },
   {
@@ -629,7 +629,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Hugging Face',
     definition: 'An AI platform and open-source community providing the Transformers library, model Hub, and Datasets library. The de facto standard for accessing pre-trained NLP models, fine-tuning LLMs, and sharing ML artifacts.',
     category: 'Frameworks & Tools',
-    certTags: [],
+    certTags: ['SecAI', 'CAISP', 'Azure-AI900'],
     related: ['Transformers Library', 'Fine-Tuning', 'PEFT', 'LangChain'],
   },
   // ── I ─────────────────────────────────────────────────────────────────────
@@ -672,7 +672,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Intersection over Union (IoU)',
     definition: 'A metric for evaluating object detection accuracy that measures the overlap between the predicted bounding box and the ground-truth bounding box. IoU = Area of Overlap / Area of Union. Typical threshold is 0.5.',
     category: 'Computer Vision',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
     related: ['Object Detection', 'YOLO', 'Anchor Box', 'Non-Maximum Suppression'],
   },
   {
@@ -709,14 +709,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'K-Nearest Neighbors (KNN)',
     definition: 'A simple, instance-based learning algorithm that classifies a new data point by majority vote of its k nearest training examples in feature space. No training phase; all computation is at inference time.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
     related: ['Classification', 'Clustering', 'Supervised Learning', 'Feature Engineering'],
   },
   {
     term: 'Keras',
     definition: 'A high-level deep learning API written in Python, now integrated into TensorFlow as tf.keras. Provides a user-friendly interface for building and training neural networks with minimal boilerplate code.',
     category: 'Frameworks & Tools',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['TensorFlow', 'PyTorch', 'Neural Network', 'Deep Learning'],
   },
   {
@@ -963,7 +963,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Multi-Head Attention',
     definition: 'An extension of attention that runs multiple attention operations ("heads") in parallel on different linear projections of the input. Each head can attend to different aspects of the input, improving representation richness.',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['Google-MLE', 'Azure-AI102'],
     related: ['Attention Mechanism', 'Self-Attention', 'Transformer', 'BERT'],
   },
   {
@@ -1020,7 +1020,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Non-Maximum Suppression (NMS)',
     definition: 'A post-processing technique in object detection that removes duplicate bounding box predictions by keeping only the highest-confidence detection for each object and suppressing overlapping boxes below an IoU threshold.',
     category: 'Computer Vision',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Object Detection', 'Intersection over Union (IoU)', 'Anchor Box', 'YOLO'],
   },
   // ── O ─────────────────────────────────────────────────────────────────────
@@ -1064,14 +1064,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Perplexity',
     definition: 'A measurement of how well a language model predicts a sample of text. Lower perplexity means the model is less "surprised" by the text — it assigned higher probability to the correct tokens. Used to compare language model quality.',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
     related: ['Large Language Model (LLM)', 'Tokenization', 'Temperature', 'Loss Function'],
   },
   {
     term: 'Positional Encoding',
     definition: 'A technique for injecting information about token positions into transformer inputs, since self-attention is permutation-invariant. Can be absolute (fixed sinusoidal or learned) or relative (RoPE, ALiBi).',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     related: ['Transformer', 'Attention Mechanism', 'Tokenization', 'Self-Attention'],
   },
   {
@@ -1092,7 +1092,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Principal Component Analysis (PCA)',
     definition: 'A linear dimensionality reduction technique that projects data onto directions of maximum variance (principal components). Used for visualization, noise reduction, and feature extraction as a preprocessing step for ML models.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     related: ['Dimensionality Reduction', 'Feature Selection', 'Unsupervised Learning', 'Clustering'],
   },
   {
@@ -1128,7 +1128,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'QLoRA',
     definition: 'Quantized LoRA — combines 4-bit quantization of a frozen base model with LoRA adapters. Enables fine-tuning of large models (65B+) on a single consumer GPU by dramatically reducing memory requirements.',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['LoRA (Low-Rank Adaptation)', 'PEFT (Parameter-Efficient Fine-Tuning)', 'Quantization', 'Fine-Tuning'],
   },
   {
@@ -1185,7 +1185,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Regularization',
     definition: 'Techniques that reduce overfitting by adding a penalty for model complexity to the loss function. L1 (Lasso) encourages sparsity; L2 (Ridge) penalizes large weights. Dropout is a regularization technique specific to neural networks.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Overfitting', 'Dropout', 'Loss Function', 'Cross-Validation'],
   },
   {
@@ -1199,7 +1199,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'ResNet',
     definition: 'Residual Network — a CNN architecture that uses skip connections to allow gradients to flow through very deep networks (50–200+ layers) without vanishing. Revolutionized image classification and remains a standard backbone for CV tasks.',
     category: 'Computer Vision',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     related: ['CNN (Convolutional Neural Network)', 'Transfer Learning', 'Image Classification', 'Batch Normalization'],
   },
   {
@@ -1235,7 +1235,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Self-Attention',
     definition: 'An attention mechanism where each position in a sequence attends to all other positions in the same sequence to compute a contextual representation. The core operation inside transformer encoder and decoder blocks.',
     category: 'Generative AI & LLMs',
-    certTags: [],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI900'],
     related: ['Attention Mechanism', 'Multi-Head Attention', 'Transformer', 'BERT'],
   },
   {
@@ -1270,7 +1270,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'SMOTE',
     definition: 'Synthetic Minority Over-sampling Technique — generates synthetic training examples for the minority class by interpolating between existing minority samples. Addresses class imbalance without simply duplicating existing data.',
     category: 'Data Engineering',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
     related: ['Class Imbalance', 'Data Augmentation', 'Supervised Learning', 'Classification'],
   },
   {
@@ -1291,7 +1291,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Stochastic Gradient Descent (SGD)',
     definition: 'A variant of gradient descent that updates model weights using the gradient computed from a single randomly selected training example (or mini-batch) at each step. Introduces noise that can help escape local minima.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
     related: ['Gradient Descent', 'Batch Size', 'Learning Rate', 'Backpropagation'],
   },
   {
@@ -1305,7 +1305,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Support Vector Machine (SVM)',
     definition: 'A supervised learning algorithm that finds the optimal hyperplane separating classes with maximum margin. Effective in high-dimensional spaces and small datasets; kernel trick enables non-linear classification.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
     related: ['Classification', 'Supervised Learning', 'Logistic Regression', 'Decision Tree'],
   },
   {
@@ -1355,7 +1355,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'TF-IDF',
     definition: 'Term Frequency-Inverse Document Frequency — a statistical measure that reflects how important a word is to a document in a corpus. High TF-IDF means the word is frequent in the document but rare across documents.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'CAISP'],
     related: ['Text Classification', 'NLP Fundamentals', 'Embedding', 'Semantic Search'],
   },
   {
@@ -1491,7 +1491,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Word2Vec',
     definition: 'A shallow neural network model that learns word embeddings by predicting context words (CBOW) or target words from context (Skip-gram). Produces dense vector representations where similar words have similar vectors.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
     related: ['Embedding', 'BERT', 'Tokenization', 'NLP Fundamentals'],
   },
   // ── X ─────────────────────────────────────────────────────────────────────
@@ -1507,7 +1507,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'YOLO (You Only Look Once)',
     definition: 'A family of real-time object detection models that process the entire image in a single forward pass, predicting bounding boxes and class probabilities simultaneously. Significantly faster than two-stage detectors like Faster R-CNN.',
     category: 'Computer Vision',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Object Detection', 'Anchor Box', 'Intersection over Union (IoU)', 'CNN (Convolutional Neural Network)'],
   },
   // ── Z ─────────────────────────────────────────────────────────────────────
