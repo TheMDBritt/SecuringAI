@@ -14,11 +14,13 @@ const CERT_BADGE: Record<string, string> = {
   'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
 };
 
-const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
 
 export default function GlossaryPanel() {
   const [search, setSearch]     = useState('');
   const [jumpLetter, setJump]   = useState('');
+  const [certFilter, setCert]   = useState('All');
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const filtered: GlossaryTerm[] = useMemo(() => {
@@ -28,8 +30,9 @@ export default function GlossaryPanel() {
         !q || t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q),
       )
       .filter((t) => !jumpLetter || t.term.toUpperCase().startsWith(jumpLetter))
+      .filter((t) => certFilter === 'All' || t.certTags.includes(certFilter))
       .sort((a, b) => a.term.localeCompare(b.term));
-  }, [search, jumpLetter]);
+  }, [search, jumpLetter, certFilter]);
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -49,6 +52,24 @@ export default function GlossaryPanel() {
           <button onClick={() => setSearch('')} className="text-slate-600 hover:text-slate-400 text-xs">✕</button>
         )}
         <span className="text-[10px] text-slate-600 font-mono">{filtered.length} terms</span>
+      </div>
+
+      {/* Cert filter */}
+      <div className="flex flex-wrap gap-1 px-4 py-2 border-b border-slate-700">
+        {CERT_LIST.map((c) => (
+          <button
+            key={c}
+            onClick={() => setCert(certFilter === c ? 'All' : c)}
+            className={[
+              'text-[10px] font-mono px-2 py-0.5 rounded border transition-colors',
+              certFilter === c
+                ? (CERT_BADGE[c] ?? 'bg-violet-500/20 text-violet-300 border-violet-500/30')
+                : 'text-slate-600 border-slate-700 hover:text-slate-400 hover:border-slate-600',
+            ].join(' ')}
+          >
+            {c}
+          </button>
+        ))}
       </div>
 
       {/* A–Z jump bar */}
