@@ -3017,4 +3017,120 @@ Non-developers can build AI-assisted security workflows:
 - Deepfake voice/video is now a primary BEC attack vector
 - AI code analysis (SAST + SCA) is standard in modern CI/CD security pipelines`,
   },
+
+  // ─── SecAI D4: AI Governance Structures ──────────────────────────────────
+
+  {
+    id: 'secai-governance-structures',
+    category: 'AI Governance',
+    title: 'AI Governance Structures & Roles',
+    certTags: ['SecAI', 'CAISP'],
+    vocab: ['AI Center of Excellence', 'AI Security Architect', 'AI Governance Engineer', 'AI Risk Analyst', 'AI Auditor', 'MLOps Engineer', 'Data Scientist', 'Shadow AI'],
+    content: `AI governance structures define how organizations manage AI risk through people, processes, and policies. The SecAI exam (Domain 4 — 19%) tests knowledge of governance roles and structures.
+
+## AI Center of Excellence (CoE)
+
+A cross-functional team that:
+- Sets AI standards, policies, and best practices across the organization
+- Reviews and approves AI use cases before development begins
+- Maintains an inventory of all AI systems in use (addressing Shadow AI)
+- Provides expertise and tooling to AI development teams
+- Monitors regulatory developments and updates policies accordingly
+
+**Why it matters**: Without a CoE, organizations deploy AI inconsistently — some teams follow best practices, others don't. The CoE creates a governance forcing function.
+
+## AI Governance Roles
+
+### Data Scientist
+Responsible for model development, feature engineering, and experimentation.
+Security responsibility: Follow secure ML development practices, document model assumptions, report unexpected model behaviors.
+
+### AI/ML Architect
+Designs the overall AI system architecture including data flows, model serving infrastructure, and integration patterns.
+Security responsibility: Ensure security controls are designed into the architecture from day one (secure by design).
+
+### ML Engineer / MLOps Engineer
+Builds and operates ML pipelines, training infrastructure, and deployment systems.
+Security responsibility: Implement secure CI/CD for ML, container scanning, secrets management, model registry access controls.
+
+### Platform Engineer
+Manages underlying compute infrastructure (GPU clusters, cloud AI services).
+Security responsibility: Infrastructure hardening, network segmentation, access controls on compute resources.
+
+### AI Security Architect
+Specializes in threat modeling for AI systems, defining security controls across the MDLC, and ensuring AI-specific risks (adversarial attacks, prompt injection, data poisoning) are addressed.
+- Owns the AI threat model
+- Defines guardrail and monitoring requirements
+- Reviews AI deployments for security compliance
+
+### AI Governance Engineer
+Implements governance tooling — model registries, policy enforcement, automated compliance checks, audit logging, and explainability pipelines.
+- Builds model card and documentation workflows
+- Implements fairness monitoring dashboards
+- Enforces data governance policies technically
+
+### AI Risk Analyst
+Assesses AI-related risks across the portfolio:
+- Evaluates risk level of each AI use case
+- Maps risks to regulatory requirements
+- Produces risk reports for leadership and board
+
+### AI Auditor
+Independently verifies that AI systems comply with policies, regulations, and stated documentation:
+- Reviews model cards and technical documentation
+- Validates fairness and performance metrics
+- Assesses compliance with EU AI Act, GDPR, industry standards
+- Third-party auditors required for high-risk AI systems
+
+### Data Engineer
+Builds and operates data pipelines that feed AI systems.
+Security responsibility: Data provenance tracking, access controls on training datasets, PII handling compliance.
+
+## AI Policies
+
+### Data Governance Policy
+- Defines acceptable data sources for AI training
+- Specifies data retention, classification, and deletion requirements
+- Mandates consent and provenance documentation
+
+### Model Usage Policy
+- Defines approved AI tools and platforms (addresses Shadow AI)
+- Specifies prohibited uses of AI (e.g., autonomous weapons, discriminatory scoring)
+- Requires documentation for all production AI systems
+
+### Sensitive Data Control Policy
+- Prohibits training on sensitive data without explicit approval and controls
+- Defines PII handling requirements in training pipelines
+- Specifies anonymization/pseudonymization requirements
+
+## Shadow AI
+
+AI tools adopted by employees without IT/governance knowledge or approval:
+- Employees using personal ChatGPT accounts to process work documents
+- Teams building AI tools outside approved platforms
+- Third-party SaaS products silently adding AI features
+
+**Risks**: Data exfiltration, compliance violations, unvetted model behavior, no audit trail.
+
+**Mitigations**:
+- AI CoE maintains an approved tool registry
+- Data Loss Prevention (DLP) policies blocking uploads to unapproved AI services
+- Employee training on acceptable AI use policies
+- Regular audits of AI tool usage
+
+## Third-Party AI Audits
+
+For high-risk AI systems (EU AI Act Annex III), independent third-party conformity assessment is required:
+- Evaluates technical documentation
+- Tests performance across demographic subgroups
+- Assesses cybersecurity controls
+- Issues certificate of conformity
+
+### Key SecAI Takeaways
+- AI CoE is the central governance body — responsible for policy, standards, and Shadow AI control
+- AI Security Architect owns the AI threat model; AI Governance Engineer implements compliance tooling
+- AI Auditors are independent — they cannot be the same team that built the system
+- Shadow AI is a governance risk, not just a security risk — it creates compliance and liability exposure
+- High-risk AI systems under EU AI Act require third-party conformity assessment`,
+  },
 ];
