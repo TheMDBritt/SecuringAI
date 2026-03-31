@@ -387,7 +387,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Dependency Parsing',
     definition: 'An NLP technique that analyzes the grammatical structure of a sentence by identifying the relationships between words (e.g., subject-verb-object). Produces a dependency tree showing how words are syntactically connected.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['AWS-AIF-C01'],
     related: ['NLP Fundamentals', 'Named Entity Recognition (NER)', 'Tokenization'],
   },
   {
@@ -709,7 +709,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'K-Nearest Neighbors (KNN)',
     definition: 'A simple, instance-based learning algorithm that classifies a new data point by majority vote of its k nearest training examples in feature space. No training phase; all computation is at inference time.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Classification', 'Clustering', 'Supervised Learning', 'Feature Engineering'],
   },
   {
@@ -1291,7 +1291,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Stochastic Gradient Descent (SGD)',
     definition: 'A variant of gradient descent that updates model weights using the gradient computed from a single randomly selected training example (or mini-batch) at each step. Introduces noise that can help escape local minima.',
     category: 'AI & ML Fundamentals',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Gradient Descent', 'Batch Size', 'Learning Rate', 'Backpropagation'],
   },
   {
@@ -1491,7 +1491,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Word2Vec',
     definition: 'A shallow neural network model that learns word embeddings by predicting context words (CBOW) or target words from context (Skip-gram). Produces dense vector representations where similar words have similar vectors.',
     category: 'NLP',
-    certTags: [],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     related: ['Embedding', 'BERT', 'Tokenization', 'NLP Fundamentals'],
   },
   // ── X ─────────────────────────────────────────────────────────────────────
