@@ -2563,4 +2563,93 @@ For agentic AI systems (LLM agents with tool use):
 - Agent access must follow least privilege — human approval before irreversible actions
 - Guardrail testing is an ongoing operational control, not a one-time setup`,
   },
+
+  // ─── SecAI D2: AI Threat Modeling ────────────────────────────────────────
+
+  {
+    id: 'secai-threat-modeling',
+    category: 'AI Security',
+    title: 'AI Threat Modeling',
+    certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA'],
+    vocab: ['MITRE ATLAS', 'OWASP LLM Top 10', 'ML Security Top 10', 'MIT AI Risk Repository', 'CVE AI Working Group', 'Threat Modeling', 'STRIDE'],
+    content: `AI threat modeling systematically identifies, categorizes, and prioritizes threats to AI systems. The SecAI exam tests knowledge of the major frameworks used in industry.
+
+## MITRE ATLAS
+
+MITRE Adversarial Threat Landscape for Artificial-Intelligence Systems — a knowledge base of adversarial ML tactics, techniques, and case studies, analogous to MITRE ATT&CK for traditional cybersecurity.
+
+### ATLAS Tactics
+- Reconnaissance, Resource Development, Initial Access, ML Attack Staging, Exfiltration, Impact
+
+### Key ATLAS Techniques
+| Technique | Description |
+|---|---|
+| AML.T0006 | Data Poisoning — corrupting training data |
+| AML.T0018 | Backdoor ML Model — trojaned model behavior |
+| AML.T0020 | Adversarial Examples — crafted inputs causing misclassification |
+| AML.T0040 | ML Model Inference API Access |
+| AML.T0048 | Exfiltrate Training Data via Model API |
+
+## OWASP LLM Top 10 (2025)
+
+| ID | Risk |
+|---|---|
+| LLM01 | Prompt Injection — attacker hijacks LLM via malicious input |
+| LLM02 | Sensitive Information Disclosure — PII, credentials, system prompt |
+| LLM03 | Supply Chain — compromised models, datasets, or dependencies |
+| LLM04 | Data and Model Poisoning |
+| LLM05 | Improper Output Handling — unsanitized output causes XSS, SSRF, RCE |
+| LLM06 | Excessive Agency — agent acts beyond intended scope |
+| LLM07 | System Prompt Leakage |
+| LLM08 | Vector and Embedding Weaknesses |
+| LLM09 | Misinformation / Overreliance |
+| LLM10 | Unbounded Consumption — DoS via resource exhaustion |
+
+## ML Security Top 10
+
+Covers the full ML pipeline (not just LLMs):
+1. Input manipulation (adversarial examples)
+2. Data poisoning
+3. Model inversion
+4. Membership inference
+5. Model theft
+6. Backdoor attacks
+7. Transfer learning attacks
+8. Supply chain attacks
+9. Model skewing
+10. Insecure model serving
+
+## MIT AI Risk Repository
+
+Taxonomy of AI risks by causal domain (AI errors, human misuse, systemic failures) and risk domain (safety, privacy, fairness, security, reliability). Used alongside MITRE ATLAS for governance risk assessments.
+
+## CVE AI Working Group
+
+Developing standards for cataloguing AI-specific vulnerabilities within CVE. Key challenge: AI vulnerabilities are often statistical/probabilistic rather than binary exploits.
+
+## STRIDE Applied to AI
+
+| STRIDE | AI Manifestation |
+|---|---|
+| Spoofing | Adversarial examples impersonating legitimate inputs |
+| Tampering | Data poisoning, model weight tampering |
+| Repudiation | Lack of model decision audit trails |
+| Information Disclosure | Model inversion, training data extraction |
+| Denial of Service | Token flooding, resource exhaustion |
+| Elevation of Privilege | Prompt injection bypassing access controls |
+
+### AI Threat Modeling Process
+1. Define scope (model, data, integrations)
+2. Identify assets (weights, training data, API keys, vector stores)
+3. Map attack surfaces (input interfaces, pipelines, agent tools)
+4. Apply MITRE ATLAS + OWASP LLM Top 10
+5. Prioritize by likelihood x impact
+6. Map threats to controls
+
+### Key SecAI Takeaways
+- MITRE ATLAS is ATT&CK for AI — know key tactics and technique IDs
+- LLM01 (Prompt Injection) and LLM06 (Excessive Agency) are highest-frequency exam topics
+- ML Security Top 10 covers the full pipeline; OWASP LLM focuses on LLM applications
+- MIT AI Risk Repository complements security frameworks with governance risk taxonomy`,
+  },
 ];
