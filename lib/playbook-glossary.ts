@@ -1682,4 +1682,63 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['SecAI', 'CAISP'],
     related: ['MLOps', 'Human-in-the-Loop', 'Model Monitoring', 'Data Lineage'],
   },
+
+  // ─── SecAI D4 Roles + D3 Tools ───────────────────────────────────────────
+
+  {
+    term: 'AI Security Architect',
+    definition: 'A security professional specializing in threat modeling for AI systems and defining security controls across the MDLC. Responsibilities: own the AI threat model, define guardrail and monitoring requirements, review AI deployments for security compliance, and ensure AI-specific risks (prompt injection, data poisoning, adversarial attacks) are addressed.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['MDLC', 'Threat Modeling', 'MITRE ATLAS', 'AI Governance Engineer'],
+  },
+  {
+    term: 'AI Governance Engineer',
+    definition: 'A technical role that implements AI governance tooling — model registries, policy enforcement automation, compliance checks, audit logging, fairness monitoring dashboards, and explainability pipelines. Bridges the gap between governance policy and technical implementation.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['AI Security Architect', 'Model Card', 'Responsible AI', 'AI Center of Excellence'],
+  },
+  {
+    term: 'AI Risk Analyst',
+    definition: 'Assesses AI-related risks across an organization\'s AI portfolio. Evaluates risk level of each AI use case, maps risks to regulatory requirements (GDPR, EU AI Act, NIST AI RMF), and produces risk reports for leadership. Works closely with AI Security Architect and AI Auditor.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['AI Auditor', 'AI Center of Excellence', 'NIST AI RMF', 'EU AI Act'],
+  },
+  {
+    term: 'AI Auditor',
+    definition: 'Independently verifies that AI systems comply with policies, regulations, and stated documentation. Reviews model cards, validates fairness metrics, assesses compliance with EU AI Act and GDPR. Must be independent from the team that built the system. Third-party auditors are required for high-risk AI systems under the EU AI Act.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['AI Risk Analyst', 'Model Card', 'EU AI Act', 'Responsible AI'],
+  },
+  {
+    term: 'AI Center of Excellence',
+    definition: 'A cross-functional governance body that sets AI standards, policies, and best practices across an organization. Reviews and approves AI use cases, maintains an inventory of all deployed AI systems (addressing Shadow AI), provides tooling and expertise to development teams, and monitors regulatory developments.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['Shadow AI', 'AI Governance Engineer', 'AI Risk Analyst', 'Responsible AI'],
+  },
+  {
+    term: 'SCA (Software Composition Analysis)',
+    definition: 'A security practice that scans open-source dependencies and third-party libraries for known vulnerabilities (CVEs), outdated versions, and license compliance issues. In AI/ML projects, SCA is critical for scanning ML frameworks (PyTorch, LangChain, Transformers) as part of the AI supply chain security posture.',
+    category: 'AI Security',
+    certTags: ['SecAI'],
+    related: ['Supply Chain Attack (AI)', 'CVE AI Working Group', 'CI/CD', 'MDLC'],
+  },
+  {
+    term: 'Low-code/No-code AI',
+    definition: 'AI platforms and tools that allow non-developers to build AI-powered workflows using visual interfaces, natural language, or drag-and-drop components. Examples: Microsoft Copilot for Security, Splunk AI Assistant, Palo Alto XSIAM. Security risk: Shadow AI adoption is accelerated by low-code tools that teams deploy without governance oversight.',
+    category: 'AI in Security Ops',
+    certTags: ['SecAI'],
+    related: ['Shadow AI', 'AI Center of Excellence', 'SOAR', 'Automation'],
+  },
+  {
+    term: 'MCP Server',
+    definition: 'A server implementing the Model Context Protocol (MCP), enabling LLMs to interact with external tools and data sources through a standardized interface. Security MCP servers provide LLMs with access to SIEM queries, threat intelligence APIs, vulnerability databases, and code execution environments. Requires least-privilege access controls and audit logging.',
+    category: 'AI in Security Ops',
+    certTags: ['SecAI'],
+    related: ['Excessive Agency', 'Prompt Injection', 'Least Privilege', 'Agentic AI'],
+  },
 ];
