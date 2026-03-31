@@ -2767,4 +2767,124 @@ Periodic audits of model performance by domain experts to catch silent failures 
 - Feedback loop in Phase 9 is a vector for model skewing attacks
 - Human-in-the-loop is mandatory for irreversible agentic actions (OWASP LLM06)`,
   },
+
+  // ─── SecAI D2/D3: Monitoring & Auditing ──────────────────────────────────
+
+  {
+    id: 'secai-monitoring',
+    category: 'AI Security',
+    title: 'Monitoring & Auditing AI Systems',
+    certTags: ['SecAI', 'CAISP', 'GIAC-GASAE'],
+    vocab: ['Prompt Monitoring', 'Response Monitoring', 'Confidence Scoring', 'Rate Monitoring', 'Cost Monitoring', 'Log Sanitization', 'Access Auditing', 'Hallucination'],
+    content: `Ongoing monitoring is essential to detect attacks, model degradation, policy violations, and anomalous usage in production AI systems. The SecAI exam (Domain 2, section 2.5) covers all monitoring dimensions.
+
+## Prompt Monitoring
+
+Inspect every user prompt before and after it reaches the model:
+- **Pattern detection**: Flag known jailbreak strings, injection markers, role-play escalation
+- **PII detection**: Alert when prompts contain names, SSNs, credit card numbers
+- **Semantic anomaly detection**: Embedding-based classifiers to detect out-of-distribution prompts
+- **Volume monitoring**: Unusual prompt frequency per user may indicate automated attacks
+
+**Tools**: LLM Guard, Rebuff, Azure Content Safety, custom middleware
+
+## Response Monitoring
+
+Inspect every model output before returning it to the user:
+- **Policy violation detection**: Flag responses containing harmful content, competitor mentions, confidential data
+- **PII leakage detection**: Catch SSNs, API keys, internal system names in outputs
+- **Confidence scoring**: Flag low-certainty responses for human review
+- **Hallucination detection**: Fact-checking against retrieved context (for RAG systems)
+
+## Log Monitoring
+
+### What to Log
+- Full prompt and response pairs (with appropriate PII masking)
+- User/session identifiers and timestamps
+- Model version and configuration in use
+- Tool calls made by agents and their results
+- Authentication events and access control decisions
+
+### Log Sanitization
+Remove or redact sensitive data from logs before storage:
+- Redact PII, credentials, and confidential content from prompt/response logs
+- Strip internal system information that could aid attackers if logs are exfiltrated
+- Apply consistent redaction rules across all log destinations
+
+### Log Protection
+- Immutable log storage: write-once object storage (S3 Object Lock, WORM)
+- Separate log access controls from application access
+- Log integrity verification: cryptographic signing or hashing of log batches
+- Centralize logs in SIEM for correlation and alerting
+
+## Confidence Scoring
+
+A measure of model certainty about its output:
+- **Low confidence on routine queries**: May indicate adversarial input causing model confusion
+- **Anomalously high confidence on unusual queries**: May indicate the model is hallucinating with false certainty
+- **Threshold-based routing**: Low-confidence responses routed to human review or secondary model
+
+**Implementation**: Request log probabilities from model APIs; use calibration metrics; implement secondary LLM judge for confidence evaluation.
+
+## Rate and Cost Monitoring
+
+### Rate Monitoring
+Track request frequency per user/API key/IP:
+- Set alerts for requests exceeding normal usage patterns
+- Detect probing attacks (systematic jailbreak attempts)
+- Identify potential DoS — token flooding to exhaust quotas
+
+### Cost Monitoring
+Track token consumption and API costs in real time:
+- Alert when daily/hourly spend exceeds thresholds
+- Detect prompt injection attacks that generate extremely long responses
+- Attribute costs to specific users/integrations for accountability
+
+## Quality Checks
+
+### Hallucination Detection
+Methods to detect factually incorrect AI outputs:
+- **RAG grounding check**: Verify claims are supported by retrieved context
+- **External fact verification**: Cross-reference against authoritative data sources
+- **Self-consistency**: Query the model multiple times and flag inconsistent answers
+- **Uncertainty quantification**: Measure model confidence before surfacing response
+
+### Accuracy Monitoring
+Track prediction accuracy on labeled production data over time:
+- Detect **concept drift** — real-world patterns changing since training
+- Use shadow models to compare behavior across versions
+
+### Bias Monitoring
+Continuously track model performance disaggregated by demographic subgroup:
+- Alert when performance disparities exceed defined thresholds
+- Trigger retraining pipelines when fairness metrics degrade
+
+## Access Auditing
+
+Record all access to AI system components:
+- Who queried which model endpoints and when
+- Data access: which datasets, vector stores, or documents were retrieved
+- Administrative actions: model updates, config changes, guardrail modifications
+- Agent actions: tool calls, code execution, API calls made by AI agents
+
+**Compliance**: GDPR, EU AI Act, and SOC 2 require audit logs for AI systems processing personal data.
+
+## Monitoring Architecture
+
+| Layer | What to Monitor | Alert Condition |
+|---|---|---|
+| Input | Prompt patterns, PII, injection | Jailbreak pattern match, PII detected |
+| Model | Confidence scores, latency | Confidence below threshold |
+| Output | Policy violations, hallucinations | Harmful content detected |
+| Usage | Rate, cost, token consumption | Usage spike exceeds baseline 3x |
+| Access | Auth events, data access | Unusual access patterns, privilege escalation |
+| Logs | Integrity, completeness | Log gaps, tampering detected |
+
+### Key SecAI Takeaways
+- Log monitoring requires both sanitization (PII removal) and protection (immutable storage)
+- Confidence scoring is a signal for both model quality and adversarial input detection
+- Cost monitoring is a security control — prompt injection can cause runaway generation costs
+- Access auditing is mandatory for compliance with GDPR and EU AI Act
+- Hallucination detection is critical for RAG systems — verify outputs against retrieved context`,
+  },
 ];
