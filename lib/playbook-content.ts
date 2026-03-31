@@ -2456,4 +2456,111 @@ Git extension for versioning large datasets and ML pipelines. Stores data in S3/
 - vLLM with PagedAttention is the standard for high-throughput LLM serving
 - MLflow and W&B are the dominant experiment tracking platforms`,
   },
+
+  // ─── SecAI D2: Security Controls ─────────────────────────────────────────
+
+  {
+    id: 'secai-security-controls',
+    category: 'AI Security',
+    title: 'AI Security Controls',
+    certTags: ['SecAI', 'CAISP', 'GIAC-GASAE'],
+    vocab: ['Guardrail', 'Prompt Firewall', 'Token Limit', 'Rate Limiting', 'Input Validation', 'Guardrail Testing', 'Modality Limit', 'Endpoint Access Control'],
+    content: `AI security controls are the technical and policy mechanisms that protect AI systems from misuse, attack, and unintended behavior. The SecAI exam (Domain 2 — 40%) requires deep understanding of these controls.
+
+## Model Controls
+
+### Guardrails
+Guardrails are constraints applied to LLM inputs and outputs to enforce behavioral policies:
+- **Input guardrails**: Block or flag prompts containing jailbreak patterns, PII, malicious instructions, or out-of-scope content
+- **Output guardrails**: Filter or modify model responses that contain harmful content, hallucinations, policy violations, or sensitive data leakage
+- **Examples**: AWS Bedrock Guardrails, Azure Content Safety, NVIDIA NeMo Guardrails, Guardrails AI, LLM Guard
+
+### Model Evaluation as a Control
+Before deployment, models must be evaluated for:
+- **Safety benchmarks**: TruthfulQA, BBQ (bias), HarmBench
+- **Red team testing**: Structured adversarial probing for policy bypass
+- **Refusal rate measurement**: Confirm harmful prompts are consistently refused
+
+### Prompt Templates
+Structured prompt templates constrain the model's behavior by fixing the system prompt format and limiting user input injection surface. Use template variables with strict validation rather than raw user string concatenation.
+
+## Gateway Controls
+
+### Prompt Firewalls
+A prompt firewall sits between the user and the LLM, inspecting every request:
+- **Rule-based**: Block keywords, regex patterns, known jailbreak strings
+- **ML-based**: Secondary classifier (LLM or embedding model) scores prompt risk
+- **LLM-judge**: Use a separate LLM to evaluate whether the prompt is policy-compliant
+- Tools: Rebuff, LLM Guard, Azure Content Safety, custom API middleware
+
+### Rate Limits
+Limit requests per user/IP/session per unit time. Prevents:
+- Automated prompt injection probing
+- Denial-of-service via high-volume requests
+- Dataset extraction via repeated queries
+
+### Token Limits
+Cap the maximum tokens in prompts and responses:
+- Prevents **prompt stuffing** (filling the context window with adversarial content)
+- Controls cost from runaway generation
+- Limits information extraction per query
+
+### Input Quotas and Modality Limits
+- **Input quotas**: Maximum file size, number of documents, or message length
+- **Modality limits**: Restrict which input types are accepted (text-only, no image uploads, no file attachments) to reduce attack surface
+- **Endpoint access controls**: Authentication, authorization, and network-level restrictions on who can call the model API
+
+## Validation Controls
+
+### Input Validation
+Before passing user input to an LLM:
+- Sanitize HTML/markdown injection
+- Validate against expected schema for structured inputs
+- Check file type and scan uploaded files
+- Detect and strip prompt injection patterns from retrieved documents (RAG pipeline)
+
+### Guardrail Testing
+Regularly test guardrails to ensure they hold:
+- **Regression testing**: Re-run known attack prompts after model or guardrail updates
+- **Red team exercises**: Structured adversarial testing by internal or external teams
+- **Automated fuzzing**: Generate variations of known attacks to find bypasses
+
+## Access Controls
+
+### Model Access
+- Role-based access to different model tiers (limited model for general users, powerful model for vetted roles)
+- API key management with rotation policies
+- Managed Identity over static API keys for cloud deployments
+
+### Data Access
+- Principle of least privilege on training datasets and vector stores
+- Separate read/write access for training pipelines vs. inference services
+- Column-level security for sensitive attributes
+
+### Agent Access
+For agentic AI systems (LLM agents with tool use):
+- Grant minimal tool permissions required for each task
+- Require human approval before irreversible actions (OWASP LLM08: Excessive Agency)
+- Audit all agent actions — tool calls, retrieved data, executed code
+
+## Security Control Summary
+
+| Control | Protects Against | Layer |
+|---|---|---|
+| Prompt Firewall | Prompt injection, jailbreak | Gateway |
+| Guardrails | Policy violation, harmful output | Model |
+| Rate Limiting | DoS, probing | Gateway |
+| Token Limits | Prompt stuffing, cost abuse | Gateway |
+| Input Validation | Injection, malformed inputs | Gateway |
+| Modality Limits | Attack surface reduction | Gateway |
+| RBAC / Least Privilege | Unauthorized access | Access |
+| Guardrail Testing | Bypass detection | Operations |
+
+### Key SecAI Takeaways
+- Guardrails operate on both input AND output
+- Prompt firewalls are a gateway-layer control; guardrails are model-layer
+- Token limits prevent prompt stuffing AND cost abuse
+- Agent access must follow least privilege — human approval before irreversible actions
+- Guardrail testing is an ongoing operational control, not a one-time setup`,
+  },
 ];
