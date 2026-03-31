@@ -2652,4 +2652,119 @@ Developing standards for cataloguing AI-specific vulnerabilities within CVE. Key
 - ML Security Top 10 covers the full pipeline; OWASP LLM focuses on LLM applications
 - MIT AI Risk Repository complements security frameworks with governance risk taxonomy`,
   },
+
+  // ─── SecAI D1/D2: AI Lifecycle Security ──────────────────────────────────
+
+  {
+    id: 'secai-lifecycle',
+    category: 'AI Security',
+    title: 'AI Lifecycle Security (MDLC)',
+    certTags: ['SecAI', 'CAISP'],
+    vocab: ['MDLC', 'Human-in-the-Loop', 'Data Provenance', 'Model Evaluation', 'Feedback Loop', 'Business Use Case Alignment', 'Validation'],
+    content: `The Model Development Life Cycle (MDLC) defines the phases from business use case to deployed and monitored AI. Security controls must be embedded at every phase — not bolted on at the end.
+
+## Phase 1: Business Use Case Alignment
+
+Before any data collection:
+- Define the problem and intended use precisely
+- Identify regulatory requirements (GDPR, EU AI Act risk tier, HIPAA)
+- Determine if an AI solution is appropriate — is the risk proportionate to the benefit?
+- Document assumptions, success criteria, and out-of-scope uses
+
+**Security concern**: Scope creep — systems built for one purpose deployed in higher-risk contexts without re-assessment.
+
+## Phase 2: Data Collection — Trust and Authenticity
+
+- Verify data source integrity and provenance
+- Validate consent and licensing for training data
+- Assess data authenticity — can training data be tampered with or spoofed?
+- Document data lineage from collection point forward
+
+**Security concern**: Supply chain data poisoning — malicious third-party datasets containing backdoor triggers.
+
+## Phase 3: Data Preparation
+
+- Data cleansing: remove errors, duplicates, and outliers
+- Data balancing: address class imbalance (SMOTE, reweighting)
+- Data augmentation: expand dataset with label-preserving transforms
+- PII detection and redaction before training
+- Schema validation to catch anomalies
+
+**Security concern**: Label flipping attacks during the labeling phase; PII exposure in training data.
+
+## Phase 4: Model Development
+
+- Architecture selection appropriate to the task and risk level
+- Secure coding practices in training scripts
+- Version control for model code AND data (DVC)
+- Track all experiments (MLflow, W&B) for reproducibility
+
+**Security concern**: Insecure ML dependencies (malicious PyPI packages); compromised development environments.
+
+## Phase 5: Model Evaluation
+
+- Evaluate on held-out test data representative of production distribution
+- Disaggregate performance by subgroup (fairness audit)
+- Adversarial robustness testing (adversarial examples, prompt injection for LLMs)
+- Red team structured attacks against the model
+
+**Security concern**: Evaluation on non-representative data leads to overconfident deployment; skipping adversarial testing leaves known vulnerabilities unaddressed.
+
+## Phase 6: Deployment
+
+- Container scanning and image signing before deployment
+- API authentication and rate limiting from day one
+- Secrets management — no hardcoded API keys or credentials
+- Rollout strategy: canary or shadow deployment before full traffic
+
+**Security concern**: LLM03 (Supply Chain) — verify model weights and dependencies at deploy time.
+
+## Phase 7: Validation
+
+Post-deployment validation confirms the model behaves as expected in production:
+- A/B test against baseline
+- Smoke tests for known attack vectors
+- Verify guardrails and content filters are active
+- Confirm logging and monitoring are capturing expected signals
+
+## Phase 8: Monitoring
+
+Ongoing production monitoring:
+- **Data drift**: Feature distributions shifting from training baseline
+- **Model drift / concept drift**: Prediction distribution changing over time
+- **Prompt monitoring**: Inspect inputs for attack patterns
+- **Response monitoring**: Detect policy violations, hallucinations
+- **Cost and rate monitoring**: Alert on anomalous consumption
+
+## Phase 9: Feedback Loop
+
+Continuous improvement cycle:
+- Collect production errors and edge cases for retraining
+- Human review of flagged outputs
+- Update data pipeline, retrain, re-evaluate, re-deploy
+- Version the new model alongside its training data snapshot
+
+**Security concern**: Feedback poisoning — adversaries submitting malicious corrections to influence future model behavior (model skewing).
+
+## Human-Centered AI Controls
+
+### Human-in-the-Loop (HITL)
+A human reviews and approves AI outputs before they have real-world effect. Required for:
+- High-stakes decisions (loan approvals, medical diagnoses, legal findings)
+- Agentic AI actions that are irreversible (sending emails, executing code, deleting data)
+- Cases where model confidence is below threshold
+
+### Human Oversight
+Broader than HITL — includes the processes, roles, and governance structures that ensure humans can understand, audit, and intervene in AI system behavior at any point.
+
+### Human Validation
+Periodic audits of model performance by domain experts to catch silent failures that automated monitoring misses.
+
+### Key SecAI Takeaways
+- Security controls must be embedded at every MDLC phase — not just deployment
+- Phase 2 (data collection) is where supply chain poisoning enters
+- Phase 8 (monitoring) is where most production attacks are detected
+- Feedback loop in Phase 9 is a vector for model skewing attacks
+- Human-in-the-loop is mandatory for irreversible agentic actions (OWASP LLM06)`,
+  },
 ];
