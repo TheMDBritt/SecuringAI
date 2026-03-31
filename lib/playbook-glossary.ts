@@ -76,7 +76,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Amazon SageMaker',
     definition: 'AWS\'s fully managed machine learning platform for building, training, and deploying ML models at scale. Provides integrated development environments, automated model tuning, and one-click deployment.',
     category: 'Cloud AI Platforms',
-    certTags: ['AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01'],
     related: ['Amazon Bedrock', 'MLOps', 'Model Deployment', 'Feature Store'],
   },
   {
@@ -111,7 +111,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Attention Mechanism',
     definition: 'A component in neural networks that allows the model to focus on the most relevant parts of the input when producing each part of the output. The foundation of transformer architecture, enabling capture of long-range dependencies.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Transformer', 'Self-Attention', 'Multi-Head Attention', 'BERT'],
   },
   {
@@ -218,7 +218,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Classification',
     definition: 'A supervised learning task where the model predicts a discrete category label for each input. Binary classification has two classes; multiclass has three or more. Common algorithms include logistic regression, decision trees, and SVMs.',
     category: 'AI & ML Fundamentals',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Supervised Learning', 'Logistic Regression', 'Decision Tree', 'Regression'],
   },
   {
@@ -246,7 +246,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Conformity Assessment',
     definition: 'Under the EU AI Act, the process by which high-risk AI systems are evaluated against mandatory requirements before market placement. May involve internal checks or third-party notified body review depending on risk category.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['EU AI Act', 'High-Risk AI System', 'CE Marking (AI Act)', 'ISO 42001'],
   },
   {
@@ -267,7 +267,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Context Window',
     definition: 'The maximum amount of text (measured in tokens) that an LLM can process in a single interaction, including both the prompt and generated response. Limits how much history, documents, or instructions the model can consider at once.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
     related: ['Token', 'Large Language Model (LLM)', 'Long-Context Window', 'KV Cache'],
   },
   {
@@ -373,7 +373,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Deep Learning',
     definition: 'A subset of machine learning that uses neural networks with many layers (deep networks) to automatically learn hierarchical representations from raw data. Responsible for breakthroughs in vision, speech, and language tasks.',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Neural Network', 'Machine Learning', 'Backpropagation', 'CNN (Convolutional Neural Network)'],
   },
   {
@@ -387,7 +387,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Dependency Parsing',
     definition: 'An NLP technique that analyzes the grammatical structure of a sentence by identifying the relationships between words (e.g., subject-verb-object). Produces a dependency tree showing how words are syntactically connected.',
     category: 'NLP',
-    certTags: ['SecAI', 'GIAC-GASAE'],
+    certTags: [],
     related: ['NLP Fundamentals', 'Named Entity Recognition (NER)', 'Tokenization'],
   },
   {
@@ -430,7 +430,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Embedding',
     definition: 'A dense vector representation of data (text, images, entities) in a continuous high-dimensional space where semantically similar items are close together. Embeddings are the core mechanism enabling semantic search and RAG systems.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Azure-AI900'],
     related: ['Vector Database', 'Semantic Search', 'RAG (Retrieval-Augmented Generation)', 'Tokenization'],
   },
   {
@@ -458,7 +458,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'EU AI Act',
     definition: 'The European Union\'s comprehensive regulation for artificial intelligence, effective 2024. Classifies AI systems by risk tier (unacceptable, high, limited, minimal) and imposes requirements including transparency, human oversight, and conformity assessments for high-risk systems.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['NIST AI RMF', 'ISO 42001', 'High-Risk AI System', 'Conformity Assessment'],
   },
   {
@@ -472,7 +472,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Excessive Agency',
     definition: 'OWASP LLM08 — a vulnerability where an LLM-based agent is granted too much capability, access, or autonomy, enabling it to take unintended high-impact actions. Mitigated by applying least-privilege principles to agent permissions.',
     category: 'AI Security',
-    certTags: ['SecAI', 'CAISP'],
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     related: ['LLM08 Excessive Agency', 'OWASP LLM Top 10', 'Agentic AI', 'Guardrails'],
   },
   {
@@ -508,7 +508,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Feature Engineering',
     definition: 'The process of using domain knowledge to create, transform, or select input features that improve model performance. Includes normalization, encoding categorical variables, creating interaction terms, and binning continuous variables.',
     category: 'Data Engineering',
-    certTags: ['AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
     related: ['Feature Selection', 'Feature Store', 'Data Quality', 'Dimensionality Reduction'],
   },
   {
@@ -536,14 +536,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Fine-Tuning',
     definition: 'Adapting a pre-trained model to a specific task or domain by continuing training on a smaller, task-specific dataset. Updates some or all model weights. More expensive than prompting but produces better task-specific performance.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Azure-AI900'],
     related: ['Pre-Training', 'PEFT', 'LoRA', 'Transfer Learning'],
   },
   {
     term: 'Foundation Model',
     definition: 'A large AI model trained on broad data that can be adapted to a wide range of downstream tasks. Examples include GPT-4, Claude, Llama, and Gemini. Foundation models are the base for most modern LLM applications.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Azure-AI900'],
     related: ['Large Language Model (LLM)', 'Fine-Tuning', 'Pre-Training', 'Amazon Bedrock'],
   },
   // ── G ─────────────────────────────────────────────────────────────────────
@@ -558,7 +558,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'GDPR and AI',
     definition: 'The EU\'s General Data Protection Regulation applies to AI systems processing personal data. Key requirements include lawful basis for processing, data minimization, right to explanation for automated decisions, and data subject rights.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['EU AI Act', 'Responsible AI', 'Differential Privacy', 'Privacy-Preserving AI'],
   },
   {
@@ -608,7 +608,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'High-Risk AI System',
     definition: 'Under the EU AI Act, AI systems that pose significant risks to health, safety, or fundamental rights — including biometric identification, critical infrastructure, employment decisions, and law enforcement applications. Subject to strict requirements.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['EU AI Act', 'Conformity Assessment', 'AI Risk Management', 'CE Marking (AI Act)'],
   },
   {
@@ -686,7 +686,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'ISO 42001',
     definition: 'The international standard for AI Management Systems (AIMS), published in 2023. Provides a framework for organizations to govern AI development and use responsibly, covering risk management, transparency, and continual improvement.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['NIST AI RMF', 'EU AI Act', 'Responsible AI', 'AI Risk Management'],
   },
   // ── J ─────────────────────────────────────────────────────────────────────
@@ -709,7 +709,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'K-Nearest Neighbors (KNN)',
     definition: 'A simple, instance-based learning algorithm that classifies a new data point by majority vote of its k nearest training examples in feature space. No training phase; all computation is at inference time.',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
+    certTags: [],
     related: ['Classification', 'Clustering', 'Supervised Learning', 'Feature Engineering'],
   },
   {
@@ -723,7 +723,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'KV Cache',
     definition: 'Key-Value cache — an optimization in transformer inference that stores previously computed attention keys and values to avoid redundant computation when generating each new token. Dramatically reduces inference latency for long sequences.',
     category: 'Generative AI & LLMs',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['Transformer', 'Inference', 'Context Window', 'Speculative Decoding'],
   },
   // ── L ─────────────────────────────────────────────────────────────────────
@@ -836,7 +836,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'LoRA (Low-Rank Adaptation)',
     definition: 'A parameter-efficient fine-tuning (PEFT) technique that injects trainable low-rank matrices into transformer layers rather than updating all parameters. Reduces memory footprint by 10-100x while achieving near full fine-tuning performance.',
     category: 'Generative AI & LLMs',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['PEFT', 'QLoRA', 'Fine-Tuning', 'Transformer'],
   },
   {
@@ -858,7 +858,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Membership Inference Attack',
     definition: 'A privacy attack that determines whether a specific data point was included in a model\'s training set. Exploits the tendency of models to behave differently on training data vs. unseen data, exposing sensitive training records.',
     category: 'AI Security',
-    certTags: ['SecAI', 'CAISP'],
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     related: ['Differential Privacy', 'Federated Learning', 'Model Extraction', 'Data Poisoning'],
   },
   {
@@ -914,21 +914,21 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Model Evaluation',
     definition: 'The process of assessing a trained model\'s performance using metrics appropriate for the task type. Includes offline evaluation on held-out test sets, A/B testing in production, and human evaluation for generative models.',
     category: 'AI & ML Fundamentals',
-    certTags: ['AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
     related: ['Confusion Matrix', 'Cross-Validation', 'AUC-ROC', 'F1 Score'],
   },
   {
     term: 'Model Extraction',
     definition: 'An attack that reverse-engineers a proprietary ML model by querying it with carefully crafted inputs and using the responses to train a surrogate model. Enables competitors to steal model functionality without access to training data or weights.',
     category: 'AI Security',
-    certTags: ['SecAI', 'CAISP'],
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     related: ['Membership Inference Attack', 'Adversarial Attack', 'Model Security', 'LLM05 Supply Chain Vulnerabilities'],
   },
   {
     term: 'Model Inversion',
     definition: 'An attack that reconstructs training data or sensitive attributes from a model\'s outputs. By repeatedly querying the model with optimized inputs, attackers can reconstruct images of individuals from face recognition systems.',
     category: 'AI Security',
-    certTags: ['SecAI', 'CAISP'],
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     related: ['Membership Inference Attack', 'Differential Privacy', 'Federated Learning', 'Model Security'],
   },
   {
@@ -963,7 +963,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Multi-Head Attention',
     definition: 'An extension of attention that runs multiple attention operations ("heads") in parallel on different linear projections of the input. Each head can attend to different aspects of the input, improving representation richness.',
     category: 'Generative AI & LLMs',
-    certTags: ['Google-MLE', 'Azure-AI102'],
+    certTags: ['Google-MLE', 'Azure-AI102', 'AWS-AIF-C01'],
     related: ['Attention Mechanism', 'Self-Attention', 'Transformer', 'BERT'],
   },
   {
@@ -977,7 +977,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Mixture of Experts (MoE)',
     definition: 'A neural network architecture where only a subset of the model\'s parameters (expert networks) are activated for each input, selected by a routing mechanism. Enables very large models while keeping inference cost manageable.',
     category: 'Emerging Trends',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['Foundation Model', 'Large Language Model (LLM)', 'Speculative Decoding', 'Inference'],
   },
   // ── N ─────────────────────────────────────────────────────────────────────
@@ -985,21 +985,21 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Named Entity Recognition (NER)',
     definition: 'An NLP task that identifies and classifies named entities in text into categories such as person, organization, location, date, and product. Used in information extraction, knowledge graph construction, and alert enrichment.',
     category: 'NLP',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['NLP Fundamentals', 'Sentiment Analysis', 'Text Classification', 'IOC (Indicator of Compromise)'],
   },
   {
     term: 'Neural Network',
     definition: 'A computational model inspired by biological neurons, consisting of layers of interconnected nodes that transform input data through weighted connections and activation functions. The building block of deep learning.',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Deep Learning', 'Backpropagation', 'Activation Function', 'CNN (Convolutional Neural Network)'],
   },
   {
     term: 'NIST AI RMF',
     definition: 'The NIST AI Risk Management Framework — a voluntary guidance document with four core functions: GOVERN (culture, accountability), MAP (context, risk identification), MEASURE (analysis, assessment), and MANAGE (prioritization, response).',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['EU AI Act', 'ISO 42001', 'AI Risk Management', 'Responsible AI'],
   },
   {
@@ -1013,7 +1013,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'NLP Fundamentals',
     definition: 'Natural Language Processing — the field of AI focused on enabling computers to understand, interpret, and generate human language. Foundational techniques include tokenization, POS tagging, NER, parsing, and text vectorization.',
     category: 'NLP',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Tokenization', 'Named Entity Recognition (NER)', 'Sentiment Analysis', 'BERT'],
   },
   {
@@ -1057,7 +1057,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'PEFT (Parameter-Efficient Fine-Tuning)',
     definition: 'Techniques that adapt pre-trained LLMs to new tasks by updating only a small fraction of model parameters, dramatically reducing compute and memory costs compared to full fine-tuning. Includes LoRA, QLoRA, prefix tuning, and adapters.',
     category: 'Generative AI & LLMs',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['LoRA (Low-Rank Adaptation)', 'QLoRA', 'Fine-Tuning', 'Instruction Tuning'],
   },
   {
@@ -1135,7 +1135,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Quantization',
     definition: 'Reducing the numerical precision of model weights (e.g., from 32-bit float to 8-bit or 4-bit integer) to decrease model size and inference latency. Slight accuracy tradeoff for significant speedup and memory savings.',
     category: 'Generative AI & LLMs',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['QLoRA', 'Inference', 'Model Serving', 'PEFT (Parameter-Efficient Fine-Tuning)'],
   },
   // ── R ─────────────────────────────────────────────────────────────────────
@@ -1192,7 +1192,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Reinforcement Learning',
     definition: 'A learning paradigm where an agent learns by interacting with an environment, receiving rewards or penalties for actions, and optimizing a policy to maximize cumulative reward. Used in game AI, robotics, and RLHF.',
     category: 'AI & ML Fundamentals',
-    certTags: ['AWS-AIF-C01'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['RLHF', 'Supervised Learning', 'Unsupervised Learning', 'Agent (AI)'],
   },
   {
@@ -1206,7 +1206,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Responsible AI',
     definition: 'A framework and set of practices ensuring AI systems are developed and deployed in ways that are fair, transparent, accountable, safe, and respectful of human rights and privacy.',
     category: 'AI Governance',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'CAISP'],
     related: ['Fairness', 'Explainable AI (XAI)', 'NIST AI RMF', 'Model Card'],
   },
   {
@@ -1249,14 +1249,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Sensitive Information Disclosure',
     definition: 'OWASP LLM06 — unintentional leaking of confidential data including PII, API keys, system prompts, or proprietary business information in LLM outputs. Mitigated by output filtering, PII redaction, and access controls.',
     category: 'AI Security',
-    certTags: ['SecAI', 'CAISP'],
+    certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
     related: ['LLM06 Sensitive Information Disclosure', 'Prompt Leaking', 'OWASP LLM Top 10', 'Guardrails'],
   },
   {
     term: 'Sentiment Analysis',
     definition: 'An NLP task that classifies the emotional tone of text as positive, negative, or neutral (and sometimes fine-grained emotions). Used in customer feedback analysis, social media monitoring, and brand reputation management.',
     category: 'NLP',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Text Classification', 'NLP Fundamentals', 'BERT', 'Named Entity Recognition (NER)'],
   },
   {
@@ -1284,21 +1284,21 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Speculative Decoding',
     definition: 'An LLM inference optimization where a smaller "draft" model proposes several tokens at once, and the larger target model verifies them in parallel. Achieves 2-3x speedup for identical outputs compared to standard autoregressive decoding.',
     category: 'Emerging Trends',
-    certTags: ['Google-MLE'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     related: ['Inference', 'KV Cache', 'Model Serving', 'Mixture of Experts (MoE)'],
   },
   {
     term: 'Stochastic Gradient Descent (SGD)',
     definition: 'A variant of gradient descent that updates model weights using the gradient computed from a single randomly selected training example (or mini-batch) at each step. Introduces noise that can help escape local minima.',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
+    certTags: [],
     related: ['Gradient Descent', 'Batch Size', 'Learning Rate', 'Backpropagation'],
   },
   {
     term: 'Supervised Learning',
     definition: 'A machine learning paradigm where models are trained on labeled examples — input/output pairs — to learn a mapping function. Includes classification (predicting categories) and regression (predicting continuous values).',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Unsupervised Learning', 'Reinforcement Learning', 'Classification', 'Regression'],
   },
   {
@@ -1348,7 +1348,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Text Classification',
     definition: 'An NLP task that assigns predefined categories to text. Applications include spam detection, sentiment analysis, topic categorization, and content moderation. Fine-tuned BERT and distilled transformer models are the standard approach.',
     category: 'NLP',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Sentiment Analysis', 'Named Entity Recognition (NER)', 'BERT', 'Supervised Learning'],
   },
   {
@@ -1369,14 +1369,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Token',
     definition: 'The basic unit of text that LLMs process. Tokens are subword pieces (not always full words) — "tokenization" is the process of converting text to token sequences. GPT-4 uses ~0.75 words per token on average in English.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Tokenization', 'Context Window', 'Embedding', 'Large Language Model (LLM)'],
   },
   {
     term: 'Tokenization',
     definition: 'The process of converting raw text into tokens (subword units) for LLM processing. Common algorithms include BPE (Byte-Pair Encoding), WordPiece, and SentencePiece. The vocabulary size and tokenizer choice significantly affect model behavior.',
     category: 'Generative AI & LLMs',
-    certTags: ['AWS-AIF-C01'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Token', 'Embedding', 'BERT', 'NLP Fundamentals'],
   },
   {
@@ -1418,14 +1418,14 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Transfer Learning',
     definition: 'Applying knowledge learned in one domain or task to a different but related domain or task. In deep learning, this means using a pre-trained model (e.g., ResNet, BERT) as a starting point and fine-tuning it on a new dataset.',
     category: 'AI & ML Fundamentals',
-    certTags: ['AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI900', 'Azure-AI102'],
     related: ['Fine-Tuning', 'Pre-Training', 'Foundation Model', 'CNN (Convolutional Neural Network)'],
   },
   {
     term: 'Transformer',
     definition: 'A neural network architecture based entirely on attention mechanisms, introduced in "Attention Is All You Need" (2017). The foundation of all modern LLMs; processes sequences in parallel using self-attention layers.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Attention Mechanism', 'Self-Attention', 'Large Language Model (LLM)', 'BERT'],
   },
   {
@@ -1447,7 +1447,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Unsupervised Learning',
     definition: 'A machine learning paradigm where models find patterns in unlabeled data without predefined outputs. Includes clustering (finding groups), dimensionality reduction, and anomaly detection.',
     category: 'AI & ML Fundamentals',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
     related: ['Supervised Learning', 'Clustering', 'Dimensionality Reduction', 'Anomaly Detection'],
   },
   // ── V ─────────────────────────────────────────────────────────────────────
@@ -1491,7 +1491,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Word2Vec',
     definition: 'A shallow neural network model that learns word embeddings by predicting context words (CBOW) or target words from context (Skip-gram). Produces dense vector representations where similar words have similar vectors.',
     category: 'NLP',
-    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
+    certTags: [],
     related: ['Embedding', 'BERT', 'Tokenization', 'NLP Fundamentals'],
   },
   // ── X ─────────────────────────────────────────────────────────────────────
@@ -1578,7 +1578,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'AI Risk Management',
     definition: 'A structured approach to identifying, assessing, and mitigating risks associated with AI systems throughout their lifecycle. Frameworks like NIST AI RMF, ISO 42001, and EU AI Act provide guidance for governance and risk controls.',
     category: 'AI Governance',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['NIST AI RMF', 'ISO 42001', 'EU AI Act', 'Responsible AI'],
   },
 
@@ -1588,7 +1588,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Confidence Scoring',
     definition: 'A measure of how certain an AI model is about a given output. In LLM security monitoring, confidence scores flag low-certainty responses for human review. Anomalously low confidence on routine queries can indicate adversarial inputs or model degradation.',
     category: 'AI Security',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     related: ['Hallucination', 'Prompt Monitoring', 'Model Monitoring'],
   },
   {
@@ -1602,35 +1602,35 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Model Skewing',
     definition: 'An attack where an adversary systematically manipulates the inputs or feedback provided to a model over time, gradually shifting its behavior or decision boundaries. In online learning systems, repeated biased queries can skew outputs toward attacker-desired responses.',
     category: 'AI Security',
-    certTags: ['SecAI', 'GIAC-GASAE'],
+    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
     related: ['Data Poisoning', 'Model Poisoning', 'Feedback Loop'],
   },
   {
     term: 'Guardrail Bypass',
     definition: 'A technique used to circumvent safety filters and content policies built into an AI system. Methods include role-play framing, encoding attacks (Base64), token smuggling, and multi-turn escalation. A key attack vector in the SecAI exam Domain 2.',
     category: 'AI Security',
-    certTags: ['SecAI', 'GIAC-GASAE'],
+    certTags: ['SecAI', 'GIAC-GASAE', 'CAISP'],
     related: ['Jailbreaking', 'Prompt Injection', 'Guardrail', 'Prompt Firewall'],
   },
   {
     term: 'Rate Monitoring',
     definition: 'Tracking the frequency of API calls, token consumption, or query volume per user or session. Rate monitoring detects abuse patterns such as automated scraping, prompt injection probing, denial-of-service attempts, and excessive resource consumption.',
     category: 'AI Security',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     related: ['Rate Limiting', 'Cost Monitoring', 'Token Limit', 'Prompt Monitoring'],
   },
   {
     term: 'Cost Monitoring',
     definition: 'Tracking financial expenditure of AI API usage (token consumption, inference costs, storage) in real time. Cost monitoring detects runaway usage from prompt injection attacks generating excessively long responses, DoS attempts, or unauthorized AI resource usage.',
     category: 'AI Security',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     related: ['Rate Monitoring', 'Token Limit', 'Rate Limiting'],
   },
   {
     term: 'Token Limit',
     definition: 'A configurable maximum on the number of tokens in an LLM prompt, response, or combined context. Token limits prevent prompt stuffing attacks, excessive cost from runaway generation, and context window overflow. A core gateway security control for LLM deployments.',
     category: 'AI Security',
-    certTags: ['SecAI'],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     related: ['Rate Limiting', 'Token', 'Prompt Firewall', 'Input Quota'],
   },
   {
