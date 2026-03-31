@@ -2887,4 +2887,134 @@ Record all access to AI system components:
 - Access auditing is mandatory for compliance with GDPR and EU AI Act
 - Hallucination detection is critical for RAG systems — verify outputs against retrieved context`,
   },
+
+  // ─── SecAI D3: AI-Assisted Security Tools ────────────────────────────────
+
+  {
+    id: 'secai-ai-tools',
+    category: 'AI in Security Ops',
+    title: 'AI-Assisted Security Tools',
+    certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
+    vocab: ['MCP Server', 'IDE Plugin', 'SOAR', 'AI Pentesting', 'Anomaly Detection', 'Signature Matching', 'Low-code AI', 'Recon Automation'],
+    content: `AI tools are transforming security operations — both as defenders using AI to detect and respond faster, and as attackers using AI to automate and enhance attacks. The SecAI exam (Domain 3 — 24%) tests both sides.
+
+## AI Security Tools by Type
+
+### IDE Plugins
+AI-powered development tools that analyze code in real time:
+- **GitHub Copilot**: Code completion and vulnerability suggestions in VS Code, JetBrains
+- **Cursor AI**: AI-native IDE with codebase-aware code generation
+- **Snyk DeepCode AI**: Real-time vulnerability detection in IDE
+
+**Security use cases**: Detect insecure patterns (SQL injection, hardcoded secrets, XSS) as developers write code; suggest secure alternatives.
+
+### Browser Plugins
+AI extensions that augment browser-based security workflows:
+- Phishing URL detection
+- Certificate validation analysis
+- Real-time threat intelligence lookup on visited domains
+
+### CLI Tools
+Command-line AI security assistants:
+- **Garak**: LLM red teaming and vulnerability scanner via CLI
+- **PyRIT**: Microsoft Python Risk Identification Toolkit for LLMs
+- **Semgrep + AI rules**: Pattern matching with AI-generated security rules
+
+### Chatbots and AI Assistants
+Conversational interfaces for security tasks:
+- Threat intelligence Q&A (ask questions about CVEs, TTPs, threat actors)
+- Incident response guidance (walk through IR playbooks conversationally)
+- Security policy drafting and review
+- Log analysis and summarization
+
+### MCP Servers (Model Context Protocol)
+MCP is an open protocol (Anthropic, 2024) enabling LLMs to interact with external tools and data sources:
+- **Security MCP servers**: Give LLMs access to threat intelligence feeds, SIEM queries, vulnerability databases
+- **Use cases**: Automated threat hunting, CVE lookup, PCAP analysis, log query generation
+- **Security risk**: MCP servers expand the LLM's tool access surface — must be secured with least privilege and audit logging
+
+## AI Use Cases in Security Operations
+
+### Signature Matching
+AI-enhanced pattern matching goes beyond static signatures:
+- ML models detect novel malware variants by behavioral similarity to known families
+- Reduces false negatives from signature evasion techniques
+
+### Code Analysis and Vulnerability Detection
+- Static analysis AI tools identify vulnerable code patterns at scale (thousands of files/minute)
+- AI-assisted SAST: context-aware vulnerability detection with lower false positive rates
+- SCA (Software Composition Analysis): AI flags known-vulnerable dependencies
+
+### Automated Pentesting
+AI assists penetration testers by:
+- Generating attack payloads (SQL injection variants, XSS strings, path traversal)
+- Suggesting next attack steps based on reconnaissance results
+- Automating reconnaissance: subdomain enumeration, port scanning interpretation
+- Tools: Pentera, Node Zero, BurpSuite AI extensions
+
+### Anomaly Detection
+ML models establish behavioral baselines and flag deviations:
+- **Network**: Unusual traffic patterns, lateral movement, data exfiltration
+- **User behavior (UEBA)**: Login anomalies, off-hours access, privilege escalation
+- **LLM behavior**: Unusual prompt patterns, confidence score drops
+
+### Incident Management and SOAR
+AI accelerates Security Orchestration, Automation, and Response:
+- Auto-triage incoming alerts by severity and classification
+- Enrich alerts with threat intelligence automatically
+- Execute playbook steps without human intervention (isolate host, block IP)
+- Generate incident summary reports and ticket updates
+
+### Threat Modeling
+AI assists threat modeling by:
+- Automatically identifying attack surfaces from architecture diagrams (code or infrastructure)
+- Mapping components to MITRE ATT&CK techniques
+- Suggesting mitigations based on OWASP and NIST frameworks
+
+### Fraud Detection
+Real-time ML models score transactions or user actions for fraud probability, triggering review or blocking.
+
+## AI-Driven Attacks (D3.2)
+
+The same AI capabilities used by defenders are weaponized by attackers:
+
+### Deepfakes
+AI-generated synthetic media (video, audio, images) used for:
+- **CEO fraud / BEC**: Deepfake voice/video of executives authorizing wire transfers
+- **Identity impersonation**: Bypassing video KYC verification
+- **Disinformation campaigns**: Fabricated events at scale
+
+### Social Engineering Automation
+- AI generates highly personalized phishing emails at scale using public data (LinkedIn, social media)
+- Eliminates grammatical errors that previously identified phishing
+- Voice cloning enables vishing (voice phishing) with synthetic voices of known contacts
+
+### Recon Automation
+AI tools accelerate pre-attack reconnaissance:
+- Automated OSINT collection from social media, job postings, DNS records
+- Data correlation: connect fragmented information across sources into attack-ready intelligence
+- AI-generated target profiles for spear phishing
+
+### Attack Generation and Obfuscation
+- AI generates novel malware variants to evade signature-based detection
+- Polymorphic code: AI rewrites malware structure while preserving functionality
+- Automated payload generation tuned to bypass specific WAF/EDR signatures
+
+### DDoS Amplification
+AI optimizes DDoS attack parameters (timing, source diversity, protocol choice) to maximize impact and evade rate-limiting defenses.
+
+## Low-Code / No-Code AI Security
+
+Non-developers can build AI-assisted security workflows:
+- **Microsoft Copilot for Security**: Natural language queries across Microsoft security stack
+- **Splunk AI Assistant**: Natural language log queries and detection rule generation
+- **Palo Alto XSIAM**: AI-native SOC platform with automated detection and response
+
+### Key SecAI Takeaways
+- MCP servers expand LLM tool access — must be secured with least privilege and audit logging
+- AI phishing emails eliminate traditional grammar-based detection signals
+- SOAR automation + AI reduces mean time to respond (MTTR)
+- Deepfake voice/video is now a primary BEC attack vector
+- AI code analysis (SAST + SCA) is standard in modern CI/CD security pipelines`,
+  },
 ];
