@@ -98,12 +98,67 @@ export const DEFAULT_DOJO2_CONFIG: Dojo2Config = {
   riskAssessment: 'medium',
 };
 
-// ─── Dojo 3 defender configuration ───────────────────────────────────────────
+// ─── Dojo 3 — AI GRC configuration ───────────────────────────────────────────
 
 export interface Dojo3Config {
   detectionRule: string;
   selectedClauses: string[];
 }
+
+export type GRCPersona = 'risk-analyst' | 'auditor' | 'governance-engineer' | 'ciso';
+export type GRCDepth = 'basic' | 'standard' | 'deep';
+export type GRCOutputFormat = 'markdown' | 'report' | 'json';
+export type GRCScenarioType = 'risk-classification' | 'shadow-ai-audit' | 'responsible-ai-review' | 'compliance-gap';
+export type GRCFramework = 'NIST-AIRMF' | 'EU-AI-Act' | 'ISO-AI' | 'OWASP-LLM';
+
+export interface GRCScenario {
+  id: string;
+  title: string;
+  type: GRCScenarioType;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  frameworks: GRCFramework[];
+  /** Markdown deployment brief shown in the AuditBoard center panel. */
+  brief: string;
+  /** Hints used in the API system prompt only — not shown to the user. */
+  evaluationHints: string[];
+}
+
+export interface GRCReview {
+  frameworkApplied: string;
+  riskTier: 'Low' | 'Medium' | 'High' | 'Critical';
+  findings: string;
+  controls: string;
+}
+
+export interface GRCConfig {
+  persona: GRCPersona;
+  depth: GRCDepth;
+  outputFormat: GRCOutputFormat;
+  frameworks: Record<GRCFramework, boolean>;
+}
+
+export interface GRCAssessmentScore {
+  frameworkAccuracy: number;       // 0–25
+  riskTierAccuracy: number;        // 0–25
+  findingsCompleteness: number;    // 0–25
+  controlsAppropriateness: number; // 0–25
+  total: number;                   // 0–100
+  grade: 'A' | 'B' | 'C' | 'D' | 'F';
+  feedback: string;
+  socraticQuestions: string[];
+}
+
+export const DEFAULT_GRC_CONFIG: GRCConfig = {
+  persona: 'risk-analyst',
+  depth: 'standard',
+  outputFormat: 'markdown',
+  frameworks: {
+    'NIST-AIRMF': true,
+    'EU-AI-Act': true,
+    'ISO-AI': false,
+    'OWASP-LLM': false,
+  },
+};
 
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 

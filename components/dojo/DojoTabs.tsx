@@ -7,6 +7,7 @@ import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import PlaybookView from '@/components/playbook/PlaybookView';
+import Dojo3View from '@/components/dojo/Dojo3View';
 import { getScenariosByDojo } from '@/lib/scenarios';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import type {
@@ -16,14 +17,15 @@ import type {
   Dojo3Config,
   DojoId,
   EvaluationResult,
+  GRCConfig,
   Scenario,
 } from '@/types';
-import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG } from '@/types';
+import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG, DEFAULT_GRC_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   { id: 1, label: 'LLM Red vs Blue', sublabel: 'Dojo 1', color: 'red' },
   { id: 2, label: 'AI Defender', sublabel: 'Dojo 2', color: 'cyan' },
-  { id: 3, label: 'Defense vs AI Attacks', sublabel: 'Dojo 3', color: 'emerald' },
+  { id: 3, label: 'AI GRC',                sublabel: 'Dojo 3', color: 'emerald' },
   { id: 4, label: 'Playbook',              sublabel: 'Reference', color: 'violet' },
 ];
 
@@ -59,11 +61,14 @@ export function DojoTabs() {
    *  or cleared when the user clicks a new left-panel scenario card. */
   const [activeDojo2Scenario, setActiveDojo2Scenario] = useState<Dojo2IncidentScenario | null>(null);
 
-  // ── Dojo 3 config ──────────────────────────────────────────────────────────
+  // ── Dojo 3 config (legacy — kept for ControlPanel compatibility) ────────────
   const [dojo3Config, setDojo3Config] = useState<Dojo3Config>({
     detectionRule:   '',
     selectedClauses: [],
   });
+
+  // ── Dojo 3 GRC config ─────────────────────────────────────────────────────
+  const [grcConfig, setGRCConfig] = useState<GRCConfig>(DEFAULT_GRC_CONFIG);
 
   // ── M7 state ──────────────────────────────────────────────────────────────
   /** Content of the RAG Context Injection textarea. */
@@ -200,9 +205,10 @@ export function DojoTabs() {
         })}
       </div>
 
-      {/* Tab content — Playbook gets its own full-height layout */}
+      {/* Tab content — Playbook and AI GRC get their own full-height layouts */}
       {activeDojoId === 4 && <PlaybookView />}
-      {activeDojoId !== 4 && <DojoLayout
+      {activeDojoId === 3 && <Dojo3View grcConfig={grcConfig} onGRCConfigChange={setGRCConfig} />}
+      {activeDojoId !== 4 && activeDojoId !== 3 && <DojoLayout
         scenarioPicker={
           <ScenarioPicker
             scenarios={scenarios}

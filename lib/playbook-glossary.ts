@@ -629,7 +629,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'Hugging Face',
     definition: 'An AI platform and open-source community providing the Transformers library, model Hub, and Datasets library. The de facto standard for accessing pre-trained NLP models, fine-tuning LLMs, and sharing ML artifacts.',
     category: 'Frameworks & Tools',
-    certTags: ['SecAI', 'CAISP', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP'],
     related: ['Transformers Library', 'Fine-Tuning', 'PEFT', 'LangChain'],
   },
   // ── I ─────────────────────────────────────────────────────────────────────
@@ -1128,7 +1128,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'QLoRA',
     definition: 'Quantized LoRA — combines 4-bit quantization of a frozen base model with LoRA adapters. Enables fine-tuning of large models (65B+) on a single consumer GPU by dramatically reducing memory requirements.',
     category: 'Generative AI & LLMs',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
     related: ['LoRA (Low-Rank Adaptation)', 'PEFT (Parameter-Efficient Fine-Tuning)', 'Quantization', 'Fine-Tuning'],
   },
   {
