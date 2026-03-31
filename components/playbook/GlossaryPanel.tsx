@@ -23,16 +23,26 @@ export default function GlossaryPanel() {
   const [certFilter, setCert]   = useState('All');
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  const filtered: GlossaryTerm[] = useMemo(() => {
+  // Stage 1: apply search + cert filter (used to determine available A–Z letters)
+  const certFiltered: GlossaryTerm[] = useMemo(() => {
     const q = search.toLowerCase();
     return GLOSSARY_TERMS
-      .filter((t) =>
-        !q || t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q),
-      )
-      .filter((t) => !jumpLetter || t.term.toUpperCase().startsWith(jumpLetter))
+      .filter((t) => !q || t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q))
       .filter((t) => certFilter === 'All' || t.certTags.includes(certFilter))
       .sort((a, b) => a.term.localeCompare(b.term));
-  }, [search, jumpLetter, certFilter]);
+  }, [search, certFilter]);
+
+  // Stage 2: apply jump letter on top of stage 1
+  const filtered: GlossaryTerm[] = useMemo(() => {
+    if (!jumpLetter) return certFiltered;
+    return certFiltered.filter((t) => t.term.toUpperCase().startsWith(jumpLetter));
+  }, [certFiltered, jumpLetter]);
+
+  // Letters that have at least one term in the current cert+search result
+  const availableLetters = useMemo(
+    () => new Set(certFiltered.map((t) => t.term[0].toUpperCase())),
+    [certFiltered],
+  );
 
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -51,7 +61,7 @@ export default function GlossaryPanel() {
         {search && (
           <button onClick={() => setSearch('')} className="text-slate-600 hover:text-slate-400 text-xs">✕</button>
         )}
-        <span className="text-[10px] text-slate-600 font-mono">{filtered.length} terms</span>
+        <span className="text-[10px] text-slate-600 font-mono">{certFiltered.length} terms</span>
       </div>
 
       {/* Cert filter */}
@@ -83,18 +93,26 @@ export default function GlossaryPanel() {
         >
           All
         </button>
-        {ALPHABET.map((l) => (
-          <button
-            key={l}
-            onClick={() => { setJump(jumpLetter === l ? '' : l); setSearch(''); }}
-            className={[
-              'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
-              jumpLetter === l ? 'bg-violet-500/20 text-violet-300' : 'text-slate-600 hover:text-slate-400',
-            ].join(' ')}
-          >
-            {l}
-          </button>
-        ))}
+        {ALPHABET.map((l) => {
+          const has = availableLetters.has(l);
+          return (
+            <button
+              key={l}
+              onClick={() => { if (has) { setJump(jumpLetter === l ? '' : l); setSearch(''); } }}
+              disabled={!has}
+              className={[
+                'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
+                jumpLetter === l
+                  ? 'bg-violet-500/20 text-violet-300'
+                  : has
+                    ? 'text-slate-500 hover:text-slate-300'
+                    : 'text-slate-800 cursor-default',
+              ].join(' ')}
+            >
+              {l}
+            </button>
+          );
+        })}
       </div>
 
       {/* Term list */}
