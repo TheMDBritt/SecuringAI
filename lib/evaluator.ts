@@ -834,23 +834,101 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Scoring each clause 0–3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
 };
 
-/** SecurityAI+ exam topic mappings per scenario — shown in the evaluation panel. */
+/**
+ * Per-scenario certification topic mapping — surfaced in the evaluation panel.
+ *
+ * Maps each scenario to exam domains drawn from the leading 2026 AI-security
+ * certifications and the frameworks they cover:
+ *
+ *   • CompTIA SecAI+            — vendor-neutral AI security practitioner
+ *   • ISC2 CAISP                — Certified in AI Systems Security Practitioner
+ *   • ISACA AAISM               — Advanced AI Security Management
+ *   • EC-Council CAIS           — Certified AI Security Specialist
+ *   • CSA AICM                  — Cloud Security Alliance AI Controls Matrix
+ *   • OWASP LLM Top 10 (2025)   — adversarial prompting + agentic AI risks
+ *   • NIST AI RMF 1.0           — Govern / Map / Measure / Manage
+ *   • ISO/IEC 42001             — AI management system controls
+ *   • EU AI Act                 — high-risk AI system obligations
+ *
+ * Topics are intentionally short — they are rendered as inline tags in the UI.
+ */
 const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
-  // ── Dojo 1 ──────────────────────────────────────────────────────────────────
-  'prompt-injection':      ['LLM01 – Prompt Injection', 'Adversarial Prompting', 'AI Input Validation'],
-  'data-exfiltration':     ['LLM02 – Insecure Output Handling', 'Data Leakage Prevention', 'AI Context Security'],
-  'policy-bypass':         ['LLM01 – Prompt Injection', 'AI Policy Enforcement', 'Jailbreak Resistance'],
-  'tool-abuse':            ['LLM07 – Insecure Plugin Design', 'Agentic AI Security', 'Tool Call Guardrails'],
-  'rag-injection':         ['LLM08 – Excessive Agency', 'RAG Pipeline Security', 'Retrieval Poisoning Defense'],
-  // ── Dojo 2 ──────────────────────────────────────────────────────────────────
-  'log-triage':            ['AI-Assisted SOC Operations', 'Alert Triage & Classification', 'MITRE ATT&CK for AI'],
-  'alert-enrichment':      ['AI Threat Intelligence', 'CVE Analysis & Enrichment', 'AI in Security Operations'],
-  'detection-rule-gen':    ['AI-Generated Detection Rules', 'SIEM Engineering', 'Detection-as-Code (Sigma/KQL)'],
-  'incident-report-draft': ['AI-Assisted Incident Response', 'IR Documentation', 'Post-Incident Review'],
-  // ── Dojo 3 ──────────────────────────────────────────────────────────────────
-  'phishing-deepfake':     ['AI-Generated Threats', 'Synthetic Media Detection', 'Social Engineering Defense'],
-  'ai-abuse-threat-model': ['AI Threat Modeling', 'OWASP LLM Top 10', 'NIST AI RMF', 'EU AI Act'],
-  'policy-and-controls':   ['AI Governance & Policy', 'Acceptable Use Policy', 'ISO 42001', 'Control Validation'],
+  // ── Dojo 1 — Attacking & defending LLMs ─────────────────────────────────────
+  'prompt-injection': [
+    'OWASP LLM01 — Prompt Injection',
+    'SecAI+ · Adversarial Prompting',
+    'CAISP · AI Input Validation',
+    'NIST AI RMF · Measure 2.7',
+  ],
+  'data-exfiltration': [
+    'OWASP LLM02 — Sensitive Information Disclosure',
+    'OWASP LLM06 — Excessive Agency',
+    'SecAI+ · Data Leakage Prevention',
+    'AAISM · Context Window Hygiene',
+  ],
+  'policy-bypass': [
+    'OWASP LLM01 — Prompt Injection',
+    'SecAI+ · Jailbreak Resistance',
+    'CAIS · AI Policy Enforcement',
+    'NIST AI RMF · Manage 4.1',
+  ],
+  'tool-abuse': [
+    'OWASP LLM07 — System Prompt Leakage / Tool Misuse',
+    'CAISP · Agentic AI Security',
+    'SecAI+ · Tool-Call Guardrails',
+    'CSA AICM · Agentic Controls',
+  ],
+  'rag-injection': [
+    'OWASP LLM08 — Vector & Embedding Weaknesses',
+    'SecAI+ · RAG Pipeline Security',
+    'CAISP · Retrieval Poisoning Defense',
+    'CSA AICM · Data Provenance',
+  ],
+
+  // ── Dojo 2 — Using AI for defense ───────────────────────────────────────────
+  'log-triage': [
+    'SecAI+ · AI-Assisted SOC Operations',
+    'CAISP · Alert Triage & Classification',
+    'MITRE ATT&CK · Initial Access / Execution',
+    'AAISM · Operational AI Oversight',
+  ],
+  'alert-enrichment': [
+    'SecAI+ · AI Threat Intelligence',
+    'CAIS · CVE Analysis & Enrichment',
+    'MITRE ATT&CK · Exploit Public-Facing App',
+    'NIST AI RMF · Map 5.1',
+  ],
+  'detection-rule-gen': [
+    'SecAI+ · AI-Generated Detection Rules',
+    'CAISP · Detection-as-Code (Sigma / KQL / YARA)',
+    'AAISM · AI Output Quality Assurance',
+  ],
+  'incident-report-draft': [
+    'SecAI+ · AI-Assisted Incident Response',
+    'AAISM · IR Documentation & Review',
+    'NIST AI RMF · Manage 4.2',
+  ],
+
+  // ── Dojo 3 — Defending against AI-powered attacks ──────────────────────────
+  'phishing-deepfake': [
+    'OWASP LLM02 — Sensitive Information Disclosure',
+    'SecAI+ · Synthetic Media Detection',
+    'CAIS · AI-Generated Social Engineering',
+    'MITRE ATT&CK T1566 · Phishing',
+  ],
+  'ai-abuse-threat-model': [
+    'OWASP LLM05 — Improper Output Handling',
+    'OWASP LLM08 — Vector & Embedding Weaknesses',
+    'SecAI+ · AI Threat Modeling',
+    'NIST AI RMF · Govern + Map',
+    'EU AI Act · High-Risk AI Obligations',
+  ],
+  'policy-and-controls': [
+    'AAISM · AI Governance & Policy',
+    'ISO/IEC 42001 · AI Management System',
+    'EU AI Act · Article 9 Risk Management',
+    'CSA AICM · Control Validation',
+  ],
 };
 
 /**
@@ -952,15 +1030,15 @@ function evaluateQuality(
       `Try providing more detailed scenario context, or use a higher analysis depth setting.`;
   }
 
-  // ── Teaching layer: SecurityAI+ connection + what a real analyst does next ──
+  // ── Teaching layer: certification connection + what a real analyst does next ──
   const nextSteps = dojoId === 2 ? (DOJO2_NEXT_ANALYST_STEPS[scenarioId] ?? null) : null;
   const defensiveTakeaway = topics.length > 0
-    ? `SecurityAI+ Connection: This scenario covers **${topics.slice(0, 2).join('** and **')}**. ` +
+    ? `Certification Mapping: This scenario covers **${topics.slice(0, 2).join('** and **')}**. ` +
       (dojoId === 2
-        ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders — knowing what to look for is a core AI security skill.'
-        : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO 42001). The ability to evaluate AI output quality and identify gaps is a key SecurityAI+ domain.') +
+        ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders — knowing what to look for is a core domain on CompTIA SecAI+, ISC2 CAISP, and ISACA AAISM.'
+        : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO/IEC 42001). Evaluating AI output quality and identifying gaps is a shared domain across SecAI+, CAISP, AAISM, and the CSA AI Controls Matrix.') +
       (nextSteps ? `\n\n**${nextSteps}**` : '')
-    : 'No SecurityAI+ topic mapping available for this scenario.';
+    : 'No certification mapping available for this scenario.';
 
   // ── Per-element coaching for missing criteria ─────────────────────────────
   // Each missing criterion gets specific guidance: why it matters + what prompt to use.

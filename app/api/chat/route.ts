@@ -187,12 +187,6 @@ export async function POST(req: NextRequest) {
           ? getJailbreakContinuationResponse(userText)
           : getDefendedResponse(scenarioId, 'policy_bypass');
 
-      console.log('[Dojo1][policy-bypass] Jailbreak persistence:', {
-        scenario: scenarioId,
-        jailbreakOutcome,
-        vulnerablePath: jailbreakOutcome === 'vulnerable',
-      });
-
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
         {
@@ -260,19 +254,6 @@ export async function POST(req: NextRequest) {
         ? (scenarioForced ?? ('benign' as const))
         : (scenarioForced ?? preEvalAttackType);
 
-    console.log('[Dojo1] Routing decision:', {
-      scenario:   scenarioId,
-      guardrails: {
-        strictPolicy:    controlConfig.strictPolicy,
-        injectionShield: controlConfig.injectionShield,
-        ragEnabled:      controlConfig.ragEnabled,
-        allowTools:      controlConfig.allowTools,
-      },
-      preEvalAttackType,
-      scenarioForcedAttackType: scenarioForced,
-      resolvedAttackType,
-    });
-
     if (shouldBypassModel(resolvedAttackType)) {
       let outcome = getOutcome(scenarioId, resolvedAttackType, controlConfig);
 
@@ -313,13 +294,6 @@ export async function POST(req: NextRequest) {
       const turnIndex     = messages.filter((m: { role: string }) => m.role === 'assistant').length;
       const fragmentIndex = turnIndex;
       const leadInIndex   = turnIndex;
-
-      console.log('[Dojo1] Bypass triggered:', {
-        resolvedAttackType,
-        outcome,
-        vulnerablePath: outcome === 'vulnerable',
-        turnIndex,
-      });
 
       // ── Prompt-injection scenario: ALL attack types route through the semantic path ──
       //

@@ -377,16 +377,16 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
         </div>
       )}
 
-      {/* SECURITYAI+ CONNECTION */}
+      {/* CERTIFICATION CONNECTION */}
       <div className="border-t border-slate-700/60 pt-2.5">
-        <SectionLabel>SecurityAI+ Connection</SectionLabel>
+        <SectionLabel>Certification Connection</SectionLabel>
         <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
       </div>
 
-      {/* SECURITYAI+ TOPICS */}
+      {/* CERTIFICATION DOMAINS */}
       {e.securityAITopics && e.securityAITopics.length > 0 && (
         <div className="border-t border-slate-700/60 pt-2.5">
-          <SectionLabel>SecurityAI+ Exam Topics</SectionLabel>
+          <SectionLabel>2026 AI Security Cert Domains</SectionLabel>
           <div className="flex flex-wrap gap-1 mt-1">
             {e.securityAITopics.map((topic) => (
               <span
@@ -543,7 +543,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             </p>
             <p className="text-xs text-slate-400 italic">
               {isQualityMode
-                ? 'Submit a security artifact (logs, alert, behavior description, or policy question) to BlackBeltAI. The evaluator will score the analysis against scenario quality criteria and show SecurityAI+ exam connections.'
+                ? 'Submit a security artifact (logs, alert, behavior description, or policy question) to BlackBeltAI. The evaluator will score the analysis against scenario quality criteria and map it to the top 2026 AI security certifications.'
                 : 'Evaluation appears after your first message. The evaluator will classify the attack type, explain what happened, and provide a defensive takeaway with OWASP mapping.'}
             </p>
           </div>
