@@ -1,9 +1,11 @@
+import Link from 'next/link';
+
 export function Header() {
   return (
     <header className="h-14 border-b border-slate-700 bg-slate-900/95 backdrop-blur flex items-center justify-between px-4 shrink-0 z-10">
-      <div className="flex items-center gap-3">
+      <Link href="/" className="flex items-center gap-3 group" aria-label="SecuringAI home">
         {/* Logo mark */}
-        <div className="flex items-center justify-center w-8 h-8 rounded bg-cyan-500/10 border border-cyan-500/30">
+        <div className="flex items-center justify-center w-8 h-8 rounded bg-cyan-500/10 border border-cyan-500/30 group-hover:border-cyan-500/60 transition-colors">
           <svg
             className="w-4 h-4 text-cyan-400"
             viewBox="0 0 24 24"
@@ -16,14 +18,29 @@ export function Header() {
           </svg>
         </div>
         <div>
-          <span className="font-bold text-slate-100 tracking-tight">LLM Dojo</span>
-          <span className="ml-2 text-xs text-slate-500">AI Security Training</span>
+          <span className="font-bold text-slate-100 tracking-tight">SecuringAI</span>
+          <span className="ml-2 text-xs text-slate-500 hidden sm:inline">LLM Security Dojo</span>
         </div>
-      </div>
+      </Link>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 sm:gap-3">
+        <nav className="flex items-center gap-1 text-sm">
+          <Link
+            href="/dojo"
+            className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+          >
+            Dojo
+          </Link>
+          <Link
+            href="/certs"
+            className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+          >
+            Certs
+          </Link>
+        </nav>
+
         {/* Sandbox model badge */}
-        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded border border-emerald-500/30 bg-emerald-500/5">
+        <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded border border-emerald-500/30 bg-emerald-500/5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-xs text-emerald-400 font-mono">BlackBeltAI sandbox</span>
         </div>

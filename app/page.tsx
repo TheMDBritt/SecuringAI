@@ -108,12 +108,12 @@ export default function LandingPage() {
             >
               Enter the dojo →
             </Link>
-            <a
-              href="#certs"
+            <Link
+              href="/certs"
               className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium transition-colors"
             >
               See cert mapping
-            </a>
+            </Link>
           </div>
 
           <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-slate-500">
@@ -242,6 +242,12 @@ export default function LandingPage() {
           <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-10">
             Mapped to every scenario.
           </h2>
+
+          <p className="text-sm text-slate-400 mb-6">
+            <Link href="/certs" className="text-cyan-400 hover:text-cyan-300 underline-offset-2 hover:underline">
+              See the full cert deep-dive →
+            </Link>
+          </p>
 
           <div className="overflow-hidden rounded-lg border border-slate-800">
             <table className="w-full text-sm">

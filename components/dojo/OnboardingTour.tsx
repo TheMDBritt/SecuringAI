@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const STORAGE_KEY = 'securingai-onboarding-v1';
 
@@ -40,24 +40,68 @@ export function OnboardingTour() {
   // Start hidden so SSR + first paint match. Decide visibility post-mount.
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const primaryRef = useRef<HTMLButtonElement>(null);
+  // Element to return focus to after dismissal — saved on open.
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     try {
       if (localStorage.getItem(STORAGE_KEY) !== 'done') setVisible(true);
     } catch {
-      // Private mode / storage disabled — show the tour anyway.
       setVisible(true);
     }
   }, []);
 
-  function dismiss() {
+  const dismiss = useCallback(() => {
     setVisible(false);
     try {
       localStorage.setItem(STORAGE_KEY, 'done');
     } catch {
       // Ignore — same-session dismissal still works.
     }
-  }
+  }, []);
+
+  // Focus management: capture the previously-focused element on open, move
+  // focus to the primary action, restore focus on close.
+  useEffect(() => {
+    if (!visible) return;
+    previouslyFocusedRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    primaryRef.current?.focus();
+    return () => {
+      previouslyFocusedRef.current?.focus?.();
+    };
+  }, [visible]);
+
+  // Esc dismisses; Tab is trapped inside the dialog while open.
+  useEffect(() => {
+    if (!visible) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        dismiss();
+        return;
+      }
+      if (e.key !== 'Tab' || !dialogRef.current) return;
+      const focusables = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [visible, dismiss]);
 
   function next() {
     if (step < STEPS.length - 1) setStep((s) => s + 1);
@@ -73,10 +117,16 @@ export function OnboardingTour() {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Onboarding tour"
+      aria-labelledby="onboarding-title"
+      aria-describedby="onboarding-body"
       className="fixed inset-0 z-50 flex items-center justify-center px-4 bg-slate-950/70 backdrop-blur-sm"
+      onClick={(e) => {
+        // Click on the backdrop (not the inner card) dismisses the tour.
+        if (e.target === e.currentTarget) dismiss();
+      }}
     >
       <div
+        ref={dialogRef}
         className={[
           'w-full max-w-md rounded-lg border bg-slate-900 shadow-2xl shadow-black/60',
           ACCENT_BORDER[current.accent],
@@ -96,10 +146,15 @@ export function OnboardingTour() {
         </div>
 
         <div className="px-5 py-5">
-          <h2 className={['text-lg font-semibold mb-2', ACCENT_TEXT[current.accent]].join(' ')}>
+          <h2
+            id="onboarding-title"
+            className={['text-lg font-semibold mb-2', ACCENT_TEXT[current.accent]].join(' ')}
+          >
             {current.title}
           </h2>
-          <p className="text-sm text-slate-300 leading-relaxed">{current.body}</p>
+          <p id="onboarding-body" className="text-sm text-slate-300 leading-relaxed">
+            {current.body}
+          </p>
         </div>
 
         <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-slate-800">
@@ -124,8 +179,9 @@ export function OnboardingTour() {
               </button>
             )}
             <button
+              ref={primaryRef}
               onClick={next}
-              className="px-4 py-1.5 text-xs rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors"
+              className="px-4 py-1.5 text-xs rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               {isLast ? 'Start training →' : 'Next'}
             </button>
