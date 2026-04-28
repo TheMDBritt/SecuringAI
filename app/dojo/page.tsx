@@ -1,7 +1,9 @@
 import { DojoTabs } from '@/components/dojo/DojoTabs';
 
 export const metadata = {
-  title: 'LLM Dojo',
+  title: 'Dojo',
+  description:
+    'Three connected dojos covering AI/LLM offence, defence, and SOC operations. Every turn is scored and mapped to the top 2026 AI security certifications.',
 };
 
 export default function DojoPage() {
