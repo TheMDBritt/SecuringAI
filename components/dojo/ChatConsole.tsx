@@ -10,6 +10,7 @@ import {
 } from 'react';
 import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, EvaluationResult, Scenario } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
+import { encodeShare } from '@/lib/share-url';
 
 // ─── Imperative handle — exposed to DojoTabs via ref ─────────────────────────
 
@@ -163,6 +164,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    /** Transient confirmation state for the Share button — flips back after 2s. */
+    const [shareCopied, setShareCopied] = useState(false);
     /** Last N user messages — used for replay. */
     const [attackHistory, setAttackHistory] = useState<string[]>([]);
     const bottomRef = useRef<HTMLDivElement>(null);
@@ -390,6 +393,37 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       onSessionClear?.();
     }, [scenario, onSessionClear]);
 
+    const sharePermalink = useCallback(async () => {
+      if (typeof window === 'undefined') return;
+      const qs = encodeShare({
+        dojoId,
+        scenario,
+        controlConfig,
+        dojo2Config: dojo2Config ?? {
+          persona: 'analyst',
+          outputFormat: 'markdown',
+          analysisDepth: 'standard',
+          responseStyle: 'detailed',
+          iocExtraction: true,
+          mitreMapping: true,
+          threatCorrelation: false,
+          contextLevel: 'limited',
+          confidenceLevel: 'medium',
+          riskAssessment: 'medium',
+        },
+      });
+      const url = `${window.location.origin}/dojo${qs}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        setShareCopied(true);
+        window.setTimeout(() => setShareCopied(false), 2000);
+      } catch {
+        // Clipboard API blocked (insecure origin / permission denied) — fall
+        // back to a prompt so the user can still copy the link by hand.
+        window.prompt('Copy this share link:', url);
+      }
+    }, [dojoId, scenario, controlConfig, dojo2Config]);
+
     const exportTranscript = useCallback(() => {
       const ts = new Date().toISOString().slice(0, 16).replace('T', ' ');
       const scenarioLabel = scenario ? `${scenario.title} (Dojo ${dojoId})` : `Dojo ${dojoId}`;
@@ -457,6 +491,22 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                 className="text-xs px-2 py-1 rounded border border-amber-700/40 bg-amber-500/10 text-amber-400 hover:border-amber-600/60 hover:text-amber-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 ↩ Replay
+              </button>
+            )}
+
+            {hasScenario && (
+              <button
+                onClick={sharePermalink}
+                disabled={loading}
+                title="Copy a share link for this dojo + scenario + control configuration"
+                className={[
+                  'text-xs px-2 py-1 rounded border transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
+                  shareCopied
+                    ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
+                    : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600',
+                ].join(' ')}
+              >
+                {shareCopied ? '✓ Copied' : '↗ Share'}
               </button>
             )}
 

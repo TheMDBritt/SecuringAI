@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { DojoLayout } from './DojoLayout';
 import { ScenarioPicker } from './ScenarioPicker';
 import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
+import { decodeShare, encodeShare } from '@/lib/share-url';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import type {
   AttackType,
@@ -80,6 +81,41 @@ export function DojoTabs() {
 
   /** Ref to ChatConsole's imperative handle. */
   const chatRef = useRef<ChatConsoleHandle>(null);
+
+  /** True once URL hydration has run; suppresses early replaceState that
+   *  would clobber an inbound deep link before we read it. */
+  const hydratedRef = useRef(false);
+
+  // ── URL hydration: deep-link share support ────────────────────────────────
+  // On first mount, parse the query string and seed dojo / scenario / control
+  // / Dojo 2 config from it. Best-effort: invalid values fall back to defaults.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const decoded = decodeShare(window.location.search);
+    if (decoded.dojoId)        setActiveDojoId(decoded.dojoId);
+    if (decoded.scenario)      setSelectedScenario(decoded.scenario);
+    if (decoded.controlConfig) setControlConfig(decoded.controlConfig);
+    if (decoded.dojo2Config)   setDojo2Config(decoded.dojo2Config);
+    hydratedRef.current = true;
+    // Intentionally run only once — subsequent state changes write back via
+    // the sync effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── URL sync: keep query string in lockstep with shareable state ──────────
+  // replaceState (not pushState) so the back button doesn't get cluttered with
+  // every guardrail toggle.
+  useEffect(() => {
+    if (!hydratedRef.current || typeof window === 'undefined') return;
+    const qs = encodeShare({
+      dojoId: activeDojoId,
+      scenario: selectedScenario,
+      controlConfig,
+      dojo2Config,
+    });
+    const url = `${window.location.pathname}${qs}${window.location.hash}`;
+    window.history.replaceState(null, '', url);
+  }, [activeDojoId, selectedScenario, controlConfig, dojo2Config]);
 
   const scenarios = getScenariosByDojo(activeDojoId);
 
