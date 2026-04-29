@@ -37,6 +37,12 @@ export function Header() {
           >
             Certs
           </Link>
+          <Link
+            href="/about"
+            className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+          >
+            About
+          </Link>
         </nav>
 
         {/* Sandbox model badge */}
