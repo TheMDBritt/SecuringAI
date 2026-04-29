@@ -9,6 +9,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, EvaluationResult, Scenario } from '@/types';
+import { DEFAULT_DOJO2_CONFIG } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { encodeShare } from '@/lib/share-url';
 
@@ -164,7 +165,6 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    /** Transient confirmation state for the Share button — flips back after 2s. */
     const [shareCopied, setShareCopied] = useState(false);
     /** Last N user messages — used for replay. */
     const [attackHistory, setAttackHistory] = useState<string[]>([]);
@@ -399,20 +399,9 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         dojoId,
         scenario,
         controlConfig,
-        dojo2Config: dojo2Config ?? {
-          persona: 'analyst',
-          outputFormat: 'markdown',
-          analysisDepth: 'standard',
-          responseStyle: 'detailed',
-          iocExtraction: true,
-          mitreMapping: true,
-          threatCorrelation: false,
-          contextLevel: 'limited',
-          confidenceLevel: 'medium',
-          riskAssessment: 'medium',
-        },
+        dojo2Config: dojo2Config ?? DEFAULT_DOJO2_CONFIG,
       });
-      const url = `${window.location.origin}/dojo${qs}`;
+      const url = `${window.location.origin}${window.location.pathname}${qs}`;
       try {
         await navigator.clipboard.writeText(url);
         setShareCopied(true);

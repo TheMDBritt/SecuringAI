@@ -7,6 +7,7 @@
 import type { ControlConfig, Dojo2Config } from '@/types';
 import { getLeakedCategory, getScenarioForcedAttackTypeSync } from '@/lib/scenario-simulations';
 import { classifyDojo1Message } from '@/lib/dojo1-classifier';
+import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
 
 // ─── Public output types ──────────────────────────────────────────────────────
 
@@ -834,102 +835,6 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Scoring each clause 0–3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
 };
 
-/**
- * Per-scenario certification topic mapping — surfaced in the evaluation panel.
- *
- * Maps each scenario to exam domains drawn from the leading 2026 AI-security
- * certifications and the frameworks they cover:
- *
- *   • CompTIA SecAI+            — vendor-neutral AI security practitioner
- *   • ISC2 CAISP                — Certified in AI Systems Security Practitioner
- *   • ISACA AAISM               — Advanced AI Security Management
- *   • EC-Council CAIS           — Certified AI Security Specialist
- *   • CSA AICM                  — Cloud Security Alliance AI Controls Matrix
- *   • OWASP LLM Top 10 (2025)   — adversarial prompting + agentic AI risks
- *   • NIST AI RMF 1.0           — Govern / Map / Measure / Manage
- *   • ISO/IEC 42001             — AI management system controls
- *   • EU AI Act                 — high-risk AI system obligations
- *
- * Topics are intentionally short — they are rendered as inline tags in the UI.
- */
-const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
-  // ── Dojo 1 — Attacking & defending LLMs ─────────────────────────────────────
-  'prompt-injection': [
-    'OWASP LLM01 — Prompt Injection',
-    'SecAI+ · Adversarial Prompting',
-    'CAISP · AI Input Validation',
-    'NIST AI RMF · Measure 2.7',
-  ],
-  'data-exfiltration': [
-    'OWASP LLM02 — Sensitive Information Disclosure',
-    'OWASP LLM06 — Excessive Agency',
-    'SecAI+ · Data Leakage Prevention',
-    'AAISM · Context Window Hygiene',
-  ],
-  'policy-bypass': [
-    'OWASP LLM01 — Prompt Injection',
-    'SecAI+ · Jailbreak Resistance',
-    'CAIS · AI Policy Enforcement',
-    'NIST AI RMF · Manage 4.1',
-  ],
-  'tool-abuse': [
-    'OWASP LLM07 — System Prompt Leakage / Tool Misuse',
-    'CAISP · Agentic AI Security',
-    'SecAI+ · Tool-Call Guardrails',
-    'CSA AICM · Agentic Controls',
-  ],
-  'rag-injection': [
-    'OWASP LLM08 — Vector & Embedding Weaknesses',
-    'SecAI+ · RAG Pipeline Security',
-    'CAISP · Retrieval Poisoning Defense',
-    'CSA AICM · Data Provenance',
-  ],
-
-  // ── Dojo 2 — Using AI for defense ───────────────────────────────────────────
-  'log-triage': [
-    'SecAI+ · AI-Assisted SOC Operations',
-    'CAISP · Alert Triage & Classification',
-    'MITRE ATT&CK · Initial Access / Execution',
-    'AAISM · Operational AI Oversight',
-  ],
-  'alert-enrichment': [
-    'SecAI+ · AI Threat Intelligence',
-    'CAIS · CVE Analysis & Enrichment',
-    'MITRE ATT&CK · Exploit Public-Facing App',
-    'NIST AI RMF · Map 5.1',
-  ],
-  'detection-rule-gen': [
-    'SecAI+ · AI-Generated Detection Rules',
-    'CAISP · Detection-as-Code (Sigma / KQL / YARA)',
-    'AAISM · AI Output Quality Assurance',
-  ],
-  'incident-report-draft': [
-    'SecAI+ · AI-Assisted Incident Response',
-    'AAISM · IR Documentation & Review',
-    'NIST AI RMF · Manage 4.2',
-  ],
-
-  // ── Dojo 3 — Defending against AI-powered attacks ──────────────────────────
-  'phishing-deepfake': [
-    'OWASP LLM02 — Sensitive Information Disclosure',
-    'SecAI+ · Synthetic Media Detection',
-    'CAIS · AI-Generated Social Engineering',
-    'MITRE ATT&CK T1566 · Phishing',
-  ],
-  'ai-abuse-threat-model': [
-    'OWASP LLM05 — Improper Output Handling',
-    'OWASP LLM08 — Vector & Embedding Weaknesses',
-    'SecAI+ · AI Threat Modeling',
-    'NIST AI RMF · Govern + Map',
-    'EU AI Act · High-Risk AI Obligations',
-  ],
-  'policy-and-controls': [
-    'AAISM · AI Governance & Policy',
-    'ISO/IEC 42001 · AI Management System',
-    'EU AI Act · Article 9 Risk Management',
-    'CSA AICM · Control Validation',
-  ],
-};
 
 /**
  * Quality-based evaluation for Dojo 2 (AI Secures Assets) and

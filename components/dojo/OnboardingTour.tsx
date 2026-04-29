@@ -1,10 +1,11 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 
 const STORAGE_KEY = 'securingai-onboarding-v1';
 
-const STEPS: { title: string; body: string; accent: string }[] = [
+const STEPS: { title: string; body: string; accent: AccentName }[] = [
   {
     title: '1 · Pick a scenario',
     accent: 'red',
@@ -25,24 +26,12 @@ const STEPS: { title: string; body: string; accent: string }[] = [
   },
 ];
 
-const ACCENT_BORDER: Record<string, string> = {
-  red: 'border-red-500/40',
-  cyan: 'border-cyan-500/40',
-  emerald: 'border-emerald-500/40',
-};
-const ACCENT_TEXT: Record<string, string> = {
-  red: 'text-red-400',
-  cyan: 'text-cyan-400',
-  emerald: 'text-emerald-400',
-};
-
 export function OnboardingTour() {
-  // Start hidden so SSR + first paint match. Decide visibility post-mount.
+  // Start hidden so SSR + first paint match. Visibility decided post-mount.
   const [visible, setVisible] = useState(false);
   const [step, setStep] = useState(0);
   const dialogRef = useRef<HTMLDivElement>(null);
   const primaryRef = useRef<HTMLButtonElement>(null);
-  // Element to return focus to after dismissal — saved on open.
   const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -62,8 +51,6 @@ export function OnboardingTour() {
     }
   }, []);
 
-  // Focus management: capture the previously-focused element on open, move
-  // focus to the primary action, restore focus on close.
   useEffect(() => {
     if (!visible) return;
     previouslyFocusedRef.current =
@@ -74,7 +61,6 @@ export function OnboardingTour() {
     };
   }, [visible]);
 
-  // Esc dismisses; Tab is trapped inside the dialog while open.
   useEffect(() => {
     if (!visible) return;
     function onKey(e: KeyboardEvent) {
@@ -129,7 +115,7 @@ export function OnboardingTour() {
         ref={dialogRef}
         className={[
           'w-full max-w-md rounded-lg border bg-slate-900 shadow-2xl shadow-black/60',
-          ACCENT_BORDER[current.accent],
+          ACCENT[current.accent].border,
         ].join(' ')}
       >
         <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800">
@@ -148,7 +134,7 @@ export function OnboardingTour() {
         <div className="px-5 py-5">
           <h2
             id="onboarding-title"
-            className={['text-lg font-semibold mb-2', ACCENT_TEXT[current.accent]].join(' ')}
+            className={['text-lg font-semibold mb-2', ACCENT[current.accent].text].join(' ')}
           >
             {current.title}
           </h2>

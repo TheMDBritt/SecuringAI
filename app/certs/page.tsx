@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { SCENARIOS } from '@/lib/scenarios';
+import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
+import type { Scenario } from '@/types';
 
 export const metadata = {
   title: 'Certifications',
@@ -15,8 +17,12 @@ interface Cert {
   level: 'practitioner' | 'professional' | 'advanced' | 'standard' | 'regulation';
   about: string;
   audience: string;
-  /** Substring matched against SECURITYAI_PLUS_TOPICS in evaluator.ts to find scenarios. */
-  topicTokens: string[];
+  /**
+   * Exact topic prefix used to match SECURITYAI_PLUS_TOPICS entries. Matching
+   * is `topic.startsWith(prefix + ' ')` so `CAIS` and `CAISP` stay distinct
+   * without any trailing-space hacks.
+   */
+  prefix: string;
 }
 
 const CERTS: Cert[] = [
@@ -30,7 +36,7 @@ const CERTS: Cert[] = [
       'Vendor-neutral AI security practitioner credential. Covers adversarial prompting, AI input validation, agentic-AI risks, AI-assisted SOC operations, AI-generated detection rules, and synthetic media defence.',
     audience:
       'Security analysts and engineers who want a baseline AI-security qualification recognised across vendors.',
-    topicTokens: ['SecAI+'],
+    prefix: 'SecAI+',
   },
   {
     code: 'CAISP',
@@ -42,7 +48,7 @@ const CERTS: Cert[] = [
       'Practitioner-level certification focused on building, operating, and defending AI systems. Heavy emphasis on input validation, RAG pipeline security, retrieval poisoning, agentic AI, and AI-assisted SOC workflows.',
     audience:
       'ISC2 members and security practitioners adding AI to their portfolio of CISSP-adjacent credentials.',
-    topicTokens: ['CAISP'],
+    prefix: 'CAISP',
   },
   {
     code: 'AAISM',
@@ -54,7 +60,7 @@ const CERTS: Cert[] = [
       'Management-tier credential covering AI governance, AI output quality assurance, IR documentation for AI-assisted analysis, operational AI oversight, and policy authoring for AI systems.',
     audience:
       'CISOs, IR leads, governance/risk professionals overseeing AI deployments and audit programmes.',
-    topicTokens: ['AAISM'],
+    prefix: 'AAISM',
   },
   {
     code: 'CAIS',
@@ -66,7 +72,7 @@ const CERTS: Cert[] = [
       'Hands-on AI security cert with a strong offence/defence balance. Covers AI policy enforcement, AI-generated social engineering, CVE analysis & enrichment, and jailbreak resistance.',
     audience:
       'Red-team, blue-team, and threat-hunting professionals adding AI to their tradecraft.',
-    topicTokens: ['CAIS '],
+    prefix: 'CAIS',
   },
   {
     code: 'AICM',
@@ -78,7 +84,7 @@ const CERTS: Cert[] = [
       'Industry control framework for AI systems. Defines controls for agentic AI, RAG data provenance, model lifecycle, and validation. Used as a benchmark for SecAI+ and AAISM exam questions.',
     audience:
       'Anyone designing or auditing AI controls — especially in regulated cloud environments.',
-    topicTokens: ['CSA AICM'],
+    prefix: 'CSA AICM',
   },
   {
     code: 'LLM Top 10',
@@ -90,7 +96,7 @@ const CERTS: Cert[] = [
       'The de-facto reference for LLM application risks: Prompt Injection (LLM01), Sensitive Information Disclosure (LLM02), Improper Output Handling (LLM05), System Prompt Leakage / Tool Misuse (LLM07), and Vector & Embedding Weaknesses (LLM08), among others.',
     audience:
       'Every AI-security cert leans on OWASP LLM Top 10 — start here regardless of which exam you are preparing for.',
-    topicTokens: ['OWASP LLM'],
+    prefix: 'OWASP',
   },
   {
     code: 'AI RMF',
@@ -102,7 +108,7 @@ const CERTS: Cert[] = [
       'US government risk-management framework with four functions: Govern, Map, Measure, Manage. Cited in SecAI+, AAISM, and the EU AI Act technical documentation.',
     audience:
       'Risk officers, governance professionals, and anyone evaluating AI systems against a shared baseline.',
-    topicTokens: ['NIST AI RMF'],
+    prefix: 'NIST AI RMF',
   },
   {
     code: '42001',
@@ -114,7 +120,7 @@ const CERTS: Cert[] = [
       'International standard for AI management systems. Defines requirements for governance, lifecycle, monitoring, and continual improvement of AI. The "ISO 27001 of AI".',
     audience:
       'Compliance, audit, and governance roles standing up an AI management programme — particularly in enterprises pursuing certification.',
-    topicTokens: ['ISO/IEC 42001'],
+    prefix: 'ISO/IEC 42001',
   },
   {
     code: 'EU AI Act',
@@ -126,7 +132,7 @@ const CERTS: Cert[] = [
       'EU regulation classifying AI systems by risk and imposing obligations on high-risk AI — including risk management (Article 9), data governance, transparency, and human oversight.',
     audience:
       'Anyone shipping AI into the EU market or building AI for EU enterprises. Increasingly tested on AAISM and SecAI+.',
-    topicTokens: ['EU AI Act'],
+    prefix: 'EU AI Act',
   },
   {
     code: 'ATT&CK',
@@ -138,7 +144,7 @@ const CERTS: Cert[] = [
       'Operational adversary-behaviour framework. SecuringAI uses ATT&CK T-codes throughout Dojo 2 SOC scenarios so AI-generated analyses can be scored on technique mapping accuracy.',
     audience:
       'SOC analysts, detection engineers, and threat hunters — and the foundation for the SecAI+ "AI-Assisted SOC" domain.',
-    topicTokens: ['MITRE ATT&CK', 'ATT&CK ·'],
+    prefix: 'MITRE ATT&CK',
   },
 ];
 
@@ -147,75 +153,30 @@ const KIND_LABEL: Record<Cert['kind'], string> = {
   framework: 'Framework / Standard',
 };
 
-const LEVEL_STYLE: Record<Cert['level'], string> = {
-  practitioner: 'border-cyan-500/30 text-cyan-400 bg-cyan-500/10',
-  professional: 'border-violet-500/30 text-violet-400 bg-violet-500/10',
-  advanced:     'border-amber-500/30 text-amber-400 bg-amber-500/10',
-  standard:     'border-slate-500/30 text-slate-300 bg-slate-500/10',
-  regulation:   'border-red-500/30 text-red-400 bg-red-500/10',
+const LEVEL: Record<Cert['level'], { label: string; style: string }> = {
+  practitioner: { label: 'Practitioner', style: 'border-cyan-500/30 text-cyan-400 bg-cyan-500/10' },
+  professional: { label: 'Professional', style: 'border-violet-500/30 text-violet-400 bg-violet-500/10' },
+  advanced:     { label: 'Advanced',     style: 'border-amber-500/30 text-amber-400 bg-amber-500/10' },
+  standard:     { label: 'Standard',     style: 'border-slate-500/30 text-slate-300 bg-slate-500/10' },
+  regulation:   { label: 'Regulation',   style: 'border-red-500/30 text-red-400 bg-red-500/10' },
 };
 
-const LEVEL_LABEL: Record<Cert['level'], string> = {
-  practitioner: 'Practitioner',
-  professional: 'Professional',
-  advanced:     'Advanced',
-  standard:     'Standard',
-  regulation:   'Regulation',
-};
-
-// Inline copy of the evaluator's mapping so the page can render scenarios per
-// cert without importing server-side code. Kept in sync manually — small list.
-const SCENARIO_TOPICS: Record<string, string[]> = {
-  'prompt-injection': [
-    'OWASP LLM01', 'SecAI+', 'CAISP', 'NIST AI RMF',
-  ],
-  'data-exfiltration': [
-    'OWASP LLM02', 'OWASP LLM06', 'SecAI+', 'AAISM',
-  ],
-  'policy-bypass': [
-    'OWASP LLM01', 'SecAI+', 'CAIS ', 'NIST AI RMF',
-  ],
-  'tool-abuse': [
-    'OWASP LLM07', 'CAISP', 'SecAI+', 'CSA AICM',
-  ],
-  'rag-injection': [
-    'OWASP LLM08', 'SecAI+', 'CAISP', 'CSA AICM',
-  ],
-  'log-triage': [
-    'SecAI+', 'CAISP', 'MITRE ATT&CK', 'AAISM',
-  ],
-  'alert-enrichment': [
-    'SecAI+', 'CAIS ', 'MITRE ATT&CK', 'NIST AI RMF',
-  ],
-  'detection-rule-gen': [
-    'SecAI+', 'CAISP', 'AAISM',
-  ],
-  'incident-report-draft': [
-    'SecAI+', 'AAISM', 'NIST AI RMF',
-  ],
-  'phishing-deepfake': [
-    'OWASP LLM02', 'SecAI+', 'CAIS ', 'MITRE ATT&CK',
-  ],
-  'ai-abuse-threat-model': [
-    'OWASP LLM05', 'OWASP LLM08', 'SecAI+', 'NIST AI RMF', 'EU AI Act',
-  ],
-  'policy-and-controls': [
-    'AAISM', 'ISO/IEC 42001', 'EU AI Act', 'CSA AICM',
-  ],
-};
-
-function scenariosForCert(cert: Cert) {
-  return SCENARIOS.filter((s) =>
-    cert.topicTokens.some((tok) =>
-      (SCENARIO_TOPICS[s.id] ?? []).some((t) => t.includes(tok)),
-    ),
-  );
+function topicMatchesCert(topic: string, prefix: string): boolean {
+  return topic.startsWith(`${prefix} `);
 }
+
+const SCENARIOS_BY_CERT: Record<string, Scenario[]> = Object.fromEntries(
+  CERTS.map((c) => [
+    c.code,
+    SCENARIOS.filter((s) =>
+      (SECURITYAI_PLUS_TOPICS[s.id] ?? []).some((t) => topicMatchesCert(t, c.prefix)),
+    ),
+  ]),
+);
 
 export default function CertsPage() {
   return (
     <div className="flex flex-col">
-      {/* HEADER */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <Link
@@ -238,11 +199,11 @@ export default function CertsPage() {
         </div>
       </section>
 
-      {/* CERT LIST */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12 grid gap-4 md:gap-5">
           {CERTS.map((c) => {
-            const scenarios = scenariosForCert(c);
+            const scenarios = SCENARIOS_BY_CERT[c.code];
+            const level = LEVEL[c.level];
             return (
               <article
                 key={c.code}
@@ -257,10 +218,10 @@ export default function CertsPage() {
                   <span
                     className={[
                       'ml-auto text-[10px] font-mono px-2 py-0.5 rounded border',
-                      LEVEL_STYLE[c.level],
+                      level.style,
                     ].join(' ')}
                   >
-                    {KIND_LABEL[c.kind]} · {LEVEL_LABEL[c.level]}
+                    {KIND_LABEL[c.kind]} · {level.label}
                   </span>
                 </header>
 
@@ -302,7 +263,6 @@ export default function CertsPage() {
         </div>
       </section>
 
-      {/* DISCLAIMER */}
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-10 text-sm text-slate-400 leading-relaxed">
           <p>
@@ -315,7 +275,6 @@ export default function CertsPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-16 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-4">

@@ -79,16 +79,14 @@ export function DojoTabs() {
    */
   const [jailbreakActive, setJailbreakActive] = useState(false);
 
-  /** Ref to ChatConsole's imperative handle. */
   const chatRef = useRef<ChatConsoleHandle>(null);
 
-  /** True once URL hydration has run; suppresses early replaceState that
-   *  would clobber an inbound deep link before we read it. */
+  // Hydrate from the URL once on mount, then mirror state back via
+  // replaceState. The hydratedRef gate stops the sync effect from clobbering
+  // an inbound deep link before the hydration effect runs.
   const hydratedRef = useRef(false);
+  const lastSearchRef = useRef<string>('');
 
-  // ── URL hydration: deep-link share support ────────────────────────────────
-  // On first mount, parse the query string and seed dojo / scenario / control
-  // / Dojo 2 config from it. Best-effort: invalid values fall back to defaults.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const decoded = decodeShare(window.location.search);
@@ -97,14 +95,10 @@ export function DojoTabs() {
     if (decoded.controlConfig) setControlConfig(decoded.controlConfig);
     if (decoded.dojo2Config)   setDojo2Config(decoded.dojo2Config);
     hydratedRef.current = true;
-    // Intentionally run only once — subsequent state changes write back via
-    // the sync effect below.
+    lastSearchRef.current = window.location.search;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── URL sync: keep query string in lockstep with shareable state ──────────
-  // replaceState (not pushState) so the back button doesn't get cluttered with
-  // every guardrail toggle.
   useEffect(() => {
     if (!hydratedRef.current || typeof window === 'undefined') return;
     const qs = encodeShare({
@@ -113,8 +107,13 @@ export function DojoTabs() {
       controlConfig,
       dojo2Config,
     });
-    const url = `${window.location.pathname}${qs}${window.location.hash}`;
-    window.history.replaceState(null, '', url);
+    if (qs === lastSearchRef.current) return;
+    lastSearchRef.current = qs;
+    window.history.replaceState(
+      null,
+      '',
+      `${window.location.pathname}${qs}${window.location.hash}`,
+    );
   }, [activeDojoId, selectedScenario, controlConfig, dojo2Config]);
 
   const scenarios = getScenariosByDojo(activeDojoId);

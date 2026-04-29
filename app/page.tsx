@@ -1,19 +1,23 @@
 import Link from 'next/link';
+import { getScenariosByDojo } from '@/lib/scenarios';
+import { ACCENT, type AccentName } from '@/lib/dojo-theme';
+import type { DojoId } from '@/types';
 
-const DOJOS = [
+interface DojoCard {
+  id: DojoId;
+  label: string;
+  title: string;
+  summary: string;
+  accent: AccentName;
+}
+
+const DOJOS: DojoCard[] = [
   {
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
     summary:
       'Attack and defend an LLM under live guardrail toggles. See exactly which control stops which attack.',
-    scenarios: [
-      'Prompt Injection',
-      'Data Exfiltration',
-      'Policy Bypass',
-      'Tool Abuse',
-      'RAG Injection',
-    ],
     accent: 'red',
   },
   {
@@ -22,12 +26,6 @@ const DOJOS = [
     title: 'AI Secures Assets',
     summary:
       'Use AI as a SOC analyst. Score the AI’s analysis against a quality rubric.',
-    scenarios: [
-      'Log Triage',
-      'Alert Enrichment',
-      'Detection Rule Generation',
-      'Incident Report Draft',
-    ],
     accent: 'cyan',
   },
   {
@@ -36,30 +34,9 @@ const DOJOS = [
     title: 'Defense vs AI Attacks',
     summary:
       'Build threat models, detection rules, and policies against AI-powered attackers.',
-    scenarios: [
-      'Phishing & Deepfake Detection',
-      'AI Abuse Threat Model',
-      'Policy & Controls',
-    ],
     accent: 'emerald',
   },
-] as const;
-
-const ACCENT_BORDER: Record<string, string> = {
-  red: 'border-red-500/30 hover:border-red-500/60',
-  cyan: 'border-cyan-500/30 hover:border-cyan-500/60',
-  emerald: 'border-emerald-500/30 hover:border-emerald-500/60',
-};
-const ACCENT_TEXT: Record<string, string> = {
-  red: 'text-red-400',
-  cyan: 'text-cyan-400',
-  emerald: 'text-emerald-400',
-};
-const ACCENT_BG: Record<string, string> = {
-  red: 'bg-red-500/10',
-  cyan: 'bg-cyan-500/10',
-  emerald: 'bg-emerald-500/10',
-};
+];
 
 const CERTS = [
   { code: 'SecAI+',     body: 'CompTIA',                 scope: 'All three dojos — vendor-neutral AI security practitioner' },
@@ -74,10 +51,18 @@ const CERTS = [
   { code: 'ATT&CK',     body: 'MITRE',                   scope: 'Dojo 2 SOC scenarios' },
 ];
 
+const PRIVACY_BULLETS = [
+  'No accounts, no logins, no tracking.',
+  'No persistent storage — chat lives in browser memory only.',
+  'Per-IP rate limit on every API route.',
+  'Server-side input validation on every request.',
+  'Safety pre-filter blocks functional exploit syntax — payloads here are conceptual only.',
+  'Model API keys read server-side only. Never reach the browser.',
+];
+
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
-      {/* HERO */}
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
           <div className="flex items-center gap-2 mb-6">
@@ -126,7 +111,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* DOJO GRID */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -137,55 +121,52 @@ export default function LandingPage() {
           </h2>
 
           <div className="grid md:grid-cols-3 gap-4">
-            {DOJOS.map((d) => (
-              <Link
-                key={d.id}
-                href="/dojo"
-                className={[
-                  'group flex flex-col p-5 rounded-lg border bg-slate-900/40 transition-colors',
-                  ACCENT_BORDER[d.accent],
-                ].join(' ')}
-              >
-                <div className="flex items-center gap-2 mb-3">
-                  <span
-                    className={[
-                      'text-[10px] font-mono px-2 py-0.5 rounded',
-                      ACCENT_BG[d.accent],
-                      ACCENT_TEXT[d.accent],
-                    ].join(' ')}
-                  >
-                    {d.label}
-                  </span>
-                </div>
-                <h3 className={['text-lg font-semibold mb-2', ACCENT_TEXT[d.accent]].join(' ')}>
-                  {d.title}
-                </h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-4">
-                  {d.summary}
-                </p>
-                <ul className="mt-auto flex flex-col gap-1">
-                  {d.scenarios.map((s) => (
-                    <li key={s} className="text-xs text-slate-500 flex gap-1.5">
-                      <span className="text-slate-600">·</span>
-                      {s}
-                    </li>
-                  ))}
-                </ul>
-                <span
+            {DOJOS.map((d) => {
+              const accent = ACCENT[d.accent];
+              const scenarios = getScenariosByDojo(d.id);
+              return (
+                <Link
+                  key={d.id}
+                  href="/dojo"
                   className={[
-                    'mt-5 text-xs font-mono opacity-60 group-hover:opacity-100 transition-opacity',
-                    ACCENT_TEXT[d.accent],
+                    'group flex flex-col p-5 rounded-lg border bg-slate-900/40 transition-colors',
+                    accent.border,
                   ].join(' ')}
                 >
-                  Open {d.label} →
-                </span>
-              </Link>
-            ))}
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className={['text-[10px] font-mono px-2 py-0.5 rounded', accent.bg, accent.text].join(' ')}>
+                      {d.label}
+                    </span>
+                  </div>
+                  <h3 className={['text-lg font-semibold mb-2', accent.text].join(' ')}>
+                    {d.title}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                    {d.summary}
+                  </p>
+                  <ul className="mt-auto flex flex-col gap-1">
+                    {scenarios.map((s) => (
+                      <li key={s.id} className="text-xs text-slate-500 flex gap-1.5">
+                        <span className="text-slate-600">·</span>
+                        {s.title}
+                      </li>
+                    ))}
+                  </ul>
+                  <span
+                    className={[
+                      'mt-5 text-xs font-mono opacity-60 group-hover:opacity-100 transition-opacity',
+                      accent.text,
+                    ].join(' ')}
+                  >
+                    Open {d.label} →
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* HOW SCORING WORKS */}
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -233,7 +214,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CERTS */}
       <section id="certs" className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -282,7 +262,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PRIVACY */}
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -292,36 +271,16 @@ export default function LandingPage() {
             Free, forever, with nothing to sign.
           </h2>
           <ul className="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              No accounts, no logins, no tracking.
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              No persistent storage — chat lives in browser memory only.
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              Per-IP rate limit on every API route.
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              Server-side input validation on every request.
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              Safety pre-filter blocks functional exploit syntax — payloads here
-              are conceptual only.
-            </li>
-            <li className="flex gap-2">
-              <span className="text-emerald-400 shrink-0">✓</span>
-              Model API keys read server-side only. Never reach the browser.
-            </li>
+            {PRIVACY_BULLETS.map((b) => (
+              <li key={b} className="flex gap-2">
+                <span className="text-emerald-400 shrink-0">✓</span>
+                {b}
+              </li>
+            ))}
           </ul>
         </div>
       </section>
 
-      {/* CTA FOOTER */}
       <section className="bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">
