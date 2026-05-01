@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why SecuringAI exists, how it works under the hood, and how to contribute. Free, no logins, MIT licensed.',
+    'Why SecuringAI exists and how it works under the hood. Free, forever.',
 };
 
 const PRINCIPLES = [
@@ -18,11 +18,6 @@ const PRINCIPLES = [
     label: 'Hands-on, not theoretical',
     body:
       'Every concept is reachable by typing in the chat console. Read about prompt injection, then actually try one and watch the guardrails respond.',
-  },
-  {
-    label: 'Calibrated to real exam objectives',
-    body:
-      'Scenarios are tagged against the published 2026 AI security cert domains so practice translates directly to study time.',
   },
   {
     label: 'Conceptual payloads only',
@@ -69,7 +64,7 @@ export default function AboutPage() {
             About SecuringAI
           </p>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-100 leading-tight">
-            A free, no-login study tool for AI security.
+            A free study tool for AI security.
           </h1>
           <p className="mt-6 text-lg text-slate-300 leading-relaxed">
             SecuringAI exists because there is no shortage of slide decks
@@ -135,14 +130,6 @@ export default function AboutPage() {
               attackers. Build threat models and policy clauses scored against
               NIST AI RMF, ISO/IEC 42001, and the EU AI Act.
             </p>
-            <p>
-              Every turn is scored, classified, and mapped to OWASP LLM Top 10,
-              MITRE ATT&amp;CK, and the cert domains shown on{' '}
-              <Link href="/certs" className="text-cyan-400 hover:text-cyan-300 underline-offset-2 hover:underline">
-                /certs
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </section>
@@ -207,24 +194,6 @@ export default function AboutPage() {
           <p className="text-sm text-slate-400 leading-relaxed mt-6 max-w-2xl">
             SecuringAI is independent and unaffiliated. Cross-check exam
             objectives with the official providers before scheduling.
-          </p>
-        </div>
-      </section>
-
-      <section className="border-b border-slate-800 bg-slate-900/40">
-        <div className="max-w-4xl mx-auto px-6 py-14">
-          <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Open source
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-6">
-            MIT licensed. Issues and PRs welcome.
-          </h2>
-          <p className="text-sm text-slate-300 leading-relaxed max-w-2xl">
-            Architecture is documented in <code className="text-cyan-300 font-mono text-xs px-1 py-0.5 rounded bg-slate-800/80">DESIGN.md</code>.
-            Add a scenario, fix a rubric, refine an evaluator regex — the
-            project is small enough to read in an afternoon. PRs that add
-            scenarios should include the MITRE T-codes and cert tags so the
-            score panel mapping stays current.
           </p>
         </div>
       </section>
