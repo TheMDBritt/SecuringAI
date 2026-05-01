@@ -90,7 +90,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Neural Networks',
     category: 'AI & ML Fundamentals',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is the purpose of an activation function in a neural network?',
     options: [
       'To initialize the model weights',
@@ -106,7 +106,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Neural Networks',
     category: 'AI & ML Fundamentals',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which activation function is most commonly used in hidden layers of modern neural networks?',
     options: ['Sigmoid', 'Tanh', 'ReLU', 'Softmax'],
     correct: 2,
@@ -149,7 +149,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Training Pipeline',
     category: 'AI & ML Fundamentals',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is cross-validation?',
     options: [
       'Training the same model on multiple different datasets',
@@ -308,7 +308,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transformer Architecture',
     category: 'Generative AI & LLMs',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is the primary innovation of the Transformer architecture over RNNs?',
     options: [
       'Transformers use fewer parameters',
@@ -324,7 +324,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transformer Architecture',
     category: 'Generative AI & LLMs',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'Which type of transformer model is best suited for text generation tasks like chatbots?',
     options: ['Encoder-only (e.g., BERT)', 'Decoder-only (e.g., GPT)', 'Encoder-Decoder (e.g., T5)', 'Bidirectional encoder'],
     correct: 1,
@@ -367,7 +367,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'RAG',
     category: 'Generative AI & LLMs',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103'],
     question: 'What problem does Retrieval-Augmented Generation (RAG) primarily solve?',
     options: [
       'The model generates text too slowly',
@@ -399,7 +399,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Fine-Tuning',
     category: 'Generative AI & LLMs',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is the main advantage of LoRA over full fine-tuning?',
     options: [
       'LoRA produces higher accuracy on all tasks',
@@ -426,7 +426,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transformer Architecture',
     category: 'Generative AI & LLMs',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is the KV cache used for during LLM inference?',
     options: [
       'Storing user conversation history between sessions',
@@ -517,7 +517,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'RAG',
     category: 'Generative AI & LLMs',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'What is "chunking" in the context of building a RAG system?',
     options: [
       'Compressing the vector database to save storage',
@@ -549,7 +549,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transformer Architecture',
     category: 'Generative AI & LLMs',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is "hallucination" in the context of large language models?',
     options: [
       'When the model runs out of context window space',
@@ -923,7 +923,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which responsible AI principle requires that AI systems and their decision-making processes can be understood by humans?',
     options: ['Fairness', 'Reliability', 'Transparency and Explainability', 'Inclusivity'],
     correct: 2,
@@ -950,7 +950,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'The "AI fairness impossibility theorem" states that:',
     options: [
       'Perfectly fair AI is theoretically achievable with enough data',
@@ -1012,7 +1012,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Monitoring',
     category: 'MLOps',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is data drift in the context of deployed ML models?',
     options: [
       'Training data being corrupted over time',
@@ -1044,7 +1044,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'CI/CD for ML',
     category: 'MLOps',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'What is the purpose of a model registry in an MLOps pipeline?',
     options: [
       'Registering AI models with government compliance authorities',
@@ -1228,7 +1228,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service provides managed access to OpenAI\'s GPT models within the Azure environment with enterprise compliance features?',
     options: ['Azure Machine Learning', 'Azure AI Foundry', 'Azure OpenAI Service', 'Azure Cognitive Search'],
     correct: 2,
@@ -1239,7 +1239,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What does Azure AI Content Safety\'s "Prompt Shields" feature specifically detect?',
     options: [
       'Copyrighted content in model outputs',
@@ -1326,7 +1326,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Agentic AI',
     category: 'Emerging Trends',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103'],
     question: 'What are the four core components that make an AI system "agentic"?',
     options: [
       'Input, processing, output, feedback',
@@ -1628,7 +1628,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'SecAI'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'SecAI'],
     question: 'What is a "Model Card" in the context of responsible AI?',
     options: [
       'A physical card certifying a model has passed safety testing',
@@ -1692,7 +1692,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'advanced',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'The fairness impossibility theorem implies that a practitioner must:',
     options: [
       'Use larger datasets to eliminate all fairness problems',
@@ -1768,7 +1768,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'SecAI'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'SecAI'],
     question: 'What is the purpose of "Datasheets for Datasets"?',
     options: [
       'Providing technical performance benchmarks for datasets',
@@ -1851,7 +1851,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Monitoring',
     category: 'MLOps',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'Which retraining strategy triggers model retraining only when drift metrics exceed a threshold?',
     options: [
       'Scheduled retraining',
@@ -1947,7 +1947,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'CI/CD for ML',
     category: 'MLOps',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'What does MLOps Level 0 look like compared to Level 2?',
     options: [
       'Level 0 uses cloud infrastructure; Level 2 uses on-premises',
@@ -2057,7 +2057,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Agentic AI',
     category: 'Emerging Trends',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'Which Python framework is most commonly used for building multi-agent AI systems?',
     options: ['scikit-learn', 'LangGraph / LangChain', 'PyTorch', 'FastAPI'],
     correct: 1,
@@ -2425,7 +2425,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What is Azure AI Foundry (formerly Azure AI Studio)?',
     options: [
       'A service for deploying VMs optimized for AI workloads',
@@ -2473,7 +2473,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure OpenAI Service',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900', 'Azure-AI102'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure OpenAI Service differs from using OpenAI\'s API directly because Azure provides:',
     options: [
       'Newer model versions before OpenAI releases them',
@@ -2521,7 +2521,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Search',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'In a RAG architecture on Azure, what role does Azure AI Search play?',
     options: [
       'It generates the final answer using GPT models',
@@ -2537,7 +2537,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Cloud AI Security',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'SecAI'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'SecAI'],
     question: 'When deploying an LLM-powered application on a cloud provider, which control is most important for preventing prompt injection attacks from reaching the model?',
     options: [
       'Encrypting the model weights at rest',
@@ -2572,7 +2572,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service provides pre-built AI capabilities for vision, speech, language, and decision tasks without requiring ML expertise?',
     options: [
       'Azure Machine Learning',
@@ -2588,7 +2588,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What is the primary difference between machine learning and traditional rule-based programming?',
     options: [
       'Machine learning always uses the cloud; traditional programming runs locally',
@@ -2604,7 +2604,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which type of machine learning is used when the training data includes labeled examples with known correct answers?',
     options: [
       'Unsupervised learning',
@@ -2620,7 +2620,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Azure Machine Learning designer is best described as:',
     options: [
       'A command-line tool for deploying models',
@@ -2636,7 +2636,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Responsible AI',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: "Which of Microsoft's Responsible AI principles states that AI systems should not create or reinforce unfair bias against people based on age, gender, or other characteristics?",
     options: [
       'Reliability & Safety',
@@ -2652,7 +2652,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Responsible AI',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What does the Transparency principle in Microsoft Responsible AI require?',
     options: [
       'AI systems must be free of charge to use',
@@ -2668,7 +2668,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Computer Vision',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure AI service would you use to extract text from images and scanned documents?',
     options: [
       'Azure Face API',
@@ -2684,7 +2684,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Computer Vision',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What is the purpose of Azure Custom Vision?',
     options: [
       'To generate images from text prompts',
@@ -2700,7 +2700,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Language Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure AI service can analyze text to determine whether the sentiment is positive, negative, or neutral?',
     options: [
       'Azure Bot Service',
@@ -2716,7 +2716,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Language Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Azure CLU (Conversational Language Understanding) is used to:',
     options: [
       'Translate text between languages in real time',
@@ -2732,7 +2732,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What is Azure OpenAI Service?',
     options: [
       'A free open-source alternative to GPT models',
@@ -2748,7 +2748,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'In Azure AI Foundry, what is a "prompt flow"?',
     options: [
       'A billing dashboard for tracking token usage',
@@ -2764,7 +2764,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What is Retrieval Augmented Generation (RAG) in the context of Azure AI?',
     options: [
       'A technique to reduce hallucinations by grounding LLM responses in retrieved documents',
@@ -2780,7 +2780,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Safety',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Content Safety is designed to:',
     options: [
       'Encrypt model weights at rest',
@@ -2796,7 +2796,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Safety',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure Responsible AI tool helps you identify disparities in model performance across different demographic groups?',
     options: [
       'Azure Monitor',
@@ -2812,7 +2812,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure ML Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What is the purpose of Azure Machine Learning automated ML (AutoML)?',
     options: [
       'Automatically provision Azure VMs for training',
@@ -2828,7 +2828,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure ML Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'In Azure Machine Learning, what is a "compute cluster" used for?',
     options: [
       'Storing trained model files',
@@ -2844,7 +2844,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Reinforcement learning differs from supervised learning in that:',
     options: [
       'Reinforcement learning requires more labeled data',
@@ -2860,7 +2860,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service enables you to build intelligent bots that can engage in natural conversation across multiple channels (Teams, web, SMS)?',
     options: [
       'Azure Logic Apps',
@@ -2876,7 +2876,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI900'],
+    certTags: ['Azure-AI901'],
     question: 'What does the Azure Speech Service support? (Select the MOST comprehensive answer)',
     options: [
       'Only speech-to-text transcription',
@@ -2895,7 +2895,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'When deploying an Azure AI Services resource, what is the recommended approach to authenticate API calls securely in production?',
     options: [
       'Embed subscription keys directly in application code',
@@ -2911,7 +2911,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'You are building a document processing solution. Which Azure AI service extracts structured fields (invoice number, total, line items) from PDF invoices?',
     options: [
       'Azure Language Service',
@@ -2927,7 +2927,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure AI Search, what is an "indexer"?',
     options: [
       'A user-facing search box component',
@@ -2943,7 +2943,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What is the purpose of a "skillset" in Azure AI Search?',
     options: [
       'Define which fields users can search on',
@@ -2959,7 +2959,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure Language Service feature lets you build a custom question-answering knowledge base from FAQ documents and URLs?',
     options: [
       'Custom Named Entity Recognition',
@@ -2975,7 +2975,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'When using Azure OpenAI, what is the purpose of a "system message" in the chat completions API?',
     options: [
       'Logs every user request for compliance',
@@ -2991,7 +2991,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What does "temperature" control in Azure OpenAI completion requests?',
     options: [
       'The maximum length of the generated response',
@@ -3007,7 +3007,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'You need to prevent Azure OpenAI from generating harmful content in your application. Which feature handles this at the API level?',
     options: [
       'Azure Firewall rules',
@@ -3023,7 +3023,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What is "semantic ranking" in Azure AI Search?',
     options: [
       'Sorting results alphabetically by document title',
@@ -3039,7 +3039,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure Machine Learning, what is the difference between a "real-time endpoint" and a "batch endpoint"?',
     options: [
       'Real-time endpoints are free; batch endpoints are paid',
@@ -3055,7 +3055,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure service would you use to build a vector search solution for semantic similarity search over document embeddings?',
     options: [
       'Azure SQL Database',
@@ -3071,7 +3071,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'When implementing RAG with Azure AI Search and Azure OpenAI, what is the correct order of operations?',
     options: [
       'Generate answer → retrieve documents → re-rank',
@@ -3087,7 +3087,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What is the role of Azure AI Language "Orchestration workflow" feature?',
     options: [
       'Deploys language models to multiple Azure regions simultaneously',
@@ -3103,7 +3103,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'When deploying Azure AI Services in a regulated industry, which feature ensures your data never leaves a specific geographic region?',
     options: [
       'Azure CDN geographic distribution',
@@ -3119,7 +3119,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'You notice your deployed Azure ML model performance has degraded. Which Azure ML capability detects feature distribution changes over time?',
     options: [
       'Azure Application Insights',
@@ -3135,7 +3135,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure AI Foundry, what is an "evaluation" used for?',
     options: [
       'Billing analysis of API usage',
@@ -3151,7 +3151,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'What is "function calling" in Azure OpenAI?',
     options: [
       'A way to call Azure Functions from within a Python script',
@@ -3167,7 +3167,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'You need to fine-tune an Azure OpenAI model on domain-specific data. What is a key consideration for the training dataset?',
     options: [
       'The dataset must be in PDF format',
@@ -3183,7 +3183,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure AI service would you integrate to automatically detect and redact PII (names, SSNs, phone numbers) from text before storing it?',
     options: [
       'Azure Key Vault',
@@ -3199,7 +3199,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI102'],
+    certTags: ['Azure-AI103'],
     question: 'In an Azure AI Search hybrid search architecture, what does "hybrid search" combine?',
     options: [
       'Azure and AWS search services',
@@ -3218,7 +3218,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'CNN Architecture',
     category: 'Computer Vision',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     question: 'What does a convolutional layer in a CNN do?',
     options: [
       'Flattens the image into a 1D vector for classification',
@@ -3234,7 +3234,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'CNN Architecture',
     category: 'Computer Vision',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     question: 'What is the purpose of a pooling layer in a CNN?',
     options: [
       'Increase the spatial resolution of feature maps',
@@ -3250,7 +3250,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transfer Learning',
     category: 'Computer Vision',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'When using a pre-trained ImageNet CNN for a new image classification task with limited data, what is the recommended approach?',
     options: [
       'Train the entire network from scratch on the new dataset',
@@ -3266,7 +3266,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Object Detection',
     category: 'Computer Vision',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE'],
     question: 'What does IoU (Intersection over Union) measure in object detection?',
     options: [
       'The ratio of correctly classified pixels to total pixels',
@@ -3378,7 +3378,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Generative Models',
     category: 'Computer Vision',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     question: 'In a GAN (Generative Adversarial Network), what is the role of the discriminator?',
     options: [
       'Generate realistic images from random noise vectors',
@@ -3410,7 +3410,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'CV Metrics',
     category: 'Computer Vision',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'mAP (mean Average Precision) is the standard evaluation metric for object detection. What does it measure?',
     options: [
       'The average pixel accuracy across all image classes',
@@ -3426,7 +3426,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Cloud CV Services',
     category: 'Computer Vision',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which AWS service provides pre-built computer vision APIs for face detection, object labeling, and content moderation without training a custom model?',
     options: [
       'Amazon SageMaker',
@@ -3442,7 +3442,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Diffusion Models',
     category: 'Computer Vision',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     question: 'How do diffusion models generate images?',
     options: [
       'They select the closest training image to a text prompt and return it directly',
@@ -3461,7 +3461,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Tokenization',
     category: 'NLP',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is Byte-Pair Encoding (BPE) tokenization?',
     options: [
       'A method that splits text on whitespace and punctuation only',
@@ -3477,7 +3477,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Language Models',
     category: 'NLP',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is the key architectural difference between BERT and GPT?',
     options: [
       'BERT uses RNNs; GPT uses Transformers',
@@ -3493,7 +3493,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Embeddings',
     category: 'NLP',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is the fundamental difference between Word2Vec embeddings and contextual embeddings (BERT)?',
     options: [
       'Word2Vec produces one fixed vector per word regardless of context; BERT produces context-dependent vectors',
@@ -3525,7 +3525,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'NLP Tasks',
     category: 'NLP',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'Named Entity Recognition (NER) is the task of:',
     options: [
       'Assigning a single sentiment label (positive/negative) to an entire document',
@@ -3557,7 +3557,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Summarization',
     category: 'NLP',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'What is the difference between extractive and abstractive summarization?',
     options: [
       'Extractive summarization is faster; abstractive is more accurate',
@@ -3573,7 +3573,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Language Models',
     category: 'NLP',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'What does "perplexity" measure for a language model?',
     options: [
       'The average number of tokens generated per second',
@@ -3605,7 +3605,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'NLP Tasks',
     category: 'NLP',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'Which NLP task is most suitable for automatically routing customer support tickets to the correct department?',
     options: [
       'Machine translation',
@@ -3621,7 +3621,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Transformer Architecture',
     category: 'NLP',
     difficulty: 'advanced',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'In the Transformer attention mechanism, what are queries, keys, and values?',
     options: [
       'Database terminology — queries search an index of key-value pairs stored in memory',
@@ -3637,7 +3637,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Cloud NLP Services',
     category: 'NLP',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103'],
     question: 'Which AWS service provides managed NLP capabilities including sentiment analysis, entity recognition, and key phrase extraction?',
     options: [
       'Amazon Transcribe',
@@ -3669,7 +3669,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Fine-Tuning',
     category: 'NLP',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'What is instruction fine-tuning (IFT) for LLMs?',
     options: [
       'Fine-tuning a model using reinforcement learning with human feedback',
@@ -3832,7 +3832,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which Responsible AI principle specifically addresses ensuring AI systems work reliably across different populations and do not produce harmful outputs for specific groups?',
     options: [
       'Transparency',
@@ -3947,7 +3947,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'ETL Pipelines',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'What distinguishes ELT from traditional ETL in modern cloud data architectures?',
     options: [
       'ELT processes data in real-time; ETL only supports batch processing',
@@ -3979,7 +3979,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Quality',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'Which tool provides Git-like versioning for large ML datasets and pipelines?',
     options: [
       'MLflow',
@@ -4043,7 +4043,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Drift',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'Population Stability Index (PSI) is used in ML monitoring to detect:',
     options: [
       'Memory leaks in the model serving infrastructure',
@@ -4075,7 +4075,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Types',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     question: 'Which type of data requires the most preprocessing effort before it can be used to train a supervised ML model?',
     options: [
       'Structured data in a SQL database with defined schema',
@@ -4091,7 +4091,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Augmentation',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'Data augmentation in ML training is used primarily to:',
     options: [
       'Reduce the time required to train models by creating synthetic shortcuts',
@@ -4238,7 +4238,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Explainability',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'SHAP values explain a model prediction by:',
     options: [
       'Generating a simpler interpretable model around a single prediction',
@@ -4286,7 +4286,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Cards',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'A model card is:',
     options: [
       'A hardware specification document for GPU training infrastructure',
@@ -4318,7 +4318,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Governance',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which of the following is NOT one of Microsoft\'s six Responsible AI principles?',
     options: [
       'Fairness',
@@ -4334,7 +4334,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'GDPR and AI',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'CAISP', 'Azure-AI900'],
+    certTags: ['SecAI', 'CAISP', 'Azure-AI901'],
     question: 'Under GDPR Article 22, individuals have which right related to automated decision-making?',
     options: [
       'The right to know the model\'s source code',
@@ -4433,7 +4433,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Pipelines',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'What is the key difference between ETL and ELT data pipeline patterns?',
     options: [
       'ETL is for batch processing; ELT is for real-time streaming',
@@ -4449,7 +4449,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Training-Serving Skew',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'Training-serving skew is one of the most common causes of ML production failures. What causes it?',
     options: [
       'Using a different programming language for training vs. serving code',
@@ -4465,7 +4465,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Feature Stores',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'The primary purpose of a Feature Store in MLOps is:',
     options: [
       'Store trained model weights for version control',
@@ -4497,7 +4497,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Drift',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     question: 'Which statistical test is commonly used to detect data drift in continuous features between training and production distributions?',
     options: [
       'Chi-squared test',
@@ -4529,7 +4529,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Types',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Which of the following is an example of semi-structured data?',
     options: [
       'A relational database table with fixed columns and rows',
@@ -4561,7 +4561,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Augmentation',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Data augmentation in machine learning refers to:',
     options: [
       'Increasing the model\'s parameter count to improve capacity',
@@ -4625,7 +4625,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Data Cleansing',
     category: 'Data Engineering',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'Data cleansing (data cleaning) in ML preparation involves:',
     options: [
       'Encrypting sensitive fields in the training dataset',
@@ -4641,7 +4641,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vector Databases',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     question: 'In a RAG (Retrieval-Augmented Generation) system, what is the role of the vector database?',
     options: [
       'Store the LLM model weights for fast retrieval',

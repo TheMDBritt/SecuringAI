@@ -1,7 +1,7 @@
 /**
  * lib/dojo2-scenarios.ts
  *
- * Scenario & Data Engine for Dojo 2 (AI Secures Assets).
+ * Scenario & Data Engine for Dojo 2 (AI-Assisted SOC).
  *
  * Contains:
  *  - DOJO2_PREBUILT_SCENARIOS  — 12 hand-crafted, SOC-realistic incident scenarios

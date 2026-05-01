@@ -62,24 +62,26 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'NIST AI RMF · Manage 4.2',
   ],
 
-  // ── Dojo 3 — Defending against AI-powered attacks ──────────────────────────
-  'phishing-deepfake': [
-    'OWASP LLM02 — Sensitive Information Disclosure',
-    'SecAI+ · Synthetic Media Detection',
-    'CAIS · AI-Generated Social Engineering',
-    'MITRE ATT&CK T1566 · Phishing',
-  ],
-  'ai-abuse-threat-model': [
+  // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────────
+  'ai-risk-classification': [
+    'EU AI Act · Annex III High-Risk Categories',
+    'NIST AI RMF · Map + Measure',
     'OWASP LLM05 — Improper Output Handling',
     'OWASP LLM08 — Vector & Embedding Weaknesses',
-    'SecAI+ · AI Threat Modeling',
-    'NIST AI RMF · Govern + Map',
-    'EU AI Act · High-Risk AI Obligations',
+    'AAISM · AI Risk Assessment',
   ],
   'policy-and-controls': [
     'AAISM · AI Governance & Policy',
     'ISO/IEC 42001 · AI Management System',
     'EU AI Act · Article 9 Risk Management',
     'CSA AICM · Control Validation',
+    'NIST AI RMF · Govern',
+  ],
+  'third-party-vendor-review': [
+    'AAISM · Third-Party AI Risk',
+    'ISO/IEC 42001 · Annex A Supplier Controls',
+    'EU AI Act · Article 25 Provider Obligations',
+    'NIST AI RMF · Govern 6 (Third-Party)',
+    'CSA AICM · Vendor Assurance',
   ],
 };

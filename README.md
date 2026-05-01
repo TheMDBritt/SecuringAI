@@ -13,8 +13,8 @@ Three connected dojos covering the full offensive/defensive AI security loop:
 | Dojo | Focus | Scenarios |
 |------|-------|-----------|
 | **Dojo 1 — LLM Attack / Defense** | Attack and defend an LLM under live guardrail toggles. | Prompt Injection · Data Exfiltration · Policy Bypass · Tool Abuse · RAG Injection |
-| **Dojo 2 — AI Secures Assets** | Use AI as a SOC analyst. Score the AI's analysis against a quality rubric. | Log Triage · Alert Enrichment · Detection Rule Generation · Incident Report Draft |
-| **Dojo 3 — Defense vs AI Attacks** | Build threat models, detection rules, and policies against AI-powered attackers. | Phishing & Deepfake Detection · AI Abuse Threat Model · Policy & Controls |
+| **Dojo 2 — AI-Assisted SOC** | Use AI as a SOC analyst. Score the AI's analysis against a quality rubric. | Log Triage · Alert Enrichment · Detection Rule Generation · Incident Report Draft |
+| **Dojo 3 — AI GRC** | Govern AI: risk-tier deployments, draft policy and controls, review third-party AI vendors. | AI Risk Classification · Policy & Controls Drafting · Third-Party AI Vendor Review |
 
 Every turn is scored, classified, and mapped to certification exam domains.
 

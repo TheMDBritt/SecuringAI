@@ -633,7 +633,7 @@ function mapScore(score: number): RiskLevel {
 // Exported so ScoringPane can check it without hardcoding the string.
 export const ALL_CRITERIA_MET_MSG = 'Analysis covers all quality criteria for this scenario.';
 
-// For Dojo 2 (AI Secures Assets) and Dojo 3 (Defense vs AI Attacks), evaluation
+// For Dojo 2 (AI-Assisted SOC) and Dojo 3 (AI GRC), evaluation
 // is about the QUALITY of the AI's analysis, not about detecting attacks.
 // Each scenario has a rubric of quality criteria checked against the response.
 
@@ -768,77 +768,71 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
-  'phishing-deepfake': [
-    // Expanded AI generation markers: include linguistic style cues used in analysis
-    { label: 'AI-generation linguistic markers identified', re: /AI.?generat|LLM|synthetic|artificial|unnatural|linguistic\s+marker|hallucin|formulaic|inconsistent\s+tone|over.?formal|verbose|repetitive\s+pattern/i },
-    { label: 'Social engineering triggers analyzed (urgency / authority / pretexting)', re: /urgency|authority|pretexting|manipulation|social\s+engineer|impersonat|fear|pressure|trust\s+exploit/i },
-    // Expanded: add sandbox, header analysis, email forensics techniques
-    { label: 'Detection heuristics or technical controls proposed', re: /detect|heuristic|indicator|filter|flag|DMARC|SPF|DKIM|signature|sandbox|header\s+analysis|MX\s+record|email\s+forensics|link\s+inspection/i },
-    { label: 'Framework or threat reference included', re: /T\d{4}(\.\d{3})?|ATT&CK|MITRE|NIST|technique|tactic/i },
-    // Expanded: phishing simulations and security culture referenced
-    { label: 'Defensive or awareness recommendations provided', re: /training|awareness|policy|verify|out.?of.?band|confirm\s+identity|report|phishing\s+simulation|security\s+culture|incident\s+reporting/i },
-  ],
-  'ai-abuse-threat-model': [
-    { label: 'Threat actor and attack vector identified', re: /threat\s+actor|attack\s+vector|adversar|attacker|insider\s+threat|external\s+actor/i },
-    { label: 'OWASP LLM Top 10 categories mapped', re: /LLM0[0-9]|OWASP/i },
-    { label: 'NIST AI RMF functions referenced', re: /NIST|AI\s+RMF|Map\b|Measure\b|Manage\b|Govern\b/i },
-    // Expanded: add prohibited AI and transparency requirement patterns
-    { label: 'EU AI Act risk category included', re: /EU\s+AI\s+Act|high.?risk\s+AI|unacceptable.?risk|limited.?risk|prohibited\s+AI|transparency\s+requirement|annex\s+(I|II|III)/i },
-    { label: 'Likelihood and impact scoring present', re: /likelihood|impact|risk\s+score|probability|severity\s*:|[1-5]\s*\/\s*5|\d+\s*\/\s*5/i },
+  'ai-risk-classification': [
+    { label: 'EU AI Act risk tier assigned (prohibited / high / limited / minimal)', re: /\b(prohibited|unacceptable.?risk|high.?risk|limited.?risk|minimal.?risk)\b|annex\s+(I|II|III)/i },
+    { label: 'NIST AI RMF functions referenced (Govern / Map / Measure / Manage)', re: /NIST|AI\s+RMF|\bGovern\b|\bMap\b|\bMeasure\b|\bManage\b/i },
+    { label: 'OWASP LLM Top 10 exposure mapped', re: /LLM0[0-9]|OWASP\s*LLM/i },
+    { label: 'Likelihood and impact scoring present', re: /likelihood|impact|risk\s+score|probability|severity\s*:|[1-5]\s*\/\s*5|\d+\s*\/\s*5|inherent\s+risk/i },
+    { label: 'Required controls or mitigations specified', re: /human\s+oversight|conformity\s+assessment|logging|monitor|access\s+control|control|safeguard|mitigation|guardrail/i },
   ],
   'policy-and-controls': [
     { label: 'Acceptable use policy clauses drafted', re: /\b(must|shall|prohibited|required|mandatory|acceptable\s+use|policy\s+clause|employees?\s+must|users?\s+must)\b/i },
     { label: 'NIST AI RMF framework referenced', re: /NIST|AI\s+RMF|Map\b|Measure\b|Manage\b|Govern\b/i },
-    { label: 'EU AI Act or ISO 42001 standard referenced', re: /EU\s+AI\s+Act|ISO\s+42001|42001/i },
-    // Expanded: add role-based access, data governance controls
+    { label: 'EU AI Act or ISO 42001 standard referenced', re: /EU\s+AI\s+Act|ISO\s+42001|42001|annex\s+A/i },
     { label: 'Technical controls or safeguards specified', re: /control|safeguard|enforce|audit|monitor|access\s+control|logging|role.based|data\s+classif|rate\s+limit|guardrail/i },
-    // Expanded: add gap and coverage terms
     { label: 'Maturity or coverage scoring applied (0–3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity|gap|coverage|fully\s+implemented/i },
+  ],
+  'third-party-vendor-review': [
+    { label: 'Approve / conditional / reject decision stated', re: /\b(approve|approved|conditional|condition\w*\s+approval|reject|rejected|do\s+not\s+approve)\b/i },
+    { label: 'Gap analysis covers data residency / training data / sub-processors', re: /data\s+residency|training\s+data|sub.?processor|model\s+version|retention|deletion\s+on\s+termination|data\s+sovereignty/i },
+    { label: 'Incident SLA and audit rights addressed', re: /incident\s+SLA|breach\s+notification|notification\s+window|audit\s+rights?|right\s+to\s+audit|audit\s+cadence|SLA/i },
+    { label: 'Required contractual controls listed (DPA / MSA clauses)', re: /\b(DPA|MSA|data\s+processing\s+agreement|contract\w*\s+control|clause|addendum|indemnif|liability)\b/i },
+    { label: 'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)', re: /NIST|AI\s+RMF|ISO\s+42001|42001|EU\s+AI\s+Act|article\s+\d+/i },
   ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
 
 const DOJO3_ELEMENT_COACHING: Record<string, string> = {
-  // phishing-deepfake
-  'AI-generation linguistic markers identified':
-    'AI-generated phishing often shows telltale patterns: perfect grammar, over-formal tone, repeated sentence structures, and unusual collocations. Prompt: "Identify specific AI-generation linguistic markers in this content."',
-  'Social engineering triggers analyzed (urgency / authority / pretexting)':
-    'Social engineering attacks exploit human psychology — urgency, authority, and pretexting are the three core levers. Prompt: "Identify the social engineering techniques used: urgency, authority, pretexting, or fear-based pressure."',
-  'Detection heuristics or technical controls proposed':
-    'Technical controls (DMARC, header inspection, sandboxing) catch what awareness training misses. Prompt: "What technical controls and detection heuristics would catch this type of attack?"',
-  'Framework or threat reference included':
-    'Mapping to MITRE or NIST enables organisations to connect this threat to existing detection coverage and controls. Prompt: "Map this attack technique to the relevant MITRE ATT&CK or ATLAS technique."',
-  'Defensive or awareness recommendations provided':
-    'Both technical controls and human awareness are required — phishing simulations measure training effectiveness. Prompt: "What security awareness training and defensive policies would reduce this risk?"',
-  // ai-abuse-threat-model
-  'Threat actor and attack vector identified':
-    'Without specifying who attacks and how, a threat model cannot drive control selection. Prompt: "Who is the threat actor? What is the attack vector and motivation?"',
-  'OWASP LLM Top 10 categories mapped':
-    'OWASP LLM Top 10 is the baseline framework for AI/LLM risk — coverage gaps mean unmitigated attack surface. Prompt: "Map this threat to the relevant OWASP LLM Top 10 category (LLM01–LLM10)."',
-  'NIST AI RMF functions referenced':
-    'NIST AI RMF (Map, Measure, Manage, Govern) provides the governance structure for AI risk. Prompt: "Reference the relevant NIST AI RMF function for this risk."',
-  'EU AI Act risk category included':
-    'EU AI Act risk classification (Unacceptable/High/Limited/Minimal) determines legal obligations for the system. Prompt: "What EU AI Act risk category does this AI application fall under and why?"',
+  // ai-risk-classification
+  'EU AI Act risk tier assigned (prohibited / high / limited / minimal)':
+    'EU AI Act obligations flow directly from the risk tier — without a tier, you cannot scope controls. Prompt: "Classify this system under the EU AI Act risk tier (prohibited / high / limited / minimal) and cite the Annex III category that justifies the tier."',
+  'NIST AI RMF functions referenced (Govern / Map / Measure / Manage)':
+    'NIST AI RMF (Govern, Map, Measure, Manage) is the governance scaffold for any AI risk. Prompt: "Map this deployment to the relevant NIST AI RMF functions and call out the specific subcategories engaged."',
+  'OWASP LLM Top 10 exposure mapped':
+    'OWASP LLM Top 10 is the baseline catalogue of LLM-specific risks — gaps here are unmitigated attack surface. Prompt: "Which OWASP LLM Top 10 categories (LLM01–LLM10) does this deployment expose, and why?"',
   'Likelihood and impact scoring present':
-    'Likelihood × impact scoring prioritises controls investment — without it, all risks look equal. Prompt: "Score each risk on likelihood (1–5) and impact (1–5) to produce a risk rating."',
+    'Likelihood × impact scoring prioritises controls investment — without it, every risk looks equal. Prompt: "Score each risk on likelihood (1–5) and impact (1–5) and produce an inherent risk rating."',
+  'Required controls or mitigations specified':
+    'A risk classification without required mitigations is not actionable. Prompt: "List the minimum controls implied by the assigned tier — human oversight, logging, conformity assessment, etc."',
   // policy-and-controls
   'Acceptable use policy clauses drafted':
     'Policy clauses must use normative language (must/shall/prohibited) to be enforceable. Prompt: "Draft formal AUP clauses using must/shall/prohibited language for each control area."',
   'NIST AI RMF framework referenced':
     'NIST AI RMF alignment demonstrates governance maturity and satisfies auditor requirements. Prompt: "Reference the NIST AI RMF function that each policy clause supports."',
   'EU AI Act or ISO 42001 standard referenced':
-    'ISO 42001 and EU AI Act provide the international compliance baseline for AI governance. Prompt: "Map each clause to the EU AI Act article or ISO 42001 control it addresses."',
+    'ISO 42001 and EU AI Act provide the international compliance baseline for AI governance. Prompt: "Map each clause to the EU AI Act article or ISO 42001 Annex A control it addresses."',
   'Technical controls or safeguards specified':
     'Policy without technical controls is unenforceable — guardrails, logging, and access controls must be specified. Prompt: "What technical safeguards enforce each policy clause?"',
   'Maturity or coverage scoring applied (0–3 scale)':
     'Scoring each clause 0–3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
+  // third-party-vendor-review
+  'Approve / conditional / reject decision stated':
+    'A vendor review without a clear decision is not a review. Prompt: "State the decision (approve / conditional / reject) and a one-line justification before going into the gap analysis."',
+  'Gap analysis covers data residency / training data / sub-processors':
+    'These three gaps cause most AI-vendor incidents — residency drives compliance, training data drives IP risk, sub-processors drive transitive risk. Prompt: "Cover data residency, training-data use, sub-processors, model versioning, and deletion on termination in the gap table."',
+  'Incident SLA and audit rights addressed':
+    'Without an SLA and audit rights you have no enforcement mechanism after signing. Prompt: "What incident SLA and audit rights does the vendor offer, and what is required?"',
+  'Required contractual controls listed (DPA / MSA clauses)':
+    'Vendor reviews end at the contract — DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
+  'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)':
+    'Mapping each gap to a framework lets the buyer justify the controls request to leadership. Prompt: "Map each gap to the relevant NIST AI RMF subcategory, ISO 42001 control, or EU AI Act article."',
 };
 
 
 /**
- * Quality-based evaluation for Dojo 2 (AI Secures Assets) and
- * Dojo 3 (Defense vs AI Attacks).
+ * Quality-based evaluation for Dojo 2 (AI-Assisted SOC) and
+ * Dojo 3 (AI GRC).
  *
  * Scores the ASSISTANT's response against a per-scenario quality rubric
  * instead of looking for attack patterns in the user's message.

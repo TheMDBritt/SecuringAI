@@ -90,33 +90,33 @@ export const SCENARIOS: Scenario[] = [
     mitreAttackIds: [],
   },
 
-  // ── Dojo 3 ────────────────────────────────────────────────────────────
+  // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
   {
-    id: 'phishing-deepfake',
+    id: 'ai-risk-classification',
     dojoId: 3,
-    title: 'Phishing & Deepfake Detection',
+    title: 'AI Risk Classification',
     description:
-      'Analyze a simulated AI-generated spear-phishing email or deepfake audio transcript. Build and tune detection workflows.',
+      'Given an AI deployment brief, classify it under EU AI Act risk tiers, map to NIST AI RMF functions, and justify required controls.',
     difficulty: 'intermediate',
-    owaspTags: ['LLM02'],
-    mitreAttackIds: ['T1566', 'T1598'],
-  },
-  {
-    id: 'ai-abuse-threat-model',
-    dojoId: 3,
-    title: 'AI Abuse Threat Model',
-    description:
-      'Given an AI deployment description, generate an abuse threat model scored against NIST AI RMF and EU AI Act.',
-    difficulty: 'advanced',
     owaspTags: ['LLM05', 'LLM08'],
     mitreAttackIds: [],
   },
   {
     id: 'policy-and-controls',
     dojoId: 3,
-    title: 'Policy & Controls',
+    title: 'Policy & Controls Drafting',
     description:
-      'Draft AI acceptable use policy clauses and a technical controls checklist. Scored against NIST AI RMF, EU AI Act, and ISO 42001.',
+      'Draft AI acceptable use policy clauses and ISO 42001 control selections for a stated use case. Scored against NIST AI RMF, EU AI Act, and ISO 42001.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'third-party-vendor-review',
+    dojoId: 3,
+    title: 'Third-Party AI Vendor Review',
+    description:
+      'Given a vendor data-flow and SOC 2 summary, return approve / conditional / reject with a gap list and required contractual controls.',
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],

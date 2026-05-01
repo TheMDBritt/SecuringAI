@@ -12,26 +12,18 @@ const PRINCIPLES = [
   {
     label: 'Free, forever',
     body:
-      'No accounts, no paywall, no tracking. The whole point is to lower the barrier to learning AI security — anything that adds friction defeats that.',
+      'No accounts, no paywall, no tracking. The barrier to learning AI security should be zero. Anything that adds friction defeats the point.',
   },
   {
     label: 'Hands-on, not theoretical',
     body:
-      'Every concept is reachable by typing in the chat console. Read about prompt injection, then actually try one and watch the guardrails respond.',
+      'Every concept is something you can type into the chat console. Read about prompt injection, then run one and see what the guardrails actually do.',
   },
   {
     label: 'Conceptual payloads only',
     body:
-      'Inputs and responses are training artefacts. A safety pre-filter blocks functional exploit syntax — this is a learning tool, not a weapons cache.',
+      'Inputs and responses are training material. A safety pre-filter blocks functional exploit syntax. This is a study tool, not a weapons cache.',
   },
-];
-
-const STACK = [
-  { tech: 'Next.js 14',  role: 'App Router, server components, edge OG image' },
-  { tech: 'TypeScript',  role: 'Strict mode end-to-end' },
-  { tech: 'Tailwind CSS', role: 'Dark theme, shared accent tokens' },
-  { tech: 'Zod',         role: 'Server-side validation on every API request' },
-  { tech: 'OpenAI API',  role: 'Optional. Stub mode is fully playable without it.' },
 ];
 
 const CREDITS = [
@@ -118,53 +110,19 @@ export default function AboutPage() {
               Session score starts at 100 and decays as attacks succeed.
             </p>
             <p>
-              <span className="text-cyan-400 font-mono">Dojo 2</span> ·{' '}
+              <span className="text-cyan-400 font-mono">Dojo 2 · AI-Assisted SOC</span> ·{' '}
               {SCENARIO_COUNT_BY_DOJO[2]} scenarios. Use AI as a SOC analyst.
               Per-scenario regex rubrics evaluate the AI&apos;s response for
               IOCs, MITRE T-codes, executive summaries, and framework mappings.
               Disabled analyst capabilities are excluded from scoring.
             </p>
             <p>
-              <span className="text-emerald-400 font-mono">Dojo 3</span> ·{' '}
-              {SCENARIO_COUNT_BY_DOJO[3]} scenarios. Defend against AI-powered
-              attackers. Build threat models and policy clauses scored against
-              NIST AI RMF, ISO/IEC 42001, and the EU AI Act.
+              <span className="text-emerald-400 font-mono">Dojo 3 · AI GRC</span> ·{' '}
+              {SCENARIO_COUNT_BY_DOJO[3]} scenarios. Govern AI: risk-tier a
+              deployment under the EU AI Act, draft policy and ISO 42001
+              controls, and run a third-party AI vendor review. Scored on
+              NIST AI RMF, ISO/IEC 42001, and EU AI Act mappings.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-slate-800 bg-slate-900/40">
-        <div className="max-w-4xl mx-auto px-6 py-14">
-          <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Stack
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-6">
-            Boring tech, deliberately.
-          </h2>
-          <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-2xl">
-            No database, no auth, no telemetry. The fewer moving parts, the
-            easier it is to run, audit, and self-host.
-          </p>
-          <div className="overflow-hidden rounded-lg border border-slate-800">
-            <table className="w-full text-sm">
-              <tbody>
-                {STACK.map((s, i) => (
-                  <tr
-                    key={s.tech}
-                    className={[
-                      'border-b border-slate-800/60 last:border-b-0',
-                      i % 2 === 0 ? 'bg-slate-900/20' : '',
-                    ].join(' ')}
-                  >
-                    <td className="px-4 py-3 font-mono text-cyan-300/80 whitespace-nowrap">
-                      {s.tech}
-                    </td>
-                    <td className="px-4 py-3 text-slate-300">{s.role}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
         </div>
       </section>

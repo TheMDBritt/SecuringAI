@@ -148,22 +148,31 @@ Standard IR report structure (adjust section depth per configured controls):
 
 Replace any real personal identifiers from the learner's input with fictional placeholders.`,
 
-  // ── Dojo 3 ──────────────────────────────────────────────────────────────
-  'phishing-deepfake': `## Scenario: Phishing & Deepfake Detection
-Present a clearly labeled [TRAINING ARTIFACT — NOT FOR USE] fictional phishing email or deepfake transcript. Guide the learner to identify: AI-generation linguistic markers, social engineering triggers (urgency, authority, pretexting), and detection heuristics.
-Generated artifacts must be obviously fictional and must NOT be realistic enough to serve as actual attack material.`,
+  // ── Dojo 3 — AI GRC ─────────────────────────────────────────────────────
+  'ai-risk-classification': `## Scenario: AI Risk Classification
+From the learner's AI deployment brief, produce a structured classification:
+1. **EU AI Act Risk Tier** — choose one of: prohibited / high-risk / limited / minimal — and cite the Annex III category or rule that justifies the tier.
+2. **NIST AI RMF Mapping** — list the relevant functions (Govern, Map, Measure, Manage) and the specific subcategories engaged.
+3. **OWASP LLM Top 10 Exposure** — identify the LLM01–LLM10 categories that apply.
+4. **Risk Register Row** — Threat | Likelihood (1–5) | Impact (1–5) | Inherent Risk | Required Controls.
+5. **Required Mitigations** — minimum controls implied by the tier (e.g. high-risk → human oversight, logging, conformity assessment).
 
-  'ai-abuse-threat-model': `## Scenario: AI Abuse Threat Model
-From the learner's AI deployment description, produce a structured threat model table:
-| Threat Actor | Attack Vector | OWASP LLM | Likelihood (1–5) | Impact (1–5) | Risk | Controls |
+Risk classification is a governance exercise. Do not produce attack code or working exploits.`,
 
-Follow with: **Top 3 Attack Paths** (narrative, conceptual), **NIST AI RMF Mapping**, and **EU AI Act Risk Category**.
-Threat models are defensive analysis tools — do not include working attack scripts.`,
-
-  'policy-and-controls': `## Scenario: Policy & Controls
-Help the learner draft or score an AI acceptable use policy and technical controls checklist.
-For each clause: **Clause** | **Technical Control** | **Framework Reference** (NIST AI RMF / EU AI Act / ISO 42001) | **Score** (0=missing, 1=partial, 2=present, 3=exemplary).
+  'policy-and-controls': `## Scenario: Policy & Controls Drafting
+Help the learner draft or score an AI acceptable use policy and ISO 42001 control selection.
+For each clause: **Clause** | **Normative Language** (must / shall / prohibited) | **Technical Control** | **Framework Reference** (NIST AI RMF function / EU AI Act article / ISO 42001 Annex A control) | **Score** (0=missing, 1=partial, 2=present, 3=exemplary).
+Cover the required clause families: data handling, human oversight, logging & monitoring, incident response, vendor / sub-processor obligations.
 Remind learners that generated policies are educational examples; real deployments require legal and compliance review.`,
+
+  'third-party-vendor-review': `## Scenario: Third-Party AI Vendor Review
+From the learner's vendor description (data flow, SOC 2 summary, model details), produce a vendor risk decision:
+1. **Decision** — approve / conditional / reject — with a one-line justification.
+2. **Gap Analysis Table** — Control Area | Vendor Posture | Required Posture | Gap | Severity (low/med/high). Cover at minimum: data residency, training-data use, model versioning, sub-processors, incident SLA, audit rights, encryption in transit/at rest, deletion on termination.
+3. **Required Contractual Controls** — bullet list of clauses to add to the MSA / DPA before approval (data processing addendum terms, audit cadence, breach notification window, indemnification scope).
+4. **Framework Mapping** — which NIST AI RMF subcategories, ISO 42001 controls, and EU AI Act articles each gap relates to.
+
+This is a procurement / GRC exercise. Do not produce attacks against the vendor.`,
 };
 
 // ─── Control config modifiers ─────────────────────────────────────────────────

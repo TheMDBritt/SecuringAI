@@ -8,7 +8,7 @@ export const TOPIC_ARTICLES: TopicArticle[] = [
     id: 'ml-supervised-learning',
     category: 'AI & ML Fundamentals',
     title: 'Supervised Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     vocab: ['Label', 'Feature', 'Training Set', 'Validation Set', 'Overfitting', 'Underfitting', 'Regularization'],
     content: `Supervised learning trains a model on **labeled examples** — input–output pairs — so it can predict outputs for unseen inputs.
 
@@ -60,7 +60,7 @@ export const TOPIC_ARTICLES: TopicArticle[] = [
     id: 'ml-unsupervised-learning',
     category: 'AI & ML Fundamentals',
     title: 'Unsupervised Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     vocab: ['Clustering', 'Dimensionality Reduction', 'Anomaly Detection', 'K-Means', 'PCA', 'Autoencoder'],
     content: `Unsupervised learning finds patterns in **unlabeled data** — no predefined outputs are provided.
 
@@ -112,7 +112,7 @@ Without ground truth labels, evaluation uses:
     id: 'ml-neural-networks',
     category: 'AI & ML Fundamentals',
     title: 'Neural Networks & Deep Learning',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE'],
     vocab: ['Neuron', 'Layer', 'Activation Function', 'Backpropagation', 'Gradient Descent', 'Batch Size', 'Epoch', 'Dropout'],
     content: `Neural networks are computational models loosely inspired by biological brains, composed of layers of interconnected **neurons**.
 
@@ -170,7 +170,7 @@ Each neuron computes: \`output = activation(weights · inputs + bias)\`
     id: 'ml-training-pipeline',
     category: 'AI & ML Fundamentals',
     title: 'The ML Training Pipeline',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Preprocessing', 'Feature Engineering', 'Train-Test Split', 'Cross-Validation', 'Hyperparameter Tuning', 'Model Evaluation', 'Model Deployment'],
     content: `Building a production ML model follows a repeatable pipeline from raw data to deployed service.
 
@@ -229,7 +229,7 @@ Each neuron computes: \`output = activation(weights · inputs + bias)\`
     id: 'ml-eval-metrics',
     category: 'AI & ML Fundamentals',
     title: 'Evaluation Metrics',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Google-MLE'],
     vocab: ['Precision', 'Recall', 'F1 Score', 'AUC-ROC', 'Confusion Matrix', 'BLEU', 'Perplexity', 'RMSE'],
     content: `Choosing the right metric is critical — optimizing the wrong one leads to misleading results.
 
@@ -287,7 +287,7 @@ Each neuron computes: \`output = activation(weights · inputs + bias)\`
     id: 'genai-transformer-architecture',
     category: 'Generative AI & LLMs',
     title: 'Transformer Architecture',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Attention Mechanism', 'Self-Attention', 'Multi-Head Attention', 'Positional Encoding', 'Encoder', 'Decoder', 'KV Cache'],
     content: `The Transformer, introduced in "Attention Is All You Need" (2017), is the foundation of all modern LLMs.
 
@@ -345,7 +345,7 @@ During inference, key and value matrices are cached to avoid recomputation. This
     id: 'genai-prompt-engineering',
     category: 'Generative AI & LLMs',
     title: 'Prompt Engineering',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'GIAC-GOAA', 'CAISP'],
     vocab: ['System Prompt', 'Zero-Shot Prompting', 'Few-Shot Prompting', 'Chain-of-Thought', 'Role Prompting', 'Prompt Injection'],
     content: `Prompt engineering is the practice of designing inputs to LLMs to reliably produce desired outputs.
 
@@ -415,7 +415,7 @@ System prompts are the **primary defense layer** for LLM applications:
     id: 'genai-rag',
     category: 'Generative AI & LLMs',
     title: 'Retrieval-Augmented Generation (RAG)',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'GIAC-GOAA', 'CAISP'],
     vocab: ['RAG', 'Vector Database', 'Embedding', 'Semantic Search', 'Chunking', 'Context Window', 'Grounding'],
     content: `RAG augments LLM responses by retrieving relevant documents from an external knowledge base before generation.
 
@@ -473,7 +473,7 @@ Query → Embed → Vector Search → Retrieve Chunks → Inject into Prompt →
     id: 'genai-fine-tuning',
     category: 'Generative AI & LLMs',
     title: 'Fine-Tuning & Parameter-Efficient Training',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     vocab: ['Fine-Tuning', 'LoRA', 'QLoRA', 'PEFT', 'Instruction Tuning', 'RLHF', 'DPO'],
     content: `Fine-tuning adapts a pre-trained model to a specific task or domain by continuing training on task-specific data.
 
@@ -934,7 +934,7 @@ Foundation models like GPT-4, Claude, Gemini face additional requirements:
     id: 'gov-responsible-ai',
     category: 'AI Governance',
     title: 'Responsible AI Principles',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'CAISP'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'CAISP'],
     vocab: ['Fairness', 'Explainability', 'Accountability', 'Transparency', 'Privacy', 'Inclusivity', 'Reliability'],
     content: `Responsible AI is the practice of designing, developing, and deploying AI systems that are fair, reliable, safe, and accountable.
 
@@ -1009,7 +1009,7 @@ There must be mechanisms to ensure responsibility for AI outcomes.
     id: 'mlops-deployment',
     category: 'MLOps',
     title: 'Model Deployment & Serving',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Model Serving', 'REST API', 'Batch Inference', 'Online Inference', 'ONNX', 'Containerization', 'Canary Deployment'],
     content: `Model deployment is the process of making a trained ML model available for use in production.
 
@@ -1076,7 +1076,7 @@ Common frameworks:
     id: 'mlops-monitoring',
     category: 'MLOps',
     title: 'Model Monitoring & Drift Detection',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA'],
     vocab: ['Data Drift', 'Concept Drift', 'Model Decay', 'Feature Drift', 'Statistical Process Control', 'Retraining'],
     content: `Models degrade over time as the real world changes. Monitoring ensures models continue to perform as expected.
 
@@ -1141,7 +1141,7 @@ PSI measures how much a feature's distribution has shifted:
     id: 'mlops-cicd',
     category: 'MLOps',
     title: 'CI/CD for ML (MLOps Pipelines)',
-    certTags: ['AWS-AIF-C01', 'Azure-AI102', 'Google-MLE'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'Google-MLE'],
     vocab: ['CI/CD', 'MLflow', 'Model Registry', 'Feature Store', 'Pipeline Orchestration', 'Experiment Tracking'],
     content: `MLOps applies software engineering CI/CD practices to the ML lifecycle, ensuring reproducible, automated, and auditable model development.
 
@@ -1479,7 +1479,7 @@ Full MLOps platform for custom model development:
     id: 'cloud-azure-ai',
     category: 'Cloud AI Platforms',
     title: 'Azure AI Services',
-    certTags: ['Azure-AI900', 'Azure-AI102', 'SecAI'],
+    certTags: ['Azure-AI901', 'Azure-AI103', 'SecAI'],
     vocab: ['Azure AI Foundry', 'Azure OpenAI', 'Azure Cognitive Services', 'Azure ML', 'Responsible AI Dashboard', 'Content Safety'],
     content: `Microsoft Azure offers a layered AI platform from pre-built cognitive services to the full Azure Machine Learning platform.
 
@@ -1664,7 +1664,7 @@ In Dojo 3, you build detection rules for AI-powered attacks — specifically tar
     id: 'emerging-agentic-ai',
     category: 'Emerging Trends',
     title: 'Agentic AI & Multi-Agent Systems',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI102', 'GIAC-GOAA'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI103', 'GIAC-GOAA'],
     vocab: ['Agentic AI', 'ReAct', 'Tool Use', 'Multi-Agent', 'Orchestrator', 'Memory', 'Planning'],
     content: `Agentic AI refers to AI systems that autonomously plan, act, and use tools to complete multi-step goals with minimal human intervention.
 
@@ -1891,7 +1891,7 @@ Audit logs of Google admin access to your data. Relevant for compliance in regul
     id: 'cv-fundamentals',
     category: 'Computer Vision',
     title: 'Computer Vision Fundamentals',
-    certTags: ['Azure-AI900', 'AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['Azure-AI901', 'AWS-AIF-C01', 'Google-MLE'],
     vocab: ['CNN', 'Object Detection', 'YOLO', 'Semantic Segmentation', 'Transfer Learning', 'Vision Transformer', 'Adversarial Example', 'Deepfake', 'IoU', 'mAP'],
     content: `Computer Vision (CV) enables machines to interpret and understand visual information — images, video, and spatial data.
 
@@ -1976,7 +1976,7 @@ GAN/diffusion-generated synthetic faces or video:
     id: 'nlp-fundamentals',
     category: 'NLP',
     title: 'Natural Language Processing Fundamentals',
-    certTags: ['Azure-AI102', 'AWS-AIF-C01', 'Google-MLE'],
+    certTags: ['Azure-AI103', 'AWS-AIF-C01', 'Google-MLE'],
     vocab: ['Tokenization', 'BPE', 'Embeddings', 'BERT', 'NER', 'Sentiment Analysis', 'BLEU', 'ROUGE', 'Perplexity', 'Prompt Injection'],
     content: `Natural Language Processing (NLP) is the field of enabling machines to understand, generate, and reason about human language.
 
@@ -2089,7 +2089,7 @@ Mitigation: Counterfactual data augmentation, debiasing objectives, fairness con
     id: 'ai-ethics-bias',
     category: 'AI Ethics & Bias',
     title: 'AI Ethics, Fairness & Bias',
-    certTags: ['SecAI', 'CAISP', 'Azure-AI900', 'AWS-AIF-C01'],
+    certTags: ['SecAI', 'CAISP', 'Azure-AI901', 'AWS-AIF-C01'],
     vocab: ['Algorithmic Bias', 'Fairness', 'Explainability', 'SHAP', 'LIME', 'Disparate Impact', 'Data Poisoning', 'Model Card', 'Responsible AI'],
     content: `AI ethics covers the principles, practices, and frameworks that ensure AI systems are fair, transparent, accountable, and aligned with human values.
 
@@ -2208,7 +2208,7 @@ Training on copyrighted data raises legal questions. Risks:
     id: 'data-engineering',
     category: 'Data Engineering',
     title: 'Data Engineering for AI/ML',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI102'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103'],
     vocab: ['ETL', 'Feature Engineering', 'Data Pipeline', 'Data Lakehouse', 'Feature Store', 'Data Drift', 'Data Versioning', 'DVC', 'Schema Validation'],
     content: `Data engineering provides the foundation for reliable ML systems — bad data produces bad models regardless of algorithm sophistication.
 
@@ -2325,7 +2325,7 @@ Risk: Models memorize and reproduce sensitive training data:
     id: 'frameworks-tools',
     category: 'Frameworks & Tools',
     title: 'AI/ML Frameworks & Developer Tools',
-    certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI102'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI103'],
     vocab: ['PyTorch', 'TensorFlow', 'Hugging Face', 'LangChain', 'LlamaIndex', 'ONNX', 'Triton', 'vLLM', 'LangSmith', 'Weights & Biases'],
     content: `The AI/ML ecosystem has a rich set of frameworks and tools covering model training, deployment, LLM orchestration, and observability.
 

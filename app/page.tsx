@@ -24,7 +24,7 @@ const DOJOS: DojoCard[] = [
   {
     id: 2,
     label: 'Dojo 2',
-    title: 'AI Secures Assets',
+    title: 'AI-Assisted SOC',
     summary:
       'Use AI as a SOC analyst. Score the AI’s analysis against a quality rubric.',
     accent: 'cyan',
@@ -32,9 +32,9 @@ const DOJOS: DojoCard[] = [
   {
     id: 3,
     label: 'Dojo 3',
-    title: 'Defense vs AI Attacks',
+    title: 'AI GRC',
     summary:
-      'Build threat models, detection rules, and policies against AI-powered attackers.',
+      'Govern AI: risk-tier deployments, draft policy and controls, and review third-party AI vendors.',
     accent: 'emerald',
   },
 ];
@@ -176,9 +176,9 @@ export default function LandingPage() {
                 DOJO 2 / 3 · Quality rubric
               </h3>
               <p className="text-sm text-slate-400 leading-relaxed">
-                Per-scenario regex checks evaluate the AI&apos;s response for
-                IOCs, MITRE T-codes, executive summaries, and framework mappings.
-                Disabled analyst capabilities are excluded from scoring.
+                Per-scenario regex rubrics evaluate the AI&apos;s response. Dojo 2
+                checks IOCs, MITRE T-codes, executive summaries; Dojo 3 checks
+                EU AI Act tiering, ISO 42001 controls, and vendor-review gaps.
               </p>
             </div>
             <div className="p-5 rounded-lg border border-slate-800 bg-slate-900/60">
