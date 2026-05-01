@@ -1,8 +1,8 @@
-# SecuringAI — LLM Security Dojo
+# LLM DOJO
 
-A free, no-login, browser-based study tool for AI/LLM security. Practice
-attacking, defending, and operating AI systems through hands-on scenarios that
-map directly to the top 2026 AI security certifications.
+A free, browser-based study tool for AI/LLM security. Practice attacking,
+defending, and operating AI systems through hands-on scenarios that map
+directly to the top 2026 AI security certifications.
 
 > No accounts. No tracking. Open the app, pick a dojo, start practicing.
 

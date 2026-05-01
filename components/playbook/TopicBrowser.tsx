@@ -6,8 +6,8 @@ import { TOPIC_ARTICLES } from '@/lib/playbook-content';
 const CERT_BADGE: Record<string, string> = {
   'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
   'AWS-AIF-C01':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'Azure-AI900':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'Azure-AI102':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI901':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI103':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
   'Google-MLE':   'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
   'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',

@@ -18,7 +18,7 @@ import type {
   EvaluationResult,
   Scenario,
 } from '@/types';
-import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG } from '@/types';
+import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG, DEFAULT_DOJO3_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
   { id: 1, label: 'LLM Attack / Defense', sublabel: 'Dojo 1', color: 'red' },
@@ -58,10 +58,7 @@ export function DojoTabs() {
   const [activeDojo2Scenario, setActiveDojo2Scenario] = useState<Dojo2IncidentScenario | null>(null);
 
   // ── Dojo 3 config ──────────────────────────────────────────────────────────
-  const [dojo3Config, setDojo3Config] = useState<Dojo3Config>({
-    detectionRule:   '',
-    selectedClauses: [],
-  });
+  const [dojo3Config, setDojo3Config] = useState<Dojo3Config>(DEFAULT_DOJO3_CONFIG);
 
   // ── M7 state ──────────────────────────────────────────────────────────────
   /** Content of the RAG Context Injection textarea. */
@@ -126,7 +123,7 @@ export function DojoTabs() {
     setSessionScore(100);
     // Reset dojo-specific configs on tab change
     setDojo2Config(DEFAULT_DOJO2_CONFIG);
-    setDojo3Config({ detectionRule: '', selectedClauses: [] });
+    setDojo3Config(DEFAULT_DOJO3_CONFIG);
     setActiveDojo2Scenario(null);
   }
 
@@ -139,7 +136,7 @@ export function DojoTabs() {
     setJailbreakActive(false);
     setRagContext('');
     setToolForgeResponse('');
-    setDojo3Config({ detectionRule: '', selectedClauses: [] });
+    setDojo3Config(DEFAULT_DOJO3_CONFIG);
     // Clicking a new left-panel card clears any previously loaded incident
     setActiveDojo2Scenario(null);
   }

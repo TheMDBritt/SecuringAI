@@ -11,6 +11,8 @@ import type {
   ResponseStyle,
   ContextLevel,
   ConfidenceAssessment,
+  FrameworkLens,
+  RiskTier,
 } from '@/types';
 import {
   DOJO2_PREBUILT_SCENARIOS,
@@ -989,142 +991,257 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload,
   );
 }
 
-// ─── Dojo 3 — Defender Toolkit ────────────────────────────────────────────────
+// ─── Dojo 3 — GRC Toolkit ─────────────────────────────────────────────────────
 
 const POLICY_CLAUSES = [
-  'Employees must not share credentials with AI systems.',
-  'All AI-generated outputs require human review before any action is taken.',
-  'Deepfake verification is required before executing executive requests.',
-  'AI tool usage must be logged and audited on a quarterly basis.',
-  'Generating deceptive content using AI tools is strictly prohibited.',
-  'AI systems used in security workflows must have documented threat models.',
-  'Prompt injection controls must be validated before production AI deployment.',
-  'AI vendor access must be scoped to minimum necessary data and permissions.',
+  'All AI-generated outputs that drive business decisions must be reviewed by a human before action.',
+  'AI systems processing personal data must record purpose, lawful basis, and retention period.',
+  'AI tool usage must be logged with prompt, response, and user identity for a minimum of 12 months.',
+  'AI vendor access must be scoped to the minimum data and permissions required for the use case.',
+  'High-risk AI systems must complete a documented risk assessment before deployment.',
+  'Incident response procedures must define a 72-hour notification window for AI-related breaches.',
+  'AI training data sources must be inventoried and reviewed for licensing and bias.',
+  'Models must be re-evaluated against the AI policy at least annually or after major version changes.',
 ];
+
+const VENDOR_GAP_AREAS = [
+  'Data residency & sovereignty',
+  'Use of customer data for model training',
+  'Sub-processor disclosure',
+  'Model versioning & change notification',
+  'Incident SLA & breach notification',
+  'Right to audit',
+  'Encryption in transit and at rest',
+  'Deletion on termination',
+];
+
+const FRAMEWORK_OPTIONS: { value: FrameworkLens; label: string }[] = [
+  { value: 'all',  label: 'All' },
+  { value: 'nist', label: 'NIST AI RMF' },
+  { value: 'eu',   label: 'EU AI Act' },
+  { value: 'iso',  label: 'ISO 42001' },
+];
+
+const RISK_TIER_OPTIONS: { value: Exclude<RiskTier, 'unset'>; label: string; color: string }[] = [
+  { value: 'prohibited', label: 'Prohibited', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
+  { value: 'high',       label: 'High',       color: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+  { value: 'limited',    label: 'Limited',    color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
+  { value: 'minimal',    label: 'Minimal',    color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
+];
+
+const FRAMEWORK_LABEL: Record<FrameworkLens, string> = {
+  all:  'NIST AI RMF, EU AI Act, and ISO 42001',
+  nist: 'NIST AI RMF',
+  eu:   'the EU AI Act',
+  iso:  'ISO 42001',
+};
 
 interface Dojo3PanelProps {
   disabled: boolean;
+  scenarioId: string | null;
   dojo3Config: Dojo3Config;
   onDojo3ConfigChange: (c: Dojo3Config) => void;
   onSendPayload: (text: string) => void;
 }
 
-function Dojo3Panel({ disabled, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
-  function toggleClause(clause: string) {
-    const already = dojo3Config.selectedClauses.includes(clause);
-    onDojo3ConfigChange({
-      ...dojo3Config,
-      selectedClauses: already
-        ? dojo3Config.selectedClauses.filter((c) => c !== clause)
-        : [...dojo3Config.selectedClauses, clause],
-    });
-    // Send scoring payload when selecting; de-selecting keeps prior analysis in chat.
+function Dojo3Panel({ disabled, scenarioId, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
+  const isRiskScenario   = scenarioId === 'ai-risk-classification';
+  const isPolicyScenario = scenarioId === 'policy-and-controls';
+  const isVendorScenario = scenarioId === 'third-party-vendor-review';
+
+  function setLens(value: FrameworkLens) {
+    onDojo3ConfigChange({ ...dojo3Config, frameworkLens: value });
+  }
+
+  function setTier(value: Exclude<RiskTier, 'unset'>) {
+    onDojo3ConfigChange({ ...dojo3Config, riskTier: value });
+    onSendPayload(
+      `Working classification: ${value.toUpperCase()}-risk under the EU AI Act. ` +
+      `Justify or correct this tier, cite the Annex III category or rule, and list the ` +
+      `mitigations required at this tier per ${FRAMEWORK_LABEL[dojo3Config.frameworkLens]}.`,
+    );
+  }
+
+  function toggleVendorGap(area: string) {
+    const already = dojo3Config.vendorGapAreas.includes(area);
+    const next = already
+      ? dojo3Config.vendorGapAreas.filter((a) => a !== area)
+      : [...dojo3Config.vendorGapAreas, area];
+    onDojo3ConfigChange({ ...dojo3Config, vendorGapAreas: next });
     if (!already) {
-      onSendPayload(`Please score this policy clause against NIST AI RMF, EU AI Act, and ISO 42001: "${clause}"`);
+      onSendPayload(
+        `Add "${area}" to the vendor gap analysis. State the vendor's likely posture, ` +
+        `the required posture, the gap severity (low/med/high), and the ${FRAMEWORK_LABEL[dojo3Config.frameworkLens]} ` +
+        `clause that justifies the requirement.`,
+      );
     }
   }
-  const hasRule    = dojo3Config.detectionRule.trim().length > 0;
+
+  function toggleClause(clause: string) {
+    const already = dojo3Config.selectedClauses.includes(clause);
+    const next = already
+      ? dojo3Config.selectedClauses.filter((c) => c !== clause)
+      : [...dojo3Config.selectedClauses, clause];
+    onDojo3ConfigChange({ ...dojo3Config, selectedClauses: next });
+    if (!already) {
+      onSendPayload(
+        `Score this policy clause against ${FRAMEWORK_LABEL[dojo3Config.frameworkLens]} ` +
+        `using the 0–3 rubric (0=missing, 1=partial, 2=present, 3=exemplary): "${clause}"`,
+      );
+    }
+  }
 
   return (
     <div>
-      {/* ── Detection Rule Builder ────────────────────────────────────────── */}
-      <PanelSection title="Detection Rule Builder">
-        <div className="flex items-center justify-between mb-1.5 gap-2">
-          <div className="flex items-center gap-1.5">
-            {hasRule ? (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono">
-                rule active
-              </span>
-            ) : (
-              <span className="text-[10px] text-slate-600 font-mono">no rule drafted</span>
-            )}
-          </div>
-          {hasRule && (
-            <button
-              disabled={disabled}
-              onClick={() => onDojo3ConfigChange({ ...dojo3Config, detectionRule: '' })}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-        <textarea
-          disabled={disabled}
-          value={dojo3Config.detectionRule}
-          onChange={(e) => onDojo3ConfigChange({ ...dojo3Config, detectionRule: e.target.value })}
-          placeholder={'title: Detect AI Phishing\nauthor: Your Name\ndate: 2024-01-01\nstatus: experimental\nlogsource:\n  category: email\ndetection:\n  keywords:\n    - urgent\n    - wire transfer\n  condition: keywords\nfalsepositives:\n  - Legitimate financial request emails\nlevel: medium\ntags:\n  - attack.initial_access\n  - attack.t1566'}
-          rows={6}
-          className={[
-            'w-full resize-none rounded border px-2.5 py-2 text-xs font-mono',
-            'bg-slate-800 placeholder-slate-600 focus:outline-none',
-            'disabled:opacity-40 disabled:cursor-not-allowed',
-            hasRule
-              ? 'border-emerald-500/40 text-emerald-200 focus:border-emerald-400'
-              : 'border-slate-700 text-slate-300 focus:border-emerald-500',
-          ].join(' ')}
-        />
-        <p className="text-[10px] text-slate-600 font-mono mt-1">
-          Your rule is included in the session context automatically. Ask BlackBeltAI to analyze, score, or improve it.
+      {/* ── Framework Lens — applies to every scoring action ───────────────── */}
+      <PanelSection title="Framework Lens">
+        <p className="text-[10px] text-slate-500 mb-1.5">
+          Every clause, classification, and gap is scored against this framework set.
         </p>
-        {hasRule && (
-          <button
-            disabled={disabled}
-            onClick={() => onSendPayload('Please analyze and score my detection rule against Sigma syntax standards, MITRE ATT&CK alignment, and false-positive risk.')}
-            className="mt-1.5 w-full text-xs py-1.5 rounded border border-emerald-700/40 bg-emerald-500/10 text-emerald-400 hover:border-emerald-600/60 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Analyze Rule →
-          </button>
-        )}
+        <SegmentedControl
+          options={FRAMEWORK_OPTIONS}
+          value={dojo3Config.frameworkLens}
+          onChange={setLens}
+          disabled={disabled}
+        />
       </PanelSection>
 
-      {/* ── Policy Clause Library ─────────────────────────────────────────── */}
-      <PanelSection title="Policy Clause Library">
-        <p className="text-[10px] text-slate-500 mb-2">
-          Click a clause to score it. Selected clauses are injected into the session context so BlackBeltAI can reference them across multiple turns.
-        </p>
-        <div className="flex flex-col gap-1.5">
-          {POLICY_CLAUSES.map((clause) => {
-            const selected = dojo3Config.selectedClauses.includes(clause);
-            return (
-              <button
-                key={clause}
-                disabled={disabled}
-                onClick={() => toggleClause(clause)}
-                className={[
-                  'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors',
-                  selected
-                    ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
-                    : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
-                  'disabled:opacity-40 disabled:cursor-not-allowed text-xs',
-                ].join(' ')}
-              >
-                <span className={[
-                  'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
-                  selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
-                ].join(' ')}>
-                  {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
-                </span>
-                <span>{clause}</span>
-              </button>
-            );
-          })}
-        </div>
-        {dojo3Config.selectedClauses.length > 0 && (
-          <div className="mt-2 flex items-center justify-between">
-            <p className="text-[9px] text-emerald-500/70 font-mono">
-              {dojo3Config.selectedClauses.length} clause{dojo3Config.selectedClauses.length > 1 ? 's' : ''} active in session context
-            </p>
+      {/* ── Risk Tier (AI Risk Classification) ─────────────────────────────── */}
+      {isRiskScenario && (
+        <PanelSection title="EU AI Act Risk Tier">
+          <p className="text-[10px] text-slate-500 mb-2">
+            Pick the working tier for this deployment. Sends the classification to the chat for justification and required mitigations.
+          </p>
+          <div className="grid grid-cols-2 gap-1.5">
+            {RISK_TIER_OPTIONS.map((opt) => {
+              const isActive = dojo3Config.riskTier === opt.value;
+              return (
+                <button
+                  key={opt.value}
+                  disabled={disabled}
+                  onClick={() => setTier(opt.value)}
+                  className={[
+                    'py-2 rounded border text-[11px] font-medium transition-colors',
+                    isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
+                    'disabled:opacity-40 disabled:cursor-not-allowed',
+                  ].join(' ')}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+          {dojo3Config.riskTier !== 'unset' && (
             <button
               disabled={disabled}
-              onClick={() => onDojo3ConfigChange({ ...dojo3Config, selectedClauses: [] })}
-              className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              onClick={() => onDojo3ConfigChange({ ...dojo3Config, riskTier: 'unset' })}
+              className="mt-2 w-full text-[10px] py-1 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
             >
-              Clear all
+              Clear tier
             </button>
+          )}
+        </PanelSection>
+      )}
+
+      {/* ── Vendor Gap Areas (Third-Party AI Vendor Review) ─────────────────── */}
+      {isVendorScenario && (
+        <PanelSection title="Vendor Gap Areas">
+          <p className="text-[10px] text-slate-500 mb-2">
+            Click an area to add it to the vendor gap analysis. Each click sends a scoring prompt for that gap.
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {VENDOR_GAP_AREAS.map((area) => {
+              const selected = dojo3Config.vendorGapAreas.includes(area);
+              return (
+                <button
+                  key={area}
+                  disabled={disabled}
+                  onClick={() => toggleVendorGap(area)}
+                  className={[
+                    'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors text-xs',
+                    selected
+                      ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
+                      : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                    'disabled:opacity-40 disabled:cursor-not-allowed',
+                  ].join(' ')}
+                >
+                  <span className={[
+                    'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
+                    selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
+                  ].join(' ')}>
+                    {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
+                  </span>
+                  <span>{area}</span>
+                </button>
+              );
+            })}
           </div>
-        )}
-      </PanelSection>
+          {dojo3Config.vendorGapAreas.length > 0 && (
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-[9px] text-emerald-500/70 font-mono">
+                {dojo3Config.vendorGapAreas.length} gap{dojo3Config.vendorGapAreas.length > 1 ? 's' : ''} in session context
+              </p>
+              <button
+                disabled={disabled}
+                onClick={() => onDojo3ConfigChange({ ...dojo3Config, vendorGapAreas: [] })}
+                className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </PanelSection>
+      )}
+
+      {/* ── Policy Clause Library (Policy & Controls Drafting) ──────────────── */}
+      {isPolicyScenario && (
+        <PanelSection title="Policy Clause Library">
+          <p className="text-[10px] text-slate-500 mb-2">
+            Click a clause to score it on the 0–3 rubric. Selected clauses persist in the session context.
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {POLICY_CLAUSES.map((clause) => {
+              const selected = dojo3Config.selectedClauses.includes(clause);
+              return (
+                <button
+                  key={clause}
+                  disabled={disabled}
+                  onClick={() => toggleClause(clause)}
+                  className={[
+                    'w-full text-left flex gap-2 items-start px-2.5 py-2 rounded border transition-colors text-xs',
+                    selected
+                      ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
+                      : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                    'disabled:opacity-40 disabled:cursor-not-allowed',
+                  ].join(' ')}
+                >
+                  <span className={[
+                    'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
+                    selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
+                  ].join(' ')}>
+                    {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
+                  </span>
+                  <span>{clause}</span>
+                </button>
+              );
+            })}
+          </div>
+          {dojo3Config.selectedClauses.length > 0 && (
+            <div className="mt-2 flex items-center justify-between">
+              <p className="text-[9px] text-emerald-500/70 font-mono">
+                {dojo3Config.selectedClauses.length} clause{dojo3Config.selectedClauses.length > 1 ? 's' : ''} in session context
+              </p>
+              <button
+                disabled={disabled}
+                onClick={() => onDojo3ConfigChange({ ...dojo3Config, selectedClauses: [] })}
+                className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              >
+                Clear all
+              </button>
+            </div>
+          )}
+        </PanelSection>
+      )}
     </div>
   );
 }
@@ -1164,7 +1281,7 @@ export function ControlPanel({
   const titles: Record<DojoId, string> = {
     1: 'Attack / Defense Controls',
     2: 'Analyst Configuration',
-    3: 'Defender Toolkit',
+    3: 'GRC Toolkit',
   };
 
   return (
@@ -1181,8 +1298,8 @@ export function ControlPanel({
         )}
       </div>
 
-      {/* Universal guardrail controls — hidden for Dojo 2 (SOC workflow uses analyst controls instead) */}
-      {dojoId !== 2 && (
+      {/* Guardrail controls only apply to Dojo 1 — Dojo 2 uses analyst config, Dojo 3 uses GRC controls */}
+      {dojoId === 1 && (
         <GuardrailControls
           config={config}
           onChange={onConfigChange}
@@ -1218,6 +1335,7 @@ export function ControlPanel({
       {dojoId === 3 && (
         <Dojo3Panel
           disabled={!hasScenario || chatLoading}
+          scenarioId={scenario?.id ?? null}
           dojo3Config={dojo3Config}
           onDojo3ConfigChange={onDojo3ConfigChange}
           onSendPayload={onSendPayload}

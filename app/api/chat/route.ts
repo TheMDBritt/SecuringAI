@@ -49,8 +49,10 @@ const Dojo2ConfigSchema = z.object({
 });
 
 const Dojo3ConfigSchema = z.object({
-  detectionRule:   z.string().max(4000),
-  selectedClauses: z.array(z.string().max(300)).max(20),
+  frameworkLens:   z.enum(['all', 'nist', 'eu', 'iso']).default('all'),
+  riskTier:        z.enum(['unset', 'prohibited', 'high', 'limited', 'minimal']).default('unset'),
+  vendorGapAreas:  z.array(z.string().max(120)).max(20).default([]),
+  selectedClauses: z.array(z.string().max(300)).max(20).default([]),
 });
 
 const ChatRequestSchema = z.object({

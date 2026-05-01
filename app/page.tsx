@@ -56,22 +56,23 @@ export default function LandingPage() {
           <div className="flex items-center gap-2 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-xs font-mono text-emerald-400 uppercase tracking-widest">
-              Free · No login · No tracking
+              Free · No tracking
             </span>
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-100 leading-tight">
-            Practice <span className="text-red-400">attacking</span>,{' '}
-            <span className="text-cyan-400">defending</span>, and{' '}
-            <span className="text-emerald-400">operating</span>
+            <span className="text-red-400">Attack</span>,{' '}
+            <span className="text-cyan-400">defend</span>, and{' '}
+            <span className="text-emerald-400">govern</span>
             <br />
             AI systems.
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            LLM DOJO is a hands-on study tool for LLM security. Three connected
-            dojos cover the full offensive/defensive AI security loop. Every turn
-            is scored and mapped to the top 2026 AI security certifications.
+            LLM DOJO is a hands-on study tool for AI security. Three dojos
+            cover LLM attack and defense, AI-assisted SOC work, and AI GRC.
+            A playbook with 339 quiz questions, 244 glossary terms, and 2026
+            cert mappings backs every scenario.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3">
@@ -80,6 +81,12 @@ export default function LandingPage() {
               className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors"
             >
               Enter the dojo →
+            </Link>
+            <Link
+              href="/playbook"
+              className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium transition-colors"
+            >
+              Open the playbook
             </Link>
           </div>
 

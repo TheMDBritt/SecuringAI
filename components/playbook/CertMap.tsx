@@ -57,7 +57,7 @@ const CERTS: CertInfo[] = [
     difficulty: 'Foundational',
     questions: '40–60',
     duration: '45 min',
-    focus: 'Replaces AI-900 (retiring 30 Jun 2026). Azure AI Foundry, generative AI, agentic systems, responsible AI on Azure.',
+    focus: 'Replaces AI-900 (retiring 30 Jun 2026). Beta launched Apr 2026. Azure AI Foundry, generative AI, agentic systems, and responsible AI on Azure.',
     domains: [
       { name: 'AI Workloads and Considerations' },
       { name: 'Fundamental ML Principles on Azure' },
@@ -69,13 +69,13 @@ const CERTS: CertInfo[] = [
   },
   {
     id: 'Azure-AI103',
-    name: 'Azure AI App and Agent Developer (AI-103)',
+    name: 'Azure AI Apps and Agents Developer Associate (AI-103)',
     provider: 'Microsoft',
     tagColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
     difficulty: 'Intermediate',
     questions: '~50',
     duration: '100 min',
-    focus: 'Replaces AI-102 (retiring 30 Jun 2026). End-to-end AI app and agent development on Azure AI Foundry.',
+    focus: 'Replaces AI-102 (retiring 30 Jun 2026). Beta launched Apr 2026. End-to-end AI apps and agents on Azure AI Foundry, with generative AI, RAG, and agent orchestration.',
     domains: [
       { name: 'Plan & Manage Azure AI Solutions',    pct: '25–30%' },
       { name: 'AI App and Agent Development',        pct: '25–30%' },

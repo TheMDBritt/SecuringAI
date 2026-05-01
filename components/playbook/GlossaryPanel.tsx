@@ -6,8 +6,8 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 const CERT_BADGE: Record<string, string> = {
   'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
   'AWS-AIF-C01':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'Azure-AI900':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'Azure-AI102':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI901':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI103':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
   'Google-MLE':   'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
   'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
@@ -15,7 +15,7 @@ const CERT_BADGE: Record<string, string> = {
 };
 
 const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
+const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
 
 export default function GlossaryPanel() {
   const [search, setSearch]     = useState('');

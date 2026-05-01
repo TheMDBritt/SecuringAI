@@ -377,17 +377,46 @@ function buildDojo2AnalystModifiers(config: Dojo2Config): string {
 
 // ─── Dojo 3 context injection helpers ────────────────────────────────────────
 
+const FRAMEWORK_LENS_LABEL: Record<string, string> = {
+  all:  'NIST AI RMF, EU AI Act, and ISO 42001',
+  nist: 'NIST AI RMF',
+  eu:   'the EU AI Act',
+  iso:  'ISO 42001',
+};
+
+const RISK_TIER_LABEL: Record<string, string> = {
+  prohibited: 'Prohibited',
+  high:       'High-risk',
+  limited:    'Limited-risk',
+  minimal:    'Minimal-risk',
+};
+
 function buildDojo3ContextBlock(dojo3Config: Dojo3Config): string {
   const parts: string[] = [];
 
-  if (dojo3Config.detectionRule.trim()) {
+  const lensLabel = FRAMEWORK_LENS_LABEL[dojo3Config.frameworkLens] ?? FRAMEWORK_LENS_LABEL.all;
+  parts.push(
+    '## Active Framework Lens\n' +
+    `Score, classify, and justify against ${lensLabel}. ` +
+    'Cite the specific function / article / control identifier whenever possible.',
+  );
+
+  if (dojo3Config.riskTier && dojo3Config.riskTier !== 'unset') {
     parts.push(
-      '## Learner Draft Detection Rule\n' +
-      'The learner has provided a draft detection rule for your review:\n\n' +
-      '```\n' + dojo3Config.detectionRule.trim() + '\n```\n\n' +
-      'When asked to analyze, score, or improve this rule, evaluate it against Sigma syntax ' +
-      'correctness, KQL best practices, MITRE ATT&CK alignment, false-positive risk, and ' +
-      'operational utility. Provide specific, constructive feedback.',
+      '## Working Risk Tier\n' +
+      `The learner has classified the deployment as ${RISK_TIER_LABEL[dojo3Config.riskTier]} under the EU AI Act. ` +
+      'Confirm or correct the tier with reference to the Annex III categories or the rules for ' +
+      'prohibited/limited practices, then list the minimum mitigations required at this tier.',
+    );
+  }
+
+  if (dojo3Config.vendorGapAreas.length > 0) {
+    parts.push(
+      '## Vendor Gap Areas in Scope\n' +
+      'The learner has flagged the following gap areas for the third-party vendor review:\n\n' +
+      dojo3Config.vendorGapAreas.map((a, i) => `${i + 1}. ${a}`).join('\n') + '\n\n' +
+      'For each, state the likely vendor posture, the required posture, the gap severity ' +
+      '(low / med / high), and the corresponding contractual or framework reference.',
     );
   }
 
@@ -396,8 +425,8 @@ function buildDojo3ContextBlock(dojo3Config: Dojo3Config): string {
       '## Learner Selected Policy Clauses\n' +
       'The learner has selected the following policy clauses for review/scoring:\n\n' +
       dojo3Config.selectedClauses.map((c, i) => `${i + 1}. ${c}`).join('\n') + '\n\n' +
-      'When asked to score or evaluate these clauses, assess each against NIST AI RMF, EU AI Act, ' +
-      'and ISO 42001 requirements. Use the 0–3 scoring rubric: 0=missing, 1=partial, 2=present, 3=exemplary.',
+      `Score each clause against ${lensLabel} using the 0–3 rubric ` +
+      '(0=missing, 1=partial, 2=present, 3=exemplary) and cite the relevant control identifier.',
     );
   }
 

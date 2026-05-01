@@ -98,12 +98,28 @@ export const DEFAULT_DOJO2_CONFIG: Dojo2Config = {
   riskAssessment: 'medium',
 };
 
-// ─── Dojo 3 defender configuration ───────────────────────────────────────────
+// ─── Dojo 3 GRC configuration ────────────────────────────────────────────────
+
+export type FrameworkLens = 'all' | 'nist' | 'eu' | 'iso';
+export type RiskTier = 'unset' | 'prohibited' | 'high' | 'limited' | 'minimal';
 
 export interface Dojo3Config {
-  detectionRule: string;
+  /** Framework lens used when scoring clauses, classifications, and gaps. */
+  frameworkLens: FrameworkLens;
+  /** Working EU AI Act risk tier (AI Risk Classification scenario). */
+  riskTier: RiskTier;
+  /** Selected vendor gap areas (Third-Party AI Vendor Review scenario). */
+  vendorGapAreas: string[];
+  /** Selected policy clauses (Policy & Controls Drafting scenario). */
   selectedClauses: string[];
 }
+
+export const DEFAULT_DOJO3_CONFIG: Dojo3Config = {
+  frameworkLens: 'all',
+  riskTier: 'unset',
+  vendorGapAreas: [],
+  selectedClauses: [],
+};
 
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 

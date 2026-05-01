@@ -23,7 +23,7 @@ interface QuizResult {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const ALL_CATEGORIES = ['All', ...Array.from(new Set(QUIZ_QUESTIONS.map((q) => q.category))).sort()];
-const CERT_OPTIONS   = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI900', 'Azure-AI102', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
+const CERT_OPTIONS   = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
 const COUNT_OPTIONS  = [10, 25, 50, 100] as const;
 
 const DIFFICULTY_STYLE: Record<QuizDifficulty, string> = {
@@ -41,7 +41,8 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// Randomizes the 4 answer options and updates the correct index to match
+// Randomizes the 4 answer options and updates the correct index to match.
+// Each call is an independent uniform random permutation (Fisher-Yates).
 function shuffleOptions(q: QuizQuestion): QuizQuestion {
   const order: number[] = [0, 1, 2, 3];
   for (let i = 3; i > 0; i--) {
@@ -53,6 +54,26 @@ function shuffleOptions(q: QuizQuestion): QuizQuestion {
     options: order.map((i) => q.options[i]) as [string, string, string, string],
     correct: order.indexOf(q.correct) as 0 | 1 | 2 | 3,
   };
+}
+
+// Walks the quiz list and re-shuffles any question whose correct-answer index
+// matches both the previous two — guarantees no 3-in-a-row positional streak.
+// Independent shuffle is already uniform, this just suppresses streaks the
+// human eye reads as "a pattern".
+function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
+  const out = [...qs];
+  for (let i = 2; i < out.length; i++) {
+    let attempts = 0;
+    while (
+      out[i].correct === out[i - 1].correct &&
+      out[i].correct === out[i - 2].correct &&
+      attempts < 10
+    ) {
+      out[i] = shuffleOptions(out[i]);
+      attempts++;
+    }
+  }
+  return out;
 }
 
 // ─── Setup Screen ─────────────────────────────────────────────────────────────
@@ -397,7 +418,7 @@ export default function QuizEngine() {
       (s.difficulty === 'all' || q.difficulty === s.difficulty) &&
       (s.certFilter === 'All' || q.certTags.includes(s.certFilter)),
     );
-    const selected = shuffle(pool).slice(0, s.count).map(shuffleOptions);
+    const selected = breakAnswerStreaks(shuffle(pool).slice(0, s.count).map(shuffleOptions));
     setSettings(s);
     setQuestions(selected);
     setResults([]);
@@ -435,7 +456,9 @@ export default function QuizEngine() {
         difficulty: settings.difficulty === 'all' ? 'intermediate' : settings.difficulty,
         count:      10,
       });
-      setQuestions((prev) => [...prev, ...extra]);
+      // Always re-shuffle option order — generator output may bias the correct
+      // answer toward a specific index, and we never want a positional pattern.
+      setQuestions((prev) => [...prev, ...extra.map(shuffleOptions)]);
     } catch (e) {
       setGenError(e instanceof Error ? e.message : 'Generation failed');
     } finally {
