@@ -30,12 +30,6 @@ export default function NotFound() {
         >
           Enter the dojo
         </Link>
-        <Link
-          href="/certs"
-          className="px-5 py-2.5 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 text-sm font-medium transition-colors"
-        >
-          Cert mapping
-        </Link>
       </div>
     </div>
   );

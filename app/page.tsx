@@ -39,19 +39,6 @@ const DOJOS: DojoCard[] = [
   },
 ];
 
-const CERTS = [
-  { code: 'SecAI+',     body: 'CompTIA',                 scope: 'All three dojos — vendor-neutral AI security practitioner' },
-  { code: 'CAISP',      body: 'ISC2',                    scope: 'Dojo 1 + Dojo 2 — Certified in AI Systems Security Practitioner' },
-  { code: 'AAISM',      body: 'ISACA',                   scope: 'Dojo 2 + Dojo 3 — Advanced AI Security Management' },
-  { code: 'CAIS',       body: 'EC-Council',              scope: 'Dojo 1 + Dojo 3 — Certified AI Security Specialist' },
-  { code: 'AICM',       body: 'Cloud Security Alliance', scope: 'Agentic + RAG controls (Dojo 1 + Dojo 3)' },
-  { code: 'LLM Top 10', body: 'OWASP (2025)',            scope: 'Dojo 1 attack scenarios' },
-  { code: 'AI RMF',     body: 'NIST 1.0',                scope: 'Govern / Map / Measure / Manage across all dojos' },
-  { code: '42001',      body: 'ISO/IEC',                 scope: 'Dojo 3 policy & governance' },
-  { code: 'EU AI Act',  body: 'European Union',          scope: 'Dojo 3 high-risk AI obligations' },
-  { code: 'ATT&CK',     body: 'MITRE',                   scope: 'Dojo 2 SOC scenarios' },
-];
-
 const PRIVACY_BULLETS = [
   'No accounts, no logins, no tracking.',
   'No persistent storage — chat lives in browser memory only.',
@@ -82,7 +69,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            SecuringAI is a hands-on study tool for LLM security. Three connected
+            LLM DOJO is a hands-on study tool for LLM security. Three connected
             dojos cover the full offensive/defensive AI security loop. Every turn
             is scored and mapped to the top 2026 AI security certifications.
           </p>
@@ -93,12 +80,6 @@ export default function LandingPage() {
               className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors"
             >
               Enter the dojo →
-            </Link>
-            <Link
-              href="/certs"
-              className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium transition-colors"
-            >
-              See cert mapping
             </Link>
           </div>
 
@@ -215,54 +196,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section id="certs" className="border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Top 2026 AI security certifications
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-10">
-            Mapped to every scenario.
-          </h2>
-
-          <p className="text-sm text-slate-400 mb-6">
-            <Link href="/certs" className="text-cyan-400 hover:text-cyan-300 underline-offset-2 hover:underline">
-              See the full cert deep-dive →
-            </Link>
-          </p>
-
-          <div className="overflow-hidden rounded-lg border border-slate-800">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-900/60 border-b border-slate-800">
-                <tr className="text-left text-[11px] font-mono text-slate-500 uppercase tracking-wider">
-                  <th className="px-4 py-3">Cert / Framework</th>
-                  <th className="px-4 py-3">Provider</th>
-                  <th className="px-4 py-3">Coverage</th>
-                </tr>
-              </thead>
-              <tbody>
-                {CERTS.map((c, i) => (
-                  <tr
-                    key={c.code}
-                    className={[
-                      'border-b border-slate-800/60 last:border-b-0',
-                      i % 2 === 0 ? 'bg-slate-900/20' : '',
-                    ].join(' ')}
-                  >
-                    <td className="px-4 py-3 font-mono text-cyan-300/80 whitespace-nowrap">
-                      {c.code}
-                    </td>
-                    <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
-                      {c.body}
-                    </td>
-                    <td className="px-4 py-3 text-slate-300">{c.scope}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -298,7 +231,7 @@ export default function LandingPage() {
             Enter the dojo →
           </Link>
           <p className="mt-10 text-xs font-mono text-slate-600">
-            Built as a free, open-source study tool. MIT licensed.
+            Built as a free study tool.
           </p>
         </div>
       </section>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 export function Header() {
   return (
     <header className="h-14 border-b border-slate-700 bg-slate-900/95 backdrop-blur flex items-center justify-between px-4 shrink-0 z-10">
-      <Link href="/" className="flex items-center gap-3 group" aria-label="SecuringAI home">
+      <Link href="/" className="flex items-center gap-3 group" aria-label="LLM DOJO home">
         {/* Logo mark */}
         <div className="flex items-center justify-center w-8 h-8 rounded bg-cyan-500/10 border border-cyan-500/30 group-hover:border-cyan-500/60 transition-colors">
           <svg
@@ -18,8 +18,7 @@ export function Header() {
           </svg>
         </div>
         <div>
-          <span className="font-bold text-slate-100 tracking-tight">SecuringAI</span>
-          <span className="ml-2 text-xs text-slate-500 hidden sm:inline">LLM Security Dojo</span>
+          <span className="font-bold text-slate-100 tracking-tight">LLM DOJO</span>
         </div>
       </Link>
 
@@ -36,12 +35,6 @@ export function Header() {
             className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
           >
             Playbook
-          </Link>
-          <Link
-            href="/certs"
-            className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
-          >
-            Certs
           </Link>
           <Link
             href="/about"

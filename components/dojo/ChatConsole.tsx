@@ -417,7 +417,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       const ts = new Date().toISOString().slice(0, 16).replace('T', ' ');
       const scenarioLabel = scenario ? `${scenario.title} (Dojo ${dojoId})` : `Dojo ${dojoId}`;
       const lines: string[] = [
-        `# SecuringAI Session Transcript`,
+        `# LLM DOJO Session Transcript`,
         `**Scenario:** ${scenarioLabel}`,
         `**Exported:** ${ts}`,
         '',

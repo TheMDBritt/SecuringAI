@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'SecuringAI — Free LLM Security Dojo';
+export const alt = 'LLM DOJO — Free LLM Security Training';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -51,7 +51,7 @@ export default async function OpengraphImage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: 32, fontWeight: 700, letterSpacing: -0.5 }}>
-              SecuringAI
+              LLM DOJO
             </span>
             <span
               style={{
@@ -95,7 +95,7 @@ export default async function OpengraphImage() {
                 textTransform: 'uppercase',
               }}
             >
-              Free · No login · No tracking
+              Free · No tracking
             </span>
           </div>
           <span

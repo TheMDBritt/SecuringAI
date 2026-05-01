@@ -2,18 +2,18 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 
-const TITLE = 'SecuringAI — Free LLM Security Dojo';
+const TITLE = 'LLM DOJO — Free LLM Security Training';
 const DESCRIPTION =
-  'Free, no-login study tool for AI/LLM security. Practice attacking, defending, and operating AI systems through scored hands-on scenarios mapped to the top 2026 AI security certifications.';
+  'Free study tool for AI/LLM security. Practice attacking, defending, and operating AI systems through scored hands-on scenarios mapped to the top 2026 AI security certifications.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),
   title: {
     default: TITLE,
-    template: '%s · SecuringAI',
+    template: '%s · LLM DOJO',
   },
   description: DESCRIPTION,
-  applicationName: 'SecuringAI',
+  applicationName: 'LLM DOJO',
   keywords: [
     'AI security',
     'LLM security',
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     'AI security training',
     'AI red team',
   ],
-  authors: [{ name: 'SecuringAI' }],
+  authors: [{ name: 'LLM DOJO' }],
   category: 'education',
   robots: {
     index: true,
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: TITLE,
     description: DESCRIPTION,
-    siteName: 'SecuringAI',
+    siteName: 'LLM DOJO',
     locale: 'en_US',
   },
   twitter: {

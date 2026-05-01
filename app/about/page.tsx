@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why SecuringAI exists and how it works under the hood. Free, forever.',
+    'Why LLM DOJO exists and how it works under the hood. Free, forever.',
 };
 
 const PRINCIPLES = [
@@ -61,13 +61,13 @@ export default function AboutPage() {
             ← Back to home
           </Link>
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mt-6 mb-2">
-            About SecuringAI
+            About LLM DOJO
           </p>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-slate-100 leading-tight">
             A free study tool for AI security.
           </h1>
           <p className="mt-6 text-lg text-slate-300 leading-relaxed">
-            SecuringAI exists because there is no shortage of slide decks
+            LLM DOJO exists because there is no shortage of slide decks
             explaining prompt injection and almost no way to actually try one.
             The goal is a hands-on environment with realistic scenarios, live
             guardrail toggles, and per-turn scoring against the certifications
@@ -192,7 +192,7 @@ export default function AboutPage() {
             ))}
           </ul>
           <p className="text-sm text-slate-400 leading-relaxed mt-6 max-w-2xl">
-            SecuringAI is independent and unaffiliated. Cross-check exam
+            LLM DOJO is independent and unaffiliated. Cross-check exam
             objectives with the official providers before scheduling.
           </p>
         </div>
