@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { SCENARIOS } from '@/lib/scenarios';
+import { Footer } from '@/components/layout/Footer';
 
 export const metadata = {
   title: 'About',
@@ -241,6 +242,8 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

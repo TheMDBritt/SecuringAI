@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SCENARIOS } from '@/lib/scenarios';
 import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
+import { Footer } from '@/components/layout/Footer';
 import type { Scenario } from '@/types';
 
 export const metadata = {
@@ -288,6 +289,8 @@ export default function CertsPage() {
           </Link>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getScenariosByDojo } from '@/lib/scenarios';
 import { ACCENT, type AccentName } from '@/lib/dojo-theme';
+import { Footer } from '@/components/layout/Footer';
 import type { DojoId } from '@/types';
 
 interface DojoCard {
@@ -301,6 +302,8 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
