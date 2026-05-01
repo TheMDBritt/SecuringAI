@@ -53,13 +53,6 @@ export default function LandingPage() {
     <div className="flex flex-col">
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-mono text-emerald-400 uppercase tracking-widest">
-              Free · No tracking
-            </span>
-          </div>
-
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-100 leading-tight">
             <span className="text-red-400">Attack</span>,{' '}
             <span className="text-cyan-400">defend</span>, and{' '}
