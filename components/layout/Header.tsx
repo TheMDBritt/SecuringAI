@@ -32,6 +32,12 @@ export function Header() {
             Dojo
           </Link>
           <Link
+            href="/playbook"
+            className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+          >
+            Playbook
+          </Link>
+          <Link
             href="/certs"
             className="px-2.5 py-1 rounded text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
           >

@@ -12,9 +12,10 @@ export function Footer() {
         </div>
 
         <nav className="flex flex-wrap gap-x-5 gap-y-2 text-slate-400">
-          <Link href="/dojo"  className="hover:text-slate-100 transition-colors">Dojo</Link>
-          <Link href="/certs" className="hover:text-slate-100 transition-colors">Certs</Link>
-          <Link href="/about" className="hover:text-slate-100 transition-colors">About</Link>
+          <Link href="/dojo"     className="hover:text-slate-100 transition-colors">Dojo</Link>
+          <Link href="/playbook" className="hover:text-slate-100 transition-colors">Playbook</Link>
+          <Link href="/certs"    className="hover:text-slate-100 transition-colors">Certs</Link>
+          <Link href="/about"    className="hover:text-slate-100 transition-colors">About</Link>
         </nav>
       </div>
     </footer>
