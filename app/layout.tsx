@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
+import { Analytics } from '@vercel/analytics/next';
 
 const TITLE = 'LLM DOJO — Free LLM Security Training';
 const DESCRIPTION =
@@ -65,6 +66,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-slate-900 text-slate-100 antialiased">
         <Header />
         <main className="flex flex-col">{children}</main>
+        <Analytics />
       </body>
     </html>
   );
