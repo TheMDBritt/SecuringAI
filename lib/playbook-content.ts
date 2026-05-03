@@ -3133,4 +3133,467 @@ For high-risk AI systems (EU AI Act Annex III), independent third-party conformi
 - Shadow AI is a governance risk, not just a security risk — it creates compliance and liability exposure
 - High-risk AI systems under EU AI Act require third-party conformity assessment`,
   },
+
+  // ─── SC-500: Microsoft Cloud and AI Security Engineer ─────────────────────
+
+  {
+    id: 'sc500-entra-zero-trust',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Entra ID & Zero Trust Identity',
+    certTags: ['SC-500'],
+    vocab: ['Conditional Access', 'PIM', 'Entra ID', 'Identity Protection', 'Zero Trust', 'MFA', 'Workload Identity', 'Managed Identity'],
+    content: `Microsoft Entra ID (formerly Azure AD) is the **identity foundation** for all Microsoft cloud and AI workloads. SC-500 expects you to design and operate identity controls that satisfy the Zero Trust principle: *never trust, always verify*.
+
+### Core Identity Building Blocks
+
+| Object | Purpose |
+|--------|---------|
+| **User** | Human identity (member or guest/B2B) |
+| **Group** | Security group, M365 group, dynamic group |
+| **Service principal** | App identity in a tenant |
+| **Managed identity** | Azure-managed service principal — no secrets to rotate |
+| **Workload identity** | App, service, or workload (now governed by Workload ID Premium) |
+
+### Conditional Access (CA)
+
+CA is the **policy engine of Zero Trust** — every sign-in is evaluated against signals (user, device, location, app, risk) and granted, blocked, or step-up auth applied.
+
+**Common CA controls SC-500 tests:**
+- Require MFA for all admins
+- Require compliant or hybrid-joined device
+- Block legacy authentication
+- Require phishing-resistant MFA (FIDO2, Windows Hello, Passkeys) for privileged roles
+- Require Authentication Context for sensitive Purview-labeled data
+- Sign-in risk and user risk policies (powered by Identity Protection)
+- Require Terms of Use / session controls (CAE, sign-in frequency)
+
+### Privileged Identity Management (PIM)
+
+PIM provides **just-in-time (JIT)** elevation for Entra and Azure roles.
+
+- **Eligible** assignments require activation (with MFA + justification + approval).
+- **Active** assignments are standing — minimize these.
+- **Access reviews** force periodic recertification.
+- PIM for Groups extends JIT to role-assignable groups.
+- PIM alerts on anomalies (e.g. too many global admins).
+
+### Identity Protection
+
+Risk-based detections that feed Conditional Access:
+
+- **User risk**: leaked credentials, Entra threat intelligence, anomalous sign-in.
+- **Sign-in risk**: impossible travel, unfamiliar properties, malware-linked IP, anonymous IP.
+- **Risk levels**: low / medium / high.
+- Integrates with Defender XDR for unified incident view.
+
+### Workload Identity Federation
+
+Lets external workloads (GitHub Actions, Kubernetes, AWS) impersonate an Entra identity **without storing secrets**. Replaces long-lived client secrets / certificates — a big SC-500 best-practice exam target.
+
+### Managed Identities (System vs User Assigned)
+
+- **System-assigned**: tied to an Azure resource lifecycle. Auto-deleted with the resource.
+- **User-assigned**: standalone resource, assignable to many resources, survives independently.
+- Always prefer managed identity over storing keys in Key Vault when calling Azure APIs.
+
+### Exam Tips
+- Know which CA grants/sessions support which app types (e.g. CAE requires modern auth)
+- Authentication Strengths (FIDO2 vs SMS) — which is phishing-resistant?
+- The order: CA assignments → conditions → controls → session
+- PIM eligible vs active; activation requires MFA, justification, often approval`,
+  },
+
+  {
+    id: 'sc500-defender-xdr',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Defender XDR',
+    certTags: ['SC-500'],
+    vocab: ['Defender XDR', 'Defender for Endpoint', 'Defender for Identity', 'Defender for Office 365', 'Defender for Cloud Apps', 'Automatic Attack Disruption', 'Incident', 'Alert'],
+    content: `Microsoft Defender XDR (security.microsoft.com) is the **unified XDR portal** that correlates signals from endpoint, identity, email, cloud apps, and cloud workloads into a single incident graph.
+
+### The Defender Family
+
+| Workload | Product |
+|----------|---------|
+| Endpoints (Windows/macOS/Linux/iOS/Android) | **Microsoft Defender for Endpoint (MDE)** |
+| Identity (on-prem AD + Entra hybrid) | **Microsoft Defender for Identity (MDI)** |
+| Email & collaboration | **Defender for Office 365 (MDO)** |
+| SaaS apps (CASB) | **Defender for Cloud Apps (MDA)** |
+| Multi-cloud workloads | **Microsoft Defender for Cloud (MDC)** |
+| AI workloads | **Defender for Cloud — AI threat protection** |
+
+### Incidents vs Alerts
+
+- **Alert** = a single detection (e.g. suspicious PowerShell).
+- **Incident** = a *correlated* set of related alerts/entities/evidence — what an analyst actually triages.
+- Incidents auto-merge across all Defender workloads + Sentinel.
+
+### Automatic Attack Disruption
+
+Built-in capability that **takes containment actions in real-time** during high-confidence attacks (HumOR-class human-operated ransomware, AiTM phishing, BEC):
+
+- Disable compromised user accounts
+- Contain compromised devices (block lateral movement)
+- Suspend OAuth apps used in BEC
+
+Disruption runs **without analyst approval** for high-confidence attacks (configurable). SC-500 expects you to know which attack categories are supported and how to enable/scope it.
+
+### Advanced Hunting (KQL)
+
+Defender exposes a unified schema across all workloads:
+
+\`\`\`kql
+// Find lateral movement after a successful sign-in from a risky IP
+AADSignInEventsBeta
+| where RiskLevelDuringSignIn == "high"
+| join kind=inner DeviceLogonEvents on $left.AccountUpn == $right.AccountName
+| where Timestamp > ago(24h)
+\`\`\`
+
+Common tables: \`DeviceProcessEvents\`, \`DeviceFileEvents\`, \`DeviceNetworkEvents\`, \`EmailEvents\`, \`AlertEvidence\`, \`IdentityLogonEvents\`, \`CloudAppEvents\`.
+
+### Threat Analytics & TI
+
+- **Threat analytics** dashboards summarize active campaigns, mapped to your tenant exposure.
+- **Defender Threat Intelligence (Defender TI)** brings external IOC + actor profiles into the portal — and is a Security Copilot plugin.
+
+### Custom Detections
+
+Build scheduled KQL detections that create alerts and trigger response actions (isolate device, block file, etc.). Frequency: continuous, every 1h, 3h, 12h, 24h.
+
+### Exam Tips
+- Defender XDR ≠ Defender for Cloud (XDR = SecOps; MDC = CSPM/CWPP)
+- Automatic attack disruption: which entity types it can act on
+- Live Response shell, isolate device, contain user — know which require which license
+- E5 vs P2 license tiers control which Defender products you get`,
+  },
+
+  {
+    id: 'sc500-sentinel-kql',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Sentinel & KQL',
+    certTags: ['SC-500'],
+    vocab: ['Sentinel', 'KQL', 'Analytics Rule', 'Workbook', 'Hunting Query', 'Playbook', 'Watchlist', 'UEBA', 'Fusion'],
+    content: `Microsoft Sentinel is the **cloud-native SIEM/SOAR** built on Log Analytics. SC-500 unifies Sentinel with Defender XDR via the new **unified SOC platform** experience in security.microsoft.com.
+
+### Architecture
+
+- **Log Analytics workspace** — storage for all ingested logs.
+- **Data connectors** — pull logs from Microsoft, AWS, GCP, syslog, CEF, custom (Logs Ingestion API).
+- **Analytics rules** — detection logic that creates incidents.
+- **Workbooks** — interactive dashboards (Kibana-style).
+- **Hunting queries** — saved KQL for proactive threat hunting.
+- **Playbooks** — Logic Apps that respond to incidents (SOAR).
+- **Watchlists** — reference data (VIP users, threat IOCs).
+
+### Analytics Rule Types
+
+| Type | Use |
+|------|-----|
+| **Scheduled** | Recurring KQL query → incident |
+| **Microsoft Security** | Pass-through alerts from Defender products |
+| **Fusion** | Built-in ML correlation across signals (multi-stage attacks) |
+| **Anomaly** | UEBA-style behaviour outliers |
+| **NRT (Near Real Time)** | Runs every minute on the latest data |
+| **Threat Intelligence** | Match telemetry to indicator feeds |
+
+### KQL Essentials for SC-500
+
+\`\`\`kql
+SigninLogs
+| where TimeGenerated > ago(24h)
+| where ResultType != 0                             // failed sign-ins
+| summarize FailCount = count() by UserPrincipalName, IPAddress, bin(TimeGenerated, 1h)
+| where FailCount > 50
+| join kind=inner SigninLogs on UserPrincipalName    // join with successes
+| where ResultType == 0
+| project UserPrincipalName, IPAddress, FailCount
+\`\`\`
+
+Operators you must know: \`where\`, \`project\`, \`summarize\`, \`join\` (inner/leftouter/rightouter/fullouter), \`extend\`, \`mv-expand\`, \`make-list\`, \`bin\`, \`ago\`, \`parse\`, \`evaluate bag_unpack\`.
+
+### UEBA
+
+User and Entity Behavior Analytics: builds baselines of normal behaviour per user/entity and flags deviations. Output lands in \`BehaviorAnalytics\`, \`UserPeerAnalytics\`, \`IdentityInfo\` tables.
+
+### SOAR with Playbooks
+
+- Built on **Azure Logic Apps**.
+- Triggered by alerts, incidents, or manually.
+- Common actions: post to Teams, isolate device (Defender connector), enrich IP with TI, disable user, create ServiceNow ticket.
+- Use **managed identity** for Logic App authentication wherever possible (no secrets).
+
+### Cost Control
+
+- Tier the Log Analytics tables: Analytics, Basic, Auxiliary (Sentinel-Basic), Archive.
+- Use Data Collection Rules (DCR) to filter at ingest.
+- Use Summary Rules to roll up high-volume tables.
+
+### Exam Tips
+- When to use Fusion vs Scheduled vs NRT
+- Difference between hunting query and analytics rule
+- Watchlist size limits (500 KB recommended; 10 MB max)
+- Playbook authentication: managed identity > service principal > connection`,
+  },
+
+  {
+    id: 'sc500-defender-for-cloud',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Defender for Cloud (CSPM + CWPP)',
+    certTags: ['SC-500'],
+    vocab: ['Defender for Cloud', 'CSPM', 'CWPP', 'MCSB', 'Secure Score', 'Defender Plans', 'Attack Path', 'Cloud Security Explorer', 'Agentless Scanning'],
+    content: `Microsoft Defender for Cloud (MDC) is Microsoft's **CNAPP** — combining CSPM (posture) and CWPP (workload protection) across Azure, AWS, GCP, on-prem, and **AI workloads**.
+
+### Two Halves of MDC
+
+**1. Cloud Security Posture Management (CSPM)**
+- **Foundational CSPM** — free; provides Secure Score, Microsoft Cloud Security Benchmark (MCSB) assessments, recommendations.
+- **Defender CSPM** — paid; adds:
+  - Agentless scanning (machines + containers + secrets)
+  - Attack Path analysis (graph of exploit chains to crown-jewel resources)
+  - Cloud Security Explorer (KQL-style graph queries)
+  - Data-aware security posture (sensitive data discovery)
+  - Governance rules (SLAs for fixing recommendations)
+  - **AI Security Posture Management (AI-SPM)** for Azure OpenAI / Foundry workloads
+
+**2. Cloud Workload Protection (CWPP) — "Defender Plans"**
+
+| Plan | Protects |
+|------|----------|
+| Defender for Servers (P1/P2) | VMs (MDE integration, FIM, JIT VM access) |
+| Defender for Storage | Malware scanning, sensitive data threats |
+| Defender for SQL | SQL injection, anomalous queries |
+| Defender for Containers | AKS/EKS/GKE, image scanning, runtime protection |
+| Defender for App Service | Web app threats |
+| Defender for Key Vault | Anomalous secret access |
+| Defender for Resource Manager | Suspicious ARM operations |
+| Defender for DNS | Malicious DNS queries |
+| Defender for APIs | API Management posture & runtime |
+| **Defender for AI workloads** | Azure OpenAI / Foundry — prompt injection detection, data leak alerts, sensitive data exposure |
+
+### Microsoft Cloud Security Benchmark (MCSB)
+
+The default standard for Secure Score; maps to NIST 800-53, ISO 27001, PCI DSS, CIS, SOC 2. SC-500 expects you to *know* MCSB control families: IM, NS, DP, AM, LT, IR, PV, ES, BR, GS.
+
+### Attack Path Analysis
+
+Graph-based view answering "*if this internet-exposed VM is compromised, can the attacker reach my SQL DB?*"  Built from agentless scan results + identity + network reachability.
+
+### AI Security Posture Management (AI-SPM)
+
+A SC-500 must-know:
+- Discovers AI BOM: models, datasets, endpoints, identities used by AI workloads
+- Surfaces grounding-data exposure, exposed model endpoints, missing content filters
+- Generates AI attack paths (e.g. "this Azure OpenAI is internet-exposed AND lacks Prompt Shields")
+- Surfaces alerts in Defender XDR
+
+### Exam Tips
+- Foundational CSPM is free; Defender CSPM is paid
+- Attack Paths require Defender CSPM
+- Know which Defender plan covers which resource type
+- AI-SPM is part of Defender CSPM, not its own SKU`,
+  },
+
+  {
+    id: 'sc500-purview-dspm-ai',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Purview DSPM for AI',
+    certTags: ['SC-500'],
+    vocab: ['DSPM for AI', 'Sensitivity Label', 'DLP', 'Data Map', 'Data Catalog', 'Insider Risk', 'Communication Compliance', 'Adaptive Protection'],
+    content: `Microsoft Purview is the **data security & governance plane**. SC-500 emphasizes the **DSPM for AI** experience that gives security teams visibility into how AI apps consume corporate data.
+
+### Purview Pillars Relevant to SC-500
+
+1. **Information Protection** — sensitivity labels (Confidential, Highly Confidential, etc.) auto-applied via trainable classifiers + SITs (Sensitive Information Types).
+2. **Data Loss Prevention (DLP)** — block, audit, or warn on labeled/sensitive content; endpoint DLP extends to devices and to **AI prompt egress**.
+3. **Insider Risk Management (IRM)** — detects risky user behaviours (download spikes, departures, data sabotage).
+4. **Communication Compliance** — scans Teams/Exchange for harassment, IP leaks.
+5. **Data Map / Catalog** (Unified Catalog) — inventory of data assets across M365 + Azure + multi-cloud.
+6. **DSPM for AI** — central console for AI data risk.
+
+### What DSPM for AI Provides
+
+- **Activity explorer** — every prompt to Microsoft 365 Copilot, Copilot in Fabric, Copilot Studio agents, ChatGPT Enterprise (via connector), Azure OpenAI (via connector), and other connected GenAI apps.
+- **Data assessments** — surfaces oversharing risks (e.g. "this SharePoint site is too open and Copilot can return it to anyone").
+- **Ready-to-deploy policies**:
+  - *Detect risky AI usage* (IRM signal)
+  - *Detect sensitive info in AI prompts* (DLP)
+  - *Fortify your data security posture* (sensitivity labels + access reviews)
+- **Recommendations** to restrict labeled data access from Copilot.
+
+### Sensitivity Labels & Copilot
+
+Labels propagate to AI: if a file is labeled *Confidential*, M365 Copilot inherits the label on any output that references it; the user must have rights to consume the label.
+
+### DLP for Generative AI
+
+New DLP location: **Microsoft 365 Copilot** and **Endpoint browser** (Edge for Business). Blocks pasting sensitive text into ChatGPT/Bard tabs, blocks Copilot from referencing labeled content the prompter can't view.
+
+### Adaptive Protection
+
+Combines IRM risk levels + DLP + CA. Example: a user who triggered an IRM "elevated risk" gets stricter DLP automatically.
+
+### Exam Tips
+- DSPM for AI surfaces both Microsoft Copilot AND third-party GenAI activity (via connectors / Edge)
+- Sensitivity labels enforce *encryption + usage rights*; DLP enforces *transit/egress controls*
+- Pre-built AI policies live under Purview > DSPM for AI > Recommendations
+- IRM signals can drive Conditional Access via Adaptive Protection`,
+  },
+
+  {
+    id: 'sc500-azure-openai-security',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Securing Azure OpenAI & Foundry Workloads',
+    certTags: ['SC-500'],
+    vocab: ['Azure OpenAI', 'Azure AI Foundry', 'Prompt Shields', 'Content Filters', 'Groundedness Detection', 'Customer-Managed Keys', 'Private Endpoint', 'Managed Identity', 'API Management'],
+    content: `Azure OpenAI Service and the broader Azure AI Foundry platform are first-class SC-500 topics. The exam expects you to design a **defense-in-depth** pattern around any AI workload.
+
+### Identity & Network Hardening
+
+- **Disable API key auth** on the Azure OpenAI resource — require Entra (Azure AD) auth via *Cognitive Services User* RBAC.
+- Front the model with **Azure API Management (APIM)** to enforce rate limits, quota by subscription, and JWT validation.
+- Bind to a **private endpoint** + restrict public network access. Egress via Azure Firewall / NAT gateway.
+- Use **managed identity** in the calling app — no static keys.
+
+### Encryption
+
+- Service is encrypted by default with Microsoft-managed keys.
+- For regulated workloads, configure **customer-managed keys (CMK)** in Azure Key Vault, with HSM-backed keys for FIPS 140-3 L3.
+- Enable **soft-delete + purge protection** on Key Vault — required for CMK rotation.
+
+### Azure AI Content Safety
+
+A managed safety stack used by Azure OpenAI and standalone Foundry apps:
+
+| Capability | Defends Against |
+|------------|----------------|
+| **Content filters** (hate / sexual / violence / self-harm) | Harmful generations |
+| **Prompt Shields — User Prompt** | Direct jailbreak attempts (DAN, role-play bypass) |
+| **Prompt Shields — Document** | Indirect prompt injection from RAG/grounding documents |
+| **Protected material detection** | Copyrighted text/code in outputs |
+| **Groundedness detection** | Hallucinated / ungrounded claims vs grounding source |
+| **Custom categories** | Tenant-specific topics to block |
+
+Filters run on input AND output; severity thresholds (safe/low/medium/high) are configurable per category.
+
+### Logging & Monitoring
+
+- Enable **diagnostic settings** on the Azure OpenAI resource — send to Log Analytics for KQL hunting.
+- Useful tables: \`AzureDiagnostics\`, \`AzureMetrics\` and content-safety logs.
+- **Defender for Cloud — AI threat protection** ingests Azure OpenAI signals to surface alerts:
+  - Suspected prompt injection
+  - Sensitive data leak in completion
+  - Suspicious wallet abuse / token spike
+  - Compromised credential used against the resource
+
+### RAG Pipeline Security
+
+- Apply **sensitivity labels** to grounding documents in SharePoint / OneLake.
+- Use **Azure AI Search** with security trimming so users only see chunks they have NTFS / SharePoint permission to.
+- Enable **Document Prompt Shields** to block indirect injection from poisoned docs.
+- Log retrieved chunks; correlate with prompt + completion in Log Analytics.
+
+### Foundry Agent Service
+
+Agentic workloads add tool-use risk. SC-500 controls:
+- Scope tools with least-privilege managed identity.
+- Use the Foundry Agent **safety policies** (action approval, content filters on tool inputs).
+- Audit agent actions to Log Analytics; alert on anomalous tool sequences.
+
+### Exam Tips
+- Default content filter is *Medium*; *Off* requires Microsoft approval (limited access)
+- Prompt Shields = Microsoft's name for jailbreak + indirect-injection detection
+- Groundedness detection requires a *grounding source* (RAG context) at runtime
+- Always pair Azure OpenAI with private endpoint + managed identity for SC-500 design questions`,
+  },
+
+  {
+    id: 'sc500-security-copilot',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft Security Copilot for SOC',
+    certTags: ['SC-500'],
+    vocab: ['Security Copilot', 'SCU', 'Promptbook', 'Plugin', 'Copilot Agent', 'Standalone Experience', 'Embedded Experience', 'Owner Role', 'Contributor Role'],
+    content: `Microsoft Security Copilot is a generative-AI assistant for security operations. SC-500 covers **deploying, governing, and operating** Copilot — not building one.
+
+### Two Experiences
+
+| Experience | Where it lives |
+|-----------|----------------|
+| **Standalone** | securitycopilot.microsoft.com — free-form prompts, promptbooks, plugins |
+| **Embedded**   | In-product (Defender XDR incident summary, Sentinel KQL gen, Intune device summary, Entra group analysis, Purview risk summary) |
+
+### Capacity — Security Compute Units (SCUs)
+
+- **SCU** is the unit of provisioned capacity (currently $4 USD / SCU / hour).
+- Recommended starting size: 3 SCUs.
+- Capacity is consumed by both standalone and embedded prompts.
+- Excess demand causes **throttling** — embedded experiences degrade gracefully.
+- Capacity is created in an Azure subscription; can be evenly billed across workspaces.
+
+### Roles (Entra-based)
+
+| Role | Capabilities |
+|------|--------------|
+| **Copilot Owner** | Manage capacity, role assignments, plugin allow-list, data sharing |
+| **Copilot Contributor** | Use Copilot, create promptbooks, install user-scoped plugins |
+
+Standard Entra roles (Global Admin, Security Admin) inherit Owner privileges.
+
+### Plugins
+
+Plugins extend Copilot's reach. Three types:
+
+1. **Microsoft plugins** (preinstalled, opt-in): Defender XDR, Sentinel, Intune, Entra, Purview, Defender TI, EASM, Natural Language to KQL.
+2. **Non-Microsoft plugins**: ServiceNow, Jamf, Cisco Talos, ShodanIO, OpenAI/PaLM via API.
+3. **Custom plugins**: built with OpenAPI specs, KQL, or GPT (no-code skills).
+
+Plugin governance is a SC-500 hot topic — Owners control which plugins users can install/enable.
+
+### Promptbooks
+
+A **promptbook** is a saved sequence of prompts (with parameters) that runs as a single workflow. Examples:
+- *Suspicious script analyzer* (paste a script → reputation, MITRE T-codes, IOCs)
+- *Incident report* (incident URL → exec summary + timeline + remediation)
+- *Phishing triage*
+- *Vulnerability impact assessment*
+
+Microsoft ships dozens; tenants build custom ones for repeatable runbooks.
+
+### Copilot Agents
+
+Newer **agents** run autonomously on a schedule or trigger:
+- Phishing triage agent (in MDO)
+- Alert triage agent (in Defender XDR)
+- Conditional Access optimization agent (in Entra)
+- Vulnerability remediation agent (in Intune)
+- Data loss prevention agent (in Purview)
+- Threat intelligence briefing agent
+
+Agents bill SCU separately; Owners must explicitly enable each.
+
+### Responsible AI in Security Copilot
+
+- Every response is auditable (who prompted, when, which plugins ran).
+- Copilot does NOT use customer data to train Microsoft models.
+- Sensitivity labels propagate; if you can't read the source, Copilot won't surface it.
+- **Feedback** (thumbs / comment) is critical signal for prompt-engineering tuning.
+
+### Prompt Engineering for SOC
+
+- Be **specific**: scope by time, entity, and goal ("*summarize incident X in 3 bullet points for the CISO*").
+- Provide **context**: paste relevant log lines, IOC, or incident URL.
+- Use **persona** prompts ("act as a senior IR consultant").
+- Iterate — refine, don't restart.
+
+### Audit & Logging
+
+- Standalone session transcripts retained per data-residency rules (US, EU, UK, AU + more).
+- Audit log connector exports to Sentinel/Defender XDR for forensics.
+
+### Exam Tips
+- 1 SCU ≠ 1 prompt — capacity is time-based; recommend 3 SCU minimum
+- Plugin install vs enable: Owner installs, user enables in their context
+- Promptbook params let you reuse without rewriting
+- Embedded Copilot in Defender uses the same SCU pool as standalone`,
+  },
 ];
