@@ -48,6 +48,7 @@ turn so you can see exactly which exam topic you just practiced.
 | **ISO/IEC 42001**             | ISO          | Dojo 3 policy & governance |
 | **EU AI Act**                 | EU           | Dojo 3 high-risk AI obligations |
 | **MITRE ATT&CK**              | MITRE        | Dojo 2 SOC scenarios |
+| **Microsoft SC-500** (beta May 2026) | Microsoft | Playbook — Cloud and AI Security Engineer Associate (replaces AZ-500). 7 deep-dive topics + 44 glossary terms + 110 practice questions covering Entra ID, Defender XDR, Sentinel/KQL, Defender for Cloud, Purview DSPM for AI, Azure OpenAI hardening, and Security Copilot |
 
 ## Running locally
 
