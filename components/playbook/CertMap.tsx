@@ -141,6 +141,24 @@ const CERTS: CertInfo[] = [
     topTopics: ['SOAR', 'AI-powered SIEM', 'Detection rule generation', 'Automated triage', 'Playbook automation', 'AI threat hunting'],
   },
   {
+    id: 'SC-500',
+    name: 'Microsoft Cloud and AI Security Engineer Associate (SC-500)',
+    provider: 'Microsoft',
+    tagColor: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+    difficulty: 'Intermediate',
+    questions: '40–60',
+    duration: '100 min',
+    focus: 'Replaces AZ-500 (retiring 31 Aug 2026). Beta launched May 2026. Securing Azure, M365, and AI workloads end-to-end: Entra ID, Defender XDR, Sentinel/KQL, Defender for Cloud, Purview DSPM for AI, Azure OpenAI Prompt Shields and content filtering, and Security Copilot operations.',
+    domains: [
+      { name: 'Manage Identity & Access (Entra ID, PIM, CA)', pct: '20–25%' },
+      { name: 'Secure Networking & Infrastructure',           pct: '15–20%' },
+      { name: 'Secure Compute, Storage, Data',                pct: '15–20%' },
+      { name: 'Manage Security Operations (Defender XDR, Sentinel, Copilot)', pct: '20–25%' },
+      { name: 'Secure AI Workloads & Govern Data with Purview', pct: '20–25%' },
+    ],
+    topTopics: ['Microsoft Entra ID', 'Defender XDR', 'Microsoft Sentinel', 'KQL', 'Defender for Cloud', 'Purview DSPM for AI', 'Azure OpenAI', 'Prompt Shields', 'Security Copilot', 'Conditional Access', 'PIM', 'Zero Trust'],
+  },
+  {
     id: 'CAISP',
     name: 'Certified AI Security Professional',
     provider: 'Practical DevSecOps',
@@ -170,7 +188,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">8 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">9 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
         </div>
       </div>
 
