@@ -3596,4 +3596,211 @@ Agents bill SCU separately; Owners must explicitly enable each.
 - Promptbook params let you reuse without rewriting
 - Embedded Copilot in Defender uses the same SCU pool as standalone`,
   },
+
+  {
+    id: 'sc500-hands-on-labs',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'SC-500 Hands-On Lab Plan',
+    certTags: ['SC-500'],
+    vocab: ['Conditional Access', 'PIM', 'Defender XDR', 'Sentinel', 'Defender for Cloud', 'Purview', 'Azure OpenAI', 'Security Copilot'],
+    content: `SC-500 is a portal-heavy exam — case studies expect you to *recognize the screens*. This lab plan covers the click-paths Microsoft most often tests. **All labs work in a free Azure trial + a Microsoft 365 E5 developer tenant** ([aka.ms/m365devprogram](https://aka.ms/m365devprogram)).
+
+> **Tip:** name every resource \`sc500-<thing>\` so cleanup at the end of the month is one resource group delete.
+
+### Lab 1 — Tenant Hardening (Entra)
+
+1. Disable **Security Defaults** (Entra ID → Properties → Manage Security Defaults → No).
+2. Create a CA policy: **Admins-MFA** → assignments: Directory Roles "Global Administrator" + 5 other privileged roles → grant: *Require authentication strength = Phishing-resistant MFA*.
+3. Create a CA policy: **Block-Legacy-Auth** → cloud apps All → conditions: Client apps "Other clients" → grant: Block.
+4. Create CA policy: **Risk-Based** (P2 required) → conditions: User risk High → grant: Block; Sign-in risk High → grant: Require password change + MFA.
+5. Enable **PIM** for Global Administrator: convert all but 1 break-glass admin to *Eligible*; require MFA + approval + 4h max activation; assign 2 approvers.
+6. Configure **break-glass account**: cloud-only, excluded from all CA, 64-char password in a sealed envelope, monitored by a Sentinel rule.
+
+### Lab 2 — Defender XDR Tour
+
+1. Onboard **one Windows 11 device** to Defender for Endpoint (Settings → Endpoints → Onboarding → script).
+2. Trigger a test alert: download the **EICAR test file** or run the **Defender for Endpoint demo scenarios** (PowerShell IEX, suspicious WMI).
+3. Open the resulting incident in security.microsoft.com — note alerts, evidence, attack story graph.
+4. Practice response actions on yourself: *Initiate live response*, *Run AV scan*, *Isolate device* (then release).
+5. Build an **Advanced Hunting** query: \`DeviceProcessEvents | where InitiatingProcessFileName == "powershell.exe" and ProcessCommandLine contains "Invoke-Expression"\`.
+6. Save as **Custom Detection rule** with 1h schedule, severity Medium, mapped User + Device entities.
+
+### Lab 3 — Sentinel + KQL
+
+1. Create a Log Analytics workspace + enable Microsoft Sentinel on it.
+2. Connect the **Microsoft Entra ID** data connector (SigninLogs + AuditLogs).
+3. Connect the **Microsoft Defender XDR** connector (incident sync, no extra ingest).
+4. Build a **Scheduled analytics rule** from KQL:
+   \`\`\`kql
+   SigninLogs
+   | where TimeGenerated > ago(1h)
+   | where ResultType != 0
+   | summarize Failures=count(), DistinctIPs=dcount(IPAddress) by UserPrincipalName
+   | where Failures > 20 and DistinctIPs > 5
+   \`\`\`
+   Map AccountUpn as User entity. Group all events into one alert per user.
+5. Build a **Logic Apps playbook** triggered by alert: post a Teams card to the SOC channel + tag the incident *AutoTriaged*.
+6. Create a **Watchlist** "VIPs" with 10 UPNs. Modify the rule to amplify severity if user is in VIPs.
+7. Apply a **Data Collection Rule transformation** that drops "Allow" actions from a high-volume table.
+
+### Lab 4 — Defender for Cloud + AI-SPM
+
+1. Enable **Foundational CSPM** + **Defender CSPM** on your subscription.
+2. Enable Defender Plans: Servers (P2), Storage, Key Vault, Resource Manager, App Service, **AI workloads**.
+3. Onboard a free-tier **AWS account** via the native connector — note the IAM role + StackSet.
+4. Open **Cloud Security Explorer** — run a query: "VMs exposed to the internet AND with managed identity to Storage".
+5. Open **Attack Path Analysis** — examine at least one path; drill into the recommendations to remediate it.
+6. Define a **Governance Rule**: assign all Critical recommendations to subscription owner with 30-day SLA + email reminder.
+7. Once an Azure OpenAI resource exists (Lab 6), check **AI-SPM** for new AI-specific attack paths.
+
+### Lab 5 — Purview DSPM for AI
+
+1. In compliance.microsoft.com → Information protection → publish a **sensitivity label** "Confidential" with encryption + watermark.
+2. Apply the label to a SharePoint document. Verify in Word the label and rights bar.
+3. Create a **DLP policy** with location *Microsoft 365 Copilot* — block when content contains "Highly Confidential" label and recipient is outside Legal group.
+4. In **DSPM for AI**: review the Activity Explorer; deploy the recommended IRM, DLP, and labeling policies (one click each).
+5. Run an **oversharing assessment** on a SharePoint site. Inspect the report for "Everyone except external users" sharing.
+6. Configure **Insider Risk Management** policy: "Risky AI usage" + "Data leaks" templates. Onboard at least one user.
+7. Enable **Adaptive Protection** so IRM elevated risk auto-applies stricter DLP.
+
+### Lab 6 — Azure OpenAI Hardening
+
+1. Deploy an Azure OpenAI resource. Disable local API key auth (require Entra).
+2. Bind a **private endpoint** in your VNet; set "Public network access" → Disabled.
+3. Configure **customer-managed keys** in Key Vault (with soft-delete + purge protection).
+4. Deploy GPT-4o; configure content filters at *Medium* across hate / sexual / violence / self-harm.
+5. Enable **Prompt Shields** — User Prompt + Document Prompt — and **Groundedness detection**.
+6. Front the resource with **Azure API Management** + per-subscription rate limits + JWT validation.
+7. Wire **diagnostic settings** to your Log Analytics; enable the *RequestResponse* category for prompt logging (optional, costly).
+8. Confirm **Defender for AI workloads** plan is on; trigger a test prompt-injection (e.g. "ignore previous instructions") and observe the alert in Defender XDR.
+
+### Lab 7 — Security Copilot
+
+1. Provision **3 SCUs** of capacity in your Azure subscription.
+2. Assign yourself **Copilot Owner**; create a second account as Contributor.
+3. Install Microsoft plugins: Defender XDR, Sentinel, Defender TI, Natural Language to KQL, Entra, Intune.
+4. Run an **embedded** prompt: open a Defender XDR incident → click *Summarize this incident*.
+5. Run a **standalone** prompt: "Summarize all high-severity incidents from yesterday for a CISO audience in 3 bullets."
+6. Build a custom **Promptbook** "IR Report" with parameters {incident_id, audience} and 4 prompts (timeline, IOCs, root cause, remediation).
+7. Build a custom **KQL plugin** that runs your password-spray detection from Lab 3, return rows as JSON.
+8. Enable the **Phishing triage agent** in Defender for Office 365; observe its decisions.
+
+### What to repeat 3x
+
+These click-paths show up on case studies — practice until you can name the menu order from memory:
+
+- *Conditional Access policy creation* (Entra → Protection → CA → New)
+- *PIM eligible role activation* (PIM → My Roles → Activate)
+- *Sentinel analytics rule wizard* (Sentinel → Analytics → Create)
+- *Defender for Cloud Plans toggle* (MDC → Environment Settings → subscription → Plans)
+- *Purview sensitivity label publishing* (Purview → Information protection → Labels → Publish)
+- *DSPM for AI activity explorer* (Purview → DSPM for AI → Activity Explorer)
+- *Azure OpenAI content filter assignment* (AOAI Studio → Content filters → New)
+- *Security Copilot capacity creation* (Azure Portal → Security Copilot → Capacity)
+
+### Resources
+
+- Free Microsoft 365 E5 developer tenant: aka.ms/m365devprogram
+- Free Azure $200 trial: azure.microsoft.com/free
+- KQL playground (no setup needed): aka.ms/lademo
+- Defender for Endpoint evaluation lab: security.microsoft.com → Tutorials → Evaluation lab
+- Sentinel training-lab solution: Content Hub → "Microsoft Sentinel Training Lab"
+- Microsoft Learn SC-500 path (when published): learn.microsoft.com/credentials/certifications/exams/sc-500/`,
+  },
+
+  {
+    id: 'sc500-study-schedule',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'SC-500 4-Week Study Schedule',
+    certTags: ['SC-500'],
+    vocab: ['Microsoft Entra ID', 'Defender XDR', 'Microsoft Sentinel', 'Microsoft Defender for Cloud', 'Microsoft Purview', 'Azure OpenAI Service', 'Microsoft Security Copilot'],
+    content: `A focused 4-week plan to go from "know SC-200 / AZ-500" to **passing SC-500 beta on first attempt**. Tune week count to your background.
+
+### Daily routine (every day)
+
+- **30 min** — read 1 Playbook topic article in this category
+- **20 min** — quiz: filter Cert Focus = SC-500, 25 questions
+- **20 min** — hands-on: do 1-2 click-paths from "Lab plan" (above)
+- **10 min** — review wrong answers; add anything new to a personal cheat sheet
+
+### Week 1 — Identity, Zero Trust, and SOC foundation
+
+| Day | Focus | Playbook | Lab |
+|-----|-------|----------|-----|
+| Mon | Entra ID basics, MFA, Authentication Strengths | Entra ID & Zero Trust Identity | Lab 1 steps 1-3 |
+| Tue | Conditional Access deep-dive | Entra ID & Zero Trust Identity | Lab 1 steps 4-6 |
+| Wed | PIM, Identity Protection, CAE | Entra ID & Zero Trust Identity | Lab 1 finish + extras |
+| Thu | Defender XDR portal + incidents | Microsoft Defender XDR | Lab 2 steps 1-4 |
+| Fri | Automatic Attack Disruption + response actions | Microsoft Defender XDR | Lab 2 steps 5-6 |
+| Sat | Quiz day — 50 questions, all SC-500 categories | — | Review wrongs |
+| Sun | Light read: Microsoft Learn SC-200 path skim — bridge | — | Rest |
+
+### Week 2 — Sentinel, KQL, and detections
+
+| Day | Focus | Playbook | Lab |
+|-----|-------|----------|-----|
+| Mon | Sentinel architecture, connectors | Microsoft Sentinel & KQL | Lab 3 steps 1-3 |
+| Tue | KQL basics: where, project, summarize, join | Microsoft Sentinel & KQL | KQL playground (aka.ms/lademo) |
+| Wed | Analytics rule types: Scheduled / NRT / Fusion / Anomaly / TI | Microsoft Sentinel & KQL | Lab 3 steps 4-5 |
+| Thu | Logic Apps playbooks + SOAR | Microsoft Sentinel & KQL | Lab 3 step 5 (Teams card) |
+| Fri | Watchlists, DCRs, table tiers, cost control | Microsoft Sentinel & KQL | Lab 3 steps 6-7 |
+| Sat | KQL writing day — re-do the 10 KQL questions in the bank, then write 5 from scratch | — | KQL playground |
+| Sun | Quiz: 50 questions filter SC-500. Read missed-area articles. | — | — |
+
+### Week 3 — Defender for Cloud, Purview, and DSPM for AI
+
+| Day | Focus | Playbook | Lab |
+|-----|-------|----------|-----|
+| Mon | Defender for Cloud CSPM + MCSB + Secure Score | Microsoft Defender for Cloud | Lab 4 steps 1-3 |
+| Tue | Defender Plans (Servers, Storage, Containers, ARM, AI) | Microsoft Defender for Cloud | Lab 4 step 2 |
+| Wed | Attack Paths + Cloud Security Explorer + AI-SPM | Microsoft Defender for Cloud | Lab 4 steps 4-7 |
+| Thu | Purview Information Protection + sensitivity labels + DLP | Microsoft Purview DSPM for AI | Lab 5 steps 1-3 |
+| Fri | DSPM for AI + IRM + Adaptive Protection | Microsoft Purview DSPM for AI | Lab 5 steps 4-7 |
+| Sat | Quiz day — 50 questions, mix difficulties | — | Review wrongs |
+| Sun | Read MS Learn: "Plan for Microsoft Purview Information Protection" | — | Rest |
+
+### Week 4 — AI workload security, Security Copilot, and exam prep
+
+| Day | Focus | Playbook | Lab |
+|-----|-------|----------|-----|
+| Mon | Azure OpenAI hardening (Entra auth, private endpoint, CMK) | Securing Azure OpenAI & Foundry | Lab 6 steps 1-3 |
+| Tue | Content Safety: filters, Prompt Shields, Groundedness, Protected Material | Securing Azure OpenAI & Foundry | Lab 6 steps 4-5 |
+| Wed | APIM gateway pattern + Defender for AI workloads alerts | Securing Azure OpenAI & Foundry | Lab 6 steps 6-8 |
+| Thu | Security Copilot — SCUs, Owner/Contributor, plugins, promptbooks | Microsoft Security Copilot for SOC | Lab 7 steps 1-5 |
+| Fri | Custom Copilot plugins + Agents + Sentinel audit | Microsoft Security Copilot for SOC | Lab 7 steps 6-8 |
+| Sat | **Full mock**: Quiz 100 questions filter SC-500, all difficulties. Aim ≥85%. | — | Review weak topics |
+| Sun | Light review only. Sleep 8h. Exam Monday. | — | — |
+
+### Day-of-exam checklist
+
+- Sleep ≥7h. Eat protein. Caffeine if it's your routine, not if it isn't.
+- Bring 2 IDs (online proctoring scans both).
+- Clear desk. Disconnect 2nd monitor. Close everything (Pearson VUE will scan).
+- For case studies: read the **questions first**, then skim the case for relevant facts. Don't read every paragraph.
+- Flag-and-return on anything > 90 sec. Pace: aim for ~1.5 min/question average.
+- Beta exams have **40-60 questions** plus some research items (don't count, don't worry).
+
+### Topics most-likely-to-show (per pre-beta study guides)
+
+1. Conditional Access — at least 3-5 questions
+2. PIM eligible vs active + activation gates
+3. Identity Protection risk policies
+4. Defender XDR Automatic Attack Disruption (which attacks it covers)
+5. Sentinel analytics rule type selection
+6. KQL query reading or writing (often a single line to fix)
+7. Defender for Cloud plan selection per resource type
+8. AI-SPM and Defender for AI workload alerts
+9. Sensitivity labels + DLP for M365 Copilot
+10. DSPM for AI oversharing
+11. Azure OpenAI hardening stack (private endpoint + managed identity + CMK + Prompt Shields)
+12. Security Copilot SCUs + plugin governance + promptbooks
+
+### If you have only 2 weeks
+
+Compress: Week 1 → days 1-3, Week 2 → days 4-6, Week 3 → days 7-9, Week 4 → days 10-13, mock + rest day 14. Skip optional reading; double-up labs and quizzes.
+
+### If you have 6+ weeks
+
+Add Week 0 (SC-200 basics if rusty) and Week 5 (deep MS Learn paths + a second full pass on KQL writing). The extra time is best spent in the portal, not re-reading.`,
+  },
 ];
