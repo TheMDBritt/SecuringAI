@@ -5,12 +5,14 @@ import TopicBrowser  from './TopicBrowser';
 import GlossaryPanel from './GlossaryPanel';
 import CertMap       from './CertMap';
 import QuizEngine    from './QuizEngine';
+import PortalDrills  from './PortalDrills';
 
 const SECTIONS: { id: PlaybookSection; label: string; icon: string }[] = [
   { id: 'topics',   label: 'Topics',   icon: '📚' },
   { id: 'glossary', label: 'Glossary', icon: '📖' },
   { id: 'certs',    label: 'Certs',    icon: '🎓' },
   { id: 'quiz',     label: 'Quiz',     icon: '✏️'  },
+  { id: 'drills',   label: 'Drills',   icon: '🖥️' },
 ];
 
 export default function PlaybookView() {
@@ -74,6 +76,7 @@ export default function PlaybookView() {
         {section === 'glossary' && <GlossaryPanel />}
         {section === 'certs'    && <CertMap onCertFilter={handleCertFilter} />}
         {section === 'quiz'     && <QuizEngine />}
+        {section === 'drills'   && <PortalDrills />}
       </div>
     </div>
   );
