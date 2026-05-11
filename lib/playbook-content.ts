@@ -3803,4 +3803,210 @@ Compress: Week 1 → days 1-3, Week 2 → days 4-6, Week 3 → days 7-9, Week 4 
 
 Add Week 0 (SC-200 basics if rusty) and Week 5 (deep MS Learn paths + a second full pass on KQL writing). The extra time is best spent in the portal, not re-reading.`,
   },
+
+  {
+    id: 'sc500-cli-cheatsheet',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'SC-500 PowerShell & Az CLI Cheat Sheet',
+    certTags: ['SC-500'],
+    vocab: ['Az CLI', 'Microsoft Graph PowerShell', 'Az PowerShell', 'KQL'],
+    content: `SC-500 occasionally tests cmdlet / CLI recognition. Memorize the *shape* of these commands — exam questions usually show one and ask "what does this do?" or "fix this broken parameter".
+
+> **Tooling note:** Microsoft is steadily replacing the old \`AzureAD\` and \`MSOnline\` PowerShell modules with **Microsoft Graph PowerShell** (\`Mg*\` cmdlets). For SC-500, prefer \`Mg*\` and \`az\`.
+
+### Microsoft Entra ID — Microsoft Graph PowerShell
+
+\`\`\`powershell
+# Sign in with the right scopes
+Connect-MgGraph -Scopes "Policy.ReadWrite.ConditionalAccess","User.Read.All","Group.Read.All","Directory.Read.All","RoleManagement.ReadWrite.Directory"
+
+# List users / get user
+Get-MgUser -Top 10
+Get-MgUser -UserId "alice@contoso.com"
+
+# Create a Conditional Access policy from JSON
+$params = @{
+  DisplayName  = "Require MFA for Admins"
+  State        = "enabled"
+  Conditions   = @{
+    Users        = @{ IncludeRoles = @("62e90394-69f5-4237-9190-012177145e10") } # Global Admin
+    Applications = @{ IncludeApplications = @("All") }
+  }
+  GrantControls = @{
+    Operator        = "OR"
+    BuiltInControls = @("mfa")
+  }
+}
+New-MgIdentityConditionalAccessPolicy -BodyParameter $params
+
+# Read CA policies
+Get-MgIdentityConditionalAccessPolicy | Select-Object DisplayName, State
+
+# Assign PIM-eligible role
+New-MgRoleManagementDirectoryRoleEligibilityScheduleRequest -BodyParameter @{
+  Action           = "adminAssign"
+  RoleDefinitionId = "62e90394-69f5-4237-9190-012177145e10"
+  PrincipalId      = "<userObjectId>"
+  DirectoryScopeId = "/"
+  Justification    = "On-call rotation"
+  ScheduleInfo     = @{ Expiration = @{ Type = "afterDuration"; Duration = "P30D" } }
+}
+
+# Identity Protection — list risky users
+Get-MgRiskyUser -Filter "riskLevel eq 'high'"
+\`\`\`
+
+### Azure RBAC & PIM — Az PowerShell / Az CLI
+
+\`\`\`powershell
+# Az PowerShell
+Connect-AzAccount
+Get-AzRoleAssignment -SignInName alice@contoso.com
+New-AzRoleAssignment -SignInName alice@contoso.com -RoleDefinitionName "Reader" -Scope "/subscriptions/<subId>"
+\`\`\`
+
+\`\`\`bash
+# Az CLI equivalents
+az login
+az role assignment list --assignee alice@contoso.com -o table
+az role assignment create --assignee alice@contoso.com --role Reader --scope /subscriptions/<subId>
+az role assignment delete --assignee alice@contoso.com --role Reader --scope /subscriptions/<subId>
+\`\`\`
+
+### Microsoft Defender for Cloud
+
+\`\`\`bash
+# Enable Defender plans
+az security pricing create --name VirtualMachines    --tier Standard --subplan P2
+az security pricing create --name StorageAccounts    --tier Standard
+az security pricing create --name KeyVaults          --tier Standard
+az security pricing create --name CloudPosture       --tier Standard   # Defender CSPM
+az security pricing create --name AI                 --tier Standard   # Defender for AI workloads
+
+# List current plan state
+az security pricing list -o table
+
+# View recommendations / secure score
+az security secure-score-controls list
+\`\`\`
+
+### Microsoft Sentinel & Log Analytics
+
+\`\`\`bash
+# Enable Sentinel on a Log Analytics workspace
+az sentinel workspace-setting create \\
+  --resource-group rg-soc --workspace-name la-soc \\
+  --workspace-id <workspaceId>
+
+# Create an analytics rule (scheduled)
+az sentinel alert-rule create \\
+  --resource-group rg-soc --workspace-name la-soc \\
+  --rule-id <guid> --kind Scheduled \\
+  --display-name "Password spray" \\
+  --query "SigninLogs | where ResultType != 0 | summarize Failures=count(), IPs=dcount(IPAddress) by UserPrincipalName | where Failures > 20 and IPs > 5" \\
+  --query-frequency PT5M --query-period PT1H --severity Medium
+
+# List incidents
+az sentinel incident list --resource-group rg-soc --workspace-name la-soc -o table
+\`\`\`
+
+### Microsoft Defender XDR — Advanced Hunting via Graph API
+
+\`\`\`bash
+# Run an advanced hunting query (returns up to 10 000 rows)
+curl -X POST "https://graph.microsoft.com/v1.0/security/runHuntingQuery" \\
+     -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \\
+     -d '{"Query":"DeviceProcessEvents | where InitiatingProcessFileName == \\"powershell.exe\\" | take 50"}'
+\`\`\`
+
+### Azure OpenAI
+
+\`\`\`bash
+# Deploy AOAI resource (HIPAA pattern)
+az cognitiveservices account create \\
+  -n aoai-prod -g rg-ai --kind OpenAI --sku S0 -l eastus \\
+  --custom-domain aoai-prod \\
+  --assign-identity --api-properties statisticsEnabled=false
+
+# Disable local API keys (force Entra auth)
+az cognitiveservices account update \\
+  -n aoai-prod -g rg-ai \\
+  --properties '{"disableLocalAuth": true}'
+
+# Lock to private endpoint (deny public)
+az cognitiveservices account update \\
+  -n aoai-prod -g rg-ai \\
+  --public-network-access Disabled
+
+# List deployments / models
+az cognitiveservices account deployment list -n aoai-prod -g rg-ai -o table
+\`\`\`
+
+### Microsoft Purview
+
+\`\`\`powershell
+# Sensitivity labels — Security & Compliance PowerShell
+Connect-IPPSSession
+Get-Label | Select-Object DisplayName, Priority, ContentType
+New-Label -DisplayName "Highly Confidential — M&A" -Tooltip "M&A only"
+
+# DLP policies
+Get-DlpCompliancePolicy
+New-DlpCompliancePolicy -Name "Block sensitive into Copilot" -ExchangeLocation All -SharePointLocation All -OneDriveLocation All -Mode Enable
+\`\`\`
+
+### Security Copilot
+
+Security Copilot has limited PowerShell surface as of SC-500 beta — most management is portal-only. Watch for these REST endpoints:
+
+\`\`\`
+GET    /securityCopilot/capacities       — list SCU capacity
+POST   /securityCopilot/capacities       — create capacity
+GET    /securityCopilot/plugins          — list installed plugins
+GET    /securityCopilot/promptbooks      — list promptbooks
+POST   /securityCopilot/sessions         — start a session
+POST   /securityCopilot/sessions/{id}/prompts  — submit a prompt
+\`\`\`
+
+### KQL quick-reference patterns
+
+| Goal | Pattern |
+|------|---------|
+| Filter rows | \`| where ColumnA == "x" and ColumnB > 5\` |
+| Reduce columns | \`| project Col1, Col2, NewCol=Col3 + 1\` |
+| Add computed column | \`| extend Hour = bin(TimeGenerated, 1h)\` |
+| Aggregate | \`| summarize Count=count(), DistinctIPs=dcount(IPAddress) by UserPrincipalName, bin(TimeGenerated, 1h)\` |
+| Join two tables | \`| join kind=inner (OtherTable | project Key, ExtraCol) on Key\` |
+| Combine tables | \`| union TableA, TableB\` |
+| Build time-series | \`| make-series Count=count() default=0 on TimeGenerated step 1h\` |
+| Detect anomalies | \`| extend (anom, score, base) = series_decompose_anomalies(Count)\` |
+| Parse string | \`| parse RawData with "user=" UserName " ip=" IP\` |
+| Lookup against watchlist | \`| join kind=inner (_GetWatchlist("VIPs") | project UPN) on $left.UserPrincipalName == $right.UPN\` |
+| Geo-locate IP | \`| extend Geo = geo_info_from_ip_address(IPAddress)\` |
+| Top N | \`| top 10 by Count desc\` |
+| Distinct values | \`| distinct UserPrincipalName\` |
+| Rolling list | \`| summarize make_set(TargetUser) by Attacker\` |
+
+### Common cmdlet "gotchas" SC-500 tests
+
+- \`Set-MgUser\` (modify) vs \`Update-MgUser\` (rare); creation is \`New-MgUser\`
+- \`Connect-MgGraph -Scopes\` — wrong scope = silent permission errors. Always declare every scope you'll use.
+- \`az ad signed-in-user show\` ≠ \`az account show\` (first is Entra user object, second is the Azure subscription context)
+- \`az ad sp create-for-rbac\` returns a **client secret only once** — copy it; never reuse this for production (prefer federated credentials).
+- \`-WhatIf\` works on most Az/Mg cmdlets — invaluable for dry-run testing.
+- Graph API write actions need the right *delegated* vs *application* permission — exam asks "which permission do you grant?"
+
+### Day-of-exam: memorize 8 commands
+
+If you remember nothing else, memorize the *shape* of these:
+
+1. \`Connect-MgGraph -Scopes "..."\`
+2. \`New-MgIdentityConditionalAccessPolicy -BodyParameter @{ ... }\`
+3. \`Get-MgRiskyUser -Filter "riskLevel eq 'high'"\`
+4. \`az role assignment create --assignee X --role Y --scope Z\`
+5. \`az security pricing create --name <plan> --tier Standard\`
+6. \`az cognitiveservices account update --properties '{"disableLocalAuth": true}'\`
+7. \`az cognitiveservices account update --public-network-access Disabled\`
+8. Any KQL one-liner: \`Table | where ... | summarize ... by bin(TimeGenerated, 1h)\``,
+  },
 ];
