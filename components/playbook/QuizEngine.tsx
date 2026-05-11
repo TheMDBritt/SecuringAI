@@ -11,13 +11,19 @@ interface QuizSettings {
   category:   string;
   difficulty: QuizDifficulty | 'all';
   certFilter: string;
-  count:      10 | 25 | 50 | 100;
+  count:      10 | 25 | 50 | 60 | 100;
+  /** Mock-exam mode: timer + no per-question feedback. */
+  examMode?:  boolean;
+  /** Total exam time in seconds (only used when examMode). */
+  examSec?:   number;
 }
 
 interface QuizResult {
   question:  QuizQuestion;
   chosen:    number | null;
   correct:   boolean;
+  /** True when the question was skipped (no answer selected). */
+  skipped?:  boolean;
   timeTaken: number;
 }
 
@@ -90,13 +96,33 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
     ).length;
   }, [settings]);
 
+  const sc500Pool = useMemo(() => QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SC-500')).length, []);
+
+  const startMockExam = () => {
+    onStart({ category: 'All', difficulty: 'all', certFilter: 'SC-500', count: 60, examMode: true, examSec: 90 * 60 });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-full px-6 py-12 max-w-xl mx-auto">
       <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
         <span className="text-violet-400 text-lg">?</span>
       </div>
       <h2 className="text-xl font-bold text-slate-100 mb-1">Quiz Setup</h2>
-      <p className="text-sm text-slate-500 mb-8 text-center">Choose your focus area and difficulty, then start.</p>
+      <p className="text-sm text-slate-500 mb-6 text-center">Choose your focus area and difficulty, then start.</p>
+
+      {/* Mock Exam preset */}
+      {sc500Pool >= 60 && (
+        <button
+          onClick={startMockExam}
+          className="w-full mb-8 p-3 rounded-lg border border-cyan-500/40 bg-cyan-500/5 hover:bg-cyan-500/10 transition-colors text-left"
+        >
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-sm font-semibold text-cyan-300">⏱ Mock SC-500 Exam</span>
+            <span className="text-[10px] font-mono text-cyan-400/70">60 Q · 90 min · no hints</span>
+          </div>
+          <p className="text-[11px] text-slate-400 leading-relaxed">Timed simulation. No per-question feedback until the end. Results + breakdown at finish.</p>
+        </button>
+      )}
 
       <div className="w-full space-y-5">
         {/* Category */}
@@ -184,24 +210,54 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
 
 // ─── Question Screen ──────────────────────────────────────────────────────────
 function QuestionScreen({
-  question, index, total, onAnswer,
+  question, index, total, onAnswer, examMode, remainingSec, onAbandonExam,
 }: {
-  question: QuizQuestion;
-  index:    number;
-  total:    number;
-  onAnswer: (chosen: number) => void;
+  question:       QuizQuestion;
+  index:          number;
+  total:          number;
+  onAnswer:       (chosen: number | null) => void;
+  examMode?:      boolean;
+  remainingSec?:  number;
+  onAbandonExam?: () => void;
 }) {
   const [chosen, setChosen] = useState<number | null>(null);
   const progress = ((index + 1) / total) * 100;
 
+  // Reset selection when the question changes (exam-mode chains questions w/o unmount).
+  useEffect(() => { setChosen(null); }, [question.id]);
+
   const handleChoose = (i: number) => {
     if (chosen !== null) return;
     setChosen(i);
+    // Exam mode: no reveal, advance immediately.
+    if (examMode) {
+      onAnswer(i);
+      return;
+    }
     setTimeout(() => onAnswer(i), 900);
   };
 
+  const timerStr = remainingSec !== undefined
+    ? `${String(Math.floor(remainingSec / 60)).padStart(2, '0')}:${String(remainingSec % 60).padStart(2, '0')}`
+    : null;
+  const timerLow = remainingSec !== undefined && remainingSec <= 300; // last 5 minutes
+
   return (
     <div className="flex flex-col h-full min-h-0 px-6 py-5">
+      {/* Exam-mode timer bar */}
+      {examMode && timerStr && (
+        <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-cyan-500/30 bg-cyan-500/5'}`}>
+          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>⏱ Mock SC-500 Exam</span>
+          <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-cyan-300'}`}>{timerStr}</span>
+          <button
+            onClick={onAbandonExam}
+            className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-0.5 rounded"
+          >
+            end early
+          </button>
+        </div>
+      )}
+
       {/* Progress */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1.5">
@@ -228,9 +284,18 @@ function QuestionScreen({
         {question.options.map((opt, i) => {
           let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
           if (chosen !== null) {
-            if (i === question.correct)      style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
-            else if (i === chosen)           style = 'border-red-500 bg-red-500/10 text-red-300';
-            else                             style = 'border-slate-700/50 text-slate-600 opacity-60';
+            if (examMode) {
+              // Exam mode: just show which one is selected, no green/red.
+              style = i === chosen
+                ? 'border-cyan-500/60 bg-cyan-500/10 text-cyan-200'
+                : 'border-slate-700/50 text-slate-600 opacity-60';
+            } else if (i === question.correct) {
+              style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
+            } else if (i === chosen) {
+              style = 'border-red-500 bg-red-500/10 text-red-300';
+            } else {
+              style = 'border-slate-700/50 text-slate-600 opacity-60';
+            }
           }
           return (
             <button
@@ -245,6 +310,17 @@ function QuestionScreen({
           );
         })}
       </div>
+
+      {/* Exam-mode skip button (lets you move on without answering) */}
+      {examMode && (
+        <button
+          onClick={() => { if (chosen === null) onAnswer(null); }}
+          disabled={chosen !== null}
+          className="mt-3 w-full py-1.5 rounded text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
+        >
+          Skip — leave unanswered
+        </button>
+      )}
     </div>
   );
 }
@@ -328,9 +404,13 @@ function SummaryScreen({
   onGenerateMore:  (category: string) => void;
 }) {
   const correct   = results.filter((r) => r.correct).length;
+  const skipped   = results.filter((r) => r.skipped).length;
   const total     = results.length;
   const pct       = Math.round((correct / total) * 100);
-  const avgTime   = Math.round(results.reduce((s, r) => s + r.timeTaken, 0) / total / 1000);
+  const answered  = results.filter((r) => !r.skipped);
+  const avgTime   = answered.length > 0
+    ? Math.round(answered.reduce((s, r) => s + r.timeTaken, 0) / answered.length / 1000)
+    : 0;
 
   // Category breakdown
   const byCategory = useMemo(() => {
@@ -351,7 +431,9 @@ function SummaryScreen({
       {/* Score banner */}
       <div className="text-center mb-6">
         <div className={`text-5xl font-bold font-mono mb-1 ${scoreColor}`}>{pct}%</div>
-        <p className="text-slate-400 text-sm">{correct} of {total} correct · avg {avgTime}s per question</p>
+        <p className="text-slate-400 text-sm">
+          {correct} of {total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s per question
+        </p>
         <p className={`text-sm font-semibold mt-1 ${scoreColor}`}>
           {pct >= 80 ? 'Excellent work!' : pct >= 60 ? 'Good effort — keep studying!' : 'Keep at it — review the weak areas below.'}
         </p>
@@ -409,6 +491,8 @@ export default function QuizEngine() {
   const [currentIndex,  setCurrentIndex]  = useState(0);
   const [results,       setResults]       = useState<QuizResult[]>([]);
   const [questionStart, setQuestionStart] = useState(0);
+  const [examEndAt,     setExamEndAt]     = useState<number | null>(null);
+  const [nowMs,         setNowMs]         = useState(() => Date.now());
   const [generating,    setGenerating]    = useState(false);
   const [genError,      setGenError]      = useState('');
 
@@ -424,16 +508,35 @@ export default function QuizEngine() {
     setResults([]);
     setCurrentIndex(0);
     setQuestionStart(Date.now());
+    setExamEndAt(s.examMode && s.examSec ? Date.now() + s.examSec * 1000 : null);
     setMode('question');
   }, []);
 
-  const handleAnswer = useCallback((chosen: number) => {
+  const handleAnswer = useCallback((chosen: number | null) => {
     const q       = questions[currentIndex];
     const elapsed = Date.now() - questionStart;
-    const r: QuizResult = { question: q, chosen, correct: chosen === q.correct, timeTaken: elapsed };
+    const r: QuizResult = {
+      question: q,
+      chosen,
+      correct:  chosen !== null && chosen === q.correct,
+      skipped:  chosen === null,
+      timeTaken: elapsed,
+    };
+    const isLast = currentIndex + 1 >= questions.length;
     setResults((prev) => [...prev, r]);
+    // Exam mode: never show per-Q feedback. Jump straight to next or summary.
+    if (settings?.examMode) {
+      if (isLast) {
+        setExamEndAt(null);
+        setMode('summary');
+      } else {
+        setCurrentIndex((i) => i + 1);
+        setQuestionStart(Date.now());
+      }
+      return;
+    }
     setMode('result');
-  }, [questions, currentIndex, questionStart]);
+  }, [questions, currentIndex, questionStart, settings]);
 
   const handleNext = useCallback(() => {
     if (currentIndex + 1 >= questions.length) {
@@ -444,6 +547,39 @@ export default function QuizEngine() {
       setMode('question');
     }
   }, [currentIndex, questions.length]);
+
+  // ── Exam countdown tick — auto-submit unanswered remainder when timer hits 0 ──
+  useEffect(() => {
+    if (!examEndAt) return;
+    const id = setInterval(() => setNowMs(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [examEndAt]);
+
+  useEffect(() => {
+    if (!examEndAt) return;
+    if (nowMs < examEndAt) return;
+    // Time's up — record remaining as skipped and jump to summary.
+    const remaining: QuizResult[] = [];
+    for (let i = currentIndex; i < questions.length; i++) {
+      remaining.push({ question: questions[i], chosen: null, correct: false, skipped: true, timeTaken: 0 });
+    }
+    setResults((prev) => [...prev, ...remaining]);
+    setExamEndAt(null);
+    setMode('summary');
+  }, [nowMs, examEndAt, currentIndex, questions]);
+
+  const handleAbandonExam = useCallback(() => {
+    if (!settings?.examMode) return;
+    const remaining: QuizResult[] = [];
+    for (let i = currentIndex; i < questions.length; i++) {
+      remaining.push({ question: questions[i], chosen: null, correct: false, skipped: true, timeTaken: 0 });
+    }
+    setResults((prev) => [...prev, ...remaining]);
+    setExamEndAt(null);
+    setMode('summary');
+  }, [settings, currentIndex, questions]);
+
+  const remainingSec = examEndAt ? Math.max(0, Math.floor((examEndAt - nowMs) / 1000)) : undefined;
 
   const handleGenerateMore = useCallback(async (category: string) => {
     if (!settings) return;
@@ -485,7 +621,15 @@ export default function QuizEngine() {
       <div className="flex-1 overflow-y-auto">
         {mode === 'setup'    && <SetupScreen onStart={handleStart} />}
         {mode === 'question' && currentQuestion && (
-          <QuestionScreen question={currentQuestion} index={currentIndex} total={questions.length} onAnswer={handleAnswer} />
+          <QuestionScreen
+            question={currentQuestion}
+            index={currentIndex}
+            total={questions.length}
+            onAnswer={handleAnswer}
+            examMode={settings?.examMode}
+            remainingSec={remainingSec}
+            onAbandonExam={handleAbandonExam}
+          />
         )}
         {mode === 'result'   && currentResult && (
           <ResultScreen result={currentResult} index={currentIndex} total={questions.length} onNext={handleNext} />
