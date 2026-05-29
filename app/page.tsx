@@ -39,15 +39,6 @@ const DOJOS: DojoCard[] = [
   },
 ];
 
-const PRIVACY_BULLETS = [
-  'No accounts, no logins, no tracking.',
-  'No persistent storage — chat lives in browser memory only.',
-  'Per-IP rate limit on every API route.',
-  'Server-side input validation on every request.',
-  'Safety pre-filter blocks functional exploit syntax — payloads here are conceptual only.',
-  'Model API keys read server-side only. Never reach the browser.',
-];
-
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
@@ -193,25 +184,6 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="border-b border-slate-800 bg-slate-900/40">
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Privacy
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-6">
-            Free, forever, with nothing to sign.
-          </h2>
-          <ul className="grid md:grid-cols-2 gap-3 text-sm text-slate-300">
-            {PRIVACY_BULLETS.map((b) => (
-              <li key={b} className="flex gap-2">
-                <span className="text-emerald-400 shrink-0">✓</span>
-                {b}
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
