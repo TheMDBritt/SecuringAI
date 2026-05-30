@@ -176,6 +176,44 @@ const CERTS: CertInfo[] = [
     ],
     topTopics: ['LLM security assessment', 'RAG security', 'Model supply chain', 'AI deployment hardening', 'Security audit', 'Red teaming'],
   },
+  {
+    id: 'CISSP',
+    name: 'Certified Information Systems Security Professional',
+    provider: 'ISC2',
+    tagColor: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+    difficulty: 'Expert',
+    questions: '125–175 adaptive (CAT)',
+    duration: '4 hours',
+    focus: 'The gold-standard generalist security cert. 8 domains spanning risk, architecture, cryptography, network security, IAM, testing, operations, and SDLC. Requires 5 years of paid InfoSec experience.',
+    domains: [
+      { name: 'Security and Risk Management',       pct: '15%' },
+      { name: 'Asset Security',                     pct: '10%' },
+      { name: 'Security Architecture & Engineering',pct: '13%' },
+      { name: 'Communication & Network Security',   pct: '13%' },
+      { name: 'Identity & Access Management',       pct: '13%' },
+      { name: 'Security Assessment & Testing',      pct: '12%' },
+      { name: 'Security Operations',                pct: '13%' },
+      { name: 'Software Development Security',      pct: '11%' },
+    ],
+    topTopics: ['Risk management', 'BCP/DRP', 'Cryptography', 'PKI', 'Zero Trust', 'IAM/MFA', 'Pen testing', 'SDLC', 'Incident response', 'Data classification', 'Defense-in-depth', 'AI threat modelling'],
+  },
+  {
+    id: 'CISM',
+    name: 'Certified Information Security Manager',
+    provider: 'ISACA',
+    tagColor: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
+    difficulty: 'Advanced',
+    questions: '150',
+    duration: '4 hours',
+    focus: 'Management-focused security cert from ISACA. Covers governance, risk, program management, and incident response from a business/leadership lens. Requires 5 years experience with 3 in management.',
+    domains: [
+      { name: 'Information Security Governance',         pct: '17%' },
+      { name: 'Information Security Risk Management',    pct: '20%' },
+      { name: 'Information Security Program',           pct: '33%' },
+      { name: 'Incident Management',                    pct: '30%' },
+    ],
+    topTopics: ['Security strategy', 'Risk appetite', 'KPIs/KRIs', 'Board reporting', 'BIA', 'Incident response plan', 'Recovery objectives', 'AI governance', 'Third-party risk', 'Security program budgeting'],
+  },
 ];
 
 interface CertMapProps {
@@ -188,7 +226,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">9 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">11 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
         </div>
       </div>
 
