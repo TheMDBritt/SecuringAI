@@ -4009,4 +4009,353 @@ If you remember nothing else, memorize the *shape* of these:
 7. \`az cognitiveservices account update --public-network-access Disabled\`
 8. Any KQL one-liner: \`Table | where ... | summarize ... by bin(TimeGenerated, 1h)\``,
   },
+
+  // ─── CISSP ────────────────────────────────────────────────────────────────
+
+  {
+    id: 'cissp-risk-management',
+    category: 'CISSP',
+    title: 'CISSP Domain 1: Security and Risk Management',
+    certTags: ['CISSP'],
+    vocab: ['ALE', 'SLE', 'ARO', 'Risk Appetite', 'Risk Transfer', 'MTD', 'RPO', 'RTO', 'BIA', 'STRIDE'],
+    content: `Domain 1 (Security and Risk Management) is the largest CISSP domain at 15%. It tests your understanding of risk quantification, legal frameworks, policy hierarchies, and business continuity planning.
+
+### Quantitative Risk Analysis
+
+The core formulas appear on almost every CISSP exam:
+
+| Formula | Meaning |
+|---------|---------|
+| SLE = AV × EF | Single Loss Expectancy = Asset Value × Exposure Factor |
+| ALE = SLE × ARO | Annual Loss Expectancy = SLE × Annualised Rate of Occurrence |
+| Control ROI = ALE(before) − ALE(after) − control cost | Only invest if ROI > 0 |
+
+**Example**: A database worth $500,000 with a 40% exposure factor has SLE = $200,000. If the threat occurs twice per year (ARO = 2), ALE = $400,000. A $50,000 control that reduces ARO to 0.1 brings ALE to $20,000 — saving $380,000/year, making the $50,000 investment easily justified.
+
+### Risk Response Strategies
+
+| Response | Mechanism | Example |
+|----------|-----------|---------|
+| Avoidance | Stop the activity causing risk | Cancel the mobile app launch |
+| Mitigation | Reduce likelihood or impact | Deploy WAF, enable MFA |
+| Transference | Shift financial burden | Cyber insurance, contractual indemnification |
+| Acceptance | Acknowledge and absorb | Document low-probability, low-impact risks |
+
+### Policy Hierarchy
+
+CISSP tests the four-tier document hierarchy in strict order:
+
+1. **Policy** — Senior management intent, mandatory, signed by executive (e.g., "All sensitive data must be encrypted at rest")
+2. **Standard** — Specific mandatory requirements derived from policy (e.g., "Use AES-256 for all PII at rest")
+3. **Guideline** — Recommended practices, not mandatory (e.g., "Consider using a KMS for key management")
+4. **Procedure** — Step-by-step instructions for implementation
+
+### Business Continuity Objectives
+
+The BIA produces these key metrics:
+
+- **MTD/MAO** (Maximum Tolerable Downtime): The deadline beyond which business impact becomes catastrophic. **RTO must be ≤ MTD**.
+- **RTO** (Recovery Time Objective): How fast systems must be restored.
+- **RPO** (Recovery Point Objective): Maximum acceptable data loss (how old can the backup be).
+- **MBCO** (Minimum Business Continuity Objective): The minimum service level needed during disruption.
+
+### STRIDE Threat Model
+
+| Letter | Threat | Violated Property |
+|--------|--------|-------------------|
+| S | Spoofing | Authentication |
+| T | Tampering | Integrity |
+| R | Repudiation | Non-repudiation |
+| I | Information Disclosure | Confidentiality |
+| D | Denial of Service | Availability |
+| E | Elevation of Privilege | Authorisation |
+
+### Exam Tips
+
+- If the question asks "who is responsible for risk?" — the answer is the **risk owner** (business unit), not IT or the CISO.
+- Questions about "what should a CISO do first?" almost always answer with strategic alignment, not a technical action.
+- BCP questions: remember that the BIA comes **before** the BCP is written, not after.
+- ALE questions: watch for the exposure factor — it's a percentage, not the full asset value.`,
+  },
+  {
+    id: 'cissp-cryptography',
+    category: 'CISSP',
+    title: 'CISSP Domain 3: Cryptography Essentials',
+    certTags: ['CISSP'],
+    vocab: ['AES-GCM', 'ECDSA', 'PKI', 'CRL', 'OCSP', 'Forward Secrecy', 'Bell-LaPadula', 'Zero Trust', 'NIST SP 800-207'],
+    content: `Cryptography spans Domain 3 (Security Architecture and Engineering) and appears in network and data questions across every domain. The key is understanding *why* each algorithm or mode exists, not just memorising names.
+
+### Symmetric vs. Asymmetric Cryptography
+
+| Property | Symmetric (e.g., AES) | Asymmetric (e.g., RSA, ECDSA) |
+|----------|-----------------------|-------------------------------|
+| Keys | Same key for encrypt/decrypt | Public key encrypts; private key decrypts |
+| Speed | Fast — used for bulk data | Slow — used for key exchange and signatures |
+| Key distribution problem | Must share key securely | Public key is freely distributed |
+| Common use | Data at rest, session encryption | Key exchange (TLS), digital signatures, certificates |
+
+### Cipher Modes That Matter
+
+- **AES-CBC**: Requires HMAC separately; vulnerable to padding oracle attacks (POODLE-style). Legacy.
+- **AES-GCM**: AEAD — single-pass encryption + authentication tag. Mandated in TLS 1.3. The correct modern choice.
+- **ChaCha20-Poly1305**: AEAD alternative to AES-GCM, preferred on devices without AES hardware acceleration.
+
+### TLS 1.3 Changes (Know These)
+
+1. Removed: static RSA and DH key exchange (no forward secrecy), RC4, 3DES, SHA-1
+2. Kept: Only AEAD cipher suites (AES-GCM, ChaCha20-Poly1305)
+3. Required: Ephemeral (EC)DHE for all key exchanges → **all sessions have forward secrecy**
+4. Simplified: Reduced handshake from 2 round-trips to 1 (0-RTT for session resumption)
+
+### PKI Component Roles
+
+| Component | Role |
+|-----------|------|
+| CA (Certificate Authority) | Issues, signs, and revokes certificates |
+| RA (Registration Authority) | Verifies identity before forwarding CSR to CA |
+| CRL | Published list of revoked certificates (downloaded by clients) |
+| OCSP | Real-time revocation check — queries a responder per certificate |
+| OCSP Stapling | Server embeds the OCSP response in the TLS handshake (faster, private) |
+
+**CISSP question pattern**: "Who revokes certificates?" → The CA. "What publishes the revocation status?" → CRL or OCSP Responder.
+
+### Elliptic Curve Cryptography
+
+ECDSA with P-256 (256-bit key) provides ~128-bit equivalent security — same as RSA-3072 — with a much smaller key. TLS certificates are increasingly ECDSA because of smaller handshake sizes and faster operations. NIST recommends transitioning away from RSA-2048 for long-term keys.
+
+### Post-Quantum Cryptography
+
+NIST finalised three PQC standards in 2024:
+- **ML-KEM** (Module Lattice Key Encapsulation Mechanism, formerly CRYSTALS-Kyber) — for key exchange
+- **ML-DSA** (Module Lattice Digital Signature Algorithm, formerly CRYSTALS-Dilithium) — for signatures
+- **SLH-DSA** (SPHINCS+) — hash-based signature scheme
+
+CISSP currently tests awareness of the threat (Shor's algorithm breaks RSA/ECC on quantum computers) and the migration need, not implementation details.
+
+### Exam Tips
+
+- AES-GCM questions: remember it provides **confidentiality + integrity in one pass** (this is what AEAD means).
+- PKI hierarchy questions: the distinction between CA (issues/revokes) and RA (verifies identity) is a common distractor.
+- Forward secrecy questions: the key word is "ephemeral" — session keys are thrown away, so past sessions remain secure.`,
+  },
+  {
+    id: 'cissp-iam',
+    category: 'CISSP',
+    title: 'CISSP Domain 5: Identity and Access Management',
+    certTags: ['CISSP', 'SC-500'],
+    vocab: ['MFA', 'SAML 2.0', 'OpenID Connect', 'OAuth 2.0', 'RBAC', 'MAC', 'DAC', 'Zero Trust', 'JIT', 'PAM'],
+    content: `IAM (Domain 5, 13%) covers authentication factors, access control models, federation standards, and privileged access management. It overlaps heavily with SC-500 Entra ID content.
+
+### Authentication Factor Categories
+
+| Factor | Category | Examples |
+|--------|----------|---------|
+| Password, PIN, security questions | Something you **know** | Most common; weakest alone |
+| Smart card, hardware token, phone (TOTP) | Something you **have** | FIDO2 key, authenticator app |
+| Fingerprint, retina, facial recognition, voice | Something you **are** | Biometric; non-revocable |
+| Location (geofencing), time-of-day | Somewhere you **are** / **when** | Contextual/adaptive factors |
+
+**Exam trap**: A password + PIN = **single-factor** (both are "something you know"). True MFA requires factors from different categories.
+
+### Access Control Models
+
+| Model | Who controls access | Key property |
+|-------|--------------------|-|
+| DAC (Discretionary) | Data owner decides | Flexible; common in OS file systems |
+| MAC (Mandatory) | System enforces based on labels | Military/government; no owner override |
+| RBAC (Role-Based) | Roles assigned by administrators | Enterprise standard; supports SoD |
+| ABAC (Attribute-Based) | Policy engine evaluates attributes | Fine-grained; Zero Trust native |
+| Rule-Based | Rules defined by admins (e.g., firewall ACLs) | Often confused with RBAC |
+
+**Bell-LaPadula** enforces **confidentiality** in MAC systems: no read up, no write down.
+**Biba** enforces **integrity**: no read down, no write up.
+
+### Federation Standards
+
+**SAML 2.0**:
+- XML-based assertions between Identity Provider (IdP) and Service Provider (SP)
+- Enterprise SSO standard; common in legacy SaaS (Salesforce, Workday)
+- SP-initiated and IdP-initiated flows
+
+**OpenID Connect (OIDC)**:
+- Built on OAuth 2.0, uses JSON Web Tokens (JWTs)
+- Returns an **ID token** (authentication) and optional **Access token** (authorisation)
+- Designed for modern apps, APIs, and mobile; native to Azure AD/Entra ID
+
+**Exam distinction**: OAuth 2.0 = authorisation framework (access tokens). OIDC = authentication layer on OAuth (ID tokens). SAML = enterprise SSO, XML. OIDC = modern SSO, JSON/REST.
+
+### Privileged Access Management (PAM)
+
+Least privilege applied to admin accounts requires:
+1. **Separate accounts**: a standard user account for daily work + a privileged account for admin tasks
+2. **JIT activation**: admin rights granted only for the duration of the approved task (Azure PIM, CyberArk)
+3. **Just-Enough-Access (JEA)**: grant only the specific permissions needed, not blanket admin roles
+4. **Session recording**: capture all privileged sessions for forensic review
+5. **Automated deprovisioning**: revoke access within hours of role change or termination
+
+### Identity Lifecycle
+
+Provisioning → Access Review → Modification → Deprovisioning
+
+**CISSP question pattern**: "Employee is terminated — what happens first?" → Disable the account immediately (same day). Access reviews are quarterly; termination response must be immediate.
+
+### Exam Tips
+
+- SAML vs. OIDC: SAML = enterprise/XML/legacy, OIDC = modern/JSON/REST. Both are correct for SSO — the context determines which.
+- When asked about "who should control access to sensitive data" — the **data owner** (business manager) sets policy; the **custodian** (IT) implements it.
+- JIT and least privilege together = the CISSP gold standard for privileged access. Any option that grants permanent wide admin rights is wrong.`,
+  },
+
+  // ─── CISM ─────────────────────────────────────────────────────────────────
+
+  {
+    id: 'cism-governance',
+    category: 'CISM',
+    title: 'CISM Domain 1: Information Security Governance',
+    certTags: ['CISM'],
+    vocab: ['Risk Appetite', 'KRI', 'KPI', 'COBIT', 'Steering Committee', 'Security Strategy', 'Board Reporting', 'Responsible AI Policy'],
+    content: `CISM Domain 1 (17%) is the management lens that CISSP doesn't provide. Where CISSP asks "how does this control work?", CISM asks "how do you get the board to fund it, govern it, and take ownership of it?"
+
+### Security Governance vs. Security Management
+
+| Dimension | Governance | Management |
+|-----------|-----------|------------|
+| Who | Board, senior executives | CISO, security team |
+| Focus | Direction, oversight, risk appetite | Execution, operations |
+| Questions | "What risk will we accept?" | "How do we implement controls?" |
+| Reference | COBIT, ISO/IEC 38500 | ISO/IEC 27001, NIST CSF |
+| Time horizon | Strategic (3–5 years) | Tactical/operational |
+
+### Strategic Alignment
+
+The security programme must align to business objectives — not the other way around. Before deploying a SIEM or hiring analysts, the CISM practitioner answers:
+
+1. What are the organisation's strategic objectives?
+2. Which risks threaten those objectives?
+3. What is the stated risk appetite for each?
+4. How does the security investment reduce risk within that appetite?
+
+**ISACA principle**: Security value is measured by how well it enables the business to achieve goals, not by the number of alerts blocked.
+
+### Governance Structures
+
+- **Board of Directors**: Owns risk appetite; approves the information security strategy
+- **Security Steering Committee**: Cross-functional body (CISO, Legal, Finance, HR, Operations) that reviews the programme quarterly and makes trade-off decisions
+- **CISO**: Accountable for executing the strategy; reports to board/audit committee on risk posture
+- **Risk Owners**: Business unit managers who own and accept specific risks — *not* IT
+
+### Metrics That Matter to Boards
+
+Boards don't care about firewall rules or patch counts. They care about business risk:
+
+| Board-relevant metric | Why it matters |
+|-----------------------|----------------|
+| % critical processes with tested recovery plans | Resilience visibility |
+| Mean time to detect + respond to incidents | Threat exposure |
+| Third-party risk coverage (% vendors with active assessments) | Supply chain exposure |
+| Regulatory compliance gap count | Fine/penalty exposure |
+| Security budget as % of IT spend vs. industry peers | Investment adequacy |
+
+### AI Governance (CISM lens)
+
+As AI systems enter production, CISM governance requirements extend to AI:
+
+- **Responsible AI Policy**: Defines permitted use cases, prohibited uses, risk tiers, and accountability
+- **AI Risk Assessment**: Required before deploying any AI system that processes personal data or makes consequential decisions
+- **Human Oversight**: High-risk AI (as defined by EU AI Act) must have human review of outputs
+- **Audit Trail**: All AI decisions affecting individuals should be logged for audit and explainability
+- **Third-Party AI Vendors**: Apply the same TPRM scrutiny to AI vendors as to any data processor
+
+### Exam Tips
+
+- "What should the CISM practitioner do first when establishing a security programme?" → **Understand the business objectives and risk appetite**, not deploy tools.
+- "A risk is accepted by the steering committee — what should the practitioner do?" → **Document the acceptance, assign ownership, monitor the risk**.
+- "What is the most important characteristic of a security policy?" → **Senior management endorsement** (it must have authority behind it).
+- Risk ownership: ISACA is unambiguous — **risk owners are business unit managers**, not IT. IT manages controls; the business owns risk.`,
+  },
+  {
+    id: 'cism-incident-management',
+    category: 'CISM',
+    title: 'CISM Domain 4: Incident Management',
+    certTags: ['CISM', 'CISSP'],
+    vocab: ['IRP', 'Containment', 'Eradication', 'Recovery', 'BCP', 'DRP', 'RTO', 'RPO', 'Tabletop Exercise', 'Parallel Test'],
+    content: `CISM Domain 4 (30%) is the largest domain and covers the full lifecycle from preparing an incident response plan through exercising it, executing during a real event, and improving afterwards. The management focus means CISM tests decisions and escalation, not forensic techniques.
+
+### Incident Response Plan (IRP) Components
+
+A mature IRP contains:
+
+1. **Scope and purpose**: What constitutes an incident; what the plan covers
+2. **Roles and responsibilities**: Incident Commander, Communication Lead, Legal/Compliance contact, Technical Lead
+3. **Severity classification**: P1 (critical) through P4 (low) with defined response SLAs per level
+4. **Containment playbooks**: Pre-approved isolation procedures by incident type (ransomware, data breach, insider threat)
+5. **Communication templates**: Pre-drafted notifications for regulators, customers, and press
+6. **Escalation matrix**: Who approves which decisions (paying ransom, notifying regulators, taking systems offline)
+7. **Recovery procedures**: System restoration order based on BCP priority
+
+### Incident Response Lifecycle (NIST SP 800-61)
+
+\`\`\`
+Preparation → Detection & Analysis → Containment/Eradication/Recovery → Post-Incident Activity
+\`\`\`
+
+**CISM management focus per phase:**
+
+| Phase | CISM concern |
+|-------|-------------|
+| Preparation | IRP exists, tested, owned; team trained; contact lists current |
+| Detection | MTTD measured; escalation criteria defined; 24/7 coverage model |
+| Containment | Business impact of containment vs. continued exposure; legal hold if needed |
+| Eradication | Root cause confirmed before restoration; not just cleaning malware |
+| Recovery | RTO/RPO met; post-recovery verification before declaring all-clear |
+| Post-Incident | Lessons-learned meeting within 2 weeks; IRP updated; metrics captured |
+
+### BCP vs. DRP
+
+| Document | Focus | Trigger |
+|----------|-------|---------|
+| BCP (Business Continuity Plan) | Keeping the business running during/after disruption | Any significant disruption |
+| DRP (Disaster Recovery Plan) | Restoring IT systems after a catastrophic failure | Data centre loss, ransomware, natural disaster |
+| COOP (Continuity of Operations) | Government/federal continuity requirements | Agency-specific |
+
+A BCP is broader than a DRP. DRP is the IT subset of BCP.
+
+### BCP Testing Types
+
+| Test type | Technical validation | Production risk | Cost |
+|-----------|---------------------|----------------|------|
+| Checklist / document review | None | None | Low |
+| Tabletop exercise | None (discussion only) | None | Low |
+| Walk-through / structured walkthrough | Minimal | None | Low-medium |
+| Simulation | Partial | Low | Medium |
+| **Parallel test** | **Full — activates backup site alongside production** | **Low** | High |
+| Full interruption test | Full — production switched to recovery site | High | Very high |
+
+**CISM exam pattern**: "Which test validates recovery without risking production?" → Parallel test.
+
+### Ransomware Incident: Decision Framework
+
+When ransomware hits, CISM-level decisions in order:
+
+1. **Contain**: Isolate affected systems (pre-approved isolation playbook, no single-person authority)
+2. **Assess**: Scope of encryption, data exfiltration indicators, backup integrity
+3. **Legal hold**: Preserve forensic evidence, notify legal counsel (attorney-client privilege consideration)
+4. **Notify**: Invoke regulator notification timelines (GDPR: 72 hours to DPA; SEC: 4 business days for material incidents)
+5. **Recovery decision**: Restore from clean backups vs. rebuild; ransom payment is a last resort (law enforcement, FBI guidance)
+6. **Post-incident**: Lessons-learned, root cause analysis, IRP update
+
+### Communication During Incidents
+
+- Internal communications may be protected by **attorney-client privilege** if counsel is directing the investigation
+- External communications (customer notifications) must comply with breach notification law timelines
+- Board must be notified for material incidents — define "material" thresholds in the IRP in advance
+- Avoid promising timelines to regulators that you cannot keep — under-promise, over-deliver
+
+### Exam Tips
+
+- "First priority during a ransomware incident?" → **Contain and isolate** affected systems. Not pay, not notify, not recover.
+- "Difference between BCP and DRP?" → BCP = business continuity (processes); DRP = IT recovery (systems). DRP is a subset of BCP.
+- "Which recovery test is safest?" → Parallel. "Which is most thorough?" → Full interruption (but highest risk).
+- "RPO vs. RTO?" → RPO = data loss window (backup frequency); RTO = restoration time (how fast you recover).`,
+  },
 ];
