@@ -105,4 +105,11 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'NIST AI RMF · Govern 6 (Third-Party)',
     'CSA AICM · Vendor Assurance',
   ],
+  'ai-incident-response': [
+    'EU AI Act · Article 73 Serious Incident Reporting',
+    'NIST AI RMF · Manage 4 (Incident Management)',
+    'ISO/IEC 42001 · Clause 10 (Improvement)',
+    'AAISM · AI Incident Classification',
+    'GDPR · Article 33 Breach Notification',
+  ],
 };

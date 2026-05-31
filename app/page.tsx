@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getScenariosByDojo, SCENARIOS } from '@/lib/scenarios';
+import { getScenariosByDojo } from '@/lib/scenarios';
 import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 import { Footer } from '@/components/layout/Footer';
 import type { DojoId } from '@/types';
@@ -38,8 +38,6 @@ const DOJOS: DojoCard[] = [
     accent: 'emerald',
   },
 ];
-
-const TOTAL_SCENARIOS = SCENARIOS.length;
 
 export default function LandingPage() {
   return (
@@ -80,7 +78,7 @@ export default function LandingPage() {
           {/* Stats strip */}
           <dl className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl">
             {[
-              { value: `${TOTAL_SCENARIOS}`, label: 'scenarios' },
+              { value: '16', label: 'scenarios' },
               { value: '615', label: 'quiz questions' },
               { value: '13', label: 'cert maps' },
               { value: '335', label: 'glossary terms' },

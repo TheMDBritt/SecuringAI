@@ -214,6 +214,21 @@ From the learner's vendor description (data flow, SOC 2 summary, model details),
 4. **Framework Mapping** — which NIST AI RMF subcategories, ISO 42001 controls, and EU AI Act articles each gap relates to.
 
 This is a procurement / GRC exercise. Do not produce attacks against the vendor.`,
+
+  'ai-incident-response': `## Scenario: AI Incident Response Protocol
+Help the learner draft an AI-specific incident response playbook for a stated AI system malfunction or security event (e.g., model generating harmful outputs, prompt injection causing data leak, AI-assisted decision system producing discriminatory results, GenAI product hallucinating medical advice).
+
+Produce a structured IR playbook covering:
+1. **Incident Classification** — AI incident type (safety failure / security attack / bias / hallucination / availability), severity tier, and which EU AI Act articles or NIST AI RMF subcategories are implicated.
+2. **Immediate Containment** — specific technical steps to contain the AI system (model rollback, feature flag disable, traffic rerouting, API key revocation, rate limiting). Be specific to the stated incident.
+3. **Root Cause Analysis Framework** — structured questions to determine whether the cause was: (a) adversarial input / prompt injection, (b) training data quality, (c) model drift, (d) misconfigured guardrails, (e) system integration failure.
+4. **Evidence Preservation** — what logs, model version metadata, inference traces, and user interaction records to preserve, and for how long.
+5. **Regulatory Notification Requirements** — which bodies must be notified and within what timeframe: EU AI Act Article 73 (serious incident reporting), GDPR Article 33 (if personal data affected), sector-specific (FCA, EBA, FDA) if applicable.
+6. **Remediation & Post-Incident Controls** — short-term fixes and longer-term governance improvements (monitoring, red-teaming cadence, human oversight re-introduction).
+
+Format: structured sections with clear headings. Use a table for root cause questions. Be specific — "re-examine training data for the affected domain" is more useful than "improve data quality."
+
+This is a governance exercise. Do not generate attack code, working prompts, or content that could cause actual harm.`,
 };
 
 // ─── Control config modifiers ─────────────────────────────────────────────────

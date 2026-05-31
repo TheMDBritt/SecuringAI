@@ -150,6 +150,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'ai-incident-response',
+    dojoId: 3,
+    title: 'AI Incident Response Protocol',
+    description:
+      'An AI system has behaved unexpectedly in production. Draft an AI-specific incident response playbook covering detection, containment, root cause, remediation, and regulatory notification.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM02'],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {

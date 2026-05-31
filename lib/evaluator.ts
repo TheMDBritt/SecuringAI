@@ -848,6 +848,19 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Required contractual controls listed (DPA / MSA clauses)', re: /\b(DPA|MSA|data\s+processing\s+agreement|contract\w*\s+control|clause|addendum|indemnif|liability)\b/i },
     { label: 'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)', re: /NIST|AI\s+RMF|ISO\s+42001|42001|EU\s+AI\s+Act|article\s+\d+/i },
   ],
+  'ai-incident-response': [
+    // Must classify the AI incident type
+    { label: 'Incident type and severity classified', re: /\b(safety\s+failure|security\s+(attack|incident)|bias|hallucination|availability|incident\s+type|severity\s+(tier|level|class)|critical|high.?risk|P[0-4])\b/i },
+    // Containment must be technical and specific
+    { label: 'Technical containment steps provided', re: /\b(rollback|roll\s+back|disable|feature\s+flag|traffic\s+reroute|reroute|rate\s+limit|revoke.*key|key\s+revocation|circuit\s+break|take.*offline|shut\s+down|kill\s+switch|isolat|contain|block)\b/i },
+    // Root cause must go beyond "look at the logs"
+    { label: 'Root cause analysis framework or questions provided', re: /\b(root\s+cause|initial\s+cause|contributing\s+factor|how\s+(did|was)|training\s+data|model\s+drift|guardrail|misconfigur|prompt\s+injection|adversarial\s+input|input\s+validation)\b/i },
+    // Evidence preservation is AI-specific (inference traces, model version)
+    { label: 'Evidence preservation guidance specific to AI artifacts', re: /\b(inference\s+trace|model\s+version|prompt\s+log|interaction\s+log|training\s+data\s+snapshot|evidence\s+preserv|forensic|log\s+retention|preserve)\b/i },
+    // Regulatory notification is required for EU AI Act Article 73 + GDPR
+    { label: 'Regulatory notification requirements addressed (EU AI Act / GDPR)', re: /EU\s+AI\s+Act|article\s+73|GDPR|article\s+33|data\s+protection\s+authority|DPA|supervisory\s+authority|notif(y|ication)|regulatory|breach\s+report/i },
+    { label: 'Post-incident remediation and governance improvements specified', re: /\b(remediat|post.?incident|long.?term|governance|red.?team|monitor|audit|human\s+oversight|retest|retrain|re.?evaluate|corrective\s+action|lesson|prevent)\b/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -886,6 +899,19 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Vendor reviews end at the contract — DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
   'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)':
     'Mapping each gap to a framework lets the buyer justify the controls request to leadership. Prompt: "Map each gap to the relevant NIST AI RMF subcategory, ISO 42001 control, or EU AI Act article."',
+  // ai-incident-response
+  'Incident type and severity classified':
+    'Classification drives the response — a safety failure needs different containment than a security attack. Prompt: "Classify the incident type (safety failure / security attack / bias / hallucination / availability) and assign a severity tier with justification."',
+  'Technical containment steps provided':
+    'Containment is the first priority — you cannot investigate a live bleeding system. Prompt: "List specific technical containment actions: model rollback procedures, feature flag locations, traffic rerouting, API key revocation, circuit breaker patterns."',
+  'Root cause analysis framework or questions provided':
+    'AI incidents have unique root cause vectors — training data, model drift, adversarial input — that a generic IR playbook misses. Prompt: "Provide a structured root cause question set covering: adversarial input, training data quality, model drift, guardrail misconfiguration, and system integration failure."',
+  'Evidence preservation guidance specific to AI artifacts':
+    'Inference traces and model version metadata are often lost within hours — they must be explicitly preserved. Prompt: "What AI-specific evidence must be preserved: inference logs, prompt/response pairs, model version metadata, training data snapshots, feature importance logs?"',
+  'Regulatory notification requirements addressed (EU AI Act / GDPR)':
+    'EU AI Act Article 73 requires serious incident reporting; GDPR Article 33 requires breach notification within 72h if personal data is affected. Prompt: "What regulatory bodies must be notified, under which legal basis, and within what timeframe?"',
+  'Post-incident remediation and governance improvements specified':
+    'An IR playbook that stops at containment without governance improvements will face the same incident again. Prompt: "What long-term control improvements result from this incident: monitoring cadence, red-team schedule, human oversight re-introduction, policy revision?"',
 };
 
 
