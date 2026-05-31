@@ -47,6 +47,15 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM09'],
   },
+  {
+    id: 'output-injection',
+    dojoId: 1,
+    title: 'Output Injection',
+    description:
+      'Manipulate BlackBeltAI into embedding exfiltration payloads in its rendered output — markdown images and hyperlinks that leak data to external endpoints.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM02', 'LLM06'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
@@ -88,6 +97,26 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],
+  },
+  {
+    id: 'malware-analysis',
+    dojoId: 2,
+    title: 'Malware Analysis',
+    description:
+      'Paste a suspicious script or binary indicator set. BlackBeltAI deobfuscates the logic, identifies malicious behaviours, and maps findings to MITRE ATT&CK.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: ['T1059', 'T1055', 'T1036', 'T1027'],
+  },
+  {
+    id: 'threat-hunt',
+    dojoId: 2,
+    title: 'Threat Hunt',
+    description:
+      'State a threat hypothesis. BlackBeltAI produces a structured hunt plan — data sources, queries (KQL/Sigma), pivot fields, and success criteria.',
+    difficulty: 'intermediate',
+    owaspTags: [],
+    mitreAttackIds: ['T1078', 'T1021', 'T1087', 'T1048'],
   },
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────

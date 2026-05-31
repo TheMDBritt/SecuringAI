@@ -4358,4 +4358,353 @@ When ransomware hits, CISM-level decisions in order:
 - "Which recovery test is safest?" → Parallel. "Which is most thorough?" → Full interruption (but highest risk).
 - "RPO vs. RTO?" → RPO = data loss window (backup frequency); RTO = restoration time (how fast you recover).`,
   },
+
+  // ─── CCSP Articles ──────────────────────────────────────────────────────────
+
+  {
+    id: 'ccsp-shared-responsibility',
+    category: 'CCSP',
+    title: 'Cloud Security: Shared Responsibility and Service Models',
+    certTags: ['CCSP', 'AWS-AIF-C01'],
+    content: `## The Shared Responsibility Model
+
+Every cloud deployment splits security duties between the Cloud Service Provider (CSP) and the customer. Where that boundary falls depends entirely on the service model.
+
+### IaaS (Infrastructure as a Service)
+The CSP secures: physical facilities, hardware, hypervisor, and the network fabric.
+The customer secures: OS (patches, hardening), middleware, applications, data, and access controls.
+
+Examples: AWS EC2, Azure VMs, Google Compute Engine.
+
+**Security implication:** A customer who leaves default credentials on a cloud VM is responsible for the resulting breach — the CSP hardened the host, but the guest OS is out of scope.
+
+### PaaS (Platform as a Service)
+The CSP adds: OS management, runtime, and middleware to what it owns.
+The customer secures: application code, application configuration, data, and identity.
+
+Examples: AWS Elastic Beanstalk, Azure App Service, Google App Engine.
+
+### SaaS (Software as a Service)
+The CSP manages almost everything: infrastructure through the application layer.
+The customer is responsible for: identity and access management, data governance, and configuration settings.
+
+Examples: Microsoft 365, Salesforce, Google Workspace.
+
+## Key CCSP Exam Points
+
+**Coverage gaps are the customer's fault.** The most common misconfiguration in cloud breaches — exposed S3 buckets, publicly accessible databases — results from the customer failing to apply their portion of the model.
+
+**The CSP can be audited but not assumed.** SOC 2 Type II and ISO 27001 reports document what the CSP does. They don't relieve the customer of their own obligations.
+
+**Multi-tenancy creates lateral risk.** Multiple customers share physical hardware. Hypervisor vulnerabilities (e.g., VM escape) are the CSP's domain. Misconfigured identity controls that allow cross-tenant access are the customer's domain.
+
+## CSA Cloud Controls Matrix (CCM)
+
+The Cloud Security Alliance CCM provides 197 controls across 17 domains for assessing cloud security posture. It maps to ISO 27001, NIST SP 800-53, PCI DSS, and others. CCSP Domain 6 uses CCM as the primary compliance vocabulary.
+
+The **STAR Registry** (Security Trust Assurance and Risk) uses CCM self-assessments for cloud provider transparency. Level 1 is self-assessment; Level 2 requires third-party audit.`,
+    vocab: ['Shared Responsibility Model', 'Multi-tenancy', 'CSA Cloud Controls Matrix (CCM)', 'ISO/IEC 27017'],
+  },
+  {
+    id: 'ccsp-data-security',
+    category: 'CCSP',
+    title: 'Cloud Data Security: Lifecycle, Encryption, and Key Management',
+    certTags: ['CCSP'],
+    content: `## The Cloud Data Lifecycle
+
+CCSP Domain 2 organises data security around six phases. Each phase has distinct controls.
+
+| Phase | Description | Key Controls |
+|-------|-------------|--------------|
+| **Create** | Data is generated or acquired | Classification at creation, DLP tagging |
+| **Store** | Data is written to persistent storage | Encryption at rest, access control, redundancy |
+| **Use** | Data is processed or accessed | Encryption in use (TEE), access logging |
+| **Share** | Data is transmitted or disclosed | Encryption in transit (TLS 1.3), DLP, CASB |
+| **Archive** | Data moves to long-term storage | Retention policy, immutable backups, cost tiering |
+| **Destroy** | Data is permanently removed | Crypto-shredding, media sanitisation |
+
+## Crypto-shredding: The Only Reliable Cloud Destroy
+
+Physical media destruction is not available to cloud customers — you can't walk into an AWS data centre and shred a drive. The practical alternative is **crypto-shredding**: destroy the encryption key, and all encrypted data becomes permanently unreadable.
+
+Requirements for crypto-shredding to work:
+1. Data must be encrypted before storage (encryption at rest).
+2. Keys must be managed separately from encrypted data.
+3. Key destruction must be verifiable and logged.
+
+Reference: **NIST SP 800-88** ("Guidelines for Media Sanitization") endorses cryptographic erase as equivalent to physical destruction for data classified at the appropriate level.
+
+## Key Management Models
+
+**CSP-Managed Keys (SSE-S3 / AWS-managed):** The CSP generates, stores, and rotates keys. Customer has no key material visibility. Simplest operationally; high trust dependency on CSP.
+
+**BYOK (Bring Your Own Key):** Customer generates keys (e.g., in an on-premises HSM), imports them into the CSP's KMS (AWS KMS, Azure Key Vault, Google Cloud KMS). Customer controls key lifecycle but key material lives inside CSP infrastructure.
+
+**HYOK (Hold Your Own Key):** Keys never leave the customer's premises. Used for the most sensitive regulated data (financial, defence). Higher operational complexity; the CSP cannot access the encrypted data at all.
+
+## CASB: The Enforcement Layer
+
+A **Cloud Access Security Broker (CASB)** sits between users and cloud services, providing:
+- **Visibility:** Shadow IT discovery, which SaaS apps employees use without approval.
+- **Compliance:** DLP policy enforcement, regulatory mapping.
+- **Data Security:** Encryption, tokenisation, access control for cloud data.
+- **Threat Protection:** Anomaly detection, malware scanning.
+
+**Deployment modes:**
+- **API-based:** Out-of-band, reads cloud storage/logs via API. No latency. Cannot block real-time.
+- **Forward proxy:** Inline, deployed on client (requires MDM/PAC). Intercepts user-to-cloud traffic.
+- **Reverse proxy:** Inline, deployed at the CSP side. Best for unmanaged devices.
+
+## CCSP Exam Quick Reference
+
+- Crypto-shredding = destroy keys, not data ✓
+- BYOK = key material in CSP's KMS; HYOK = key material never leaves customer ✓
+- CASB API-mode = no latency, cannot real-time block ✓
+- Cloud data lifecycle has 6 phases; Destroy = crypto-shredding ✓`,
+    vocab: ['Cloud Data Lifecycle', 'Crypto-shredding', 'Bring Your Own Key (BYOK)', 'Cloud Access Security Broker (CASB)', 'Cloud Security Posture Management (CSPM)'],
+  },
+  {
+    id: 'ccsp-infrastructure-operations',
+    category: 'CCSP',
+    title: 'Cloud Infrastructure Security: Containers, Serverless, and CSPM',
+    certTags: ['CCSP', 'CAISP'],
+    content: `## Container Security
+
+Containers share the host OS kernel. This creates an attack surface that VMs don't have: a container escape vulnerability can compromise the host and all other containers on it.
+
+### Container Security Layers
+
+**Image layer:** Scan images for vulnerabilities (Trivy, Snyk) before pushing to registry. Use minimal base images (Alpine, distroless). Sign images with Cosign/Notary.
+
+**Registry layer:** Enforce image signing requirements. Restrict pull access with RBAC. Enable immutable image tags.
+
+**Runtime layer:**
+- Drop unnecessary Linux capabilities
+- Use read-only root filesystems
+- Enforce seccomp profiles (block unused syscalls)
+- Never run privileged containers
+- Use AppArmor/SELinux profiles
+
+**Orchestration layer (Kubernetes):**
+- RBAC (least privilege for service accounts)
+- Pod Security Admission (enforce baseline/restricted policies)
+- Network policies (deny all, allow only required paths)
+- Secrets management (avoid env vars; use mounted secrets or external vault)
+
+### Container vs. VM Security Boundary
+
+| Property | VM | Container |
+|----------|-----|-----------|
+| Kernel isolation | Separate kernel per VM | Shared host kernel |
+| Attack surface | Hypervisor + guest OS | Host kernel (shared) |
+| Escape impact | Hypervisor compromise | Host compromise |
+| Startup time | Minutes | Sub-second |
+
+## Serverless Security
+
+In FaaS (Function-as-a-Service), the CSP manages everything below the function code. The customer is responsible for:
+- **IAM policy:** Each function should have the minimum permissions it needs (least privilege). Over-permissioned Lambda/Azure Function roles are the most common serverless vulnerability.
+- **Dependency scanning:** Third-party packages (npm, PyPI) are part of the customer's security scope.
+- **Secrets handling:** Never store secrets in environment variables — use Secrets Manager / Key Vault.
+- **Event injection:** All event sources (HTTP, SQS, S3) are untrusted input. Validate and sanitise.
+
+## Cloud Security Posture Management (CSPM)
+
+CSPM tools continuously scan cloud resource configurations against benchmarks (CIS, NIST, vendor). Common findings:
+- Public S3 buckets / Azure Blob containers
+- Security groups allowing 0.0.0.0/0 on sensitive ports
+- Unencrypted storage volumes
+- Disabled MFA for console users
+- No CloudTrail / audit logging enabled
+
+**CSPM vs. CWPP:**
+- CSPM = configuration compliance (is the infrastructure set up correctly?)
+- CWPP = runtime protection (is a workload behaving correctly right now?)
+
+## Cloud Forensics Challenges
+
+Forensic investigation in cloud environments faces constraints not present on-premises:
+1. **Volatility:** Ephemeral compute (spot instances, serverless) may be gone before investigation
+2. **Log availability:** Hypervisor and physical network logs are CSP-owned
+3. **Jurisdiction:** A multi-region deployment may span 5 legal jurisdictions
+4. **Chain of custody:** Evidence must be preserved in a forensically sound manner
+
+**Contracts must be right before the incident.** Audit rights, data access clauses, and incident SLAs in the cloud contract determine what forensic data the customer can actually retrieve.`,
+    vocab: ['Container Security', 'Serverless Security', 'Cloud Security Posture Management (CSPM)', 'Cloud Workload Protection Platform (CWPP)', 'Cloud Forensics'],
+  },
+
+  // ─── AZ-104 Articles ────────────────────────────────────────────────────────
+
+  {
+    id: 'az104-identity-governance',
+    category: 'AZ-104',
+    title: 'Azure Identity & Governance: RBAC, Policy, and Resource Management',
+    certTags: ['AZ-104', 'SC-500'],
+    content: `## Azure Identity: The Two Planes
+
+Azure has two distinct identity/access systems that AZ-104 tests extensively:
+
+| System | Scope | Examples |
+|--------|-------|---------|
+| **Azure RBAC** | Azure resources (Resource Manager plane) | Read VMs, modify storage, deploy networks |
+| **Entra ID (Azure AD) roles** | Entra ID objects (directory plane) | Manage users, assign licenses, configure MFA |
+
+A user can be an Owner on a subscription (Azure RBAC) but have no Entra ID admin rights, and vice versa.
+
+## Azure RBAC
+
+RBAC assignments have three components:
+1. **Security principal** — who: user, group, service principal, or managed identity
+2. **Role definition** — what: a collection of permissions (actions, notActions, dataActions)
+3. **Scope** — where: management group → subscription → resource group → resource
+
+**Scope inheritance:** Roles assigned at a higher scope are inherited by all child scopes. An Owner at subscription level is an Owner on every resource group and resource within it.
+
+**Key built-in roles:**
+- **Owner** — full access including delegation rights
+- **Contributor** — full access to resources, cannot assign roles
+- **Reader** — read-only
+- **User Access Administrator** — manages access only (no resource permissions)
+
+## Azure Policy
+
+Azure Policy enforces what configurations are allowed, regardless of who is making the change.
+
+**Policy vs. RBAC:**
+- RBAC: controls *who can act*
+- Policy: controls *what can be done*
+
+Even a subscription Owner cannot create a resource that violates a Deny policy (without removing the policy first).
+
+**Policy effects (in order of precedence):**
+1. **Disabled** — policy is off
+2. **Audit** — log non-compliance, allow the action
+3. **Deny** — block non-compliant resource creation/update
+4. **DeployIfNotExists / Modify** — auto-remediate by deploying a child resource or modifying properties
+5. **Append** — add required properties to resource
+
+**Policy Initiatives** bundle multiple policies into a single assignment.
+
+## Resource Locks
+
+Resource locks prevent accidental changes or deletion, applied independently of RBAC:
+
+| Lock type | Read | Modify | Delete |
+|-----------|------|--------|--------|
+| **CanNotDelete** | ✓ | ✓ | ✗ |
+| **ReadOnly** | ✓ | ✗ | ✗ |
+
+**Critical exam point:** Even a subscription Owner cannot delete a resource with a CanNotDelete lock without first removing the lock. Locks override RBAC permissions.
+
+Locks are inherited downward but must be applied at each scope individually if deletion prevention is needed at every level.
+
+## Management Groups
+
+Management groups provide a governance hierarchy above subscriptions:
+- Root management group → management groups → subscriptions → resource groups → resources
+- Azure Policy and RBAC assigned at management group scope inherit to all subscriptions below
+- Useful for large organisations enforcing consistent policy across multiple subscriptions
+
+## Resource Groups
+
+Every Azure resource lives in exactly one resource group. Resource groups are:
+- **Logical containers** (not network boundaries)
+- Resources can communicate across resource groups
+- Deleting a resource group deletes all resources inside
+- Tags applied to a resource group are not inherited by resources (unlike RBAC)
+
+## Managed Identities: No Credentials in Code
+
+A managed identity is an Entra ID identity tied to an Azure resource (VM, Function, App Service). The platform manages the credential lifecycle — the developer never handles a password or secret.
+
+**System-assigned:** 1:1 with a resource, same lifecycle. Deleted when the resource is deleted.
+**User-assigned:** Independent resource, can be shared across multiple services. Lives beyond any single resource.
+
+Use: assign managed identity → grant it an RBAC role on the target resource (e.g., Key Vault Secrets User) → code calls the target service using DefaultAzureCredential. No credentials stored anywhere.`,
+    vocab: ['Azure Role-Based Access Control (Azure RBAC)', 'Azure Policy', 'Resource Lock', 'Azure Managed Identity', 'Azure Key Vault'],
+  },
+  {
+    id: 'az104-networking-monitoring',
+    category: 'AZ-104',
+    title: 'Azure Networking, Backup, and Monitoring Essentials',
+    certTags: ['AZ-104'],
+    content: `## Azure Virtual Networks
+
+A VNet is a private network in Azure with an address space (CIDR block). All traffic within a VNet is private by default. Subnets subdivide the address space.
+
+**Key networking exam concepts:**
+
+**VNet Peering:** Connects two VNets directly (same or cross-region) using the Azure backbone. Low latency, no bandwidth limit, not transitive (A↔B, B↔C does NOT mean A↔C unless transit routing is configured).
+
+**VNet Gateway:** Required for encrypted site-to-site (IPsec) VPN to on-premises or between regions with transit routing. Higher latency than peering; used when encryption across the link is required.
+
+**Service Endpoints:** Extend VNet identity to Azure PaaS services (Storage, SQL) over the Azure backbone. Traffic stays on the Microsoft network. Does not give the service a private IP.
+
+**Private Endpoints:** Give an Azure PaaS service a private IP inside your VNet. Traffic never traverses the public internet. Required for strict data residency / network compliance.
+
+## Network Security Groups (NSGs)
+
+NSGs contain inbound/outbound rules filtering traffic by source, destination, port, and protocol. Rules are processed in priority order (lower number = higher priority).
+
+**NSG placement:**
+- Subnet NSG: applies to all resources in the subnet
+- NIC NSG: applies to a specific VM's network interface
+- Both apply when present — the most restrictive rule wins
+
+**Service tags** represent managed sets of IP ranges (e.g., \`AzureLoadBalancer\`, \`Internet\`, \`AzureMonitor\`) — use instead of specific IPs to simplify management.
+
+**Application Security Groups (ASGs)** let you group VMs by function (e.g., "WebServers") and write NSG rules against the group rather than individual IPs.
+
+## Azure Bastion
+
+Azure Bastion provides browser-based RDP/SSH to VMs over TLS — no public IP on the VM, no jump box, no NSG exception for RDP/SSH.
+
+- Requires a dedicated subnet named \`AzureBastionSubnet\` (/27 or larger)
+- Managed PaaS — no patching required
+- Integrates with Just-in-Time (JIT) VM Access for time-limited port opening
+
+## Azure Monitor
+
+Azure Monitor is the unified observability platform:
+
+| Component | Data type | Retention |
+|-----------|-----------|-----------|
+| **Metrics** | Numerical time-series | 93 days default |
+| **Logs (Log Analytics)** | Query via KQL | Configurable (30–730 days) |
+| **Activity Log** | Resource Manager control plane | 90 days |
+| **Application Insights** | APM traces, exceptions | Configurable |
+
+**Diagnostic settings** route resource logs and metrics to a Log Analytics workspace, storage account, or Event Hub.
+
+**Alerts** trigger action groups (email, webhook, Logic App, ITSM) based on metric thresholds, log query results, or activity log events.
+
+## Azure Backup
+
+Azure Backup stores backups in a **Recovery Services Vault**:
+
+- VM backups: daily incremental after initial full
+- Soft delete: deleted backup data is retained for 14 days (prevents accidental data loss)
+- Geo-redundant storage (GRS): default; replicates backup data to a paired region
+- Cross-region restore: allows restoring from a secondary region even if primary is down
+
+**RPO / RTO:**
+- RPO (Recovery Point Objective): maximum acceptable data loss — determines backup frequency
+- RTO (Recovery Time Objective): maximum acceptable downtime — determines recovery process design
+
+**Azure Backup vs. Azure Site Recovery:**
+- Backup: restore individual files, VMs, databases (RPO = backup frequency)
+- Site Recovery: continuous replication for near-zero RPO DR failover
+
+## AZ-104 Quick Reference Card
+
+| Scenario | Answer |
+|----------|--------|
+| Prevent resource deletion regardless of RBAC | Apply CanNotDelete lock |
+| Force all VMs to use a specific SKU | Azure Policy (Deny effect) |
+| VM access without public IP or jump box | Azure Bastion |
+| VM access to Key Vault without credentials | Managed Identity + RBAC |
+| Two VNets in different regions, need encryption | VPN Gateway (not peering) |
+| NSG rule priority conflict | Lower number wins |`,
+    vocab: ['Azure Virtual Network (VNet)', 'Network Security Group (NSG)', 'Azure Bastion', 'Azure Monitor', 'Azure Backup'],
+  },
 ];

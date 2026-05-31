@@ -214,6 +214,43 @@ const CERTS: CertInfo[] = [
     ],
     topTopics: ['Security strategy', 'Risk appetite', 'KPIs/KRIs', 'Board reporting', 'BIA', 'Incident response plan', 'Recovery objectives', 'AI governance', 'Third-party risk', 'Security program budgeting'],
   },
+  {
+    id: 'CCSP',
+    name: 'Certified Cloud Security Professional',
+    provider: 'ISC2',
+    tagColor: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+    difficulty: 'Advanced',
+    questions: '125',
+    duration: '4 hours',
+    focus: 'Cloud security architecture, data protection, infrastructure hardening, and compliance. Covers all major cloud models (IaaS/PaaS/SaaS) and frameworks including CSA CCM, NIST SP 800-53, and ISO 27017. Requires 5 years of IT experience (3 in information security, 1 in cloud).',
+    domains: [
+      { name: 'Cloud Concepts, Architecture & Design',   pct: '17%' },
+      { name: 'Cloud Data Security',                     pct: '20%' },
+      { name: 'Cloud Platform & Infrastructure Security',pct: '17%' },
+      { name: 'Cloud Application Security',              pct: '17%' },
+      { name: 'Cloud Security Operations',               pct: '16%' },
+      { name: 'Legal, Risk & Compliance',                pct: '13%' },
+    ],
+    topTopics: ['Shared responsibility model', 'CSA CCM', 'Cloud data lifecycle', 'DLP', 'CASB', 'Container security', 'Serverless security', 'Cloud IAM', 'Key management (BYOK)', 'FedRAMP', 'GDPR', 'SOC 2', 'Zero Trust in cloud'],
+  },
+  {
+    id: 'AZ-104',
+    name: 'Microsoft Azure Administrator Associate',
+    provider: 'Microsoft',
+    tagColor: 'bg-blue-500/10 text-blue-400 border-blue-500/30',
+    difficulty: 'Intermediate',
+    questions: '40–60',
+    duration: '100 min',
+    focus: 'Administering Azure infrastructure: identity, governance, storage, compute, networking, and monitoring. The foundational ops cert for Azure cloud engineers and a prerequisite for most AZ-500/SC-500 study paths.',
+    domains: [
+      { name: 'Manage Azure Identities & Governance',    pct: '20–25%' },
+      { name: 'Implement & Manage Storage',              pct: '15–20%' },
+      { name: 'Deploy & Manage Azure Compute Resources', pct: '20–25%' },
+      { name: 'Implement & Manage Virtual Networking',   pct: '15–20%' },
+      { name: 'Monitor & Maintain Azure Resources',      pct: '10–15%' },
+    ],
+    topTopics: ['Azure RBAC', 'Azure AD / Entra ID', 'Resource locks', 'Azure Policy', 'Azure Blob & File storage', 'VMs & scale sets', 'VNet peering', 'NSG & ASG', 'Azure Monitor', 'Log Analytics', 'Backup & Site Recovery', 'Azure Bastion'],
+  },
 ];
 
 interface CertMapProps {
@@ -226,7 +263,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">11 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">13 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
         </div>
       </div>
 
