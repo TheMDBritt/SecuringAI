@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getScenariosByDojo } from '@/lib/scenarios';
+import { getScenariosByDojo, SCENARIOS } from '@/lib/scenarios';
 import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 import { Footer } from '@/components/layout/Footer';
 import type { DojoId } from '@/types';
@@ -18,7 +18,7 @@ const DOJOS: DojoCard[] = [
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
     summary:
-      'Attack and defend an LLM under live guardrail toggles. See exactly which control stops which attack.',
+      'Attack and defend an LLM under live guardrail toggles. See exactly which control stops which attack — from prompt injection to output-channel exfiltration.',
     accent: 'red',
   },
   {
@@ -26,7 +26,7 @@ const DOJOS: DojoCard[] = [
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
     summary:
-      'Use AI as a SOC analyst. Score the AI’s analysis against a quality rubric.',
+      'Use AI as a SOC analyst: triage logs, enrich alerts, generate detection rules, hunt threats, and analyse malware. Score the AI’s output against a quality rubric.',
     accent: 'cyan',
   },
   {
@@ -34,14 +34,17 @@ const DOJOS: DojoCard[] = [
     label: 'Dojo 3',
     title: 'AI GRC',
     summary:
-      'Govern AI: risk-tier deployments, draft policy and controls, and review third-party AI vendors.',
+      'Govern AI: risk-tier deployments under the EU AI Act, draft policy clauses, and review third-party AI vendors against ISO 42001 and NIST AI RMF.',
     accent: 'emerald',
   },
 ];
 
+const TOTAL_SCENARIOS = SCENARIOS.length;
+
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
+      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-slate-100 leading-tight">
@@ -53,39 +56,65 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            LLM DOJO is a hands-on study tool for AI security. Three dojos
-            cover LLM attack and defense, AI-assisted SOC work, and AI GRC.
-            A playbook with 615 quiz questions, 335 glossary terms, and 13
-            cert maps backs every scenario.
+            LLM DOJO is a hands-on AI security training tool. Three dojos cover
+            LLM attack and defense, AI-assisted SOC operations, and AI governance.
+            A playbook with 615 quiz questions, 335 glossary terms, and 13 cert
+            maps backs every scenario.
           </p>
 
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
               href="/dojo"
-              className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors"
+              className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors duration-150"
             >
               Enter the dojo →
             </Link>
             <Link
               href="/playbook"
-              className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium transition-colors"
+              className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium transition-colors duration-150"
             >
               Open the playbook
             </Link>
           </div>
 
-          <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-slate-500">
-            <li>· OWASP LLM Top 10</li>
-            <li>· MITRE ATT&amp;CK</li>
-            <li>· NIST AI RMF</li>
-            <li>· ISO/IEC 42001</li>
-            <li>· EU AI Act</li>
-            <li>· CISSP</li>
-            <li>· CISM</li>
+          {/* Stats strip */}
+          <dl className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl">
+            {[
+              { value: `${TOTAL_SCENARIOS}`, label: 'scenarios' },
+              { value: '615', label: 'quiz questions' },
+              { value: '13', label: 'cert maps' },
+              { value: '335', label: 'glossary terms' },
+            ].map(({ value, label }) => (
+              <div key={label} className="flex flex-col gap-0.5">
+                <dt className="text-2xl font-bold font-mono text-slate-100">{value}</dt>
+                <dd className="text-xs text-slate-500 font-mono">{label}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-1.5 text-xs font-mono text-slate-600">
+            <li>OWASP LLM Top 10</li>
+            <li>·</li>
+            <li>MITRE ATT&amp;CK</li>
+            <li>·</li>
+            <li>NIST AI RMF</li>
+            <li>·</li>
+            <li>ISO/IEC 42001</li>
+            <li>·</li>
+            <li>EU AI Act</li>
+            <li>·</li>
+            <li>CCSP</li>
+            <li>·</li>
+            <li>CISSP</li>
+            <li>·</li>
+            <li>CISM</li>
+            <li>·</li>
+            <li>GIAC GOAA/GASAE</li>
           </ul>
         </div>
       </section>
 
+      {/* ── Dojo cards ───────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -99,18 +128,24 @@ export default function LandingPage() {
             {DOJOS.map((d) => {
               const accent = ACCENT[d.accent];
               const scenarios = getScenariosByDojo(d.id);
+              const VISIBLE = 4;
+              const visible = scenarios.slice(0, VISIBLE);
+              const overflow = scenarios.length - VISIBLE;
               return (
                 <Link
                   key={d.id}
                   href="/dojo"
                   className={[
-                    'group flex flex-col p-5 rounded-lg border bg-slate-900/40 transition-colors',
+                    'group flex flex-col p-5 rounded-lg border bg-slate-900/40 transition-colors duration-150',
                     accent.border,
                   ].join(' ')}
                 >
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center justify-between mb-3">
                     <span className={['text-[10px] font-mono px-2 py-0.5 rounded', accent.bg, accent.text].join(' ')}>
                       {d.label}
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-600">
+                      {scenarios.length} scenarios
                     </span>
                   </div>
                   <h3 className={['text-lg font-semibold mb-2', accent.text].join(' ')}>
@@ -120,16 +155,21 @@ export default function LandingPage() {
                     {d.summary}
                   </p>
                   <ul className="mt-auto flex flex-col gap-1">
-                    {scenarios.map((s) => (
+                    {visible.map((s) => (
                       <li key={s.id} className="text-xs text-slate-500 flex gap-1.5">
                         <span className="text-slate-600">·</span>
                         {s.title}
                       </li>
                     ))}
+                    {overflow > 0 && (
+                      <li className="text-xs text-slate-600 pl-3">
+                        +{overflow} more
+                      </li>
+                    )}
                   </ul>
                   <span
                     className={[
-                      'mt-5 text-xs font-mono opacity-60 group-hover:opacity-100 transition-opacity',
+                      'mt-5 text-xs font-mono opacity-60 group-hover:opacity-100 transition-opacity duration-150',
                       accent.text,
                     ].join(' ')}
                   >
@@ -142,6 +182,7 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── How scoring works ─────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-2">
@@ -170,8 +211,9 @@ export default function LandingPage() {
               </h3>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Per-scenario regex rubrics evaluate the AI&apos;s response. Dojo 2
-                checks IOCs, MITRE T-codes, executive summaries; Dojo 3 checks
-                EU AI Act tiering, ISO 42001 controls, and vendor-review gaps.
+                checks IOCs, MITRE T-codes, deobfuscation steps, hunt queries;
+                Dojo 3 checks EU AI Act tiering, ISO 42001 controls, and
+                vendor-review gaps.
               </p>
             </div>
             <div className="p-5 rounded-lg border border-slate-800 bg-slate-900/60">
@@ -189,6 +231,7 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── CTA ──────────────────────────────────────────────────────────────── */}
       <section className="bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-20 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">
@@ -200,12 +243,12 @@ export default function LandingPage() {
           </p>
           <Link
             href="/dojo"
-            className="inline-block px-8 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors"
+            className="inline-block px-8 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors duration-150"
           >
             Enter the dojo →
           </Link>
           <p className="mt-10 text-xs font-mono text-slate-600">
-            Built as a free study tool.
+            Free, forever. No accounts. No tracking.
           </p>
         </div>
       </section>
