@@ -686,6 +686,33 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Lessons learned section included', re: /##\s*lessons?\s+learned|lessons?\s+learned\s*\n|post.?incident\s+review|retrospective|prevent.*recurrence\s*[:;]|lessons?\s+learned\s*:/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
+  'malware-analysis': [
+    // At minimum: describe what the code does (don't just quote it)
+    { label: 'Behavioural analysis of malicious actions provided', re: /\b(behaviour|behavior|executes?|downloads?|injects?|drops?|spawns?|establishes?\s+c2|beacons?|exfiltrates?|persists?|modifies?\s+registry|creates?\s+(process|thread|file)|runs?|invokes?)\b/i },
+    // MITRE T-codes are required for any technique mapping claim
+    { label: 'MITRE ATT&CK technique(s) mapped (T-codes)', re: /T\d{4}(\.\d{3})?/i },
+    // Deobfuscation step or encoding layer annotated
+    { label: 'Deobfuscation or encoding layer explained', re: /\b(base64|deobfuscat|decode|decode\s+layer|XOR|hex\s+decod|string\s+concat|obfuscat|encoding\s+layer|layer\s+\d+|decoded?\s+value)\b/i },
+    // IOC extraction: accept regex for IPs, domains, hashes, file paths, registry keys
+    { label: 'IOCs extracted (hashes, IPs, domains, paths, etc.)', re: /\b(IOC|indicator|hash|MD5|SHA|file\s+path|registry|mutex|IP\s+address|domain|C2|command.?and.?control|user.?agent)\b|\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b|[a-fA-F0-9]{32,64}\b/i },
+    // Detection guidance: Sigma/KQL/YARA or at minimum a data source suggestion
+    { label: 'Detection opportunity or rule logic provided', re: /\b(Sigma|KQL|YARA|Suricata|Snort|detection\s+rule|EventID|detect|monitor|log\s+source|alert\s+on|suspicious\s+parent|command\s+line|process\s+creation)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'threat-hunt': [
+    // Hypothesis must be restated clearly
+    { label: 'Hunt hypothesis clearly stated', re: /\b(hypothesis|hunting\s+for|suspect|we\s+believe|the\s+assumption\s+is|adversary\s+(may|might|is|will)|threat\s+actor|attacker)\b/i },
+    // Data source identification is mandatory for a hunt plan
+    { label: 'Required data sources identified', re: /\b(data\s+source|log\s+source|EDR|endpoint\s+telemetry|DNS\s+log|auth\s+log|SIEM|Sysmon|Event\s+ID|NetFlow|proxy\s+log|firewall\s+log|cloud\s+trail|audit\s+log)\b/i },
+    // Require KQL or Sigma (hunt queries are the core deliverable)
+    { label: 'KQL or Sigma hunt query provided', re: /\|\s*(where|project|summarize|extend)\s+\w|DeviceEvents|SecurityEvent|SecurityAlert|AzureActivity|ProcessCreationEvents|Sysmon|detection\s*:[\s\S]{1,300}condition\s*:|title\s*:[\s\S]{1,300}logsource\s*:/i },
+    // Pivot fields are a distinguishing element of structured threat hunting
+    { label: 'Pivot fields or investigation chain described', re: /\b(pivot|expand|correlate|parent\s+process|sibling|child\s+process|lateral|related|user\s+context|network\s+connection|investigation\s+(chain|path|trail))\b/i },
+    // False positive handling separates a real hunt plan from a generic query
+    { label: 'False positive considerations provided', re: /\b(false.?positive|benign|legitimate|noise|filter|exclusion|tuning|suppress|allowlist|whitelist|threshold|baseline)\b/i },
+    { label: 'MITRE ATT&CK technique referenced', re: /T\d{4}(\.\d{3})?|ATT&CK/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
 };
 
 // ─── Per-element coaching ─────────────────────────────────────────────────────
@@ -739,6 +766,28 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
     'Post-incident review is how organisations improve — this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
   'Confidence and Risk assessment block present':
     'The session is configured to require a structured Confidence + Risk block at the end of every analysis. This anchors the finding\'s certainty and prioritises response. Prompt: "Conclude with: **Confidence:** [Low/Medium/High] — [reason] and **Risk Level:** [Low/Medium/High/Critical] — [justification]"',
+  // malware-analysis
+  'Behavioural analysis of malicious actions provided':
+    'Describing what the code does at runtime (not just quoting it) is the core deliverable. Prompt: "Describe the runtime behaviour step-by-step: what does it execute, create, modify, or communicate with?"',
+  'MITRE ATT&CK technique(s) mapped (T-codes)':
+    'T-codes connect static analysis to detection logic, threat intel, and coverage gaps. Prompt: "Map each observed behaviour to a MITRE ATT&CK technique by T-code and tactic category."',
+  'Deobfuscation or encoding layer explained':
+    'Walking through each obfuscation layer step-by-step is essential for teaching the analysis method. Prompt: "Decode each encoding layer and annotate what each step does before the final decoded payload."',
+  'IOCs extracted (hashes, IPs, domains, paths, etc.)':
+    'IOC extraction produces actionable intel for blocklisting, threat intel platform ingestion, and YARA signatures. Prompt: "List all extractable indicators: IPs, domains, hashes, mutexes, registry keys, file paths, user-agents."',
+  'Detection opportunity or rule logic provided':
+    'Analysis without detection guidance doesn\'t advance defensive posture. Prompt: "For each identified technique, suggest a log source and example Sigma or KQL rule to detect this behaviour."',
+  // threat-hunt
+  'Hunt hypothesis clearly stated':
+    'A structured hypothesis scopes the hunt and prevents scope creep. Prompt: "Restate the hunt hypothesis in one sentence: what adversary behaviour are we looking for, and what evidence do we expect to find?"',
+  'Required data sources identified':
+    'A hunt without data source mapping is a guessing game — you need to know what telemetry to query. Prompt: "List the specific log sources required for this hunt and explain what evidence each one provides."',
+  'KQL or Sigma hunt query provided':
+    'Queries are the core deliverable of a threat hunt plan — without them it\'s just theory. Prompt: "Write a KQL query for Sentinel/Defender and a Sigma rule for the primary detection hypothesis."',
+  'Pivot fields or investigation chain described':
+    'Pivot fields define how you expand from an initial hit to a full scope assessment. Prompt: "What fields should analysts pivot on after an initial match? What sibling processes, network connections, or user context should they investigate?"',
+  'False positive considerations provided':
+    'A hunt that triggers on every sysadmin action will be disabled. Prompt: "What legitimate processes or users might match these queries and how should analysts filter them out?"',
 };
 
 // ─── Scenario-specific next-analyst-steps ────────────────────────────────────
@@ -765,6 +814,16 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     '(2) schedules a lessons-learned meeting with all responders within 5 business days, ' +
     '(3) tracks all remediation items in a project tracker with owners and deadlines, ' +
     '(4) files regulatory notifications if the incident meets breach thresholds (GDPR 72h, HIPAA 60d).',
+  'malware-analysis':
+    'What a real malware analyst does after the static analysis: (1) submits the sample to a sandboxed dynamic analysis environment (Any.run, Cuckoo) to observe live behaviour, ' +
+    '(2) adds confirmed IOCs to the threat intel platform and enriches them with VirusTotal/MalwareBazaar context, ' +
+    '(3) submits YARA signatures to the SOC for endpoint and email gateway scanning, ' +
+    '(4) shares findings with the detection team to write or tune SIEM/EDR rules targeting the observed techniques.',
+  'threat-hunt':
+    'What a real threat hunter does after building the plan: (1) runs the queries against historical data (30+ days) to establish baseline and identify initial hits, ' +
+    '(2) investigates each hit manually — is it a true positive or a FP pattern to tune? ' +
+    '(3) documents findings regardless of outcome (no IOCs found = hypothesis tested, not wasted), ' +
+    '(4) converts confirmed true-positive patterns into persistent SIEM detection rules so the hunt outcome raises future automated alerts.',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {

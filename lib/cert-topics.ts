@@ -61,6 +61,27 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'AAISM · IR Documentation & Review',
     'NIST AI RMF · Manage 4.2',
   ],
+  'malware-analysis': [
+    'SecAI+ · AI-Assisted Malware Analysis',
+    'GIAC GASAE · Vulnerability Discovery Automation',
+    'CAISP · Static Analysis & IOC Extraction',
+    'MITRE ATT&CK · Defense Evasion (T1027)',
+    'MITRE ATT&CK · Execution (T1059)',
+  ],
+  'threat-hunt': [
+    'SecAI+ · AI-Powered Threat Hunting',
+    'GIAC GASAE · AI-Driven Attack Simulation',
+    'AAISM · Proactive Threat Detection',
+    'MITRE ATT&CK · Valid Accounts (T1078)',
+    'NIST AI RMF · Manage 2.4',
+  ],
+  'output-injection': [
+    'OWASP LLM02 — Insecure Output Handling',
+    'OWASP LLM06 — Sensitive Information Disclosure',
+    'SecAI+ · Output Sanitization',
+    'CAISP · AI Output Channel Security',
+    'NIST AI RMF · Measure 2.5',
+  ],
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────────
   'ai-risk-classification': [
