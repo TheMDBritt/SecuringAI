@@ -4358,4 +4358,390 @@ When ransomware hits, CISM-level decisions in order:
 - "Which recovery test is safest?" → Parallel. "Which is most thorough?" → Full interruption (but highest risk).
 - "RPO vs. RTO?" → RPO = data loss window (backup frequency); RTO = restoration time (how fast you recover).`,
   },
+
+  // ─── CCSP ─────────────────────────────────────────────────────────────────
+
+  {
+    id: 'ccsp-cloud-data-security',
+    category: 'Cloud Security',
+    title: 'Cloud Data Security (CCSP Domain 2)',
+    certTags: ['CCSP', 'SC-500', 'CISSP'],
+    vocab: ['Tokenization', 'Data Sovereignty', 'Cloud Access Security Broker (CASB)', 'Hold Your Own Key (HYOK)', 'eDiscovery in Cloud', 'Multi-tenancy'],
+    content: `Cloud data security encompasses the controls, processes, and technologies that protect data throughout its lifecycle in cloud environments. CCSP Domain 2 (20% of the exam) is the highest-weighted domain.
+
+### Data Security Lifecycle
+
+CSA defines six phases of cloud data lifecycle security:
+
+| Phase | Description | Key Controls |
+|-------|-------------|--------------|
+| Create | Data generation | Classification at creation, DLP tagging |
+| Store | Data at rest | Encryption at rest, access controls, CSPM |
+| Use | Active processing | Secure enclaves, data masking in non-prod |
+| Share | Moving between systems | TLS in transit, DLP, CASB |
+| Archive | Long-term retention | Immutable storage, key management retention |
+| Destroy | End-of-life deletion | Cryptographic erasure, media sanitisation |
+
+### Encryption and Key Management
+
+**Where keys live determines the trust level:**
+
+- **Provider-managed keys**: Provider manages everything. Simplest operationally; provider can technically decrypt.
+- **Customer-managed keys (CMK)**: Customer controls key rotation and policy, but key material resides in provider infrastructure.
+- **Bring Your Own Key (BYOK)**: Customer imports key material to the provider's KMS. Provider can use the key for encryption operations.
+- **Hold Your Own Key (HYOK)**: Keys stored in customer-controlled HSM outside the provider. Provider cannot access plaintext.
+
+**HSM tiers:** FIPS 140-2 Level 2 (KMS services) vs Level 3 (Azure Managed HSM, AWS CloudHSM).
+
+### CASB Deployment Modes
+
+CASBs enforce cloud security policies. Three deployment modes:
+
+- **API mode**: Retroactive scanning of data already in SaaS (Office 365, Box, Salesforce). No user-visible latency. Cannot block in real time.
+- **Reverse Proxy**: Inline, real-time control for managed devices without endpoint agent. Traffic routes through the CASB.
+- **Forward Proxy**: Requires agent on endpoint. Real-time inline control for all cloud traffic from managed devices.
+
+### Data Residency and Sovereignty
+
+**GDPR cross-border transfer mechanisms:**
+- Adequacy Decision — EU Commission approves destination country's protection level
+- Standard Contractual Clauses (SCCs) — contractual safeguards between controller and processor
+- Binding Corporate Rules (BCRs) — intra-group transfers for multinationals
+
+### Tokenization and Data Masking
+
+| Technique | Reversible? | Mathematical relation | Use case |
+|-----------|-------------|----------------------|----------|
+| Encryption | Yes (with key) | Deterministic or probabilistic | Data at rest/transit |
+| Tokenization | Yes (via vault) | None | PCI DSS, PII in non-prod |
+| Data Masking | No (static) | Partial (format-preserving) | Non-production testing |
+| Hashing | No | Deterministic one-way | Password storage, integrity |
+
+### Cloud Forensics
+
+Traditional forensics assumes physical hardware access. Cloud forensics uses:
+1. VM disk snapshots via cloud API
+2. Log collection — CloudTrail / Azure Activity Log / GCP Audit Logs
+3. Object storage exports with integrity verification (SHA-256 hashing)
+4. Memory analysis via provider-supported capture (where available)
+
+**Chain of custody in cloud**: Document every API access and export. Provider attestation letters establish that evidence was not tampered with.
+
+### Exam Tips (CCSP Domain 2)
+- Highest-weighted domain (20%) — expect multiple DLP and classification scenarios
+- CASB modes: API = retroactive scan; proxy = real-time inline enforcement
+- HYOK vs BYOK: HYOK = provider cannot access. BYOK = customer imports key material.
+- "Shared responsibility for data classification": always the customer regardless of service model`,
+  },
+
+  {
+    id: 'ccsp-cloud-platform-infrastructure',
+    category: 'Cloud Security',
+    title: 'Cloud Platform and Infrastructure Security (CCSP Domain 3)',
+    certTags: ['CCSP', 'SC-500', 'AZ-104'],
+    vocab: ['Cloud Security Posture Management (CSPM)', 'Cloud Workload Protection Platform (CWPP)', 'Infrastructure as Code (IaC) Security', 'Virtual Private Cloud (VPC)', 'Multi-tenancy', 'Cloud Native Application Protection Platform (CNAPP)'],
+    content: `Cloud Platform and Infrastructure Security (CCSP Domain 3, 17%) covers the security of virtualisation, networks, storage, and compute environments.
+
+### Virtualisation and Hypervisor Security
+
+The hypervisor is the most critical cloud security component.
+
+**Hypervisor types:**
+- **Type 1 (bare metal)**: Runs directly on hardware (KVM, Hyper-V, ESXi). Used in all major cloud providers.
+- **Type 2 (hosted)**: Runs on a host OS (VirtualBox). Not used in production cloud.
+
+**Key threats:**
+- **VM escape**: Hypervisor vulnerability exploitation to break VM isolation
+- **Side-channel attacks**: Spectre/Meltdown — shared CPU leaks data between VMs
+- **VM sprawl**: Unmanaged VMs accumulating vulnerabilities
+- **Rogue VM**: Unauthorised VM deployed via compromised management plane
+
+**Mitigations**: Regular hypervisor patching, dedicated tenancy options, secure enclave technology (Intel TDX, AMD SEV).
+
+### Cloud Network Architecture
+
+Recommended layered model:
+
+- DDoS protection at the edge
+- WAF at the application layer
+- Public subnets: only NAT gateways and load balancers
+- Private subnets: application and database tiers
+- Microsegmentation with per-workload security groups/NSGs
+
+**Microsegmentation**: Per-workload NSGs ensure that VMs in the same subnet cannot communicate unless explicitly allowed. Limits lateral movement after breach.
+
+### Container Security
+
+Attack surface layers:
+
+1. **Image**: Base OS CVEs, vulnerable dependencies, embedded secrets
+2. **Runtime**: Privileged containers can escape to host
+3. **Kubernetes**: API server exposure, RBAC misconfiguration, etcd access
+4. **Network**: Container-to-container uncontrolled traffic
+
+**Key controls:**
+- Image scanning (Trivy, Snyk) before every deployment
+- Non-root containers: run as unprivileged user
+- Pod Security Standards: Baseline → Restricted profiles
+- Kubernetes NetworkPolicy: restrict pod-to-pod communication
+
+### Serverless Security
+
+New risks introduced by serverless architectures:
+
+| Traditional Risk | Serverless Equivalent |
+|-----------------|----------------------|
+| OS vulnerability | Dependency CVEs in function code |
+| Persistent malware | Event injection (malicious SQS/queue message) |
+| Network lateral movement | Over-permissioned IAM roles between functions |
+
+### Infrastructure as Code Security
+
+IaC scanning should run at three pipeline points:
+1. IDE (real-time developer feedback)
+2. Pre-commit hook (block high-severity findings)
+3. CI/CD gate (fail build on policy violations)
+
+**Tools**: Checkov, tfsec, Terrascan, KICS
+
+**What they detect**: Open security groups (0.0.0.0/0), unencrypted storage, public buckets, over-permissive IAM, disabled logging.
+
+### CSPM vs CWPP vs CASB
+
+| Tool Category | Protects What | Primary Capability |
+|--------------|--------------|-------------------|
+| CSPM | Cloud resource configurations | Detect misconfigurations, compliance drift |
+| CWPP | Running workloads (VMs, containers, serverless) | Runtime threat detection, vulnerability assessment |
+| CASB | SaaS application access | DLP, visibility, access control for cloud apps |
+| CNAPP | Full cloud stack (integrated) | Combined CSPM + CWPP + CIEM + pipeline security |
+
+### Exam Tips (CCSP Domain 3)
+- CSPM = configuration scanning. CWPP = runtime workload protection. CASB = SaaS access.
+- VM escape severity: the entire physical host and all sibling VMs should be treated as compromised
+- Microsegmentation is the Zero Trust answer for lateral movement within cloud networks
+- Container security: non-root + read-only filesystem + Pod Security Standards is the baseline hardening trio`,
+  },
+
+  // ─── CAIS ─────────────────────────────────────────────────────────────────
+
+  {
+    id: 'cais-ai-attack-vectors',
+    category: 'AI Security',
+    title: 'AI Security Threats and Attack Vectors (CAIS)',
+    certTags: ['CAIS', 'SecAI', 'GIAC-GOAA', 'CAISP'],
+    vocab: ['Evasion Attack (Adversarial Example)', 'Backdoor Attack (ML)', 'Model Inversion Attack', 'Membership Inference Attack', 'Differential Privacy (DP)', 'AI Red Teaming'],
+    content: `AI systems introduce a distinct attack surface. Understanding the full taxonomy of AI-specific attacks is foundational for CAIS, GIAC GOAA, and SecAI+ certifications.
+
+### The AI Attack Taxonomy
+
+AI attacks target one of four stages in the model lifecycle:
+
+\`\`\`
+[Training Data] → [Training] → [Model] → [Deployment/Inference]
+       ↑               ↑            ↑               ↑
+  Data Poisoning   Backdoor     Model Theft    Evasion / Extraction
+                   Attacks      / Inversion    Membership Inference
+\`\`\`
+
+### Training-Time Attacks
+
+#### Data Poisoning
+An attacker corrupts training data to degrade model accuracy or create targeted misclassification:
+- **Availability attacks**: Inject noisy labels to degrade overall model accuracy
+- **Integrity attacks**: Cause misclassification of specific targeted inputs
+- **Backdoor attacks**: Embed a hidden trigger for targeted misclassification
+
+**Threat vector**: Publicly scraped web data, open-source datasets, fine-tuning datasets from untrusted sources.
+
+#### Backdoor (Trojan) Attacks
+The backdoor model passes standard testing and performs normally on clean inputs. When a specific trigger appears, the model outputs the attacker's desired result.
+
+**Supply chain backdoors**: Trojanised pre-trained models distributed via Hugging Face or GitHub. Developers inherit the backdoor unknowingly.
+
+**Defence**: Verify model hashes against publisher signatures; maintain an AI-BOM; use private, audited model registries.
+
+### Inference-Time Attacks
+
+#### Evasion Attacks (Adversarial Examples)
+Craft inputs that fool the model by exploiting learned decision boundaries.
+
+| Target | Method | Example |
+|--------|---------|---------|
+| Image classifier | Pixel noise (FGSM, PGD) | Stop sign → speed limit sign |
+| Spam filter | Character substitution | "fr33 m0n3y" bypasses keyword filter |
+| LLM safety filter | Encoding/obfuscation | Base64-encoded instructions |
+| Biometric system | GAN-generated face | Unlock as different person |
+
+**Key property**: Evasion attacks are often transferable — an attack crafted against one model often fools a different model with similar training.
+
+#### Model Extraction (Stealing)
+Systematically querying a black-box API to reconstruct a surrogate model. No knowledge of architecture or training data required.
+
+**Impact**: IP theft; enables crafting targeted evasion attacks against the local surrogate; bypass rate limits.
+
+**Defence**: Rate limiting, query anomaly detection, output perturbation, model watermarking.
+
+#### Model Inversion and Membership Inference
+
+- **Model Inversion**: Reconstruct approximate training samples (e.g., facial images) from output confidence gradients. Privacy breach for sensitive training data.
+- **Membership Inference**: Determine whether a specific record was in the training set. Exploits lower model loss on training vs. unseen data.
+
+**Defence**: Differential privacy during training; limit confidence score granularity in API responses.
+
+### LLM-Specific Attacks
+
+#### Prompt Injection (OWASP LLM01)
+The LLM cannot distinguish instructions from data:
+- **Direct**: User overrides system prompt
+- **Indirect**: Adversarial instructions in retrieved documents, emails, or web pages
+
+Indirect injection is the most dangerous in production — attackers plant instructions in external content that the AI retrieves automatically.
+
+#### Jailbreaking
+Bypassing safety fine-tuning:
+- Role-play framing ("You are DAN...")
+- Many-shot jailbreaking (flood context with compliance examples)
+- Encoding/obfuscation (Base64, Unicode lookalikes)
+- Competing objectives (exploit helpfulness vs. safety tension)
+
+### Defense Summary
+
+| Attack | Primary Defense | Secondary Defense |
+|--------|----------------|-------------------|
+| Data poisoning | Training data provenance | RONI defense |
+| Backdoor | Model provenance + AI-BOM | Neural Cleanse scanning |
+| Evasion | Adversarial training | Certified robustness |
+| Model extraction | Rate limiting | Output perturbation |
+| Membership inference | Differential privacy | Confidence limiting |
+| Prompt injection | Prompt Shields + output validation | System prompt hardening |
+
+### AI Red Teaming Framework
+
+Structured evaluation process aligned with NIST AI RMF:
+
+1. Define scope: capabilities, deployment context, threat actors
+2. Test categories: Safety (harmful content), Security (injection/extraction), Fairness (bias), Reliability (hallucination)
+3. Document findings: severity, reproducibility, attack chain
+4. Remediate: model update, guardrail addition, deployment restriction
+5. Verify: re-test specific vectors that were remediated
+
+### Exam Tips (CAIS, GIAC GOAA)
+- Backdoor vs poisoning: backdoor = hidden trigger for targeted misclassification; poisoning = degrade accuracy generally
+- Evasion vs extraction: evasion = fool the deployed model; extraction = steal the model
+- First defence against membership inference: differential privacy (not output filtering alone)
+- Indirect injection: attacker who cannot directly access the AI plants instructions in external content the AI retrieves`,
+  },
+
+  // ─── AZ-104 ───────────────────────────────────────────────────────────────
+
+  {
+    id: 'az104-identity-governance',
+    category: 'Azure Administration',
+    title: 'Azure Identity and Governance (AZ-104 Domain 1)',
+    certTags: ['AZ-104', 'SC-500'],
+    vocab: ['Azure Resource Manager (ARM)', 'Managed Identity (Azure)', 'Azure Policy', 'Azure Bastion', 'Azure Monitor', 'Network Security Group (NSG)'],
+    content: `Azure identity and governance (20–25% of AZ-104) covers the tools and concepts administrators use to control who can do what across an Azure estate. These concepts are also foundational for SC-500.
+
+### ARM Governance Hierarchy
+
+\`\`\`
+Tenant Root Group (Entra ID Tenant)
+  └── Management Groups (optional hierarchy)
+        └── Subscriptions
+              └── Resource Groups
+                    └── Resources (VMs, storage, databases)
+\`\`\`
+
+Azure Policy and RBAC applied at higher scopes cascade down. A Deny policy at the Management Group blocks all child subscriptions from creating non-compliant resources.
+
+### Azure RBAC
+
+Three elements:
+
+| Element | Description | Example |
+|---------|-------------|---------|
+| Security Principal | Who | alice@contoso.com, managed identity |
+| Role Definition | What actions are allowed | Reader, Contributor, Owner |
+| Scope | Where the assignment applies | /subscriptions/{id}/resourceGroups/prod-rg |
+
+**Built-in roles for AZ-104:**
+- **Owner**: Full access including RBAC assignment
+- **Contributor**: Create/manage resources; no RBAC or policy management
+- **Reader**: View all resources; no changes
+- **User Access Administrator**: Manage user access; cannot manage resources
+
+### Managed Identities
+
+Eliminate stored credentials by letting Azure services authenticate using Entra ID tokens:
+
+\`\`\`
+App on Azure VM → request token from IMDS (169.254.169.254)
+Entra ID issues short-lived OAuth token
+App presents token to Azure SQL / Storage / Key Vault
+Service validates token → grants access
+\`\`\`
+
+**Types:**
+- **System-assigned**: Tied to one resource; auto-deleted when resource is deleted
+- **User-assigned**: Independent resource; shareable across multiple services
+
+### Azure Policy
+
+**Effect types:**
+
+| Effect | Behaviour | Use Case |
+|--------|-----------|----------|
+| Audit | Log non-compliant resources; don't block | Visibility |
+| Deny | Block non-compliant deployments | Enforcement |
+| Append | Add required properties | Auto-add tags |
+| Modify | Modify existing properties | Fix existing resources |
+| DeployIfNotExists | Deploy dependent resource if missing | Ensure diagnostic settings |
+
+### Privileged Identity Management (PIM)
+
+Just-In-Time (JIT) privileged access:
+
+\`\`\`
+Eligible Assignment → User requests activation → Approval (if configured)
+→ MFA verification → Temporary Active Assignment (e.g., 4 hours)
+→ Automatic deactivation at expiry
+\`\`\`
+
+Requires Entra ID P2 license. Reduces standing privilege exposure window.
+
+### Entra ID Conditional Access
+
+**If X (conditions) then require Y (grant controls)**
+
+Common conditions: sign-in risk level, device compliance, named location, group membership
+
+Common grant controls: MFA, compliant device, approved client app
+
+### Hybrid Identity (Entra Connect)
+
+Synchronises on-premises AD to Entra ID:
+
+| Method | Authentication | On-prem dependency |
+|--------|---------------|-------------------|
+| Password Hash Sync | In cloud | None for auth |
+| Pass-Through Auth | Real-time to on-prem AD | PTA agent must be online |
+| Federation (ADFS) | Redirected to on-prem ADFS | Full ADFS infrastructure |
+
+Microsoft recommends PHS for most organisations: simple, no extra infrastructure, supports leaked credential detection.
+
+### Azure Resource Locks
+
+Lock types override RBAC — even Owners cannot bypass without removing the lock first:
+- **CanNotDelete**: Read and modify allowed; delete blocked
+- **ReadOnly**: Only read operations allowed
+
+Apply to: production resource groups, VNets, DNS zones, Recovery Services Vaults.
+
+### Exam Tips (AZ-104 Domain 1)
+- Azure RBAC has no explicit Deny in role definitions — use Azure Policy Deny to block
+- User-assigned managed identity survives resource deletion; system-assigned does not
+- PIM vs RBAC: PIM = JIT with approval, MFA, time-limit; RBAC = permanent assignment
+- Conditional Access requires Entra ID P1 minimum (not included in free Entra ID tier)
+- NSG rule evaluation: lower priority number = higher priority, evaluated first — Rule 100 before Rule 200`,
+  },
 ];

@@ -55,7 +55,7 @@ export default function LandingPage() {
           <p className="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
             LLM DOJO is a hands-on study tool for AI security. Three dojos
             cover LLM attack and defense, AI-assisted SOC work, and AI GRC.
-            A playbook with 539 quiz questions, 311 glossary terms, and 11
+            A playbook with 631 quiz questions, 339 glossary terms, and 14
             cert maps backs every scenario.
           </p>
 
