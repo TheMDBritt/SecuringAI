@@ -214,6 +214,61 @@ const CERTS: CertInfo[] = [
     ],
     topTopics: ['Security strategy', 'Risk appetite', 'KPIs/KRIs', 'Board reporting', 'BIA', 'Incident response plan', 'Recovery objectives', 'AI governance', 'Third-party risk', 'Security program budgeting'],
   },
+  {
+    id: 'CCSP',
+    name: 'Certified Cloud Security Professional',
+    provider: 'ISC2',
+    tagColor: 'bg-sky-500/10 text-sky-400 border-sky-500/30',
+    difficulty: 'Advanced',
+    questions: '125 (CAT)',
+    duration: '4 hours',
+    focus: 'Cloud-specific security across all major service and deployment models. 6 domains covering cloud architecture, data security, infrastructure, application security, operations, and legal/compliance. Requires 5 years experience (3 in cloud security).',
+    domains: [
+      { name: 'Cloud Concepts, Architecture and Design',        pct: '17%' },
+      { name: 'Cloud Data Security',                           pct: '20%' },
+      { name: 'Cloud Platform and Infrastructure Security',     pct: '17%' },
+      { name: 'Cloud Application Security',                    pct: '17%' },
+      { name: 'Cloud Security Operations',                     pct: '16%' },
+      { name: 'Legal, Risk and Compliance',                    pct: '13%' },
+    ],
+    topTopics: ['Shared responsibility model', 'Data lifecycle', 'CSA CCM', 'Cloud IAM/federation', 'Encryption key management', 'CASB', 'DevSecOps', 'Cloud incident response', 'CSA STAR', 'GDPR in cloud', 'Hypervisor security', 'Container security'],
+  },
+  {
+    id: 'AAISM',
+    name: 'Artificial Intelligence Security Manager',
+    provider: 'ISACA',
+    tagColor: 'bg-teal-500/10 text-teal-400 border-teal-500/30',
+    difficulty: 'Advanced',
+    questions: '150',
+    duration: '4 hours',
+    focus: 'Management-level AI security governance from ISACA. Covers AI risk strategy, AI-specific threat management, governance frameworks (NIST AI RMF, ISO 42001, EU AI Act), secure AI deployment, and organizational accountability for AI systems.',
+    domains: [
+      { name: 'AI Governance and Strategy' },
+      { name: 'AI Risk Assessment and Management' },
+      { name: 'AI Security Architecture and Controls' },
+      { name: 'AI Privacy, Ethics, and Fairness' },
+      { name: 'AI Operations, Monitoring, and Incident Response' },
+    ],
+    topTopics: ['NIST AI RMF', 'ISO/IEC 42001', 'EU AI Act', 'AI risk tiering', 'Algorithmic bias', 'Model monitoring', 'AI incident response', 'Third-party AI risk', 'AI accountability', 'Explainability (XAI)', 'Responsible AI policy'],
+  },
+  {
+    id: 'EC-CAIS',
+    name: 'Certified AI Security (CAIS)',
+    provider: 'EC-Council',
+    tagColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+    difficulty: 'Intermediate–Advanced',
+    questions: '50',
+    duration: '2 hours',
+    focus: 'Practitioner-level AI security cert covering offensive and defensive techniques: adversarial ML attacks, AI red teaming, securing ML pipelines, AI supply chain risks, and regulatory compliance for AI systems.',
+    domains: [
+      { name: 'AI Security Fundamentals' },
+      { name: 'Adversarial Machine Learning' },
+      { name: 'Attacking and Defending AI Systems' },
+      { name: 'Securing AI/ML Pipelines and Supply Chains' },
+      { name: 'AI Compliance, Ethics, and Governance' },
+    ],
+    topTopics: ['Adversarial examples', 'Model evasion', 'Data poisoning', 'Model extraction', 'AI red teaming', 'ML pipeline security', 'Secure MLOps', 'OWASP LLM Top 10', 'Model supply chain', 'AI regulatory compliance'],
+  },
 ];
 
 interface CertMapProps {
@@ -226,7 +281,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">11 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">14 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
         </div>
       </div>
 

@@ -527,6 +527,18 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'Attacker-controlled content inside the retrieved document used boundary injection markers ("IGNORE THE ABOVE", "END OF DOCUMENT") ' +
       'to attempt an instruction override via the RAG pipeline. ' +
       'This is an indirect prompt injection: the malicious payload arrives through retrieval, not the user turn.',
+    'model-dos':
+      'The attacker crafted a prompt designed to exhaust the model\'s token budget or trigger recursive/unbounded generation. ' +
+      'LLM04 (Model Denial of Service) exploits the absence of output length controls, recursion guards, and resource quotas — ' +
+      'a vulnerable deployment processes the full payload before the resource exhaustion becomes apparent.',
+    'indirect-injection':
+      'The attacker embedded adversarial instructions inside external content (email, document) that the AI processed on behalf of the user. ' +
+      'Indirect prompt injection bypasses direct input filtering entirely — the malicious payload arrives through the retrieval or document-processing layer, ' +
+      'and a model without context isolation treats it with the same authority as its system prompt.',
+    'agent-hijacking':
+      'The attacker manipulated the AI agent\'s tool-call decisions to invoke actions the user was never authorised to request. ' +
+      'Excessive Agency (LLM06/LLM08) occurs when agents have overly broad permissions with no human-in-the-loop checkpoints — ' +
+      'a crafted message triggers irreversible actions (record deletion, unapproved communications) without requiring explicit authorisation.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -574,6 +586,20 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Treat all retrieved documents as untrusted input. ' +
       'Validate that documents do not contain instruction-override patterns, and use context isolation ' +
       'to prevent retrieved content from being interpreted as model directives.',
+    'model-dos':
+      'Enforce strict per-request token budgets and output length caps at the API layer — not in the prompt. ' +
+      'Implement server-side recursion guards and complexity heuristics to reject prompts that would generate unbounded output. ' +
+      'Apply rate limiting per user/session and monitor for anomalous token consumption patterns that indicate DoS attempts.',
+    'indirect-injection':
+      'Never inject retrieved external content directly into model context without sanitisation. ' +
+      'Apply a separate classifier model to screen retrieved documents for instruction-override patterns before they reach the primary LLM. ' +
+      'Use context isolation — clearly delineate "trusted instructions" from "untrusted retrieved content" in the prompt structure. ' +
+      'Restrict agent capabilities when processing externally-sourced documents.',
+    'agent-hijacking':
+      'Apply least-privilege tool design: agents should only have access to tools required for the specific user task, not a full tool catalogue. ' +
+      'Require human-in-the-loop approval for irreversible or high-impact tool calls (send email, delete record, make payment). ' +
+      'Validate tool-call authorisation at the orchestration layer, not through prompting alone. ' +
+      'Log all tool invocations with full argument capture for post-incident audit.',
   };
 
   if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {

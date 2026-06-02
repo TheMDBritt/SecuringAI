@@ -4358,4 +4358,375 @@ When ransomware hits, CISM-level decisions in order:
 - "Which recovery test is safest?" → Parallel. "Which is most thorough?" → Full interruption (but highest risk).
 - "RPO vs. RTO?" → RPO = data loss window (backup frequency); RTO = restoration time (how fast you recover).`,
   },
+
+  // ─── CCSP Articles ────────────────────────────────────────────────────────
+
+  {
+    id: 'ccsp-shared-responsibility',
+    category: 'CCSP',
+    title: 'Cloud Shared Responsibility: Who Secures What',
+    certTags: ['CCSP', 'CISSP'],
+    content: `## The Core Concept
+
+The shared responsibility model is the foundational principle of cloud security governance. Security responsibilities are split between the Cloud Service Provider (CSP) and the customer — and where the boundary falls depends entirely on the service model.
+
+## Responsibility by Service Model
+
+**IaaS (Infrastructure as a Service)**
+- CSP owns: Physical facilities, network fabric, hypervisor, hardware
+- Customer owns: Operating system, middleware, runtime, applications, data, IAM, network configuration (VPC, security groups)
+
+**PaaS (Platform as a Service)**
+- CSP adds: OS, middleware, runtime maintenance
+- Customer owns: Applications, data, IAM, some network configuration
+
+**SaaS (Software as a Service)**
+- CSP owns: Essentially the entire stack
+- Customer owns: Data, access management (user provisioning/deprovisioning), and compliance obligations
+
+## What Never Transfers to the CSP
+
+Regardless of service model, the customer always retains:
+- **Data ownership and classification** — the CSP never decides what data is sensitive
+- **Identity and access management** — who has what access is always the customer's decision
+- **Compliance accountability** — GDPR, HIPAA, PCI DSS obligations follow the data owner, not the processor
+- **Configuration decisions** — leaving an S3 bucket public is the customer's mistake, not the CSP's
+
+## The Confused Deputy Failure Mode
+
+A common mistake is assuming the CSP's security certifications (SOC 2, ISO 27001) cover the customer's workloads. They don't — they cover the CSP's infrastructure. A customer deploying misconfigured workloads on a SOC 2–certified CSP still has insecure workloads.
+
+## Exam Focus (CCSP Domain 1)
+
+- Know the responsibility boundary for each service model cold
+- Understand that a hypervisor breakout is always the CSP's responsibility — even in SaaS
+- Know that customers always own their data classification and IAM decisions`,
+    vocab: ['Shared Responsibility Model', 'IaaS', 'PaaS', 'SaaS', 'Virtual Private Cloud'],
+  },
+  {
+    id: 'ccsp-key-management',
+    category: 'CCSP',
+    title: 'Cloud Encryption Key Management: PMK, CMEK, BYOK, HYOK',
+    certTags: ['CCSP'],
+    content: `## The Four Key Management Models
+
+Cloud encryption is only as strong as the key management model behind it. CCSP Domain 2 tests all four, their tradeoffs, and the use cases for each.
+
+## Provider-Managed Keys (PMK)
+
+The CSP generates, stores, and rotates encryption keys with no customer control. Simplest operational model. Risk: the CSP can theoretically decrypt customer data — this is unacceptable for many regulated workloads.
+
+**Use case:** Non-sensitive data where operational simplicity outweighs control requirements.
+
+## Customer-Managed Keys (CMEK)
+
+The customer creates and manages keys in the CSP's Key Management Service (e.g. AWS KMS, Azure Key Vault, GCP Cloud KMS). The CSP stores encrypted data but cannot decrypt without the customer's key. Keys live in the cloud.
+
+**Use case:** Most regulated cloud workloads. Balances control with cloud-native operability.
+
+## Bring Your Own Key (BYOK)
+
+The customer generates keys outside the CSP (often in an on-premises HSM), then imports them into the CSP's KMS. The customer has provable control over key generation. Keys still ultimately reside in the cloud KMS.
+
+**Use case:** Organisations with strict key generation requirements or existing HSM infrastructure.
+
+## Hold Your Own Key (HYOK)
+
+Keys never leave the customer's on-premises HSM. Cloud services call the on-premises key service for every cryptographic operation. Maximum control — the CSP literally cannot access plaintext data without the customer's infrastructure being online.
+
+**Trade-offs:** Latency for every operation, single point of failure risk, operational complexity.
+
+**Use case:** Highest-sensitivity regulated data (national security, financial secrets, patient records under strict jurisdiction).
+
+## Cryptographic Erasure
+
+When terminating cloud services, the cloud customer cannot physically destroy hardware. **Cryptographic erasure** solves this: delete the encryption keys, and all encrypted data becomes computationally unrecoverable. This requires that data was encrypted under managed keys — unencrypted data cannot be cryptographically erased.
+
+## CCSP Exam Tip
+
+Know the control vs. operability spectrum: PMK (least control) → CMEK → BYOK → HYOK (most control). Match each model to the appropriate use case and data sensitivity level.`,
+    vocab: ['Customer-Managed Encryption Keys (CMEK)', 'Hold Your Own Key (HYOK)', 'Cryptographic Erasure', 'HSM'],
+  },
+  {
+    id: 'ccsp-cloud-compliance',
+    category: 'CCSP',
+    title: 'Cloud Compliance: GDPR Transfers, CSA STAR, and Audit Rights',
+    certTags: ['CCSP'],
+    content: `## GDPR and Cross-Border Cloud Data Transfers
+
+GDPR Chapter V restricts transfers of EU personal data to third countries unless one of these mechanisms applies:
+
+**Adequacy decision** — the European Commission has determined the destination country provides equivalent protection (e.g. UK, Japan, Canada). Transfers are unrestricted.
+
+**Standard Contractual Clauses (SCCs)** — European Commission-approved contract clauses binding the exporter and importer. The most widely used mechanism after Schrems II (2020) invalidated Privacy Shield. Requires a Transfer Impact Assessment (TIA) for high-risk destinations.
+
+**Binding Corporate Rules (BCRs)** — internal codes of conduct approved by supervisory authorities, used by multinationals for intra-group transfers.
+
+**Derogations** — narrow exceptions (explicit consent, contractual necessity, vital interests).
+
+## CSA STAR Registry
+
+The Cloud Security Alliance STAR (Security Trust Assurance and Risk) registry provides standardised cloud provider security assurance:
+
+- **Level 1 (Self-Assessment):** CSP completes the CAIQ (Consensus Assessments Initiative Questionnaire) against the CCM (Cloud Controls Matrix)
+- **Level 2 (Third-Party Audit):** Independent auditor certifies against ISO 27001 + CCM (STAR Certification) or SOC 2 + CCM (STAR Attestation)
+- **Level 3 (Continuous Monitoring):** Automated, ongoing evidence of security controls
+
+CCSP exam: STAR Level 2 is what enterprise cloud customers typically require from CSPs for regulated workloads.
+
+## Cloud Audit Rights
+
+Multi-tenancy prevents customers from physically auditing CSP data centers. The contractual right to audit is typically replaced by:
+
+- Access to CSP's **SOC 2 Type II** reports (controls effectiveness over 12 months)
+- **ISO 27001 certificates**
+- **CSA STAR Level 2** certification
+- **Right to receive** these reports specified in the cloud services agreement
+
+When negotiating cloud contracts, security teams should ensure the SLA includes: the right to receive audit reports, notification of security incidents affecting the customer, and cooperation with regulatory investigations.
+
+## eDiscovery Challenges in Cloud
+
+Multi-tenancy creates significant challenges: data co-location with other tenants prevents targeted forensic collection without CSP cooperation; data spanning multiple jurisdictions creates conflicting legal obligations; and cloud data mutability (auto-scaling, ephemeral instances) complicates chain of custody.
+
+Cloud customers should negotiate **data preservation and eDiscovery cooperation clauses** before signing cloud service agreements.`,
+    vocab: ['Standard Contractual Clauses (SCCs)', 'CSA STAR (Security Trust Assurance and Risk)', 'Cloud Controls Matrix (CCM)', 'GDPR'],
+  },
+
+  // ─── AAISM Articles ───────────────────────────────────────────────────────
+
+  {
+    id: 'aaism-governance-framework',
+    category: 'AAISM',
+    title: 'Building an AI Governance Framework: NIST AI RMF, ISO 42001, and COBIT',
+    certTags: ['AAISM', 'SecAI'],
+    content: `## Why AI Needs Its Own Governance Layer
+
+General IT governance frameworks (ISO 27001, COBIT, NIST CSF) were not designed for AI-specific risks: model drift, algorithmic bias, adversarial manipulation, and the opacity of probabilistic decision-making. AAISM builds AI governance on top of existing enterprise frameworks.
+
+## NIST AI RMF (AI Risk Management Framework)
+
+Published January 2023, the NIST AI RMF provides a voluntary, outcomes-based framework for managing AI risks throughout the development and deployment lifecycle. It is organised around four core functions:
+
+- **GOVERN (1.0–6.0):** Establish policies, accountability, roles, risk tolerance, and organisational culture for responsible AI. The foundational function — governance enables everything else.
+- **MAP (1.0–5.0):** Identify the context, stakeholders, and risks for specific AI systems. Risk categorisation, stakeholder analysis, and impact assessment live here.
+- **MEASURE (1.0–4.0):** Analyse, monitor, and evaluate AI risks using quantitative and qualitative methods. Bias metrics, robustness testing, and performance monitoring.
+- **MANAGE (1.0–4.0):** Prioritise and implement risk responses, monitor ongoing risks, and adapt as conditions change.
+
+AAISM exam: Know the four functions and their sub-categories. The GOVERN function is required for all other functions to operate effectively.
+
+## ISO/IEC 42001:2023 — AI Management System
+
+ISO 42001 specifies requirements for an Artificial Intelligence Management System (AIMS) — the AI equivalent of ISO 27001's ISMS. It follows the Annex SL structure:
+
+- Clause 4: Context of the organisation (AI system register, stakeholder analysis)
+- Clause 5: Leadership and AI governance accountability
+- Clause 6: AI risk-based planning
+- Clause 8: AI operational controls (Annex A)
+- Clause 9: AI performance evaluation and audit
+- Clause 10: Continual improvement
+
+**Annex A** provides 38 AI-specific controls covering AI risk assessment, data governance, AI system lifecycle, transparency, and human oversight.
+
+## COBIT and AI Governance
+
+ISACA's COBIT 2019 provides the enterprise governance and management framework that AAISM extends to AI. Key AI governance objectives within COBIT: APO12 (Managed Risk), DSS05 (Managed Security Services), and MEA03 (Managed Compliance) all apply to AI systems.
+
+## The AI System Register as Foundation
+
+Before any framework can be implemented, organisations need visibility into what AI systems they have. The AI System Register (inventory) is the prerequisite for risk management, audit, and incident response. Every deployed AI system should have: purpose, owner, risk tier, data processed, deployment status, and last assessment date.
+
+## Exam Focus (AAISM)
+
+- Map NIST AI RMF functions to AI governance activities
+- Know ISO 42001 as the management system standard for AI
+- Understand that the AI System Register is the baseline governance control
+- Know how COBIT extends to AI governance within ISACA's framework`,
+    vocab: ['AI System Register', 'MITRE ATLAS', 'AI Risk Appetite Statement', 'Model Card'],
+  },
+  {
+    id: 'aaism-adversarial-threats',
+    category: 'AAISM',
+    title: 'AI Threat Landscape: Adversarial ML, Bias, and Supply Chain Risk',
+    certTags: ['AAISM', 'SecAI', 'GIAC-GOAA'],
+    content: `## The AI Threat Surface
+
+Traditional security threats (SQL injection, buffer overflow, credential theft) apply to AI systems but do not capture the full threat surface. AAISM extends threat management to AI-specific attacks.
+
+## Four Core Adversarial ML Attack Categories
+
+**1. Evasion Attacks (Inference-Time)**
+Adversarial examples crafted to fool the deployed model at inference. The model and training data are unchanged. The attacker modifies inputs to cause misclassification. Affects image classifiers, malware detectors, spam filters. Transferred adversarial examples often fool other models (transferability property).
+
+**2. Poisoning Attacks (Training-Time)**
+Malicious training examples inserted to corrupt model behaviour. Two subtypes:
+- **Indiscriminate poisoning:** Degrades overall model accuracy
+- **Targeted/backdoor poisoning:** Model behaves normally on clean inputs but produces attacker-specified outputs for trigger inputs (ML Trojan)
+
+**3. Model Extraction (Inference-Time)**
+Systematic API queries to reconstruct a functional model copy. Enables: adversarial example generation, IP theft, and privacy attacks on the replica.
+
+**4. Inference Attacks (Privacy)**
+- **Membership inference:** Determine if a record was in the training set
+- **Model inversion:** Reconstruct training data from model outputs
+- **Attribute inference:** Infer sensitive attributes of individuals in training data
+
+## MITRE ATLAS: The AI Threat Catalogue
+
+MITRE ATLAS (atlas.mitre.org) extends ATT&CK for AI systems. Key tactics include:
+- **ML Model Access:** Obtaining access to target models for attacks
+- **ML Attack Staging:** Crafting attack artifacts (adversarial examples, poisoned datasets)
+- **Impact:** Degrading model performance, manipulating predictions, exfiltrating training data
+
+AAISM uses ATLAS for threat modelling AI systems — map ATLAS techniques to controls.
+
+## Algorithmic Bias as a Security Risk
+
+AAISM frames bias not just as an ethics issue but as a security/operational risk:
+- **Historical bias** from training data reflecting past discrimination
+- **Measurement bias** where features proxy for protected characteristics
+- **Aggregation bias** where a single model poorly represents heterogeneous groups
+
+Bias risks: regulatory action (EU AI Act, civil rights law), reputational damage, operational failure (biased fraud detection misses or over-flags legitimate customers).
+
+## AI Supply Chain Risk
+
+Pre-trained models downloaded from public repositories (Hugging Face, GitHub) may contain backdoors introduced during training. Risk assessment for third-party AI components should cover:
+- Training data provenance
+- Model integrity verification (cryptographic hashes)
+- Publisher reputation and security disclosures (model cards)
+- Fine-tuning on uncontrolled data
+
+**Control:** Verify model hashes, use private model registries, conduct adversarial testing before production deployment.`,
+    vocab: ['Backdoor Attack (ML Trojan)', 'Membership Inference Attack', 'Differential Privacy (DP)', 'Algorithmic Bias', 'MITRE ATLAS'],
+  },
+
+  // ─── EC-Council CAIS Articles ─────────────────────────────────────────────
+
+  {
+    id: 'cais-adversarial-ml-attacks',
+    category: 'EC-Council CAIS',
+    title: 'Adversarial ML: Evasion, Poisoning, Extraction, and Inference',
+    certTags: ['EC-CAIS', 'SecAI', 'GIAC-GOAA'],
+    content: `## Why Adversarial ML Matters
+
+Classical cybersecurity was designed for deterministic systems — if input A produces output B, a defender can write rules. Machine learning breaks this: models generalise probabilistically, creating attack surfaces that traditional security tools cannot see.
+
+## Evasion Attacks: Fooling Models at Runtime
+
+**How it works:** The attacker computes small perturbations to an input that maximally shift the model's confidence toward a target class while minimising perceptibility. The Fast Gradient Sign Method (FGSM) computes perturbations in the direction of the loss gradient — a single forward-backward pass produces an adversarial example.
+
+**White-box vs. black-box:**
+- White-box: Attacker has full access to model weights and gradients. Strongest attacks (PGD, C&W).
+- Black-box: Attacker queries the model and estimates gradients from output differences. Slower but realistic for deployed APIs. Adversarial examples often transfer between models (transferability property).
+
+**Physical-world attacks:** Eykholt et al. (2018) demonstrated that printed adversarial stickers on stop signs caused autonomous vehicle detectors to misclassify them as speed limit signs under real-world camera, lighting, and angle conditions.
+
+**Defences:**
+- Adversarial training (Madry et al., 2018): Include adversarial examples during training. Strongest empirical defence.
+- Certified robustness: Mathematical guarantee that no perturbation within a radius can change the prediction.
+- Feature squeezing: Reduce bit depth or apply smoothing filters to remove high-frequency perturbations.
+
+## Poisoning Attacks: Corrupting the Training Pipeline
+
+**Data poisoning:** Inject malicious examples into the training set to degrade accuracy or introduce a targeted vulnerability. Requires access to the data pipeline — supply chain attack, dataset contribution, or web scraping manipulation.
+
+**Backdoor (trojan) attacks:** A more sophisticated poisoning attack where malicious training examples include a trigger pattern. The poisoned model:
+- Behaves normally on clean inputs (passes evaluation)
+- Produces attacker-specified outputs whenever the trigger is present
+
+Detection: Neural Cleanse reverse-engineers triggers; STRIP detects suspicious confidence changes when overlaying test inputs.
+
+## Model Extraction: Stealing Models via API
+
+Systematic queries to reconstruct a model's decision boundary. The attacker trains a surrogate model on observed input-output pairs. The surrogate can then be used to:
+- Generate adversarial examples that transfer to the original
+- Compete against the IP owner
+- Launch membership inference attacks
+
+**Defences:** Rate limiting, query anomaly detection, output perturbation (add noise without changing predicted class), watermarking predictions.
+
+## Inference Attacks: Extracting Private Information
+
+**Membership inference:** Determines whether a specific record was in the training set. Exploits the observation that models are more confident on training examples (overfitting). Enables GDPR violations — knowing someone's medical record trained a health AI.
+
+**Model inversion:** Uses confidence scores to reconstruct approximate training examples. Demonstrated by Fredrikson et al. (2015) recovering recognisable facial images from face recognition APIs.
+
+**Defence for all inference attacks:** Differential privacy — adds calibrated noise to protect individual training records with provable guarantees.`,
+    vocab: ['Adversarial Example', 'Backdoor Attack (ML Trojan)', 'Model Extraction Attack', 'Membership Inference Attack'],
+  },
+  {
+    id: 'cais-secure-mlops',
+    category: 'EC-Council CAIS',
+    title: 'Securing the ML Pipeline: From Data Ingestion to Production',
+    certTags: ['EC-CAIS', 'CAISP'],
+    content: `## The ML Pipeline Attack Surface
+
+Every stage of the ML lifecycle — data collection, training, evaluation, registry, deployment, and production — presents distinct attack vectors. Secure MLOps applies DevSecOps discipline to each stage.
+
+## Stage 1: Data Ingestion
+
+**Risks:** Supply chain poisoning via web-scraped datasets; compromised data vendors; insider manipulation of ground truth labels.
+
+**Controls:**
+- Dataset provenance and integrity verification (cryptographic hashing)
+- Access controls on labelling pipelines
+- Statistical anomaly detection to identify poisoned batches
+- Immutable data stores with audit logs
+
+## Stage 2: Training Environment
+
+**Risks:** Malicious Python packages in pip/conda (supply chain); compromised training infrastructure; GPU/TPU job hijacking for cryptomining; insecure secrets in training code.
+
+**Controls:**
+- Private package registries with hash pinning
+- Isolated training environments (container sandboxing, VPCs)
+- Secrets management — never hardcode API keys in training scripts
+- Dependency scanning (Safety, Snyk, pip-audit) in CI
+
+## Stage 3: Model Evaluation
+
+**Risks:** Evaluation data contamination (test set leakage from training data); evaluation gaming (optimising for metrics while hiding safety failures); adversarial examples not in test set.
+
+**Controls:**
+- Strict train/test separation with cryptographic sealing of test sets
+- Disaggregated evaluation across demographic groups and edge cases
+- Adversarial robustness evaluation (not just clean accuracy)
+- Red team evaluation before production promotion
+
+## Stage 4: Model Registry
+
+**Risks:** Unauthorised model substitution; missing model provenance; no versioning for rollback.
+
+**Controls:**
+- Model signing with digital signatures (verify model weights haven't been tampered)
+- Access controls: least-privilege read/write, mandatory review for production promotion
+- Immutable versioning for rollback capability
+- Model cards documenting training, evaluation, and known limitations
+
+## Stage 5: Deployment Pipeline (CI/CD)
+
+**Risks:** Compromised CI/CD runner executing malicious training code; insufficient approval gates; secrets exposed in pipeline logs.
+
+**Controls:**
+- Multi-party approval for production deployment (separate from model author)
+- Security scanning gates: dependency check, container image scan, policy compliance
+- Ephemeral build environments — no persistent state between jobs
+- Audit logging of all deployment events
+
+## Stage 6: Production Monitoring
+
+**Risks:** Silent model degradation (concept drift); adversarial queries in production; data exfiltration via model API.
+
+**Controls:**
+- Performance monitoring with alerting on drift and accuracy degradation
+- Query rate limiting and anomaly detection (model extraction attempts show systematic query patterns)
+- Input validation and sanitisation (especially for LLMs with untrusted input)
+- Canary deployments for gradual rollout with rollback capability
+
+## The Model Registry as the Security Perimeter
+
+The model registry is the last gate before production. Every model that exits the registry should: have a verified digital signature, a model card, documented performance benchmarks, and a promotion approval from a reviewer who did not train it.`,
+    vocab: ['Secure MLOps', 'Backdoor Attack (ML Trojan)', 'Adversarial Example', 'Model Card'],
+  },
 ];

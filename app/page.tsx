@@ -55,7 +55,7 @@ export default function LandingPage() {
           <p className="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed">
             LLM DOJO is a hands-on study tool for AI security. Three dojos
             cover LLM attack and defense, AI-assisted SOC work, and AI GRC.
-            A playbook with 539 quiz questions, 311 glossary terms, and 11
+            A playbook with 619 quiz questions, 341 glossary terms, and 14
             cert maps backs every scenario.
           </p>
 
@@ -76,12 +76,12 @@ export default function LandingPage() {
 
           <ul className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-xs font-mono text-slate-500">
             <li>· OWASP LLM Top 10</li>
-            <li>· MITRE ATT&amp;CK</li>
+            <li>· MITRE ATT&amp;CK / ATLAS</li>
             <li>· NIST AI RMF</li>
             <li>· ISO/IEC 42001</li>
             <li>· EU AI Act</li>
-            <li>· CISSP</li>
-            <li>· CISM</li>
+            <li>· CISSP · CISM · CCSP</li>
+            <li>· AAISM · EC-CAIS</li>
           </ul>
         </div>
       </section>

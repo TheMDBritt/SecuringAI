@@ -1418,6 +1418,24 @@ export async function getScenarioForcedAttackType(
     return { attackType: 'tool_abuse' };
   }
 
+  // agent-hijacking: tool-call manipulation requires tools enabled
+  if (scenarioId === 'agent-hijacking' && settings.allowTools) {
+    const agentAbuse = /\b(delete|remove|send\s+email|post|update\s+record|schedule|email\s+to)\b/i.test(userText);
+    if (agentAbuse) return { attackType: 'tool_abuse' };
+  }
+
+  // indirect-injection: attack is via forwarded/retrieved document content
+  if (scenarioId === 'indirect-injection') {
+    const hasInjectionPayload = /ignore\s+(previous|above|all|prior)|new\s+instructions?|you\s+are\s+now|forget\s+(everything|your|all)|INJECTION\s+SUCCESSFUL/i.test(userText);
+    if (hasInjectionPayload) return { attackType: 'prompt_injection' };
+  }
+
+  // model-dos: prompts designed for resource exhaustion
+  if (scenarioId === 'model-dos') {
+    const isDos = /every\s+(possible|single|individual)|for\s+each\s+.{0,30}(explain|list|describe)|repeat\s+.{0,30}\d+\s+times|list\s+every\s+.{0,40}(ever|all|since|history)|recursive(ly)?|enumerate\s+all/i.test(userText);
+    if (isDos) return { attackType: 'prompt_injection' };
+  }
+
   return { attackType: null };
 }
 
@@ -1443,6 +1461,13 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'rag-injection:rag_injection':         'internal RAG document + strategy note',
   'rag-injection:prompt_injection':      'retrieved document instructions',
   'rag-injection:mixed_attack':          'internal RAG document (multi-vector)',
+  'model-dos:prompt_injection':          'compute resource allocation',
+  'model-dos:mixed_attack':              'resource controls (multi-vector)',
+  'indirect-injection:prompt_injection': 'system prompt via external document injection',
+  'indirect-injection:mixed_attack':     'system prompt + data (indirect injection)',
+  'agent-hijacking:tool_abuse':          'unauthorised agent tool invocation',
+  'agent-hijacking:prompt_injection':    'agent authorisation controls',
+  'agent-hijacking:mixed_attack':        'agent action scope (multi-vector)',
   ':prompt_injection':                   'hidden system prompt fragment',
   ':data_exfiltration':                  'internal scouting intelligence fragment',
   ':policy_bypass':                      'content policy restrictions',

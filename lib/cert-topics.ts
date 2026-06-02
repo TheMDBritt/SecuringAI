@@ -37,6 +37,25 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'CAISP · Retrieval Poisoning Defense',
     'CSA AICM · Data Provenance',
   ],
+  'model-dos': [
+    'OWASP LLM04 — Model Denial of Service',
+    'SecAI+ · AI Resource Abuse Controls',
+    'AAISM · AI System Resilience',
+    'NIST AI RMF · Manage 3.1',
+  ],
+  'indirect-injection': [
+    'OWASP LLM01 — Prompt Injection (Indirect)',
+    'SecAI+ · Indirect / Second-Order Injection',
+    'CAISP · Agentic AI Security',
+    'EC-CAIS · LLM Attack Vectors',
+  ],
+  'agent-hijacking': [
+    'OWASP LLM06 — Excessive Agency',
+    'OWASP LLM08 — Vector & Embedding Weaknesses',
+    'SecAI+ · Agentic AI Guardrails',
+    'CAISP · Human-in-the-Loop Controls',
+    'EC-CAIS · AI Agent Security',
+  ],
 
   // ── Dojo 2 — Using AI for defense ───────────────────────────────────────────
   'log-triage': [
