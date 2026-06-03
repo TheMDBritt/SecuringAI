@@ -2,40 +2,44 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import type { QuizQuestion, QuizDifficulty } from '@/types';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { CERT_QUIZ_CONFIGS, filterByDomain } from '@/lib/quiz-domains';
 import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type QuizMode   = 'setup' | 'question' | 'result' | 'summary';
+type QuizMode = 'setup-cert' | 'setup-domain' | 'setup-options' | 'question' | 'result' | 'summary';
 
 interface QuizSettings {
-  category:   string;
-  difficulty: QuizDifficulty | 'all';
-  certFilter: string;
-  count:      10 | 25 | 50 | 60 | 100;
-  /** Mock-exam mode: timer + no per-question feedback. */
-  examMode?:  boolean;
-  /** Total exam time in seconds (only used when examMode). */
-  examSec?:   number;
+  certId:          string;
+  selectedDomains: string[];   // empty = all
+  difficulty:      QuizDifficulty | 'all';
+  count:           10 | 25 | 50 | 60 | 100;
+  examMode?:       boolean;
+  examSec?:        number;
 }
 
 interface QuizResult {
   question:  QuizQuestion;
   chosen:    number | null;
   correct:   boolean;
-  /** True when the question was skipped (no answer selected). */
   skipped?:  boolean;
   timeTaken: number;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const ALL_CATEGORIES = ['All', ...Array.from(new Set(QUIZ_QUESTIONS.map((q) => q.category))).sort()];
-const CERT_OPTIONS   = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'SC-500', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
-const COUNT_OPTIONS  = [10, 25, 50, 100] as const;
-
 const DIFFICULTY_STYLE: Record<QuizDifficulty, string> = {
   beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
   intermediate: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
   advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
+};
+
+const COLOR_MAP: Record<string, { border: string; text: string; bg: string; ring: string }> = {
+  cyan:    { border: 'border-cyan-500/40',   text: 'text-cyan-400',   bg: 'bg-cyan-500/10',   ring: 'border-cyan-500/60 bg-cyan-500/15' },
+  red:     { border: 'border-red-500/40',    text: 'text-red-400',    bg: 'bg-red-500/10',    ring: 'border-red-500/60 bg-red-500/15' },
+  amber:   { border: 'border-amber-500/40',  text: 'text-amber-400',  bg: 'bg-amber-500/10',  ring: 'border-amber-500/60 bg-amber-500/15' },
+  blue:    { border: 'border-blue-500/40',   text: 'text-blue-400',   bg: 'bg-blue-500/10',   ring: 'border-blue-500/60 bg-blue-500/15' },
+  emerald: { border: 'border-emerald-500/40',text: 'text-emerald-400',bg: 'bg-emerald-500/10',ring: 'border-emerald-500/60 bg-emerald-500/15' },
+  orange:  { border: 'border-orange-500/40', text: 'text-orange-400', bg: 'bg-orange-500/10', ring: 'border-orange-500/60 bg-orange-500/15' },
+  purple:  { border: 'border-purple-500/40', text: 'text-purple-400', bg: 'bg-purple-500/10', ring: 'border-purple-500/60 bg-purple-500/15' },
 };
 
 function shuffle<T>(arr: T[]): T[] {
@@ -47,8 +51,6 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// Randomizes the 4 answer options and updates the correct index to match.
-// Each call is an independent uniform random permutation (Fisher-Yates).
 function shuffleOptions(q: QuizQuestion): QuizQuestion {
   const order: number[] = [0, 1, 2, 3];
   for (let i = 3; i > 0; i--) {
@@ -62,19 +64,11 @@ function shuffleOptions(q: QuizQuestion): QuizQuestion {
   };
 }
 
-// Walks the quiz list and re-shuffles any question whose correct-answer index
-// matches both the previous two — guarantees no 3-in-a-row positional streak.
-// Independent shuffle is already uniform, this just suppresses streaks the
-// human eye reads as "a pattern".
 function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
   const out = [...qs];
   for (let i = 2; i < out.length; i++) {
     let attempts = 0;
-    while (
-      out[i].correct === out[i - 1].correct &&
-      out[i].correct === out[i - 2].correct &&
-      attempts < 10
-    ) {
+    while (out[i].correct === out[i - 1].correct && out[i].correct === out[i - 2].correct && attempts < 10) {
       out[i] = shuffleOptions(out[i]);
       attempts++;
     }
@@ -82,73 +76,264 @@ function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
   return out;
 }
 
-// ─── Setup Screen ─────────────────────────────────────────────────────────────
-function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
-  const [settings, setSettings] = useState<QuizSettings>({
-    category: 'All', difficulty: 'all', certFilter: 'All', count: 25,
-  });
+// ─── Step 1: Cert Selection ───────────────────────────────────────────────────
+function CertSelectScreen({ onSelect }: { onSelect: (certId: string) => void }) {
+  return (
+    <div className="overflow-y-auto h-full px-4 py-5">
+      <div className="mb-5">
+        <h2 className="text-sm font-semibold text-slate-100">Select an exam</h2>
+        <p className="text-xs text-slate-500 mt-0.5">
+          Choose the certification you are studying for. You will pick domains next.
+        </p>
+      </div>
 
-  const available = useMemo(() => {
-    return QUIZ_QUESTIONS.filter((q) =>
-      (settings.category   === 'All' || q.category   === settings.category) &&
-      (settings.difficulty === 'all' || q.difficulty === settings.difficulty) &&
-      (settings.certFilter === 'All' || q.certTags.includes(settings.certFilter)),
-    ).length;
-  }, [settings]);
+      <div className="grid grid-cols-1 gap-2">
+        {CERT_QUIZ_CONFIGS.map((cert) => {
+          const c = COLOR_MAP[cert.color] ?? COLOR_MAP.cyan;
+          const qCount = QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert.id)).length;
+          return (
+            <button
+              key={cert.id}
+              onClick={() => onSelect(cert.id)}
+              className={`group w-full text-left px-4 py-3 rounded-lg border ${c.border} ${c.bg} hover:${c.ring} transition-all duration-150`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={`text-[10px] font-mono font-medium ${c.text}`}>{cert.id}</span>
+                    <span className="text-[10px] text-slate-600">{cert.provider}</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-snug truncate">{cert.name}</p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <div className={`text-[10px] font-mono ${c.text}`}>{qCount} Q</div>
+                  <div className="text-[10px] text-slate-600">{cert.difficulty}</div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-  const sc500Pool = useMemo(() => QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SC-500')).length, []);
+// ─── Step 2: Domain Selection ─────────────────────────────────────────────────
+function DomainSelectScreen({
+  certId,
+  onBack,
+  onNext,
+}: {
+  certId: string;
+  onBack: () => void;
+  onNext: (selectedDomains: string[]) => void;
+}) {
+  const cert = CERT_QUIZ_CONFIGS.find((c) => c.id === certId)!;
+  const c    = COLOR_MAP[cert.color] ?? COLOR_MAP.cyan;
+  const [selected, setSelected] = useState<Set<string>>(new Set());
 
-  const startMockExam = () => {
-    onStart({ category: 'All', difficulty: 'all', certFilter: 'SC-500', count: 60, examMode: true, examSec: 90 * 60 });
+  const toggle = (name: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
   };
 
+  const selectAll = () => setSelected(new Set());
+
+  const domainCounts = useMemo(() => {
+    const pool = QUIZ_QUESTIONS.filter((q) => q.certTags.includes(certId));
+    return Object.fromEntries(
+      cert.domains.map((d) => [
+        d.name,
+        filterByDomain(pool, certId, [d.name]).length,
+      ]),
+    );
+  }, [certId, cert.domains]);
+
+  const previewCount = useMemo(() => {
+    const domains = Array.from(selected);
+    return filterByDomain(QUIZ_QUESTIONS, certId, domains).length;
+  }, [certId, selected]);
+
+  const allSelected = selected.size === 0;
+
   return (
-    <div className="flex flex-col items-center justify-center h-full px-6 py-12 max-w-xl mx-auto">
-      <div className="w-10 h-10 rounded-full bg-violet-500/10 border border-violet-500/30 flex items-center justify-center mb-4">
-        <span className="text-violet-400 text-lg">?</span>
-      </div>
-      <h2 className="text-xl font-bold text-slate-100 mb-1">Quiz Setup</h2>
-      <p className="text-sm text-slate-500 mb-6 text-center">Choose your focus area and difficulty, then start.</p>
-
-      {/* Mock Exam preset */}
-      {sc500Pool >= 60 && (
+    <div className="flex flex-col h-full min-h-0 px-4 py-5">
+      {/* Back + cert badge */}
+      <div className="flex items-center gap-3 mb-4">
         <button
-          onClick={startMockExam}
-          className="w-full mb-8 p-3 rounded-lg border border-cyan-500/40 bg-cyan-500/5 hover:bg-cyan-500/10 transition-colors text-left"
+          onClick={onBack}
+          className="text-[11px] font-mono text-slate-500 hover:text-slate-300 transition-colors"
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-semibold text-cyan-300">⏱ Mock SC-500 Exam</span>
-            <span className="text-[10px] font-mono text-cyan-400/70">60 Q · 90 min · no hints</span>
-          </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">Timed simulation. No per-question feedback until the end. Results + breakdown at finish.</p>
+          ← back
         </button>
-      )}
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${c.border} ${c.text} ${c.bg}`}>
+          {certId}
+        </span>
+        <span className="text-[11px] text-slate-500 truncate">{cert.name}</span>
+      </div>
 
-      <div className="w-full space-y-5">
-        {/* Category */}
-        <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Category</label>
-          <select
-            value={settings.category}
-            onChange={(e) => setSettings((s) => ({ ...s, category: e.target.value }))}
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-violet-500/50"
-          >
-            {ALL_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+      <h2 className="text-sm font-semibold text-slate-100 mb-0.5">Select domains</h2>
+      <p className="text-xs text-slate-500 mb-4">
+        Choose one or more exam domains. Deselect all to train across the full exam.
+      </p>
+
+      {/* All domains option */}
+      <button
+        onClick={selectAll}
+        className={[
+          'w-full text-left px-3 py-2.5 rounded-lg border mb-2 transition-all duration-150',
+          allSelected
+            ? `${c.border} ${c.bg}`
+            : 'border-slate-700 hover:border-slate-600',
+        ].join(' ')}
+      >
+        <div className="flex items-center justify-between">
+          <span className={`text-xs font-semibold ${allSelected ? c.text : 'text-slate-400'}`}>
+            All Domains
+          </span>
+          <span className="text-[10px] font-mono text-slate-500">
+            {QUIZ_QUESTIONS.filter((q) => q.certTags.includes(certId)).length} Q
+          </span>
         </div>
+      </button>
 
+      {/* Individual domains */}
+      <div className="flex-1 overflow-y-auto space-y-1.5">
+        {cert.domains.map((d) => {
+          const isActive = selected.has(d.name);
+          const count    = domainCounts[d.name] ?? 0;
+          return (
+            <button
+              key={d.name}
+              onClick={() => toggle(d.name)}
+              className={[
+                'w-full text-left px-3 py-2.5 rounded-lg border transition-all duration-150',
+                isActive
+                  ? `${c.border} ${c.bg}`
+                  : 'border-slate-700/60 hover:border-slate-600 bg-slate-800/20',
+              ].join(' ')}
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex-1 min-w-0">
+                  <span className={`text-xs ${isActive ? c.text : 'text-slate-400'} leading-snug`}>
+                    {d.name}
+                  </span>
+                  {d.pct && (
+                    <span className="ml-2 text-[10px] font-mono text-slate-600">{d.pct}</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] font-mono text-slate-500">{count} Q</span>
+                  <div
+                    className={[
+                      'w-3.5 h-3.5 rounded border flex items-center justify-center',
+                      isActive ? `${c.border} ${c.bg}` : 'border-slate-600',
+                    ].join(' ')}
+                  >
+                    {isActive && (
+                      <svg className={`w-2 h-2 ${c.text}`} fill="currentColor" viewBox="0 0 12 12">
+                        <path d="M10 3L5 8.5 2 5.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Footer */}
+      <div className="mt-4 pt-3 border-t border-slate-700/50">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[11px] font-mono text-slate-500">
+            {allSelected
+              ? `${QUIZ_QUESTIONS.filter((q) => q.certTags.includes(certId)).length} questions available`
+              : `${previewCount} questions in ${selected.size} domain${selected.size !== 1 ? 's' : ''}`}
+          </span>
+        </div>
+        <button
+          disabled={!allSelected && previewCount === 0}
+          onClick={() => onNext(Array.from(selected))}
+          className={`w-full py-2 rounded text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed text-white ${c.bg.replace('/10', '/80')} hover:${c.bg.replace('/10', '')}`}
+          style={{ background: undefined }}
+        >
+          <span className={c.text.replace('text-', 'text-white ') ? '' : ''}>
+            Configure options →
+          </span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Step 3: Options ──────────────────────────────────────────────────────────
+const COUNT_OPTIONS = [10, 25, 50, 100] as const;
+
+function OptionsScreen({
+  certId,
+  selectedDomains,
+  onBack,
+  onStart,
+}: {
+  certId: string;
+  selectedDomains: string[];
+  onBack: () => void;
+  onStart: (s: QuizSettings) => void;
+}) {
+  const cert = CERT_QUIZ_CONFIGS.find((c) => c.id === certId)!;
+  const c    = COLOR_MAP[cert.color] ?? COLOR_MAP.cyan;
+  const [difficulty, setDifficulty] = useState<QuizDifficulty | 'all'>('all');
+  const [count, setCount]           = useState<10 | 25 | 50 | 60 | 100>(25);
+
+  const available = useMemo(() => {
+    const pool = filterByDomain(QUIZ_QUESTIONS, certId, selectedDomains);
+    return pool.filter((q) => difficulty === 'all' || q.difficulty === difficulty).length;
+  }, [certId, selectedDomains, difficulty]);
+
+  const domainSummary = selectedDomains.length === 0
+    ? 'All domains'
+    : selectedDomains.length === 1
+      ? selectedDomains[0]
+      : `${selectedDomains.length} domains`;
+
+  return (
+    <div className="flex flex-col h-full min-h-0 px-4 py-5">
+      {/* Back */}
+      <div className="flex items-center gap-3 mb-4">
+        <button
+          onClick={onBack}
+          className="text-[11px] font-mono text-slate-500 hover:text-slate-300 transition-colors"
+        >
+          ← back
+        </button>
+        <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${c.border} ${c.text} ${c.bg}`}>
+          {certId}
+        </span>
+        <span className="text-[11px] text-slate-500 truncate">{domainSummary}</span>
+      </div>
+
+      <h2 className="text-sm font-semibold text-slate-100 mb-4">Configure quiz</h2>
+
+      <div className="space-y-5 flex-1">
         {/* Difficulty */}
         <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Difficulty</label>
+          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">
+            Difficulty
+          </label>
           <div className="flex gap-2">
             {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((d) => (
               <button
                 key={d}
-                onClick={() => setSettings((s) => ({ ...s, difficulty: d }))}
+                onClick={() => setDifficulty(d)}
                 className={[
                   'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors capitalize',
-                  settings.difficulty === d
-                    ? 'border-violet-500/50 bg-violet-500/10 text-violet-300'
+                  difficulty === d
+                    ? `${c.border} ${c.bg} ${c.text}`
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -158,30 +343,20 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
           </div>
         </div>
 
-        {/* Cert filter */}
-        <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Cert Focus</label>
-          <select
-            value={settings.certFilter}
-            onChange={(e) => setSettings((s) => ({ ...s, certFilter: e.target.value }))}
-            className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded text-sm text-slate-200 focus:outline-none focus:border-violet-500/50"
-          >
-            {CERT_OPTIONS.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-
         {/* Count */}
         <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Questions</label>
+          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">
+            Questions
+          </label>
           <div className="flex gap-2">
             {COUNT_OPTIONS.map((n) => (
               <button
                 key={n}
-                onClick={() => setSettings((s) => ({ ...s, count: n }))}
+                onClick={() => setCount(n)}
                 className={[
                   'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
-                  settings.count === n
-                    ? 'border-violet-500/50 bg-violet-500/10 text-violet-300'
+                  count === n
+                    ? `${c.border} ${c.bg} ${c.text}`
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -192,18 +367,45 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
         </div>
 
         {/* Pool size hint */}
-        <p className="text-[11px] text-slate-600 font-mono text-center">
-          {available} questions match · {Math.min(settings.count, available)} will be used
+        <p className="text-[11px] text-slate-600 font-mono">
+          {available} questions match · {Math.min(count, available)} will be selected
         </p>
 
-        <button
-          disabled={available === 0}
-          onClick={() => onStart(settings)}
-          className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
-        >
-          Start Quiz
-        </button>
+        {/* SC-500 mock exam shortcut */}
+        {certId === 'SC-500' && available >= 60 && (
+          <button
+            onClick={() =>
+              onStart({
+                certId,
+                selectedDomains,
+                difficulty: 'all',
+                count: 60,
+                examMode: true,
+                examSec: 90 * 60,
+              })
+            }
+            className="w-full p-3 rounded-lg border border-cyan-500/40 bg-cyan-500/5 hover:bg-cyan-500/10 transition-colors text-left"
+          >
+            <div className="flex items-center justify-between mb-0.5">
+              <span className="text-xs font-semibold text-cyan-300">Mock SC-500 Exam</span>
+              <span className="text-[10px] font-mono text-cyan-400/70">60 Q · 90 min · no hints</span>
+            </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Timed simulation. No per-question feedback until the end.
+            </p>
+          </button>
+        )}
       </div>
+
+      <button
+        disabled={available === 0}
+        onClick={() =>
+          onStart({ certId, selectedDomains, difficulty, count })
+        }
+        className="mt-4 w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+      >
+        Start Quiz
+      </button>
     </div>
   );
 }
@@ -223,31 +425,25 @@ function QuestionScreen({
   const [chosen, setChosen] = useState<number | null>(null);
   const progress = ((index + 1) / total) * 100;
 
-  // Reset selection when the question changes (exam-mode chains questions w/o unmount).
   useEffect(() => { setChosen(null); }, [question.id]);
 
   const handleChoose = (i: number) => {
     if (chosen !== null) return;
     setChosen(i);
-    // Exam mode: no reveal, advance immediately.
-    if (examMode) {
-      onAnswer(i);
-      return;
-    }
+    if (examMode) { onAnswer(i); return; }
     setTimeout(() => onAnswer(i), 900);
   };
 
   const timerStr = remainingSec !== undefined
     ? `${String(Math.floor(remainingSec / 60)).padStart(2, '0')}:${String(remainingSec % 60).padStart(2, '0')}`
     : null;
-  const timerLow = remainingSec !== undefined && remainingSec <= 300; // last 5 minutes
+  const timerLow = remainingSec !== undefined && remainingSec <= 300;
 
   return (
-    <div className="flex flex-col h-full min-h-0 px-6 py-5">
-      {/* Exam-mode timer bar */}
+    <div className="flex flex-col h-full min-h-0 px-5 py-4">
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-cyan-500/30 bg-cyan-500/5'}`}>
-          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>⏱ Mock SC-500 Exam</span>
+          <span className={`text-[11px] font-mono ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>Mock exam</span>
           <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-cyan-300'}`}>{timerStr}</span>
           <button
             onClick={onAbandonExam}
@@ -259,42 +455,41 @@ function QuestionScreen({
       )}
 
       {/* Progress */}
-      <div className="mb-5">
+      <div className="mb-4">
         <div className="flex items-center justify-between mb-1.5">
           <span className="text-[10px] font-mono text-slate-600">{index + 1} / {total}</span>
           <div className="flex gap-1.5 items-center">
             <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[question.difficulty]}`}>
               {question.difficulty}
             </span>
-            <span className="text-[10px] font-mono text-slate-600">{question.category}</span>
+            <span className="text-[10px] font-mono text-slate-600 hidden sm:block">{question.topic}</span>
           </div>
         </div>
-        <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-0.5 bg-slate-800 rounded-full overflow-hidden">
           <div className="h-full bg-violet-500 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
       {/* Question */}
-      <div className="mb-6">
-        <p className="text-base text-slate-100 leading-relaxed font-medium">{question.question}</p>
+      <div className="mb-5">
+        <p className="text-sm text-slate-100 leading-relaxed font-medium">{question.question}</p>
       </div>
 
       {/* Options */}
-      <div className="space-y-2.5 flex-1">
+      <div className="space-y-2 flex-1">
         {question.options.map((opt, i) => {
-          let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
+          let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/40';
           if (chosen !== null) {
             if (examMode) {
-              // Exam mode: just show which one is selected, no green/red.
               style = i === chosen
                 ? 'border-cyan-500/60 bg-cyan-500/10 text-cyan-200'
-                : 'border-slate-700/50 text-slate-600 opacity-60';
+                : 'border-slate-700/40 text-slate-600 opacity-50';
             } else if (i === question.correct) {
               style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
             } else if (i === chosen) {
               style = 'border-red-500 bg-red-500/10 text-red-300';
             } else {
-              style = 'border-slate-700/50 text-slate-600 opacity-60';
+              style = 'border-slate-700/40 text-slate-600 opacity-50';
             }
           }
           return (
@@ -302,21 +497,20 @@ function QuestionScreen({
               key={i}
               onClick={() => handleChoose(i)}
               disabled={chosen !== null}
-              className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${style}`}
+              className={`w-full text-left px-4 py-2.5 rounded-lg border transition-all text-sm ${style}`}
             >
-              <span className="font-mono text-[10px] mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
+              <span className="font-mono text-[10px] mr-3 opacity-50">{String.fromCharCode(65 + i)}</span>
               {opt}
             </button>
           );
         })}
       </div>
 
-      {/* Exam-mode skip button (lets you move on without answering) */}
       {examMode && (
         <button
           onClick={() => { if (chosen === null) onAnswer(null); }}
           disabled={chosen !== null}
-          className="mt-3 w-full py-1.5 rounded text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
+          className="mt-3 w-full py-1.5 rounded text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 disabled:opacity-40"
         >
           Skip — leave unanswered
         </button>
@@ -335,29 +529,28 @@ function ResultScreen({
   onNext:  () => void;
 }) {
   return (
-    <div className="flex flex-col h-full px-6 py-5">
+    <div className="flex flex-col h-full px-5 py-4">
       <div className={`flex items-center gap-2 mb-4 p-3 rounded-lg border ${result.correct ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
-        <span className={`text-lg ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
+        <span className={`text-base ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
           {result.correct ? '✓' : '✗'}
         </span>
         <span className={`text-sm font-semibold ${result.correct ? 'text-emerald-300' : 'text-red-300'}`}>
-          {result.correct ? 'Correct!' : 'Incorrect'}
+          {result.correct ? 'Correct' : 'Incorrect'}
         </span>
         <span className="text-[10px] font-mono text-slate-600 ml-auto">{index + 1}/{total}</span>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-3">
         <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Question</p>
-        <p className="text-sm text-slate-300">{result.question.question}</p>
+        <p className="text-xs text-slate-300 leading-relaxed">{result.question.question}</p>
       </div>
 
-      {/* All options with per-option explanations */}
-      <div className="flex-1 mb-4 space-y-2 overflow-y-auto">
+      <div className="flex-1 mb-4 space-y-1.5 overflow-y-auto">
         <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Answer Breakdown</p>
         {result.question.options.map((opt, i) => {
-          const isCorrect  = i === result.question.correct;
-          const isChosen   = i === result.chosen;
-          const optExp     = result.question.optionExplanations?.[i];
+          const isCorrect = i === result.question.correct;
+          const isChosen  = i === result.chosen;
+          const optExp    = result.question.optionExplanations?.[i];
           return (
             <div
               key={i}
@@ -367,20 +560,23 @@ function ResultScreen({
                   ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-300'
                   : isChosen
                     ? 'border-red-500/40 bg-red-500/5 text-red-300'
-                    : 'border-slate-700/50 bg-slate-800/30 text-slate-500',
+                    : 'border-slate-700/40 bg-slate-800/20 text-slate-500',
               ].join(' ')}
             >
               <span className="font-mono font-bold mr-2">{String.fromCharCode(65 + i)}.</span>
               <span className={isCorrect ? 'font-semibold' : ''}>{opt}</span>
               {isCorrect && <span className="ml-2 text-emerald-500 font-bold">✓</span>}
               {!isCorrect && isChosen && <span className="ml-2 text-red-500 font-bold">✗</span>}
-              {optExp && <p className={`mt-1 ml-4 ${isCorrect ? 'text-emerald-400/80' : isChosen ? 'text-red-400/70' : 'text-slate-600'}`}>{optExp}</p>}
+              {optExp && (
+                <p className={`mt-1 ml-4 ${isCorrect ? 'text-emerald-400/80' : isChosen ? 'text-red-400/70' : 'text-slate-600'}`}>
+                  {optExp}
+                </p>
+              )}
             </div>
           );
         })}
-        {/* Fallback overall explanation */}
         <div className="mt-3 pt-3 border-t border-slate-700/50">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Explanation</p>
           <p className="text-xs text-slate-400 leading-relaxed">{result.question.explanation}</p>
         </div>
       </div>
@@ -389,7 +585,7 @@ function ResultScreen({
         onClick={onNext}
         className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-colors"
       >
-        {index + 1 >= total ? 'See Results' : 'Next Question →'}
+        {index + 1 >= total ? 'See results' : 'Next →'}
       </button>
     </div>
   );
@@ -397,26 +593,29 @@ function ResultScreen({
 
 // ─── Summary Screen ───────────────────────────────────────────────────────────
 function SummaryScreen({
-  results, onRestart, onGenerateMore,
+  results, settings, onRestart, onNewExam, onGenerateMore,
 }: {
   results:         QuizResult[];
+  settings:        QuizSettings;
   onRestart:       () => void;
+  onNewExam:       () => void;
   onGenerateMore:  (category: string) => void;
 }) {
-  const correct   = results.filter((r) => r.correct).length;
-  const skipped   = results.filter((r) => r.skipped).length;
-  const total     = results.length;
-  const pct       = Math.round((correct / total) * 100);
-  const answered  = results.filter((r) => !r.skipped);
-  const avgTime   = answered.length > 0
+  const cert     = CERT_QUIZ_CONFIGS.find((c) => c.id === settings.certId);
+  const c        = cert ? (COLOR_MAP[cert.color] ?? COLOR_MAP.cyan) : COLOR_MAP.cyan;
+  const correct  = results.filter((r) => r.correct).length;
+  const skipped  = results.filter((r) => r.skipped).length;
+  const total    = results.length;
+  const pct      = Math.round((correct / total) * 100);
+  const answered = results.filter((r) => !r.skipped);
+  const avgTime  = answered.length > 0
     ? Math.round(answered.reduce((s, r) => s + r.timeTaken, 0) / answered.length / 1000)
     : 0;
 
-  // Category breakdown
   const byCategory = useMemo(() => {
     const map: Record<string, { correct: number; total: number }> = {};
     results.forEach((r) => {
-      const cat = r.question.category;
+      const cat = r.question.topic;
       if (!map[cat]) map[cat] = { correct: 0, total: 0 };
       map[cat].total++;
       if (r.correct) map[cat].correct++;
@@ -425,36 +624,55 @@ function SummaryScreen({
   }, [results]);
 
   const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 60 ? 'text-amber-400' : 'text-red-400';
+  const passMark   = settings.certId === 'SC-500' ? 700 : null;
 
   return (
-    <div className="overflow-y-auto h-full px-6 py-5">
+    <div className="overflow-y-auto h-full px-5 py-4">
+      {/* Cert badge */}
+      {cert && (
+        <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded border ${c.border} ${c.bg} mb-4`}>
+          <span className={`text-[10px] font-mono ${c.text}`}>{cert.id}</span>
+          {settings.selectedDomains.length > 0 && (
+            <span className="text-[10px] text-slate-500">
+              · {settings.selectedDomains.length} domain{settings.selectedDomains.length !== 1 ? 's' : ''}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Score banner */}
       <div className="text-center mb-6">
         <div className={`text-5xl font-bold font-mono mb-1 ${scoreColor}`}>{pct}%</div>
         <p className="text-slate-400 text-sm">
-          {correct} of {total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s per question
+          {correct} of {total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''}
+          {avgTime > 0 ? ` · avg ${avgTime}s` : ''}
         </p>
-        <p className={`text-sm font-semibold mt-1 ${scoreColor}`}>
-          {pct >= 80 ? 'Excellent work!' : pct >= 60 ? 'Good effort — keep studying!' : 'Keep at it — review the weak areas below.'}
+        {passMark && (
+          <p className="text-[11px] font-mono text-slate-600 mt-1">
+            SC-500 passing score: 700/1000 — aim for ≥80% in practice
+          </p>
+        )}
+        <p className={`text-sm font-semibold mt-2 ${scoreColor}`}>
+          {pct >= 80 ? 'Strong result.' : pct >= 60 ? 'Good progress — focus on weak areas.' : 'Keep studying — review the breakdown below.'}
         </p>
       </div>
 
-      {/* Category breakdown */}
+      {/* Topic breakdown */}
       <div className="mb-6">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-3">Category Breakdown</p>
+        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-3">Topic Breakdown</p>
         <div className="space-y-2">
-          {byCategory.map(([cat, stats]) => {
-            const catPct = Math.round((stats.correct / stats.total) * 100);
-            const barColor = catPct >= 80 ? 'bg-emerald-500' : catPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
+          {byCategory.map(([topic, stats]) => {
+            const topicPct = Math.round((stats.correct / stats.total) * 100);
+            const barColor = topicPct >= 80 ? 'bg-emerald-500' : topicPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
             return (
-              <div key={cat}>
+              <div key={topic}>
                 <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-[11px] text-slate-400 truncate max-w-[200px]">{cat}</span>
+                  <span className="text-[11px] text-slate-400 truncate max-w-[180px]">{topic}</span>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-slate-600">{stats.correct}/{stats.total}</span>
-                    {catPct < 70 && (
+                    {topicPct < 70 && (
                       <button
-                        onClick={() => onGenerateMore(cat)}
+                        onClick={() => onGenerateMore(topic)}
                         className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
                       >
                         more →
@@ -462,8 +680,8 @@ function SummaryScreen({
                     )}
                   </div>
                 </div>
-                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                  <div className={`h-full ${barColor} rounded-full`} style={{ width: `${catPct}%` }} />
+                <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                  <div className={`h-full ${barColor} rounded-full`} style={{ width: `${topicPct}%` }} />
                 </div>
               </div>
             );
@@ -474,9 +692,15 @@ function SummaryScreen({
       <div className="flex gap-2">
         <button
           onClick={onRestart}
-          className="flex-1 py-2.5 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-semibold transition-colors"
+          className="flex-1 py-2 rounded border border-slate-700 hover:border-slate-600 text-slate-300 text-sm font-medium transition-colors"
         >
-          New Quiz
+          Same settings
+        </button>
+        <button
+          onClick={onNewExam}
+          className="flex-1 py-2 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-medium transition-colors"
+        >
+          New exam
         </button>
       </div>
     </div>
@@ -485,7 +709,9 @@ function SummaryScreen({
 
 // ─── Root QuizEngine ──────────────────────────────────────────────────────────
 export default function QuizEngine() {
-  const [mode,          setMode]          = useState<QuizMode>('setup');
+  const [mode,          setMode]          = useState<QuizMode>('setup-cert');
+  const [certId,        setCertId]        = useState<string>('');
+  const [domainSel,     setDomainSel]     = useState<string[]>([]);
   const [settings,      setSettings]      = useState<QuizSettings | null>(null);
   const [questions,     setQuestions]     = useState<QuizQuestion[]>([]);
   const [currentIndex,  setCurrentIndex]  = useState(0);
@@ -496,11 +722,20 @@ export default function QuizEngine() {
   const [generating,    setGenerating]    = useState(false);
   const [genError,      setGenError]      = useState('');
 
+  const handleCertSelect = (id: string) => {
+    setCertId(id);
+    setDomainSel([]);
+    setMode('setup-domain');
+  };
+
+  const handleDomainNext = (domains: string[]) => {
+    setDomainSel(domains);
+    setMode('setup-options');
+  };
+
   const handleStart = useCallback((s: QuizSettings) => {
-    const pool = QUIZ_QUESTIONS.filter((q) =>
-      (s.category   === 'All' || q.category   === s.category) &&
-      (s.difficulty === 'all' || q.difficulty === s.difficulty) &&
-      (s.certFilter === 'All' || q.certTags.includes(s.certFilter)),
+    const pool = filterByDomain(QUIZ_QUESTIONS, s.certId, s.selectedDomains).filter(
+      (q) => s.difficulty === 'all' || q.difficulty === s.difficulty,
     );
     const selected = breakAnswerStreaks(shuffle(pool).slice(0, s.count).map(shuffleOptions));
     setSettings(s);
@@ -513,42 +748,30 @@ export default function QuizEngine() {
   }, []);
 
   const handleAnswer = useCallback((chosen: number | null) => {
-    const q       = questions[currentIndex];
-    const elapsed = Date.now() - questionStart;
+    const q   = questions[currentIndex];
     const r: QuizResult = {
       question: q,
       chosen,
       correct:  chosen !== null && chosen === q.correct,
       skipped:  chosen === null,
-      timeTaken: elapsed,
+      timeTaken: Date.now() - questionStart,
     };
     const isLast = currentIndex + 1 >= questions.length;
     setResults((prev) => [...prev, r]);
-    // Exam mode: never show per-Q feedback. Jump straight to next or summary.
     if (settings?.examMode) {
-      if (isLast) {
-        setExamEndAt(null);
-        setMode('summary');
-      } else {
-        setCurrentIndex((i) => i + 1);
-        setQuestionStart(Date.now());
-      }
+      if (isLast) { setExamEndAt(null); setMode('summary'); }
+      else { setCurrentIndex((i) => i + 1); setQuestionStart(Date.now()); }
       return;
     }
     setMode('result');
   }, [questions, currentIndex, questionStart, settings]);
 
   const handleNext = useCallback(() => {
-    if (currentIndex + 1 >= questions.length) {
-      setMode('summary');
-    } else {
-      setCurrentIndex((i) => i + 1);
-      setQuestionStart(Date.now());
-      setMode('question');
-    }
+    if (currentIndex + 1 >= questions.length) { setMode('summary'); }
+    else { setCurrentIndex((i) => i + 1); setQuestionStart(Date.now()); setMode('question'); }
   }, [currentIndex, questions.length]);
 
-  // ── Exam countdown tick — auto-submit unanswered remainder when timer hits 0 ──
+  // Exam countdown
   useEffect(() => {
     if (!examEndAt) return;
     const id = setInterval(() => setNowMs(Date.now()), 1000);
@@ -556,9 +779,7 @@ export default function QuizEngine() {
   }, [examEndAt]);
 
   useEffect(() => {
-    if (!examEndAt) return;
-    if (nowMs < examEndAt) return;
-    // Time's up — record remaining as skipped and jump to summary.
+    if (!examEndAt || nowMs < examEndAt) return;
     const remaining: QuizResult[] = [];
     for (let i = currentIndex; i < questions.length; i++) {
       remaining.push({ question: questions[i], chosen: null, correct: false, skipped: true, timeTaken: 0 });
@@ -579,21 +800,17 @@ export default function QuizEngine() {
     setMode('summary');
   }, [settings, currentIndex, questions]);
 
-  const remainingSec = examEndAt ? Math.max(0, Math.floor((examEndAt - nowMs) / 1000)) : undefined;
-
-  const handleGenerateMore = useCallback(async (category: string) => {
+  const handleGenerateMore = useCallback(async (topic: string) => {
     if (!settings) return;
     setGenerating(true);
     setGenError('');
     try {
       const extra = await generateQuizQuestions({
-        topic:      category,
-        category,
+        topic,
+        category: topic,
         difficulty: settings.difficulty === 'all' ? 'intermediate' : settings.difficulty,
-        count:      10,
+        count: 10,
       });
-      // Always re-shuffle option order — generator output may bias the correct
-      // answer toward a specific index, and we never want a positional pattern.
       setQuestions((prev) => [...prev, ...extra.map(shuffleOptions)]);
     } catch (e) {
       setGenError(e instanceof Error ? e.message : 'Generation failed');
@@ -602,6 +819,7 @@ export default function QuizEngine() {
     }
   }, [settings]);
 
+  const remainingSec = examEndAt ? Math.max(0, Math.floor((examEndAt - nowMs) / 1000)) : undefined;
   const currentQuestion = questions[currentIndex];
   const currentResult   = results[results.length - 1];
 
@@ -610,16 +828,34 @@ export default function QuizEngine() {
       {generating && (
         <div className="px-4 py-2 border-b border-violet-500/20 bg-violet-500/5 flex items-center gap-2">
           <div className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[11px] font-mono text-violet-400">Generating new questions…</span>
+          <span className="text-[11px] font-mono text-violet-400">Generating questions…</span>
         </div>
       )}
       {genError && (
         <div className="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
-          <span className="text-[11px] font-mono text-red-400">⚠ {genError}</span>
+          <span className="text-[11px] font-mono text-red-400">{genError}</span>
         </div>
       )}
+
       <div className="flex-1 overflow-y-auto">
-        {mode === 'setup'    && <SetupScreen onStart={handleStart} />}
+        {mode === 'setup-cert' && (
+          <CertSelectScreen onSelect={handleCertSelect} />
+        )}
+        {mode === 'setup-domain' && certId && (
+          <DomainSelectScreen
+            certId={certId}
+            onBack={() => setMode('setup-cert')}
+            onNext={handleDomainNext}
+          />
+        )}
+        {mode === 'setup-options' && certId && (
+          <OptionsScreen
+            certId={certId}
+            selectedDomains={domainSel}
+            onBack={() => setMode('setup-domain')}
+            onStart={handleStart}
+          />
+        )}
         {mode === 'question' && currentQuestion && (
           <QuestionScreen
             question={currentQuestion}
@@ -631,11 +867,22 @@ export default function QuizEngine() {
             onAbandonExam={handleAbandonExam}
           />
         )}
-        {mode === 'result'   && currentResult && (
-          <ResultScreen result={currentResult} index={currentIndex} total={questions.length} onNext={handleNext} />
+        {mode === 'result' && currentResult && (
+          <ResultScreen
+            result={currentResult}
+            index={currentIndex}
+            total={questions.length}
+            onNext={handleNext}
+          />
         )}
-        {mode === 'summary'  && (
-          <SummaryScreen results={results} onRestart={() => { setMode('setup'); }} onGenerateMore={handleGenerateMore} />
+        {mode === 'summary' && settings && (
+          <SummaryScreen
+            results={results}
+            settings={settings}
+            onRestart={() => handleStart(settings)}
+            onNewExam={() => { setMode('setup-cert'); setCertId(''); setDomainSel([]); }}
+            onGenerateMore={handleGenerateMore}
+          />
         )}
       </div>
     </div>

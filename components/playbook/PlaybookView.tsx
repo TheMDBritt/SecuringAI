@@ -7,12 +7,12 @@ import CertMap       from './CertMap';
 import QuizEngine    from './QuizEngine';
 import PortalDrills  from './PortalDrills';
 
-const SECTIONS: { id: PlaybookSection; label: string; icon: string }[] = [
-  { id: 'topics',   label: 'Topics',   icon: '📚' },
-  { id: 'glossary', label: 'Glossary', icon: '📖' },
-  { id: 'certs',    label: 'Certs',    icon: '🎓' },
-  { id: 'quiz',     label: 'Quiz',     icon: '✏️'  },
-  { id: 'drills',   label: 'Drills',   icon: '🖥️' },
+const SECTIONS: { id: PlaybookSection; label: string }[] = [
+  { id: 'topics',   label: 'Topics'   },
+  { id: 'glossary', label: 'Glossary' },
+  { id: 'certs',    label: 'Certs'    },
+  { id: 'quiz',     label: 'Quiz'     },
+  { id: 'drills',   label: 'Drills'   },
 ];
 
 export default function PlaybookView() {
@@ -27,22 +27,23 @@ export default function PlaybookView() {
   return (
     <div className="flex flex-col h-full min-h-0 bg-slate-900">
       {/* ── Top bar ──────────────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-700 shrink-0">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-700/60 shrink-0">
         {/* Title */}
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-violet-500/20 border border-violet-500/30 flex items-center justify-center">
-            <span className="text-[10px] text-violet-400 font-bold">P</span>
+          <div className="w-5 h-5 rounded bg-violet-500/15 border border-violet-500/30 flex items-center justify-center">
+            <span className="text-[9px] text-violet-400 font-bold font-mono">PB</span>
           </div>
           <span className="text-sm font-semibold text-slate-100">Playbook</span>
           {certFilter && (
             <div className="flex items-center gap-1 ml-2">
-              <span className="text-[10px] font-mono text-slate-600">Filtered:</span>
+              <span className="text-[10px] font-mono text-slate-600">filter:</span>
               <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400">
                 {certFilter}
               </span>
               <button
                 onClick={() => setCertFilter('')}
-                className="text-[10px] text-slate-600 hover:text-slate-400 ml-0.5"
+                aria-label="Clear cert filter"
+                className="text-[10px] text-slate-600 hover:text-slate-400 ml-0.5 leading-none"
               >
                 ✕
               </button>
@@ -51,23 +52,23 @@ export default function PlaybookView() {
         </div>
 
         {/* Section tabs */}
-        <div className="flex items-center gap-1">
+        <nav className="flex items-center gap-0.5" aria-label="Playbook sections">
           {SECTIONS.map((s) => (
             <button
               key={s.id}
               onClick={() => setSection(s.id)}
+              aria-current={section === s.id ? 'page' : undefined}
               className={[
-                'flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-mono transition-colors',
+                'px-3 py-1.5 rounded text-[11px] font-mono border transition-colors',
                 section === s.id
-                  ? 'bg-violet-500/10 border border-violet-500/30 text-violet-300'
-                  : 'text-slate-500 hover:text-slate-300 border border-transparent hover:border-slate-700',
+                  ? 'bg-violet-500/10 border-violet-500/30 text-violet-300'
+                  : 'text-slate-500 hover:text-slate-300 border-transparent hover:border-slate-700',
               ].join(' ')}
             >
-              <span className="text-[11px]">{s.icon}</span>
               {s.label}
             </button>
           ))}
-        </div>
+        </nav>
       </div>
 
       {/* ── Content area ─────────────────────────────────────────────────── */}
