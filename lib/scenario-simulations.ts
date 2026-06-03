@@ -1353,6 +1353,9 @@ export function getScenarioForcedAttackTypeSync(
   if (scenarioId === 'rag-injection' && settings.ragEnabled && ragContext?.trim()) {
     return 'rag_injection';
   }
+  if (scenarioId === 'indirect-injection' && settings.ragEnabled && ragContext?.trim()) {
+    return 'rag_injection';
+  }
   if (scenarioId === 'tool-abuse' && settings.allowTools) {
     return 'tool_abuse';
   }
@@ -1418,6 +1421,21 @@ export async function getScenarioForcedAttackType(
     return { attackType: 'tool_abuse' };
   }
 
+  // indirect-injection: the attack is embedded in the retrieved/provided document
+  // context. Any user turn with RAG enabled and non-empty context activates
+  // rag_injection behavior — the document IS the attack surface.
+  if (
+    scenarioId === 'indirect-injection' &&
+    settings.ragEnabled &&
+    ragContext?.trim()
+  ) {
+    return { attackType: 'rag_injection' };
+  }
+
+  // model-inversion: attack markers in ATTACK_PATTERNS (EXTRACTION QUERY:,
+  // MEMBERSHIP PROBE:, INVERSION PROBE:) classify as probing. No forced type
+  // needed here — pattern matching drives classification.
+
   return { attackType: null };
 }
 
@@ -1443,6 +1461,11 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'rag-injection:rag_injection':         'internal RAG document + strategy note',
   'rag-injection:prompt_injection':      'retrieved document instructions',
   'rag-injection:mixed_attack':          'internal RAG document (multi-vector)',
+  'indirect-injection:rag_injection':    'attacker-controlled document payload (indirect injection)',
+  'indirect-injection:prompt_injection': 'embedded document instruction (indirect injection)',
+  'indirect-injection:mixed_attack':     'attacker-controlled document context (multi-vector)',
+  'model-inversion:probing':             'model decision boundary / confidence distribution',
+  'model-inversion:data_exfiltration':   'model training data fragment (inversion probe)',
   ':prompt_injection':                   'hidden system prompt fragment',
   ':data_exfiltration':                  'internal scouting intelligence fragment',
   ':policy_bypass':                      'content policy restrictions',
