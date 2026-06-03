@@ -12,10 +12,14 @@ const CERT_BADGE: Record<string, string> = {
   'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
+  'CAIS':         'bg-rose-500/10 text-rose-400 border-rose-500/30',
+  'SC-500':       'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'CISSP':        'bg-sky-500/10 text-sky-400 border-sky-500/30',
+  'CISM':         'bg-teal-500/10 text-teal-400 border-teal-500/30',
 };
 
 const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP'];
+const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP', 'CAIS', 'SC-500', 'CISSP', 'CISM'];
 
 export default function GlossaryPanel() {
   const [search, setSearch]     = useState('');
