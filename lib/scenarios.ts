@@ -47,6 +47,15 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM09'],
   },
+  {
+    id: 'supply-chain',
+    dojoId: 1,
+    title: 'Supply Chain & Model Theft',
+    description:
+      'Simulate a compromised ML dependency attack: craft inputs that probe for training data memorisation, attempt model extraction via systematic API querying, and test for pickle deserialization vulnerabilities in a model serving scenario.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM05', 'LLM10'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {

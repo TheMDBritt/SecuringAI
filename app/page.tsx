@@ -6,12 +6,12 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  13,
-  quizQs:    649,
-  glossary:  341,
+  scenarios:  14,
+  quizQs:    693,
+  glossary:  367,
   articles:   61,
   certs:      12,
-  incidents:  17,
+  incidents:  18,
 };
 
 interface DojoCard {
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 17 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
+    summary: 'Operate as an AI SOC analyst across 18 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },

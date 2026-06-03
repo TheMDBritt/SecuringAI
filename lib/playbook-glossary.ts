@@ -2439,4 +2439,201 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['SecAI', 'GIAC-GOAA', 'CAISP'],
     related: ['Prompt Injection', 'Indirect Prompt Injection', 'Multimodal Models', 'Agentic AI', 'Input Validation'],
   },
+
+  // ─── CISSP-Specific Terms ─────────────────────────────────────────────────
+
+  {
+    term: 'Annual Loss Expectancy (ALE)',
+    definition: 'A quantitative risk metric used in CISSP risk analysis. ALE = Single Loss Expectancy (SLE) × Annualised Rate of Occurrence (ARO). SLE is the monetary value of a single loss event (asset value × exposure factor). ARO is the estimated frequency of occurrence per year. ALE represents the expected annual financial loss from a specific threat. Used to determine whether a security countermeasure is financially justified: implement the control if (ALE_before – ALE_after) > annual control cost. Limitation: relies on estimates that may be unreliable for rare events; often supplemented with qualitative analysis.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Single Loss Expectancy', 'Annualised Rate of Occurrence', 'Quantitative Risk Assessment', 'Risk Treatment'],
+  },
+  {
+    term: 'Business Impact Analysis (BIA)',
+    definition: 'A structured process that identifies critical business functions and quantifies the impact of their disruption. Outputs: Maximum Tolerable Period of Disruption (MTPD) — the longest the business can survive without a function; Recovery Time Objective (RTO) — how quickly a function must be restored; Recovery Point Objective (RPO) — maximum acceptable data loss; Work Recovery Time (WRT). BIA is the foundation of Business Continuity Planning. For AI systems: the BIA must assess the impact of AI system unavailability on dependent business processes, and whether manual fallback procedures exist. CISSP Domain 1 and CISM Domain 3 prerequisite for BCP/DRP development.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Recovery Time Objective', 'Recovery Point Objective', 'MTPD', 'Business Continuity Planning', 'Disaster Recovery'],
+  },
+  {
+    term: 'Recovery Time Objective (RTO)',
+    definition: 'The maximum acceptable time to restore a business function or IT service after a disruption event. Defined during Business Impact Analysis. RTO drives recovery architecture: a 4-hour RTO may allow hot standby recovery from backup; a 15-minute RTO requires active-active redundancy. For AI systems, RTO must account for: model loading time (large models may take minutes to load into GPU memory), warm-up inference time, and vector index availability. RTO must always be less than MTPD. Regulators (e.g., DORA for financial services) may impose mandatory RTOs for critical functions.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Recovery Point Objective', 'MTPD', 'Business Impact Analysis', 'Disaster Recovery', 'High Availability'],
+  },
+  {
+    term: 'Recovery Point Objective (RPO)',
+    definition: 'The maximum acceptable amount of data loss measured in time — how far back in time to the last good backup/snapshot. An RPO of 1 hour means the organisation can tolerate losing up to 1 hour of data. RPO drives backup and replication strategy: a 24-hour RPO allows daily backups; a 15-minute RPO requires near-continuous replication. For AI systems: RPO applies to training data checkpoints, fine-tuning data, vector database content, and conversation logs. The RPO for a customer-facing AI chatbot log may differ from that of the model weights themselves. RPO and RTO together define the recovery architecture and cost.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Recovery Time Objective', 'Business Impact Analysis', 'Backup Strategy', 'Disaster Recovery', 'MTPD'],
+  },
+  {
+    term: 'Defence in Depth',
+    definition: 'A security architecture strategy employing multiple independent layers of controls so that the failure of any single layer does not result in a complete security breach. Based on the military principle of layered defences. Applied to AI systems: Layer 1 — network controls (firewall, private endpoint); Layer 2 — application authentication (API keys, mTLS); Layer 3 — input validation (prompt classifiers, input sanitisation); Layer 4 — model-level safety training (RLHF, safety fine-tuning); Layer 5 — output filtering (content safety classifiers); Layer 6 — runtime monitoring (anomaly detection, audit logging). Each layer must be designed with the assumption that other layers may fail. CISSP Domain 3 foundational principle.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'SecAI', 'SC-500'],
+    related: ['Security Architecture', 'Least Privilege', 'Separation of Duties', 'Zero Trust', 'Layered Security'],
+  },
+  {
+    term: 'Separation of Duties',
+    definition: 'A security principle that divides critical tasks among multiple people or systems so no single individual or component can complete a high-risk action alone. Prevents fraud, sabotage, and single points of failure. For AI systems: the engineer who trains the model should not be the same person who approves it for production deployment; data scientists should not have direct access to production serving infrastructure; model approvals require sign-off from both the ML engineer and the security team. In MLOps pipelines: automated training pipelines should require human approval before pushing model updates to production. Related CISSP concepts: dual control (two people required simultaneously), split knowledge (each person knows only part of the secret).',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Least Privilege', 'Need to Know', 'Dual Control', 'Four-Eyes Principle', 'Access Control'],
+  },
+  {
+    term: 'Chain of Custody (Digital Evidence)',
+    definition: 'The unbroken, documented record of every person and system that has handled a piece of digital evidence from collection through legal proceedings. Required for forensic evidence to be admissible in court. Requirements: cryptographic hash (SHA-256) of all digital evidence at collection; signed transfer records at every handoff; tamper-evident storage with access logging; documentation of every access and the purpose. For AI incidents: chain of custody for model weights, training data, inference logs, and conversation records requires the same rigour. Premature evidence destruction (e.g., deleting inference logs after an AI incident) can expose the organisation to obstruction charges and civil liability. CISSP Domain 7 topic.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Digital Forensics', 'Evidence Handling', 'Incident Response', 'Legal Hold', 'Hash Verification'],
+  },
+  {
+    term: 'STRIDE Threat Model',
+    definition: 'A threat modelling framework developed by Microsoft categorising threats into six types: Spoofing (impersonation of identity), Tampering (modification of data or code), Repudiation (claiming not to have performed an action), Information Disclosure (exposure of sensitive data), Denial of Service (making a system unavailable), Elevation of Privilege (gaining higher access than authorised). Applied to AI systems in data flow diagrams: each node and data flow is analysed against all six categories. Example: an LLM inference endpoint faces Spoofing (API key theft to impersonate legitimate caller), Information Disclosure (prompt injection extracting training data), and DoS (token flooding). CISSP Domain 3 security engineering technique; extends to PASTA and LINDDUN for privacy-specific threats.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'SecAI', 'CAISP'],
+    related: ['Threat Modelling', 'Data Flow Diagram', 'PASTA', 'Attack Surface Analysis', 'Security Architecture'],
+  },
+  {
+    term: 'Privileged Access Management (PAM)',
+    definition: 'A security programme that manages, monitors, and audits privileged accounts — accounts with elevated permissions to IT systems. Components: privileged account discovery and inventory; credential vaulting (rotating passwords stored in a secure vault, never known to the user); just-in-time access (temporary privilege elevation granted only when needed); session recording and keystroke logging for all privileged sessions; privileged access workstations (PAWs) for admin tasks. For AI infrastructure: PAM covers access to ML training clusters, model deployment pipelines, inference infrastructure configuration, and model training data stores. Prevents insider threat and limits lateral movement after external breach. CISSP Domain 5 topic; NIST SP 800-53 AC-2, AC-3, AC-17.',
+    category: 'CISSP',
+    certTags: ['CISSP', 'SC-500'],
+    related: ['Privileged Identity Management', 'Just-in-Time Access', 'Least Privilege', 'Zero Standing Privileges', 'Identity and Access Management'],
+  },
+
+  // ─── CAIS-Specific Terms ──────────────────────────────────────────────────
+
+  {
+    term: 'Feature Squeezing',
+    definition: 'An adversarial example detection technique that reduces the colour depth or spatial resolution of input images (or applies smoothing to text/audio) and then compares the original model prediction with the prediction on the "squeezed" input. Adversarial examples are sensitive to small perturbations and often produce different predictions after squeezing; clean inputs typically produce the same prediction. Two squeezers used together with majority voting improve detection accuracy. Limitation: an adaptive attacker aware of feature squeezing can craft adversarial examples that survive the specific squeezing operations. Published by Xu et al. (2018). CAIS adversarial ML topic.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'SecAI', 'CAISP'],
+    related: ['Adversarial Example', 'Adversarial Detection', 'Input Preprocessing', 'Evasion Attack', 'Model Robustness'],
+  },
+  {
+    term: 'Certified Robustness',
+    definition: 'A provable guarantee that a model\'s prediction on a given input cannot be changed by any adversarial perturbation within a specified L_p ball of radius ε. Unlike empirical robustness (which shows a model resists known attacks), certified robustness provides a mathematical certificate that no adversarial example exists within the bounded neighbourhood. Randomised Smoothing (Cohen et al., 2019) is the primary scalable technique: adds Gaussian noise to the input, runs the base model many times, and certifies a majority-vote prediction under L2-bounded perturbations. Trade-off: certified robustness typically comes at the cost of reduced accuracy on clean inputs. Important for safety-critical AI applications (medical AI, autonomous systems) where "no adversarial examples found" is insufficient assurance.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'SecAI'],
+    related: ['Adversarial Robustness', 'Randomised Smoothing', 'Adversarial Training', 'Evasion Attack', 'Model Verification'],
+  },
+  {
+    term: 'Inference Attack',
+    definition: 'A category of privacy attacks against ML models that infer sensitive information without accessing the model\'s training data directly. Three main types: (1) Membership Inference — determines whether a specific record was in the training set; (2) Attribute Inference — infers sensitive attributes of a training record given partial information; (3) Property Inference — infers global properties of the training dataset (e.g., what fraction of training data was from a specific demographic). Inference attacks exploit the statistical relationship between a model\'s parameters/outputs and its training data. Primary defence: differential privacy during training, which provides a formal mathematical privacy guarantee limiting what can be inferred about any individual training record. CAIS adversarial ML domain topic.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'CAISP', 'SecAI'],
+    related: ['Membership Inference Attack', 'Model Inversion Attack', 'Differential Privacy', 'Data Privacy', 'Privacy-Preserving ML'],
+  },
+  {
+    term: 'Neural Cleanse',
+    definition: 'A backdoor detection technique for neural networks that reverse-engineers potential trigger patterns by finding the minimum perturbation that causes the model to misclassify all inputs to a specific target class. If the found perturbation is anomalously small compared to other classes (measured by L1 norm), this indicates the presence of a backdoor for that class — a legitimate class requires a large perturbation to achieve universal misclassification, while a backdoored class has a small, specific trigger already optimised during training. Published by Wang et al. (2019). Limitation: computationally expensive for large models; may not detect distributed backdoors or those using natural features as triggers. CAIS AI pipeline security topic.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'CAISP', 'SecAI'],
+    related: ['Backdoor Attack', 'Data Poisoning', 'Adversarial Training', 'Model Security', 'Supply Chain Attack'],
+  },
+  {
+    term: 'AI Bill of Materials (AI-BOM)',
+    definition: 'A structured inventory of all components comprising an AI system\'s supply chain, analogous to a Software Bill of Materials (SBOM) for traditional software. An AI-BOM documents: pre-trained foundation models used and their source/version/license; training datasets and their provenance, version, and licensing; ML framework dependencies (PyTorch, TensorFlow, HuggingFace Transformers); fine-tuning data sources; third-party APIs called at inference time; and human feedback datasets. Used for supply chain risk management: if a vulnerability is discovered in a training dataset or pre-trained model, the AI-BOM enables rapid identification of all affected systems. Referenced in NIST SP 800-218A (Secure Software Development for AI), CISA AI Supply Chain Security guidance, and CAISP/CAIS exam content.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'CAISP', 'SecAI', 'SC-500'],
+    related: ['SBOM', 'Supply Chain Attack', 'Model Provenance', 'AI Supply Chain', 'MITRE ATLAS'],
+  },
+
+  // ─── SC-500 / Microsoft Security Terms ───────────────────────────────────
+
+  {
+    term: 'Microsoft Purview DSPM for AI',
+    definition: 'Data Security Posture Management for AI — a Microsoft Purview capability that provides visibility and governance over AI data risks, particularly for Microsoft 365 Copilot deployments. Key capabilities: (1) Oversharing assessment — identifies sensitive data accessible to Copilot per user based on SharePoint/OneDrive permissions; (2) Sensitive data discovery in AI interactions — surfaces cases where sensitive content is referenced in Copilot conversations; (3) Remediation recommendations — suggests access restriction and sensitivity labelling actions; (4) AI hub dashboard — unified view of AI-related data risks across the tenant. Addresses the "Copilot can see everything you can see" problem by making data access patterns visible to security teams. SC-500 exam topic under "Secure AI Workloads & Govern Data with Purview".',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Microsoft Purview', 'Microsoft 365 Copilot', 'Data Loss Prevention', 'Sensitivity Labels', 'AI Security Posture Management'],
+  },
+  {
+    term: 'Continuous Access Evaluation (CAE)',
+    definition: 'A Microsoft Entra ID capability that enables near-real-time revocation of access tokens when a critical event occurs, rather than waiting for the standard token lifetime (typically 1 hour) to expire. CAE events that trigger immediate token validation: user account disabled, password change, risky user/sign-in detected by Identity Protection, admin-initiated revocation. Without CAE, an attacker who steals an access token can use it for up to 60 minutes even after the account is disabled. With CAE: the resource provider (Exchange, SharePoint, Teams) checks for critical events on each request and can immediately require re-authentication. SC-500 exam topic; particularly relevant for AI workloads using Entra ID delegated permissions. Source: Microsoft Learn — Continuous Access Evaluation.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Microsoft Entra ID', 'Access Token', 'Conditional Access', 'Identity Protection', 'Zero Trust'],
+  },
+  {
+    term: 'Microsoft Defender for AI Workloads',
+    definition: 'A capability within Microsoft Defender for Cloud that provides runtime threat detection for Azure AI services including Azure OpenAI Service and Azure AI Foundry. Detects threats: jailbreak attempts, prompt injection, sensitive data exposure in model outputs, unusual usage patterns, and credential theft via AI interfaces. Alerts integrate into Microsoft Defender XDR and Microsoft Sentinel for correlation with broader security incidents. Part of the SC-500 exam\'s "Secure AI Workloads" domain alongside Purview DSPM for AI, Azure AI Content Safety Prompt Shields, and Azure AI Foundry content filtering configurations. Distinct from Azure AI Content Safety (input/output filtering) — Defender for AI is a detection/investigation tool, not a prevention control.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Microsoft Defender for Cloud', 'Azure OpenAI Service', 'Microsoft Sentinel', 'AI Security', 'Threat Detection'],
+  },
+  {
+    term: 'Automatic Attack Disruption',
+    definition: 'A Microsoft Defender XDR capability that uses AI to automatically contain active attacks in progress without waiting for analyst action. When a high-confidence attack signal is detected (e.g., Midnight Blizzard-style credential theft and lateral movement), Defender XDR can automatically: disable compromised user accounts, isolate affected endpoints from the network, revoke active sessions. Operates with high-fidelity signals to minimise false positives — only triggers on well-established attack patterns. SC-500 exam topic in the "Manage Security Operations — Defender XDR" domain. The feature reduces the Mean Time to Contain (MTTC) from hours to minutes by eliminating the human response latency in the critical early stages of an attack.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Microsoft Defender XDR', 'Incident Response', 'Mean Time to Contain', 'SOC Automation', 'SOAR'],
+  },
+
+  // ─── CISM Risk Management Terms ───────────────────────────────────────────
+
+  {
+    term: 'Key Risk Indicator (KRI)',
+    definition: 'A metric that provides early warning that the level of risk exposure is approaching or exceeding an acceptable threshold. Differs from Key Performance Indicators (KPIs) which measure past performance — KRIs are forward-looking predictors of risk escalation. Good KRI characteristics: measurable, predictive of risk materialisation, early warning (signals before the event), actionable (triggers a defined response when breached). AI security KRI examples: model drift score (drift above threshold signals degrading accuracy before user complaints); demographic parity ratio (fairness drift signals potential discrimination before regulatory breach); adversarial query volume spike (signals active probing before successful attack). CISM Domain 2 (Risk Management) core tool for board-level risk reporting.',
+    category: 'CISM',
+    certTags: ['CISM', 'CISSP'],
+    related: ['Key Performance Indicator', 'Risk Appetite', 'Risk Threshold', 'Board Reporting', 'Risk Monitoring'],
+  },
+  {
+    term: 'Mean Time to Detect (MTTD)',
+    definition: 'The average time elapsed between a security incident beginning (first attacker action) and the organisation detecting it (first alert or human awareness). A measure of detection capability maturity. Industry benchmark: the IBM Cost of a Data Breach Report 2024 found organisations take an average of 194 days to identify a breach. Shorter MTTD directly reduces breach cost (fewer records exfiltrated, less dwell time). For AI systems: MTTD includes detecting model poisoning (which may not produce obvious signals until inference time), prompt injection attacks in production logs, and model output anomalies. AI-specific monitoring (inference anomaly detection, input/output logging with alerting) directly reduces MTTD for AI incidents. CISM Domain 4 (Incident Management) metric.',
+    category: 'CISM',
+    certTags: ['CISM', 'CISSP'],
+    related: ['Mean Time to Respond', 'Mean Time to Contain', 'Incident Response', 'SOC Metrics', 'Security Monitoring'],
+  },
+  {
+    term: 'Mean Time to Respond (MTTR)',
+    definition: 'The average time from incident detection to resolution (service restoration and containment). Encompasses both the technical remediation time and organisational response time. Two variants: MTTR (resolve) — time to fully restore normal service; MTTC (contain) — time to contain the incident and stop ongoing damage. Driven by: playbook maturity (documented procedures reduce ad-hoc decision time), automation (automated containment reduces MTTC), team training (tabletop exercises reduce decision latency), and tooling quality. For AI incidents: MTTR is extended by model reload time (large models take time to restore), investigation complexity (understanding model behavior is harder than traditional IT), and the need for specialised ML expertise. CISM Domain 4 metric for measuring incident response programme effectiveness.',
+    category: 'CISM',
+    certTags: ['CISM', 'CISSP'],
+    related: ['Mean Time to Detect', 'Incident Response', 'Recovery Time Objective', 'SOC Metrics', 'MTTC'],
+  },
+  {
+    term: 'Risk Appetite vs. Risk Tolerance',
+    definition: 'Two distinct but related risk management concepts. Risk Appetite: the broad-level statement of the amount of risk an organisation is willing to accept in pursuit of its objectives — a strategic, directional statement ("we accept moderate risk in our AI experimentation programme"). Risk Tolerance: the specific, quantified acceptable variation around risk appetite for a particular objective — the operational boundary ("we tolerate up to a 2% false positive rate in the AI content moderation system before requiring remediation"). CISM framework: the board sets risk appetite; management defines risk tolerance thresholds for specific systems; KRIs monitor whether actual risk stays within tolerance. For AI: risk appetite covers AI deployment strategy; risk tolerance specifies measurable thresholds for accuracy, fairness, and security metrics. Source: ISACA Risk IT Framework.',
+    category: 'CISM',
+    certTags: ['CISM', 'CISSP'],
+    related: ['Key Risk Indicator', 'Risk Threshold', 'Board Reporting', 'Governance', 'Risk Management Framework'],
+  },
+
+  // ─── AI Governance and Compliance Terms ──────────────────────────────────
+
+  {
+    term: 'Model Card',
+    definition: 'A structured documentation standard for ML models that transparently communicates key facts about a model\'s design, training, performance, and limitations to all stakeholders — technical and non-technical. Sections: Model description (architecture, training data, intended use); Metrics and evaluation (performance on multiple datasets and subgroups); Ethical considerations (potential harms, biases identified, limitations); Recommendations (appropriate and inappropriate uses). Published by Mitchell et al. (2019). Adopted by Google, Hugging Face, and others as a standard disclosure format. Required evidence for NIST AI RMF GOVERN function compliance and EU AI Act transparency obligations for high-risk AI systems. CAISP, SecAI, and CISM AI governance study topic.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP', 'CISM', 'AWS-AIF-C01'],
+    related: ['System Card', 'AI Documentation', 'Model Transparency', 'Responsible AI', 'NIST AI RMF'],
+  },
+  {
+    term: 'Shadow AI',
+    definition: 'The use of AI tools and services by employees without the knowledge, approval, or governance oversight of the IT or security organisation — analogous to "shadow IT" but specific to AI. Examples: employees submitting sensitive company data to public LLM APIs (ChatGPT, Claude.ai) for productivity tasks; using AI writing tools for confidential documents; installing unapproved AI plugins in productivity software. Risks: data exfiltration (company data processed by third-party AI with unclear retention policies), compliance violations (PII in LLM prompts violates GDPR/HIPAA), reputational risk (confidential information in training data), and uncontrolled use of AI outputs in business decisions. Mitigation: acceptable use policy for AI tools, DLP controls on AI service endpoints, user education, and approved enterprise AI alternatives. CISM and SecAI governance topic.',
+    category: 'AI Governance',
+    certTags: ['CISM', 'SecAI', 'CAISP', 'SC-500'],
+    related: ['Shadow IT', 'Data Loss Prevention', 'AI Acceptable Use Policy', 'Insider Risk', 'DSPM for AI'],
+  },
+  {
+    term: 'EU AI Act Risk Tiers',
+    definition: 'The classification framework in the EU AI Act (2024) that categorises AI systems by risk level with corresponding obligations. Four tiers: (1) Unacceptable Risk — prohibited AI: social scoring by governments, real-time biometric surveillance in public spaces (with narrow exceptions), manipulation of vulnerable persons. Banned outright. (2) High Risk — Annex III applications: AI in recruitment, credit scoring, biometric categorisation, law enforcement, critical infrastructure. Requires conformity assessment, CE marking, incident reporting, post-market monitoring. (3) Limited Risk — chatbots, deepfakes. Transparency obligations: users must be informed they are interacting with AI. (4) Minimal Risk — spam filters, AI in video games. No specific obligations. CISSP, SecAI, CISM, and CAISP study topic.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP', 'CISM', 'CISSP', 'CAIS'],
+    related: ['EU AI Act', 'High-Risk AI', 'Conformity Assessment', 'NIST AI RMF', 'ISO 42001'],
+  },
+  {
+    term: 'Differential Privacy',
+    definition: 'A mathematical framework for privacy-preserving machine learning that provides a rigorous guarantee: the output of an algorithm reveals almost nothing about whether any individual\'s data was included in the input. Formally defined by epsilon-delta differential privacy: an algorithm M is (ε, δ)-differentially private if for any two databases differing by one record: Pr[M(D) ∈ S] ≤ e^ε × Pr[M(D\') ∈ S] + δ. Smaller ε = stronger privacy guarantee. Implementation: add calibrated Gaussian or Laplace noise during gradient computation (DP-SGD). Apple uses differential privacy in iOS feature learning; Google in Chrome histogram collection. For LLM training: reduces memorisation of training data and defends against membership inference attacks. Trade-off: privacy budget ε limits model utility — smaller ε degrades model accuracy. CAIS, CAISP, and SecAI privacy-preserving ML topic.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'CAISP', 'SecAI', 'AWS-AIF-C01'],
+    related: ['Membership Inference Attack', 'Privacy-Preserving ML', 'Federated Learning', 'Training Data Privacy', 'DP-SGD'],
+  },
 ];
