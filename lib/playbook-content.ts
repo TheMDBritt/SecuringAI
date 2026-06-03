@@ -4711,4 +4711,198 @@ Most enterprises deploying AI today operate at Tier 1–2. CISM practitioners sh
 - "An AI model update is deployed without CAB review. Which CISM domain failure is this?" → Domain 3 (Information Security Programme) — change management control failure
 - "NIST AI RMF Tier 3 requires what distinguishing characteristic vs Tier 2?" → Consistent enterprise-wide application of documented practices with portfolio-level metrics`,
   },
+
+  // ─── Microsoft Cloud & AI Security ────────────────────────────────────────
+
+  {
+    id: 'sc500-ai-workloads',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Securing Azure AI Workloads (SC-500 Domain 5)',
+    certTags: ['SC-500', 'SecAI'],
+    vocab: ['Azure OpenAI Service', 'Prompt Shields', 'Azure AI Content Safety', 'Purview DSPM for AI', 'Microsoft Security Copilot', 'Defender for AI Workloads'],
+    content: `The SC-500 "Secure AI Workloads & Govern Data with Purview" domain (20–25% of exam) covers securing Azure OpenAI, AI Foundry, Copilot experiences, and governing sensitive data in AI pipelines.
+
+## Azure AI Security Stack
+
+| Layer | Control | What It Does |
+|-------|---------|--------------|
+| Input | **Prompt Shields** | Detects prompt injection in user inputs and indirect injection via RAG documents |
+| Content | **Azure AI Content Safety** | Filters hate, violence, self-harm, sexual content at configurable severity thresholds |
+| Data | **Purview DSPM for AI** | Detects sensitive data (PII, credentials) in Copilot prompts and AI interactions |
+| Model | **Defender for AI Workloads** | Runtime threat detection for Azure OpenAI — detects jailbreaks, anomalous usage |
+| Identity | **Managed Identity + RBAC** | Keyless authentication for services accessing Azure OpenAI |
+| Network | **Private Endpoint** | Removes public endpoint; routes traffic over Microsoft backbone |
+
+## Prompt Shields
+
+Prompt Shields analyze both:
+- **UserPromptAttack** — direct injection in the user's turn (jailbreaks, role-play hijacks)
+- **DocumentAttack** — indirect injection embedded in retrieved documents passed to the model
+
+\`\`\`json
+// Azure AI Content Safety Prompt Shield response
+{
+  "attackDetected": true,
+  "documents": [
+    {
+      "detected": true,
+      "details": { "type": "DocumentAttack" }
+    }
+  ]
+}
+\`\`\`
+
+## Purview DSPM for AI
+
+Activity explorer in DSPM for AI shows:
+- Which users are interacting with Copilot and AI services
+- What sensitive information types appear in prompts/responses
+- DLP policy matches on AI interactions
+
+**Configure**: Microsoft Purview portal → Data Security Posture Management → AI Hub
+
+## Azure OpenAI Network Security
+
+1. **Private Endpoint** — binds a private IP to the Azure OpenAI resource in your VNet
+2. **Disable public network access** — prevents all public internet access
+3. **Virtual Network Service Endpoint** — routes traffic over Microsoft backbone (less secure than Private Endpoint)
+4. **NSG rules** — restrict which VNet subnets can reach the Private Endpoint NIC
+
+## Defender for AI Workloads
+
+Part of Microsoft Defender for Cloud, this plan detects:
+- **Jailbreak attempts** — prompts that attempt to bypass safety measures
+- **Credential exposure in outputs** — model outputting credentials in responses
+- **Anomalous model usage** — unusual request patterns indicating scanning or exfiltration
+- **Indirect prompt injection** — injection via documents in RAG pipelines
+
+## Microsoft Security Copilot
+
+Security Copilot integrates with the Microsoft security stack for AI-assisted operations:
+
+| Integration | Capability |
+|------------|-----------|
+| Defender XDR | Summarize incidents, generate remediation steps, triage alerts |
+| Microsoft Sentinel | Generate and explain KQL queries, correlate incidents |
+| Intune | Explain device compliance status, generate policies |
+| Purview | Explain DLP policy hits, summarize data risk |
+| Entra ID | Explain risky sign-in events, review conditional access |
+
+**Promptbooks**: Reusable prompt sequences that automate multi-step investigation workflows.
+
+## Exam Tips
+
+- "An attacker embeds malicious instructions in a PDF document retrieved via RAG" → Indirect prompt injection, defended by **Prompt Shields** (DocumentAttack detection)
+- "You need to prevent Azure OpenAI from being accessible from the public internet" → Create a **Private Endpoint** + disable public network access
+- "A Defender for Cloud alert fires on 'Jailbreak attempt detected in Azure OpenAI'" → Source: **Defender for AI Workloads** plan
+- "Purview DSPM for AI detected SSN data in a Copilot interaction" → Review in **AI Hub** → Activity Explorer → configure DLP policy for AI interactions
+- "Security Copilot needs to query your Sentinel workspace" → Assign Security Copilot the **Microsoft Sentinel Reader** role`,
+  },
+
+  // ─── AI Security ──────────────────────────────────────────────────────────
+
+  {
+    id: 'ai-red-team-methodology',
+    category: 'Red Teaming AI',
+    title: 'AI Red Team Methodology (MITRE ATLAS + OWASP LLM Top 10)',
+    certTags: ['SecAI', 'GIAC-GOAA', 'CAIS', 'CAISP'],
+    vocab: ['MITRE ATLAS', 'OWASP LLM Top 10', 'Prompt Injection', 'Model Extraction', 'Data Poisoning', 'Crescendo Attack', 'Many-Shot Jailbreaking', 'Multimodal Injection'],
+    content: `AI red teaming applies structured adversarial testing to discover vulnerabilities in AI systems before production deployment. Two frameworks define the standard attack taxonomy: **MITRE ATLAS** (adversarial ML techniques) and **OWASP LLM Top 10** (LLM-specific risks).
+
+## MITRE ATLAS Technique Taxonomy
+
+MITRE ATLAS maps adversarial ML attacks to MITRE ATT&CK-style tactics:
+
+| Tactic | Technique | ID |
+|--------|-----------|-----|
+| Initial Access | Phishing for ML Model Access | AML.T0018 |
+| ML Attack Staging | Acquire Public ML Models | AML.T0002 |
+| Model Access | ML Model Inference API Access | AML.T0040 |
+| Evasion | Adversarial Patch | AML.T0015 |
+| Model Extraction | Model Inversion Attack | AML.T0016 |
+| Poisoning | Backdoor ML Model | AML.T0020 |
+| LLM-Specific | LLM Prompt Injection | AML.T0051 |
+| LLM-Specific | LLM Jailbreak | AML.T0054 |
+| Exfiltration | LLM Information Disclosure | AML.T0056 |
+
+## OWASP LLM Top 10 (2025)
+
+| # | Category | Core Risk |
+|---|----------|-----------|
+| LLM01 | Prompt Injection | Attacker-controlled input overrides system instructions |
+| LLM02 | Insecure Output Handling | Downstream processing trusts LLM output without validation |
+| LLM03 | Training Data Poisoning | Adversarial examples bias the model during training |
+| LLM04 | Model Denial of Service | Resource exhaustion via expensive prompts |
+| LLM05 | Supply Chain Vulnerabilities | Compromised model weights, datasets, or plugins |
+| LLM06 | Sensitive Information Disclosure | Model reveals training data or system context |
+| LLM07 | Insecure Plugin Design | Plugins executed without authorization or input validation |
+| LLM08 | Excessive Agency | LLM takes autonomous actions beyond what's necessary |
+| LLM09 | Overreliance | Users or systems treat LLM output as ground truth |
+| LLM10 | Model Theft | Model weights extracted via repeated inference queries |
+
+## Advanced Prompt Injection Techniques
+
+### Crescendo Attack
+Multi-turn escalation — starts with benign requests, incrementally steers toward policy violations across conversation turns. Each turn appears contextually reasonable given the previous context.
+
+### Many-Shot Jailbreaking (Anthropic 2024)
+Inserts hundreds of fake conversation examples of the target behaviour before the actual request. Exploits in-context learning — the model continues the established pattern.
+
+### Indirect Prompt Injection
+Injection via content retrieved from external sources: web pages, documents, emails, database records. The attacker does not have direct access to the model — they control content the model retrieves. Most dangerous in agentic systems.
+
+### Multimodal Injection
+Embedding instructions in non-text modalities — images, PDFs, audio files — that are extracted by OCR, speech-to-text, or document parsing before reaching the LLM.
+
+## Red Team Execution Framework
+
+\`\`\`
+1. SCOPE DEFINITION
+   - Target system architecture (standalone LLM, RAG, agentic)
+   - Threat actors (external, insider, supply chain)
+   - Success criteria (what constitutes a finding)
+
+2. THREAT MODELING (STRIDE applied to AI)
+   - Spoofing: fake user identity, injected personas
+   - Tampering: prompt injection, data poisoning
+   - Repudiation: model output deniability
+   - Information Disclosure: training data extraction, system prompt leak
+   - Denial of Service: context window flooding, recursive prompts
+   - Elevation of Privilege: jailbreak, role escalation
+
+3. ATTACK EXECUTION (by attack surface)
+   - Input layer: direct injection, format confusion, encoding attacks
+   - Retrieval layer (RAG): document injection, vector poisoning
+   - Tool/plugin layer: tool parameter injection, auth bypass
+   - Output layer: downstream injection via model output
+
+4. IMPACT ASSESSMENT
+   - Map to OWASP LLM Top 10 category
+   - Map to MITRE ATLAS technique ID
+   - Rate CVSS-LLM severity (proposed: CIA + scope + exploitability)
+
+5. REPORTING
+   - Reproduction steps with exact prompts
+   - Guardrail configuration at time of test
+   - Recommended mitigation control
+   - Cert domain mapping (CAISP, SecAI+, GIAC-GOAA)
+\`\`\`
+
+## Defense Checklist
+
+- **Input validation**: Safety classifier on every user turn, independently of conversation context
+- **Prompt Shields** (Azure) or equivalent: document-level injection detection for RAG
+- **Output validation**: LLM judge or regex check on outputs before downstream processing
+- **Tool authorization**: explicit allow-list of permitted tool calls; no open-ended tool execution
+- **Conversation limits**: session length cap; history sanitization between high-risk operations
+- **Monitoring**: log all prompts and responses; alert on high-risk patterns
+
+## Exam Tips
+
+- "What framework maps adversarial ML techniques to ATT&CK tactics?" → **MITRE ATLAS**
+- "An attacker uses hundreds of fake conversation examples to bypass guardrails" → **Many-shot jailbreaking**
+- "An attacker embeds instructions in a web page that the LLM retrieves" → **Indirect prompt injection** (LLM01)
+- "A model starts taking autonomous actions without user authorization" → **Excessive Agency (LLM08)**
+- "What is the difference between LLM01 and LLM08?" → LLM01 is input manipulation to override instructions; LLM08 is the model taking actions beyond its authorized scope`,
+  },
 ];

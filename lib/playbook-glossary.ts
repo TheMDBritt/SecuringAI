@@ -2353,4 +2353,90 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['CAISP', 'CISM', 'SecAI'],
     related: ['EU AI Act', 'High-Risk AI System', 'CE Marking', 'Technical Documentation', 'NIST AI RMF'],
   },
+
+  // ─── SC-500 · Azure Security ──────────────────────────────────────────────
+
+  {
+    term: 'Microsoft Purview DSPM for AI',
+    definition: 'Data Security Posture Management (DSPM) for AI, part of Microsoft Purview, provides visibility and control over data used in Microsoft 365 Copilot, Azure OpenAI Service, and third-party AI applications. It discovers AI interactions through activity explorer, detects sensitive information shared with AI (PII, credentials, regulated data), enforces data loss prevention (DLP) policies on AI prompts and responses, and provides an AI hub showing which users and groups are interacting with AI services and what sensitive data types appear in those interactions. Part of the Microsoft SC-500 "Secure AI Workloads" domain.',
+    category: 'AI Security',
+    certTags: ['SC-500', 'SecAI'],
+    related: ['Purview DLP', 'Microsoft 365 Copilot Security', 'Prompt Shields', 'Azure OpenAI', 'DSPM'],
+  },
+  {
+    term: 'Azure OpenAI Prompt Shields',
+    definition: 'An Azure AI Content Safety feature that detects and blocks prompt injection attacks in Azure OpenAI Service deployments. Prompt Shields analyzes both user prompt messages and document content passed to the model (retrieval-augmented generation inputs) for injection patterns — attempts to override system instructions, role-play attacks, and indirect injection via retrieved documents. Returns a detection result with attack classification (UserPromptAttack or DocumentAttack) and a jailbreak indicator. Part of the Microsoft SC-500 domain "Secure AI Workloads & Govern Data with Purview" and the Azure AI security content filtering layer.',
+    category: 'AI Security',
+    certTags: ['SC-500', 'SecAI', 'CAISP'],
+    related: ['Prompt Injection', 'Azure AI Content Safety', 'RAG Security', 'Content Filtering', 'Jailbreak'],
+  },
+  {
+    term: 'Microsoft Entra Privileged Identity Management (PIM)',
+    definition: 'A Microsoft Entra ID service that enables just-in-time privileged access management for Azure AD roles and Azure resource roles. Key capabilities: eligible (not permanently active) role assignments that require explicit activation; time-bound assignments with automatic expiration; activation requiring MFA and business justification; approval workflow for sensitive roles; audit logs of all privilege activations; alerts on suspicious privilege use (e.g., always-active Global Administrator). PIM implements the principle of least privilege at the identity layer by ensuring privileged access is temporary, auditable, and requires justification. Core SC-500 exam topic under "Manage Identity & Access".',
+    category: 'Identity Security',
+    certTags: ['SC-500', 'CISSP'],
+    related: ['Just-In-Time Access', 'Least Privilege', 'Conditional Access', 'Microsoft Entra ID', 'MFA'],
+  },
+  {
+    term: 'Stored Access Policy (Azure SAS)',
+    definition: 'A server-side container policy that defines permissions and validity intervals for Shared Access Signature (SAS) tokens. Unlike ad-hoc SAS tokens, a SAS that references a stored access policy can be revoked without rotating the storage account key — by deleting or modifying the policy. This is critical for incident response: if a SAS token is leaked, immediately delete the stored access policy to invalidate all SAS tokens that reference it without disrupting legitimate consumers that use different policies. Best practice: always create SAS tokens with stored access policies for any token with a validity window longer than 1 hour.',
+    category: 'Cloud Security',
+    certTags: ['SC-500'],
+    related: ['Shared Access Signature', 'Azure Key Vault', 'Storage Security', 'Principle of Least Privilege'],
+  },
+  {
+    term: 'Microsoft Security Copilot',
+    definition: 'An AI-powered security operations platform from Microsoft that assists analysts with threat intelligence, incident investigation, vulnerability management, and policy compliance. Security Copilot accepts natural language queries and generates responses using embedded Microsoft security expertise, integration with Microsoft Sentinel, Defender XDR, Intune, and Purview. It can summarize incidents, generate KQL queries, explain threat actor TTPs, and draft security reports. Key SC-500 exam capabilities: promptbook creation and sharing, integration with Defender XDR incidents, and natural language KQL generation. Security Copilot operates within the Microsoft security data boundary.',
+    category: 'AI in Security Ops',
+    certTags: ['SC-500', 'SecAI', 'GIAC-GASAE'],
+    related: ['Microsoft Sentinel', 'KQL', 'Microsoft Defender XDR', 'AI-Assisted Triage', 'Promptbook'],
+  },
+
+  // ─── CISSP · Cryptography & Architecture ─────────────────────────────────
+
+  {
+    term: 'Post-Quantum Cryptography (PQC)',
+    definition: 'Cryptographic algorithms designed to be secure against both classical computers and cryptographically relevant quantum computers (CRQCs). NIST finalized the first three PQC standards in 2024: FIPS 203 (ML-KEM / CRYSTALS-Kyber) for key encapsulation, FIPS 204 (ML-DSA / CRYSTALS-Dilithium) for digital signatures, FIPS 205 (SLH-DSA / SPHINCS+) as a stateless hash-based signature alternative. Organizations should assess cryptographic inventory, prioritize systems handling data with long secrecy requirements (government, financial, medical), and begin migration planning. "Harvest now, decrypt later" attacks — recording encrypted traffic today to decrypt once quantum computers mature — motivate urgent migration of asymmetric key exchange.',
+    category: 'Cryptography',
+    certTags: ['CISSP', 'SecAI'],
+    related: ['Quantum Computing', 'NIST PQC', 'Key Exchange', 'Asymmetric Cryptography', 'CRYSTALS-Kyber'],
+  },
+  {
+    term: 'Certificate Pinning',
+    definition: 'A security mechanism that restricts accepted TLS certificates for a specific application connection to a predefined set of certificates or public keys — rather than trusting the full public CA system. Hard pinning: the application refuses connections if the certificate does not match a pinned hash. Dynamic pinning (HTTP Public Key Pinning / HPKP, now deprecated): the server provides the pin in a response header. Certificate pinning mitigates attacks by rogue CAs issuing fraudulent certificates for a domain. Drawbacks: operational risk — expired or rotated certificates can break connectivity; difficult to update in deployed mobile/IoT firmware. Used in high-security mobile banking and enterprise MDM configurations. CISSP Domain 3 topic.',
+    category: 'Cryptography',
+    certTags: ['CISSP', 'SC-500'],
+    related: ['TLS', 'Certificate Authority', 'Man-in-the-Middle Attack', 'PKI', 'HSTS'],
+  },
+  {
+    term: 'Chain of Custody',
+    definition: 'The documented chronological record that tracks the collection, handling, transfer, analysis, and disposition of evidence in a digital investigation. For forensic evidence to be admissible in legal proceedings, chain of custody must demonstrate that evidence was not altered, contaminated, or tampered with between collection and presentation. Requirements: identification labels on each piece of evidence; signatures at every transfer; secure storage with tamper-evident seals; hash verification (MD5/SHA-256) of digital evidence at collection and each subsequent access; written records of every person who accessed the evidence and why. CISSP Domain 7 (Security Operations) topic with implications for AI incident investigations.',
+    category: 'Digital Forensics',
+    certTags: ['CISSP', 'CISM'],
+    related: ['Digital Forensics', 'Evidence Handling', 'Incident Response', 'Legal Hold', 'Hash Verification'],
+  },
+
+  // ─── AI Attack Techniques ─────────────────────────────────────────────────
+
+  {
+    term: 'Crescendo Attack',
+    definition: 'A multi-turn prompt injection strategy where an attacker incrementally escalates requests over a conversation, starting with benign queries and gradually steering the model toward policy-violating outputs. Each turn builds on the previous context, making later malicious turns appear contextually reasonable to the model. Named after the musical term for a gradual increase in volume. Effective against models that evaluate each turn in context of prior conversation rather than re-evaluating against the system prompt independently. Defense: stateless guardrail evaluation of each turn independently of conversation context, conversation history sanitisation, and session length limits.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'GIAC-GOAA', 'CAIS'],
+    related: ['Prompt Injection', 'Jailbreak', 'Multi-Turn Attack', 'Context Window Manipulation', 'Guardrails'],
+  },
+  {
+    term: 'Many-Shot Jailbreaking',
+    definition: 'A prompt injection technique that exploits the large context window of modern LLMs by inserting hundreds of examples of the desired policy-violating behaviour as fake prior conversation turns before issuing the actual harmful request. The model, conditioned on the pattern of the injected examples, tends to continue the pattern and comply with the request. More effective than few-shot jailbreaking because the model\'s in-context learning more strongly favours continuation of a well-established pattern. Published as a finding by Anthropic in 2024. Defense: context window monitoring for pattern repetition, KV-cache inspection, and conversation history validation.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'GIAC-GOAA'],
+    related: ['Jailbreak', 'Few-Shot Prompting', 'Context Window', 'In-Context Learning', 'Prompt Injection'],
+  },
+  {
+    term: 'Multimodal Injection',
+    definition: 'A prompt injection attack delivered through non-text modalities — images, audio, video, or documents — rather than text prompts. Examples: embedding adversarial text instructions in an image that is invisible to humans but rendered by OCR/vision models before being passed to the LLM; encoding instructions in audio that speech-to-text transcribes and routes to the model; embedding instruction text in document headers or white-on-white text in PDFs. Particularly dangerous for agentic systems that process multi-format inputs autonomously. Defense: multi-modal input validation before LLM processing, sandboxed OCR with sanitisation, and rendering/extraction in an isolated environment before routing to the model.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'GIAC-GOAA', 'CAISP'],
+    related: ['Prompt Injection', 'Indirect Prompt Injection', 'Multimodal Models', 'Agentic AI', 'Input Validation'],
+  },
 ];
