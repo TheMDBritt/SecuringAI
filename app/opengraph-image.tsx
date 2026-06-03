@@ -145,8 +145,8 @@ export default async function OpengraphImage() {
           {[
             'CompTIA SecAI+',
             'ISC2 CAISP',
-            'ISACA AAISM',
-            'EC-Council CAIS',
+            'GIAC GOAA / GASAE',
+            'EC-Council C|AI Security',
             'OWASP LLM Top 10',
             'NIST AI RMF',
             'ISO/IEC 42001',

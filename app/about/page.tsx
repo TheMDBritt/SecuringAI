@@ -98,7 +98,7 @@ export default function AboutPage() {
             How it works
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-slate-100 mb-8">
-            {`Three connected dojos. ${SCENARIOS.length} scenarios.`}
+            {`Three connected dojos. ${SCENARIOS.length} scenarios. 16 prebuilt incidents.`}
           </h2>
           <div className="space-y-4 text-sm text-slate-300 leading-relaxed">
             <p>
