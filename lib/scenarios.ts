@@ -140,6 +140,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: ['LLM04', 'LLM05'],
     mitreAttackIds: [],
   },
+  {
+    id: 'ai-model-transparency',
+    dojoId: 3,
+    title: 'AI Model Transparency & Documentation',
+    description:
+      'Draft and audit AI transparency artifacts: model cards (Google format), system cards (Meta format), and AI Bills of Materials (AI-BOM). Scored against EU AI Act Articles 11–15 and NIST AI RMF MAP subcategories.',
+    difficulty: 'intermediate',
+    owaspTags: ['LLM05'],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {

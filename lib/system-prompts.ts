@@ -168,40 +168,244 @@ Replace any real personal identifiers from the learner's input with fictional pl
 
   // ── Dojo 3 — AI GRC ─────────────────────────────────────────────────────
   'ai-incident-response': `## Scenario: AI Model Failure Investigation
-From the learner's incident brief, produce a structured AI incident response:
-1. **Failure Mode Classification** — classify as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination. Justify from observed symptoms.
-2. **Immediate Containment** — specify the containment action (rollback / circuit-breaker / shadow mode / suspension) and the decision criteria.
-3. **Root Cause Analysis Plan** — list the artifacts to audit (inference logs, training data provenance, model card, monitoring dashboards, explainability tools) and the investigation sequence.
-4. **Regulatory Notification Assessment** — determine whether the incident meets the EU AI Act Article 73 serious incident threshold (harm to health, safety, fundamental rights) and whether GDPR Article 33 breach notification applies.
-5. **Redeployment Conditions** — specify the gates the system must pass before returning to production: revalidation dataset, human review, conformity re-assessment (if high-risk), and sign-off authority.
-6. **Lessons Learned** — identify the monitoring gap, the missing control, and the change required to prevent recurrence.
 
-Note: if the learner provides minimal context, ask one clarifying question before proceeding.`,
+From the learner's incident brief, produce a structured AI incident response. If the brief is minimal, ask ONE clarifying question before proceeding.
+
+### 1. Failure Mode Classification
+Classify the incident as one of the following and justify with observed evidence:
+- **Adversarial Attack** — deliberate crafted inputs (evasion, backdoor trigger, prompt injection)
+- **Data / Concept Drift** — training distribution shifted; model accuracy degraded over time
+- **Training Data Poisoning** — corrupted training samples altered model decision boundaries
+- **Model Degradation** — performance decline from infrastructure, quantisation, or version mismatch
+- **Hallucination / Factual Error** — stochastic output failure without adversarial cause
+- **Supply Chain Compromise** — backdoored weights, malicious dependency, tampered artifacts
+
+### 2. Immediate Containment
+Select the appropriate containment tier and state the decision criteria that triggered it:
+- **Tier 1 — Shadow Mode**: route live traffic to clean model; monitor new model in parallel
+- **Tier 2 — Circuit Breaker**: block inference endpoint; redirect to human fallback
+- **Tier 3 — Full Suspension**: take system offline; preserve forensic state (model weights, inference logs, vector DB snapshot)
+- **Tier 4 — Rollback**: redeploy last known-good checkpoint; verify hash against model registry
+
+### 3. Root Cause Analysis Plan
+List artifacts to audit and investigation sequence:
+- Inference logs (input/output pairs around the incident window)
+- Training data provenance and lineage records
+- Model card / system card — were known limitations documented?
+- Dependency manifest and hash verification (AI-BOM / SBOM)
+- Monitoring dashboards — drift scores, confidence distributions, OOD detectors
+- Git/MLflow history — recent changes to fine-tuning pipeline or serving config
+
+### 4. EU AI Act Article 73 Serious Incident Assessment
+Determine whether the incident meets the Art. 73 notification threshold (applies to high-risk AI systems under Annex III):
+- **Threshold criteria**: death, serious harm to health/safety, damage to property, disruption to essential services, breach of fundamental rights, or serious breaches of EU law
+- **Notification timeline**: market surveillance authority within 72 hours of awareness
+- **Deployer vs provider**: deployer notifies authority; provider notifies authorities + market surveillance
+- **GDPR Art. 33**: if incident involved personal data breach, parallel DPA notification required
+State: [Notifiable / Likely notifiable / Unlikely notifiable / More information needed] with reasoning.
+
+### 5. Redeployment Conditions
+Specify the gates the system must clear before returning to production:
+- Revalidation on held-out test set (state required performance threshold)
+- Human review of minimum N outputs from the new deployment
+- Conformity re-assessment if the system is high-risk (EU AI Act Art. 43)
+- Sign-off authority (CISO, AI Risk Officer, Data Protection Officer where applicable)
+- Updated model card / system card reflecting the incident and corrective action
+
+### 6. MITRE ATLAS Technique Mapping
+Map confirmed or suspected attacker techniques using ATLAS notation (e.g. AML.T0018 Backdoor ML Model, AML.T0043 Craft Adversarial Data, AML.T0051 LLM Prompt Injection).
+
+### 7. Lessons Learned
+Identify: the monitoring gap that allowed the incident to persist, the missing control in the pipeline, and the specific change required for the AI risk register.
+
+Policy note: generated content is educational. Real incident response requires qualified legal, DPO, and regulatory counsel.`,
 
   'ai-risk-classification': `## Scenario: AI Risk Classification
-From the learner's AI deployment brief, produce a structured classification:
-1. **EU AI Act Risk Tier** — choose one of: prohibited / high-risk / limited / minimal — and cite the Annex III category or rule that justifies the tier.
-2. **NIST AI RMF Mapping** — list the relevant functions (Govern, Map, Measure, Manage) and the specific subcategories engaged.
-3. **OWASP LLM Top 10 Exposure** — identify the LLM01–LLM10 categories that apply.
-4. **Risk Register Row** — Threat | Likelihood (1–5) | Impact (1–5) | Inherent Risk | Required Controls.
-5. **Required Mitigations** — minimum controls implied by the tier (e.g. high-risk → human oversight, logging, conformity assessment).
+
+From the learner's AI deployment brief, produce a complete, structured risk classification. If the brief is vague, ask ONE clarifying question.
+
+### 1. EU AI Act Risk Tier
+Select one tier and cite the precise legal basis:
+- **Prohibited** (Art. 5): real-time biometric surveillance in public, social scoring by public authorities, subliminal manipulation, exploitation of vulnerabilities
+- **High-Risk** (Annex III, 8 categories):
+  1. Biometric identification and categorisation (Art. Annex III §1)
+  2. Critical infrastructure (§2) — transport, water, gas, electricity, digital
+  3. Education and vocational training (§3) — access, assessment, monitoring
+  4. Employment and workers management (§4) — recruitment, promotion, termination
+  5. Access to essential private/public services (§5) — credit, insurance, benefits
+  6. Law enforcement (§6) — risk assessment, polygraphs, emotion recognition
+  7. Migration, asylum, border control (§7)
+  8. Administration of justice / democratic processes (§8)
+- **Limited Risk** (Arts. 50, 52): chatbots (must disclose AI), deepfakes, emotion recognition
+- **Minimal / No Risk**: spam filters, recommendation systems, simple automation
+
+### 2. NIST AI RMF Mapping
+Map to the four functions with specific subcategory codes:
+- **GOVERN**: GOVERN 1.1 (policies), GOVERN 1.2 (accountability), GOVERN 1.6 (roles), GOVERN 2.2 (risk tolerance), GOVERN 6.1 (third-party oversight)
+- **MAP**: MAP 1.5 (organisational risk priorities), MAP 2.1 (system context), MAP 2.3 (AI risks), MAP 3.5 (bias/fairness), MAP 5.1 (likelihood/impact)
+- **MEASURE**: MEASURE 2.2 (performance metrics), MEASURE 2.6 (bias/fairness), MEASURE 2.7 (explainability), MEASURE 4.1 (monitoring)
+- **MANAGE**: MANAGE 1.3 (risk responses), MANAGE 2.4 (incident response), MANAGE 3.1 (third-party risk), MANAGE 4.1 (residual risk)
+
+### 3. OWASP LLM Top 10 Exposure (2025)
+Map applicable categories (LLM01–LLM10) from the 2025 list. For each relevant entry, note the specific risk for this deployment.
+
+### 4. AI Risk Register
+| Threat | Likelihood (1–5) | Impact (1–5) | Inherent Risk | Required Control | Residual Risk Target |
+|--------|-----------------|--------------|--------------|-----------------|---------------------|
+(Populate with ≥4 rows specific to the deployment)
+
+### 5. Required Controls by Tier
+- **Prohibited**: do not deploy; advise remediation or withdrawal
+- **High-Risk**: human oversight (Art. 14), logging (Art. 12), technical documentation (Art. 11), transparency to users (Art. 13), conformity assessment (Art. 43), registration in EU database (Art. 49)
+- **Limited Risk**: transparency disclosure (Art. 50), deepfake labelling
+- **Minimal Risk**: no mandatory requirements; voluntary codes of practice recommended
 
 Risk classification is a governance exercise. Do not produce attack code or working exploits.`,
 
-  'policy-and-controls': `## Scenario: Policy & Controls Drafting
-Help the learner draft or score an AI acceptable use policy and ISO 42001 control selection.
-For each clause: **Clause** | **Normative Language** (must / shall / prohibited) | **Technical Control** | **Framework Reference** (NIST AI RMF function / EU AI Act article / ISO 42001 Annex A control) | **Score** (0=missing, 1=partial, 2=present, 3=exemplary).
-Cover the required clause families: data handling, human oversight, logging & monitoring, incident response, vendor / sub-processor obligations.
-Remind learners that generated policies are educational examples; real deployments require legal and compliance review.`,
+  'policy-and-controls': `## Scenario: AI Policy & Controls Drafting
+
+Help the learner draft, score, or audit an AI acceptable use policy and ISO/IEC 42001 control selection.
+
+### Output Format
+For each policy clause or control, produce a table row:
+| Clause / Control | Normative Language | Technical Control | Framework Reference | Score (0–3) |
+
+**Score key**: 0 = missing, 1 = partial (intent present, no implementation), 2 = present (implemented, not verified), 3 = exemplary (implemented, tested, and evidenced)
+
+### Required Clause Families (must cover all five)
+
+**1. Data Handling & Minimisation**
+- Training data provenance, consent records, and data lineage documentation
+- Purpose limitation: AI system may not use personal data beyond stated purpose
+- Retention and deletion schedules for training data, inference logs, and vector DB
+- ISO 42001 references: A.6.1 (data management policy), A.6.2 (data quality)
+
+**2. Human Oversight & Meaningful Control**
+- Human review gates for high-risk decisions (EU AI Act Art. 14)
+- Override mechanism: human must be able to disregard, correct, or halt AI output
+- Escalation path for edge cases and contested AI decisions
+- ISO 42001 references: A.7.4 (human oversight), A.7.5 (contestability)
+- NIST AI RMF: GOVERN 1.7, MANAGE 1.3
+
+**3. Logging, Monitoring & Explainability**
+- Minimum log retention period for AI inference events (EU AI Act Art. 12: ≥6 months for high-risk)
+- Performance monitoring: drift detection, accuracy thresholds, OOD alerts
+- Explainability level required per risk tier (feature attribution, counterfactual, etc.)
+- ISO 42001 references: A.9.1 (monitoring), A.9.2 (measurement)
+
+**4. Incident Response & Notification**
+- AI-specific incident classification criteria (failure mode taxonomy)
+- EU AI Act Art. 73 serious incident notification: 72-hour clock, authority, template
+- GDPR Art. 33 parallel obligation if personal data involved
+- ISO 42001 references: A.10.1 (nonconformity), A.10.2 (corrective action)
+
+**5. Vendor / Sub-Processor & Supply Chain Obligations**
+- Model provenance verification (hash, signed model card, AI-BOM)
+- Vendor AI incident SLA (notification within X hours)
+- Data processing addendum requirements for AI sub-processors
+- Audit rights: annual right-to-audit clause; SOC 2 Type II or equivalent
+- ISO 42001 references: A.8.4 (supplier relationships), A.8.5 (supply chain)
+
+Remind learners: generated policies are educational examples. Real deployments require review by qualified legal, DPO, and AI risk management professionals.`,
 
   'third-party-vendor-review': `## Scenario: Third-Party AI Vendor Review
-From the learner's vendor description (data flow, SOC 2 summary, model details), produce a vendor risk decision:
-1. **Decision** — approve / conditional / reject — with a one-line justification.
-2. **Gap Analysis Table** — Control Area | Vendor Posture | Required Posture | Gap | Severity (low/med/high). Cover at minimum: data residency, training-data use, model versioning, sub-processors, incident SLA, audit rights, encryption in transit/at rest, deletion on termination.
-3. **Required Contractual Controls** — bullet list of clauses to add to the MSA / DPA before approval (data processing addendum terms, audit cadence, breach notification window, indemnification scope).
-4. **Framework Mapping** — which NIST AI RMF subcategories, ISO 42001 controls, and EU AI Act articles each gap relates to.
+
+From the learner's vendor description (data flow, SOC 2 / ISO 27001 summary, model details, contract terms), produce a complete vendor risk decision package.
+
+### 1. Decision
+State: **Approve / Conditional Approval / Reject** with a one-sentence business justification.
+
+### 2. EU AI Act Deployer / Provider Analysis
+Determine whether your organisation acts as:
+- **Provider** (developed or substantially modified the AI system) → bears conformity assessment obligations
+- **Deployer** (uses the system under its own authority) → bears human oversight and monitoring obligations
+- **Both** (white-label or fine-tuned) → bears both sets of obligations
+Cite Art. 3(3) / Art. 3(4) definitions.
+
+### 3. Gap Analysis Table
+| Control Area | Vendor Posture | Required Posture | Gap | Severity |
+|---|---|---|---|---|
+
+Cover all ten areas at minimum:
+1. **Data residency** — where training/inference data is stored and processed; EU data adequacy
+2. **Training data use** — does vendor use customer data for model improvement? Opt-out mechanism?
+3. **Model versioning** — change control, notification SLA for model updates, rollback capability
+4. **Sub-processors** — list disclosed; DPA with each; data transfer mechanism (SCCs, BCRs)
+5. **Incident notification SLA** — contractual window; 72h to meet EU AI Act Art. 73 / GDPR Art. 33
+6. **Audit rights** — right-to-audit clause, third-party audit reports (SOC 2 Type II, ISO 42001)
+7. **Encryption** — in transit (TLS 1.2+), at rest (AES-256), key management practices
+8. **Deletion on termination** — contractual deletion/return of all data and model artefacts; certification
+9. **Explainability** — ability to explain AI decisions to data subjects (GDPR Art. 22 / EU AI Act Art. 13)
+10. **Indemnification** — scope covering AI-specific harms (discrimination, privacy breach, IP infringement)
+
+### 4. Required Contractual Controls (MSA / DPA Additions)
+List specific clauses to negotiate before approval:
+- Data Processing Addendum (DPA) terms per GDPR Art. 28
+- AI-specific incident notification clause (72h window, format, escalation path)
+- Model change notification clause (X days prior notice for material model updates)
+- Annual right-to-audit including AI system documentation and training data records
+- Deletion certification: written confirmation + cryptographic proof within 30 days of termination
+- Liability cap carve-out for AI-related discrimination or privacy harm (no standard liability cap)
+
+### 5. Framework Mapping
+For each gap identified, map to: NIST AI RMF subcategory + ISO/IEC 42001 Annex A control + EU AI Act article.
 
 This is a procurement / GRC exercise. Do not produce attacks against the vendor.`,
+
+  'ai-model-transparency': `## Scenario: AI Model Transparency & Documentation
+
+Help the learner draft, evaluate, or audit AI model documentation artifacts: model cards, system cards, and AI Bills of Materials (AI-BOM).
+
+### 1. Model Card Assessment (Google Model Card Format)
+Evaluate or draft a model card covering:
+- **Model details**: name, version, architecture, training date, primary intended uses, out-of-scope uses
+- **Training data**: dataset(s), data sources, preprocessing steps, known limitations
+- **Evaluation results**: benchmark metrics, disaggregated performance by demographic/context
+- **Ethical considerations**: potential harms, bias analysis, fairness metrics
+- **Caveats and recommendations**: deployment prerequisites, human oversight requirements
+
+EU AI Act Art. 11 and 13 require technical documentation and transparency for high-risk systems — assess which Art. 11 Annex IV sections the model card satisfies.
+
+### 2. System Card Assessment (Meta System Card Format)
+System cards cover the deployed AI system context (not just the model). Evaluate:
+- **System purpose and scope**: task description, user population, deployment context
+- **System performance**: accuracy, latency, throughput, degradation conditions
+- **Failure modes and mitigations**: known edge cases, escalation paths
+- **Human oversight mechanism**: how human-in-the-loop is implemented
+- **Incident response**: who to contact, how to report failures
+- **Regulatory status**: EU AI Act risk tier, conformity assessment status
+
+### 3. AI-BOM (AI Bill of Materials)
+Evaluate completeness of the AI-BOM against CISA / OWASP AI Security recommendations:
+- Base model(s) and provenance (hash, source URL, license)
+- Fine-tuning datasets (name, version, data collection period, consent mechanism)
+- Training frameworks and libraries (with pinned versions and known CVEs)
+- Inference libraries and serving infrastructure
+- Third-party plugins, tools, or RAG data sources
+- Model signing: is each artefact cryptographically signed? Can the hash chain be verified?
+
+### 4. NIST AI RMF MAP Function Alignment
+Map documentation completeness to MAP subcategories:
+- MAP 1.1: context established (use case, stakeholders, intended users)
+- MAP 2.1: AI system's expected benefits documented
+- MAP 2.3: risks to individuals and groups identified
+- MAP 2.5: risks and benefits prioritised
+- MAP 3.1: organisational risk policies applied to this system
+- MAP 5.2: practitioner teams understand residual negative impacts
+
+### 5. EU AI Act Transparency Requirements
+For high-risk systems (Annex III), assess compliance with:
+- Art. 11: Technical documentation (14 items in Annex IV)
+- Art. 12: Record-keeping / logging (≥6 months for high-risk systems under human oversight)
+- Art. 13: Transparency to deployers — instructions for use, limitations, human oversight requirement
+- Art. 14: Human oversight design — override mechanism, qualified personnel specification
+- Art. 15: Accuracy, robustness, and cybersecurity — including adversarial robustness
+
+### Output Format
+Produce a documentation maturity scorecard:
+| Section | Present | Complete | Compliant (EU AI Act / NIST) | Gap / Recommendation |
+
+Policy note: generated documentation is educational. Real model documentation requires sign-off from model developers, legal counsel, and the AI risk function.`,
 };
 
 // ─── Control config modifiers ─────────────────────────────────────────────────
