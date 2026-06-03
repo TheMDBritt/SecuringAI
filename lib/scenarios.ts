@@ -56,6 +56,24 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM05', 'LLM10'],
   },
+  {
+    id: 'indirect-injection',
+    dojoId: 1,
+    title: 'Indirect Prompt Injection',
+    description:
+      'Exploit the RAG pipeline: craft malicious content embedded in simulated documents, emails, and web pages that the AI processes — making it follow attacker instructions while appearing to answer a legitimate user query.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM02', 'LLM08'],
+  },
+  {
+    id: 'model-inversion',
+    dojoId: 1,
+    title: 'Model Inversion & Extraction',
+    description:
+      'Systematically probe BlackBeltAI to reconstruct its decision boundaries (model extraction), infer training data membership (membership inference), and demonstrate confidence score leakage that enables surrogate model creation.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM06', 'LLM10'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
@@ -148,6 +166,16 @@ export const SCENARIOS: Scenario[] = [
       'Draft and audit AI transparency artifacts: model cards (Google format), system cards (Meta format), and AI Bills of Materials (AI-BOM). Scored against EU AI Act Articles 11–15 and NIST AI RMF MAP subcategories.',
     difficulty: 'intermediate',
     owaspTags: ['LLM05'],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-red-team-report',
+    dojoId: 3,
+    title: 'AI Red Team Assessment Report',
+    description:
+      'Conduct a structured AI red team assessment: scope the engagement, select attack categories from MITRE ATLAS, document findings with severity ratings, and produce an executive-ready report with remediation priorities mapped to NIST AI RMF controls.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM05', 'LLM08'],
     mitreAttackIds: [],
   },
 ];
