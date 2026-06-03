@@ -104,7 +104,7 @@ export default function AboutPage() {
             How it works
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
-            {`Three connected dojos. ${SCENARIOS.length} scenarios. 18 prebuilt Dojo 2 incidents.`}
+            {`Three connected dojos. ${SCENARIOS.length} scenarios. 21 prebuilt Dojo 2 incidents.`}
           </h2>
           <div className="space-y-5 text-sm text-slate-400 leading-relaxed">
             <div className="flex gap-4">
@@ -123,7 +123,7 @@ export default function AboutPage() {
               <span className="text-cyan-400 font-mono font-semibold shrink-0 mt-0.5">Dojo 2</span>
               <p>
                 <strong className="text-slate-300 font-medium">AI-Assisted SOC</strong> ·{' '}
-                {SCENARIO_COUNT_BY_DOJO[2]} scenario types, 18 prebuilt incidents plus on-demand
+                {SCENARIO_COUNT_BY_DOJO[2]} scenario types, 21 prebuilt incidents plus on-demand
                 generation. Use AI as a SOC analyst. Per-scenario regex rubrics evaluate the
                 AI&apos;s response for IOCs, MITRE T-codes, executive summaries, and framework
                 mappings. Disabled analyst capabilities are excluded from scoring.

