@@ -10,7 +10,7 @@ const STATS = {
   scenarios:  13,
   quizQs:    629,
   glossary:  321,
-  articles:   57,
+  articles:   59,
   certs:      12,
   incidents:  17,   // prebuilt Dojo 2 scenarios
 };

@@ -4515,4 +4515,200 @@ Produce an AI-BOM covering base model version, fine-tuning datasets, training de
 - "Two indirect injection defenses?" → Content sanitisation before RAG injection; context isolation
 - "What does many-shot jailbreaking exploit?" → In-context learning compliance drift as demonstration count grows`,
   },
+  {
+    id: 'cissp-ai-zero-trust',
+    title: 'CISSP Domain 3: AI Systems and Zero Trust Architecture',
+    category: 'Architecture',
+    certTags: ['CISSP', 'SC-500', 'SecAI'],
+    vocab: ['Zero Trust', 'Least Privilege', 'Separation of Privilege', 'Managed Identity', 'Model Registry'],
+    content: `# CISSP Domain 3: AI Systems and Zero Trust Architecture
+
+## Why AI Workloads Challenge Zero Trust
+
+Zero Trust ("never trust, always verify") was designed for human identities and application workloads. AI systems introduce new trust challenges:
+
+- **AI agents act as autonomous identities** — they make API calls, read files, query databases, and send messages without direct human involvement
+- **ML pipelines span many environments** — data lakes, training clusters, model registries, inference endpoints, and monitoring dashboards
+- **Model weights are high-value crown-jewel assets** — compromise requires no vulnerability exploitation, just access to the file
+- **Inference pods make outbound calls** — to vector DBs, APIs, and tools, creating large egress attack surface
+
+## Zero Trust Pillars Applied to AI
+
+### Identity (Verify Explicitly)
+
+Every AI agent, service account, and pipeline must have a cryptographically verifiable identity:
+
+- **Managed identities over stored credentials** — use cloud-managed identities (Azure Managed Identity, GCP Workload Identity) instead of long-lived API keys stored in environment variables
+- **Short-lived tokens** — model serving pods should receive ephemeral tokens (≤1 hour TTL) from a workload identity provider, not static SA keys
+- **Agent identity separation** — each AI agent in a multi-agent system should have its own identity with distinct permissions; never share credentials between agents
+
+| Anti-Pattern | Zero Trust Alternative |
+|---|---|
+| Static API key in Kubernetes secret | Workload Identity Federation + ephemeral token |
+| Single SA for all ML jobs | Per-pipeline service accounts with least privilege |
+| Developer credentials in CI/CD | OIDC-based machine identity for CI runners |
+
+### Least-Privilege Data Access
+
+- **Scope model access to minimum required data** — a customer service LLM should not have read access to HR records or financial tables
+- **Row/column-level security for AI** — implement fine-grained access controls at the data layer so the model's service identity can only retrieve authorised records
+- **Read-only inference identities** — production model serving pods should never have write access to training data stores or model registries
+
+### Network Micro-Segmentation
+
+AI infrastructure should be segmented with explicit allow-rules rather than broad VPC peering:
+
+\`\`\`
+Training cluster     → Model registry (write: upload weights)
+                     → Data lake (read: training data only)
+                     → NOT → Production databases
+
+Inference pod        → Vector database (read: retrieval)
+                     → External API allowlist (explicit egress)
+                     → NOT → Training cluster
+                     → NOT → Model registry (read weights on startup only)
+\`\`\`
+
+### Continuous Verification for Inference Pipelines
+
+- **Model weight integrity** — verify SHA-256 hash of loaded model weights against a signed manifest on every pod startup; alert on mismatch
+- **Runtime behavioural monitoring** — detect anomalous inference patterns (unusual query rates, unexpected tool calls, high-entropy outputs) as signals of model tampering or prompt injection
+- **Audit logging** — every inference request, tool call, and data access from AI agents must be logged with: requestor identity, timestamp, input hash, output hash, and data sources accessed
+
+## CISSP Exam Focus: Domain 3 + AI
+
+**Security Architecture & Engineering (Domain 3, 13% of exam)** tests your ability to design secure systems. Expect questions on:
+
+| Topic | What to Know |
+|---|---|
+| Secure Defaults | AI services should launch with all external integrations disabled; enable explicitly |
+| Defence in Depth | Multiple layers: network isolation + IAM + output filtering + audit logging |
+| Separation of Privilege | Training vs. inference vs. monitoring environments must be isolated |
+| Fail-Safe Defaults | If model weight hash verification fails → do not start inference → alert |
+| Economy of Mechanism | Minimise AI agent tool surface; each tool should have a specific business purpose |
+| Open Design | AI safety controls should not rely on obscurity of the system prompt |
+
+## Model Registry as a Crown-Jewel Asset
+
+The model registry deserves the same protection as a secrets vault:
+
+- Immutable versioning — once weights are tagged and published, the artefact cannot be overwritten (only a new version can be created)
+- Signed releases — model files are cryptographically signed by the build pipeline; signature verified before loading
+- Access logging — every read and write to the registry is logged and alerted on anomalies
+- Separation: only CI/CD pipelines can write; inference pods can read current production version only
+
+## Exam Tips
+
+- "Which Zero Trust principle prevents a compromised inference pod from modifying training data?" → Least privilege + write access separation between inference and training environments
+- "What replaces long-lived API keys for AI workloads in a Zero Trust architecture?" → Workload Identity Federation / managed identities with short-lived tokens
+- "An AI agent writes to a database it shouldn't access. Which Zero Trust pillar failed?" → Verify explicitly (IAM/authorisation) + least-privilege data access
+- "What should happen if model weight hash verification fails at pod startup?" → Fail-safe default: refuse to start, alert security team — never load unverified weights
+- "Why should multi-agent systems have separate identities per agent?" → Separation of privilege — compromise of one agent shouldn't grant access to all tool surfaces`,
+  },
+  {
+    id: 'cism-ai-governance-programme',
+    title: 'CISM: Building an AI Governance Programme — Strategy to Operations',
+    category: 'Governance',
+    certTags: ['CISM', 'CAISP', 'SecAI'],
+    vocab: ['AI Risk Appetite', 'AI Governance', 'Risk Register', 'NIST AI RMF', 'AI Acceptable Use Policy'],
+    content: `# CISM: Building an AI Governance Programme
+
+## CISM Domain Mapping
+
+| CISM Domain | AI Governance Programme Component |
+|---|---|
+| Domain 1: Information Security Governance | AI strategy, risk appetite, accountability, board reporting |
+| Domain 2: Information Security Risk Management | AI risk identification, assessment, treatment, register |
+| Domain 3: Information Security Programme | AI security controls, policies, training, metrics |
+| Domain 4: Incident Management | AI incident classification, response, regulatory notification |
+
+## Step 1: Define AI Risk Appetite (Domain 1)
+
+Risk appetite is the starting point — everything else flows from it.
+
+A board-endorsed AI risk appetite statement should specify:
+
+- **Acceptable AI use contexts**: what decisions can AI make autonomously vs. requiring human review?
+- **Prohibited AI uses**: what decisions or data types are categorically excluded from AI?
+- **Tolerance thresholds**: acceptable error rates, bias metrics, and failure rates by system category
+- **Regulatory commitment**: explicit commitment to comply with applicable AI regulation (EU AI Act, sector-specific rules)
+
+\`\`\`
+Example Risk Appetite Statement Element:
+"The organisation accepts AI-assisted decision support for Tier 1 (low-risk) credit
+limit increases ≤ $500, subject to model accuracy ≥ 95% and quarterly bias audits
+confirming no statistically significant disparate impact across protected groups.
+AI shall not make final adverse action decisions without human review."
+\`\`\`
+
+## Step 2: Establish Accountability (Domain 1)
+
+| Role | Responsibility |
+|---|---|
+| Board / Audit Committee | Approve AI risk appetite; receive quarterly AI risk reports |
+| Chief Risk Officer (or designated AI Risk Owner) | Own AI risk register; approve high-risk AI deployments |
+| CISO | Information security controls for AI; incident response |
+| AI Governance Committee | Cross-functional (legal, security, data science, privacy, business) — review all new AI deployments against risk criteria |
+| AI System Owner | Accountable for individual system risk; authorises changes |
+| AI Red Team | Pre-deployment adversarial testing; ongoing assurance |
+
+## Step 3: Build the Policy Stack (Domain 3)
+
+A minimum viable AI policy stack:
+
+1. **AI Acceptable Use Policy** — approved tools, prohibited uses, prompt confidentiality, output reliance limits
+2. **AI Risk Classification Standard** — criteria for Tier 1/2/3 systems (low/medium/high risk), mapped to EU AI Act categories
+3. **AI Vendor Due Diligence Standard** — minimum security requirements for AI SaaS procurement
+4. **AI Change Management Procedure** — model updates treated as significant changes; CAB review required for high-risk AI
+5. **AI Incident Response Procedure** — classification criteria, response steps, regulatory notification timelines
+
+## Step 4: Risk Identification and Register (Domain 2)
+
+AI-specific risk categories to add to the enterprise risk register:
+
+| Risk Category | Example | Likelihood Driver |
+|---|---|---|
+| Adversarial Attack | Prompt injection causing data breach | External threat actors |
+| Model Bias / Disparate Impact | Credit model discriminating by zip code proxy | Training data quality |
+| AI Supply Chain | Backdoored pre-trained model | Third-party model provenance |
+| Model Drift / Degradation | Fraud detection F1 falls below threshold | Distribution shift |
+| Regulatory Non-Compliance | High-risk AI deployed without conformity assessment | Governance gap |
+| AI Misuse / Shadow AI | Employees using unapproved GenAI for regulated processes | Culture / awareness |
+| Data Leakage via AI | PII included in prompts sent to external LLM APIs | Policy gap |
+
+## Step 5: Metrics and Board Reporting (Domains 1 and 3)
+
+**Operational metrics** (for the security team):
+
+- AI incident MTTD / MTTR by severity
+- Percentage of AI models with current adversarial test results
+- Open findings from AI red team by severity and age
+- SLA compliance for AI change management reviews
+
+**Board-level KPIs** (quarterly):
+
+- AI risk register status (open items, overdue treatments, trend)
+- High-risk AI system compliance posture (conformity assessments complete / in progress / overdue)
+- AI incident count by severity class YTD vs prior year
+- Regulatory engagement status (any enforcement actions, audits, inquiries)
+
+## Step 6: Maturity Progression (NIST AI RMF Tiers)
+
+| Tier | Characteristics | Key Gap to Next Tier |
+|---|---|---|
+| 1: Partial | Ad-hoc AI use; no inventory; no policy | Create AI inventory; define risk appetite |
+| 2: Risk Informed | Risk awareness; project-by-project assessments | Standardise and enforce consistently across all BUs |
+| 3: Repeatable | Enterprise-wide standards; portfolio-level metrics; defined governance process | Build continuous feedback loops; link metrics to programme improvements |
+| 4: Adaptive | Continuous improvement; emerging threat integration; industry collaboration | Sustain and demonstrate maturity under regulatory examination |
+
+Most enterprises deploying AI today operate at Tier 1–2. CISM practitioners should target Tier 3 as the operational goal.
+
+## Exam Tips
+
+- "Which CISM domain owns AI risk appetite?" → Domain 1 (Information Security Governance)
+- "An AI vendor cannot provide a SOC 2 report. What compensating control does CISM recommend?" → Independent pen test + right-to-audit clause + formal risk acceptance if residual risk is accepted
+- "Which role should have ultimate accountability for AI risk in a CISM programme?" → Executive-level AI Risk Owner (CRO or designated board member), not the CISO
+- "An AI model update is deployed without CAB review. Which CISM domain failure is this?" → Domain 3 (Information Security Programme) — change management control failure
+- "NIST AI RMF Tier 3 requires what distinguishing characteristic vs Tier 2?" → Consistent enterprise-wide application of documented practices with portfolio-level metrics`,
+  },
 ];
