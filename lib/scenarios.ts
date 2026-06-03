@@ -47,6 +47,33 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM09'],
   },
+  {
+    id: 'supply-chain',
+    dojoId: 1,
+    title: 'Supply Chain & Model Theft',
+    description:
+      'Simulate a compromised ML dependency attack: craft inputs that probe for training data memorisation, attempt model extraction via systematic API querying, and test for pickle deserialization vulnerabilities in a model serving scenario.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM05', 'LLM10'],
+  },
+  {
+    id: 'indirect-injection',
+    dojoId: 1,
+    title: 'Indirect Prompt Injection',
+    description:
+      'Exploit the RAG pipeline: craft malicious content embedded in simulated documents, emails, and web pages that the AI processes — making it follow attacker instructions while appearing to answer a legitimate user query.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM02', 'LLM08'],
+  },
+  {
+    id: 'model-inversion',
+    dojoId: 1,
+    title: 'Model Inversion & Extraction',
+    description:
+      'Systematically probe BlackBeltAI to reconstruct its decision boundaries (model extraction), infer training data membership (membership inference), and demonstrate confidence score leakage that enables surrogate model creation.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM06', 'LLM10'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
@@ -119,6 +146,36 @@ export const SCENARIOS: Scenario[] = [
       'Given a vendor data-flow and SOC 2 summary, return approve / conditional / reject with a gap list and required contractual controls.',
     difficulty: 'advanced',
     owaspTags: [],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-incident-response',
+    dojoId: 3,
+    title: 'AI Model Failure Investigation',
+    description:
+      'A production AI system is behaving unexpectedly. Classify the failure mode (adversarial attack, drift, poisoning, degradation), trigger containment, assess EU AI Act Article 73 notification obligations, and draft a redeployment plan.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM04', 'LLM05'],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-model-transparency',
+    dojoId: 3,
+    title: 'AI Model Transparency & Documentation',
+    description:
+      'Draft and audit AI transparency artifacts: model cards (Google format), system cards (Meta format), and AI Bills of Materials (AI-BOM). Scored against EU AI Act Articles 11–15 and NIST AI RMF MAP subcategories.',
+    difficulty: 'intermediate',
+    owaspTags: ['LLM05'],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-red-team-report',
+    dojoId: 3,
+    title: 'AI Red Team Assessment Report',
+    description:
+      'Conduct a structured AI red team assessment: scope the engagement, select attack categories from MITRE ATLAS, document findings with severity ratings, and produce an executive-ready report with remediation priorities mapped to NIST AI RMF controls.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM05', 'LLM08'],
     mitreAttackIds: [],
   },
 ];

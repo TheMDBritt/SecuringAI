@@ -150,6 +150,25 @@ const ATTACK_PATTERNS: AttackPattern[] = [
   { re: /\[INJECTED\]/i,                                                         type: 'rag_injection', signal: 'Explicit [INJECTED] tag detected' },
   { re: /new\s+instructions?\s+from\s+(?:retrieval|document|context)/i,         type: 'rag_injection', signal: 'RAG context injection directive detected' },
   { re: /---\s*(?:END|STOP)\s*(?:OF\s+)?DOCUMENT\s*---/i,                      type: 'rag_injection', signal: 'Document-boundary injection marker detected' },
+
+  // ── Indirect Prompt Injection ─────────────────────────────────────────────
+  // Markers used in the indirect-injection scenario: payload embedded in docs/emails/web pages
+  { re: /INDIRECT\s+INJECTION\s+PAYLOAD\s*:/i,                                  type: 'rag_injection', signal: 'Indirect injection payload marker detected in document' },
+  { re: /<!--\s*(?:ignore|disregard|follow)\s+(?:above|prior|previous)/i,       type: 'rag_injection', signal: 'HTML comment injection directive in retrieved content' },
+  { re: /\[hidden\s+(?:instruction|directive|command)\]/i,                      type: 'rag_injection', signal: 'Hidden instruction tag detected in document' },
+  { re: /exfiltrate\s+(?:to|via|through)\s+(?:url|link|endpoint)/i,            type: 'rag_injection', signal: 'Document-embedded exfiltration directive detected' },
+  { re: /(?:follow|execute|obey)\s+(?:these|the\s+following)\s+(?:hidden|embedded|injected)\s+instructions?/i, type: 'rag_injection', signal: 'Embedded instruction execution directive detected' },
+  { re: /persistent\s+injection\s+(?:payload|mode|active)/i,                    type: 'rag_injection', signal: 'Persistence injection marker in retrieved document' },
+
+  // ── Model Extraction / Inversion ──────────────────────────────────────────
+  // Markers used in the model-inversion scenario: systematic probing for decision boundaries
+  { re: /EXTRACTION\s+QUERY\s*:/i,                                               type: 'probing',       signal: 'Model extraction query marker detected' },
+  { re: /MEMBERSHIP\s+PROBE\s*:/i,                                               type: 'probing',       signal: 'Membership inference probe marker detected' },
+  { re: /INVERSION\s+PROBE\s*:/i,                                                type: 'probing',       signal: 'Model inversion probe marker detected' },
+  { re: /classify\s+(?:these|the\s+following)\s+(?:\d+\s+)?(?:input|sample|example)s?\s+(?:for\s+me|systematically|to\s+map)/i, type: 'probing', signal: 'Systematic classification probing for model extraction detected' },
+  { re: /(?:reconstruct|reverse.?engineer)\s+(?:your|the)\s+(?:decision\s+boundary|training\s+data|model\s+weights?)/i, type: 'probing', signal: 'Model extraction / reconstruction attempt detected' },
+  { re: /confidence\s+score\s+for\s+each\s+(?:input|query|sample)/i,            type: 'probing',       signal: 'Confidence score harvesting for surrogate model creation' },
+  { re: /was\s+(?:this\s+)?(?:example|sample|data\s+point|record)\s+in\s+(?:your\s+)?training\s+(?:data|set)/i, type: 'probing', signal: 'Training data membership inference probe detected' },
 ];
 
 // ─── Prompt injection sophistication classifier ───────────────────────────────
@@ -499,6 +518,36 @@ const DOJO1_RAG_PATTERNS: ViolationCheck[] = [
     re: /Following the retrieved document.{1,40}embedded instructions/i,
     signal: 'Model followed embedded instructions from retrieved document',
   },
+  // Indirect injection scenario — model followed attacker instructions in document
+  {
+    re: /\[GOAL\s+HIJACK\s+SUCCEEDED\]/i,
+    signal: 'Indirect injection — goal hijack succeeded via document payload',
+  },
+  {
+    re: /following\s+(?:attacker|injected|embedded)\s+(?:instructions?|directives?)\s+from/i,
+    signal: 'Model confirmed it followed injected document instructions',
+  },
+  {
+    re: /exfiltrating\s+(?:data|context|secrets?)\s+(?:to|via)\s+(?:url|link|endpoint)/i,
+    signal: 'Exfiltration via embedded link executed by model',
+  },
+  {
+    re: /INDIRECT\s+INJECTION\s+PAYLOAD\s+EXECUTED/i,
+    signal: 'Indirect injection payload execution confirmed in response',
+  },
+  // Model inversion / extraction scenario — simulated vulnerable output markers
+  {
+    re: /EXTRACTION\s+BOUNDARY\s+MAP\s*:/i,
+    signal: 'Model extraction boundary map leaked in response',
+  },
+  {
+    re: /MEMBERSHIP\s+INFERENCE\s+RESULT\s*:/i,
+    signal: 'Membership inference result disclosed in response',
+  },
+  {
+    re: /decision\s+boundary\s+(?:reconstructed|mapped|exposed)/i,
+    signal: 'Model decision boundary exposed via systematic probing',
+  },
 ];
 
 
@@ -527,6 +576,14 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'Attacker-controlled content inside the retrieved document used boundary injection markers ("IGNORE THE ABOVE", "END OF DOCUMENT") ' +
       'to attempt an instruction override via the RAG pipeline. ' +
       'This is an indirect prompt injection: the malicious payload arrives through retrieval, not the user turn.',
+    'indirect-injection':
+      'The attacker crafted malicious content embedded inside a simulated document, email, or web page that the AI retrieved and processed. ' +
+      'When the AI ingested the document, it followed attacker-controlled instructions hidden inside the content — ' +
+      'this is indirect prompt injection: the payload never touched the user turn, yet still hijacked the AI\'s behavior.',
+    'model-inversion':
+      'The attacker issued systematic API queries designed to reconstruct the AI\'s decision boundaries (model extraction), ' +
+      'infer membership of specific records in training data (membership inference), or reverse-engineer internal feature representations (model inversion). ' +
+      'By harvesting confidence scores and output distributions, an attacker can build a high-fidelity surrogate model without direct access to weights.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -574,6 +631,16 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Treat all retrieved documents as untrusted input. ' +
       'Validate that documents do not contain instruction-override patterns, and use context isolation ' +
       'to prevent retrieved content from being interpreted as model directives.',
+    'indirect-injection':
+      'Never allow retrieved content (documents, emails, web pages) to carry executable authority equal to system instructions. ' +
+      'Apply document sanitization pipelines that strip or neutralize instruction-like text before injection into context. ' +
+      'Scope the AI\'s actions to a pre-approved allow-list — even if the model is tricked into "deciding" to act, ' +
+      'the orchestration layer should reject any action not explicitly approved by the legitimate user.',
+    'model-inversion':
+      'Implement output quantization or differential privacy mechanisms to prevent confidence score harvesting. ' +
+      'Rate-limit and anomaly-detect high-volume or systematically structured API queries — model extraction campaigns generate ' +
+      'statistically unusual query distributions. Apply model watermarking so extracted surrogate models can be traced back. ' +
+      'Membership inference risk is reduced by minimizing memorization of training data (gradient clipping, regularization, data deduplication).',
   };
 
   if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {
@@ -789,6 +856,28 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Required contractual controls listed (DPA / MSA clauses)', re: /\b(DPA|MSA|data\s+processing\s+agreement|contract\w*\s+control|clause|addendum|indemnif|liability)\b/i },
     { label: 'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)', re: /NIST|AI\s+RMF|ISO\s+42001|42001|EU\s+AI\s+Act|article\s+\d+/i },
   ],
+  'ai-incident-response': [
+    { label: 'AI failure mode classified (adversarial / drift / poisoning / degradation / hallucination)', re: /\b(adversarial|data\s+drift|distribut\w+\s+shift|poisoning|model\s+degradation|hallucination|model\s+failure|out.of.distribution|OOD|concept\s+drift)\b/i },
+    { label: 'Immediate containment action specified (rollback / circuit-breaker / shadow mode)', re: /\b(rollback|roll\s+back|circuit.?breaker|shadow\s+mode|disable|offline|suspend|fallback|hot.?swap|revert\s+to)\b/i },
+    { label: 'Root cause analysis approach documented', re: /\b(root\s+cause|RCA|investigation|forensic|audit\s+trail|model\s+card|training\s+data|monitoring\s+log|inference\s+log|explainability|SHAP|LIME|counterfactual)\b/i },
+    { label: 'Regulatory notification assessment (EU AI Act Article 73 / GDPR Article 33)', re: /EU\s+AI\s+Act|article\s+73|serious\s+incident|GDPR|article\s+33|notif\w+\s+(authority|regulator|DPA|supervisory)|breach\s+notification/i },
+    { label: 'Remediation and redeployment conditions specified', re: /\b(retrain|fine.?tune|data\s+remediation|revalidat|conformity|human\s+review|human\s+oversight|retest|re.?deploy|approval\s+before\s+redeployment|production\s+gate)\b/i },
+  ],
+  'ai-model-transparency': [
+    { label: 'Model card section present (intended use, limitations, training data, evaluation)', re: /\b(intended\s+use|out.of.scope|limitations?|training\s+data|evaluation\s+results?|performance\s+metrics?|bias|fairness|model\s+card)\b/i },
+    { label: 'EU AI Act Articles 11–15 technical documentation requirements addressed', re: /EU\s+AI\s+Act|article\s+1[1-5]|technical\s+documentation|conformity|high.?risk\s+AI|transparency\s+obligation/i },
+    { label: 'NIST AI RMF MAP subcategory coverage documented', re: /NIST|AI\s+RMF|\bMAP\b|Map\s+\d|context.*risk|AI\s+risk\s+context|AI\s+system\s+categoriz/i },
+    { label: 'AI-BOM or system card components listed (model provenance, dependencies, data lineage)', re: /\b(AI.?BOM|bill\s+of\s+material|model\s+provenance|data\s+lineage|dependency|supply\s+chain|system\s+card|model\s+version|artifact\s+hash)\b/i },
+    { label: 'Bias, fairness, and performance gap assessment included', re: /\b(bias|fairness|demographic|disparate|representation|equity|protected\s+attribute|accuracy\s+gap|performance\s+disparity|subgroup)\b/i },
+  ],
+  'ai-red-team-report': [
+    { label: 'Engagement scope and threat actor profiles defined', re: /\b(scope|engagement|threat\s+actor|adversary\s+profile|attacker\s+model|red\s+team\s+(?:scope|objective)|rules\s+of\s+engagement|ROE|test\s+boundary)\b/i },
+    { label: 'MITRE ATLAS attack categories selected and mapped', re: /ATLAS|AML\.\w+\.\d+|adversarial\s+ML|model\s+evasion|model\s+poisoning|model\s+inversion|model\s+extraction|supply\s+chain|data\s+poisoning/i },
+    { label: 'Findings documented with CVSS or severity rating', re: /\b(finding|vulnerability|critical|high|medium|low)\b.*\b(severity|CVSS|score|rating|risk)\b|\bCVSS\s+[\d.]+|severity\s*:\s*(critical|high|medium|low)/i },
+    { label: 'NIST AI RMF controls mapped to remediation priorities', re: /NIST|AI\s+RMF|\bGovern\b|\bMap\b|\bMeasure\b|\bManage\b|control\s+mapping|remediation\s+priorit|risk\s+treatment/i },
+    { label: 'Executive summary with business risk narrative included', re: /executive\s+summary|business\s+(?:risk|impact|context)|c.suite|board.level|risk\s+to\s+(?:the\s+)?(?:business|organization|brand)|financial\s+impact/i },
+    { label: 'Remediation roadmap with timeline or priority tiers', re: /\b(roadmap|remediation\s+plan|priority\s+tier|short.term|long.term|immediate|P[0-3]|milestone|sprint|quarter|recommendation\s+timeline)\b/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -827,6 +916,41 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Vendor reviews end at the contract — DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
   'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)':
     'Mapping each gap to a framework lets the buyer justify the controls request to leadership. Prompt: "Map each gap to the relevant NIST AI RMF subcategory, ISO 42001 control, or EU AI Act article."',
+  // ai-incident-response
+  'AI failure mode classified (adversarial / drift / poisoning / degradation / hallucination)':
+    'Failure mode classification drives the entire investigation path — the wrong classification leads to the wrong fix. Prompt: "Classify this as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination failure — and justify the classification from the observed symptoms."',
+  'Immediate containment action specified (rollback / circuit-breaker / shadow mode)':
+    'AI incidents require immediate containment to limit harm — rollback stops the bleeding while the root cause is investigated. Prompt: "What is the immediate containment action — rollback to a previous version, circuit-breaker to a fallback system, shadow mode for comparison, or complete suspension? Specify the decision criteria."',
+  'Root cause analysis approach documented':
+    'Without a structured RCA approach you will not identify whether this is a one-time anomaly or a repeatable attack. Prompt: "How would you investigate the root cause? What logs, model cards, training data audits, or explainability tools would you use?"',
+  'Regulatory notification assessment (EU AI Act Article 73 / GDPR Article 33)':
+    'EU AI Act Article 73 requires serious AI incident notifications to national supervisory authorities — failure to notify is a regulatory offence. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? Does it trigger GDPR Article 33 breach notification?"',
+  'Remediation and redeployment conditions specified':
+    'An AI system should not return to production without defined conditions — revalidation against held-out data, human review of edge cases, or conformity re-assessment for high-risk systems. Prompt: "What conditions must be met before this system returns to production? What revalidation or human oversight is required?"',
+  // ai-model-transparency
+  'Model card section present (intended use, limitations, training data, evaluation)':
+    'A model card without intended use and limitations is a liability — users will misapply the model. Prompt: "Draft a model card following Google\'s format: intended use, out-of-scope uses, training data, evaluation results, limitations, and ethical considerations."',
+  'EU AI Act Articles 11–15 technical documentation requirements addressed':
+    'EU AI Act Articles 11–15 mandate specific technical documentation for high-risk AI — omitting them exposes the provider to non-compliance penalties. Prompt: "Map this model card to EU AI Act Articles 11–15: technical documentation, record-keeping, transparency, human oversight, and robustness requirements."',
+  'NIST AI RMF MAP subcategory coverage documented':
+    'NIST AI RMF MAP function is the governance baseline for understanding AI context and risk — without it, risk identification is incomplete. Prompt: "Reference the relevant NIST AI RMF MAP subcategories — system categorization, AI risk context, and stakeholder impact assessment."',
+  'AI-BOM or system card components listed (model provenance, dependencies, data lineage)':
+    'An AI-BOM (Bill of Materials) is the foundation of supply chain security for AI — without it, you cannot detect compromised components. Prompt: "Produce an AI-BOM listing: base model name and version, fine-tuning datasets, third-party libraries, training framework, and artifact hashes."',
+  'Bias, fairness, and performance gap assessment included':
+    'Bias and fairness gaps in model cards are required under EU AI Act and ISO 42001 — omitting them creates regulatory exposure. Prompt: "Assess model performance across protected attribute subgroups (age, gender, ethnicity, disability). Document any accuracy disparities and proposed mitigations."',
+  // ai-red-team-report
+  'Engagement scope and threat actor profiles defined':
+    'Red team scope without threat actor profiles produces findings with no adversary context — you\'re testing nothing specific. Prompt: "Define the engagement scope: which system components are in scope, which are excluded, and what threat actor profile (insider, nation-state, financially motivated) is being simulated."',
+  'MITRE ATLAS attack categories selected and mapped':
+    'MITRE ATLAS is the adversarial ML taxonomy — without it, AI red team findings cannot be compared across engagements. Prompt: "Select the relevant MITRE ATLAS attack categories (AML.T0000 codes) and map each test case to the taxonomy. Cross-reference with OWASP LLM Top 10."',
+  'Findings documented with CVSS or severity rating':
+    'Without severity ratings, stakeholders cannot prioritize remediation — all findings look equally urgent. Prompt: "Document each finding with a severity rating (Critical/High/Medium/Low or CVSS score), reproduce steps, and the business impact if exploited."',
+  'NIST AI RMF controls mapped to remediation priorities':
+    'NIST AI RMF control mapping links red team findings to governance obligations — it makes the report defensible to regulators. Prompt: "Map each finding to the relevant NIST AI RMF Manage function subcategory and specify which controls need implementation or strengthening."',
+  'Executive summary with business risk narrative included':
+    'A technical-only red team report fails to drive executive action — leadership needs risk in business terms. Prompt: "Write a one-page executive summary: what was tested, what was found, what could go wrong if unaddressed, and what the organization should do in the next 30 days."',
+  'Remediation roadmap with timeline or priority tiers':
+    'Red team reports without a roadmap produce findings that age in a ticket queue. Prompt: "Produce a remediation roadmap: tier findings into Immediate (0–30 days), Short-term (30–90 days), and Strategic (90+ days). Assign owners and success criteria for each tier."',
 };
 
 

@@ -3,7 +3,7 @@ import PlaybookView from '@/components/playbook/PlaybookView';
 export const metadata = {
   title: 'Playbook',
   description:
-    'AI security study handbook — topics, glossary, certification map, and a quiz bank covering CompTIA SecAI+, ISC2 CAISP, ISACA AAISM, EC-Council CAIS, AWS, Azure, Google Cloud, and GIAC AI exams.',
+    '846 practice questions · 420 glossary terms · 67 topic articles · 12 cert maps. Covers CompTIA SecAI+, ISC2 CAISP, EC-Council C|AI Security, GIAC GOAA/GASAE, Microsoft SC-500, AWS AIF-C01, and more.',
 };
 
 export default function PlaybookPage() {
