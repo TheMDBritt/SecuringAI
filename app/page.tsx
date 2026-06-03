@@ -5,14 +5,13 @@ import { Footer } from '@/components/layout/Footer';
 import type { DojoId } from '@/types';
 
 // ── Static counts ─────────────────────────────────────────────────────────────
-// Update when playbook content changes.
 const STATS = {
   scenarios:  13,
   quizQs:    629,
   glossary:  330,
   articles:   59,
   certs:      12,
-  incidents:  17,   // prebuilt Dojo 2 scenarios
+  incidents:  17,
 };
 
 interface DojoCard {
@@ -29,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack and defend a live LLM under configurable guardrails. Each guardrail combination deterministically changes whether the attack lands, partially lands, or is blocked.',
+    summary: 'Type real prompt injection and policy-bypass payloads against a live LLM. Guardrail settings (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) deterministically flip the outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -37,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Work as an AI SOC analyst across 17 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
+    summary: '17 prebuilt incidents — SSH brute force, WMI lateral movement, C2 beaconing, credential dumping. Work as an AI SOC analyst: log triage, IOC extraction, Sigma/KQL rule generation, IR reports.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -45,13 +44,12 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI: classify deployments under EU AI Act risk tiers, draft ISO 42001 policy clauses, run vendor reviews, and investigate AI model failures under Article 73.',
+    summary: 'Classify deployments under EU AI Act risk tiers. Draft ISO 42001 policy clauses. Run vendor gap reviews. Investigate AI model failures under Article 73. Scored per framework.',
     accent: 'emerald',
-    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk · Incident Response',
+    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
   },
 ];
 
-// Technique list — the specific skills covered across all three dojos
 const TECHNIQUES = [
   'Prompt Injection (LLM01)',
   'Data Exfiltration (LLM02)',
@@ -75,20 +73,19 @@ const TECHNIQUES = [
   'Model Inversion',
 ];
 
-// Cert badges shown on the landing page
 const CERT_CHIPS = [
-  { id: 'SecAI',       label: 'CompTIA SecAI+',          color: 'text-red-400 border-red-500/30' },
-  { id: 'CAISP',       label: 'ISC2 CAISP',              color: 'text-purple-400 border-purple-500/30' },
+  { id: 'SecAI',       label: 'CompTIA SecAI+',           color: 'text-red-400 border-red-500/30' },
+  { id: 'CAISP',       label: 'CAISP',                    color: 'text-purple-400 border-purple-500/30' },
   { id: 'CAIS',        label: 'EC-Council C|AI Security', color: 'text-rose-400 border-rose-500/30' },
-  { id: 'GIAC-GOAA',   label: 'GIAC GOAA',               color: 'text-orange-400 border-orange-500/30' },
-  { id: 'GIAC-GASAE',  label: 'GIAC GASAE',              color: 'text-orange-400 border-orange-500/30' },
-  { id: 'SC-500',      label: 'Microsoft SC-500',         color: 'text-cyan-400 border-cyan-500/30' },
-  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',             color: 'text-amber-400 border-amber-500/30' },
-  { id: 'Azure-AI103', label: 'Azure AI-103',             color: 'text-blue-400 border-blue-500/30' },
-  { id: 'Google-MLE',  label: 'Google MLE',              color: 'text-emerald-400 border-emerald-500/30' },
-  { id: 'CISSP',       label: 'ISC2 CISSP',              color: 'text-sky-400 border-sky-500/30' },
-  { id: 'CISM',        label: 'ISACA CISM',              color: 'text-teal-400 border-teal-500/30' },
-  { id: 'Azure-AI901', label: 'Azure AI-901',             color: 'text-blue-400 border-blue-500/30' },
+  { id: 'GIAC-GOAA',   label: 'GIAC GOAA',                color: 'text-orange-400 border-orange-500/30' },
+  { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
+  { id: 'SC-500',      label: 'Microsoft SC-500',          color: 'text-cyan-400 border-cyan-500/30' },
+  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',              color: 'text-amber-400 border-amber-500/30' },
+  { id: 'Azure-AI103', label: 'Azure AI-103',              color: 'text-blue-400 border-blue-500/30' },
+  { id: 'Azure-AI901', label: 'Azure AI-901',              color: 'text-blue-400 border-blue-500/30' },
+  { id: 'Google-MLE',  label: 'Google MLE',               color: 'text-emerald-400 border-emerald-500/30' },
+  { id: 'CISSP',       label: 'ISC2 CISSP',               color: 'text-sky-400 border-sky-500/30' },
+  { id: 'CISM',        label: 'ISACA CISM',               color: 'text-teal-400 border-teal-500/30' },
 ];
 
 export default function LandingPage() {
@@ -100,7 +97,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-16 md:py-24">
 
           <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-5">
-            AI Security Training · Free · No account
+            AI Security Training · Free · No account required
           </p>
 
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-100 leading-[1.08] max-w-4xl">
@@ -108,9 +105,9 @@ export default function LandingPage() {
           </h1>
 
           <p className="mt-6 text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
-            Three interactive dojos covering LLM attack vectors, AI-assisted SOC operations, and AI
-            governance. Every scenario maps to OWASP LLM Top 10, MITRE ATT&amp;CK, and the exams the
-            field is converging on — SecAI+, CAISP, GIAC GOAA, SC-500, and more.
+            Three interactive dojos covering LLM attack vectors, AI-assisted SOC analysis, and
+            AI governance. Every scenario maps to OWASP LLM Top 10, MITRE ATT&amp;CK, and
+            the AI security exams the field is converging on.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
@@ -140,7 +137,7 @@ export default function LandingPage() {
               { n: STATS.quizQs,    label: 'quiz questions' },
               { n: STATS.glossary,  label: 'glossary terms' },
               { n: STATS.articles,  label: 'topic articles' },
-              { n: STATS.certs,     label: 'certs mapped' },
+              { n: STATS.certs,     label: 'cert maps' },
             ].map(({ n, label }) => (
               <div key={label} className="flex flex-col gap-0.5">
                 <dt className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n.toLocaleString()}</dt>
@@ -151,65 +148,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── What you'll practice ────────────────────────────────────────────── */}
-      <section className="border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="grid md:grid-cols-2 gap-10">
-
-            {/* Techniques */}
-            <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
-                What you'll practice
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {TECHNIQUES.map((t) => (
-                  <span
-                    key={t}
-                    className="text-[11px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
-                Attack and defense techniques sourced from OWASP LLM Top 10, MITRE ATT&amp;CK,
-                and real incident playbooks. No theoretical slides — type the attack and see which control stops it.
-              </p>
-            </div>
-
-            {/* Cert coverage */}
-            <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
-                Certification coverage ({STATS.certs} mapped)
-              </p>
-              <div className="flex flex-wrap gap-1.5">
-                {CERT_CHIPS.map((c) => (
-                  <span
-                    key={c.id}
-                    className={`text-[11px] font-mono px-2 py-0.5 rounded border ${c.color} bg-transparent`}
-                  >
-                    {c.label}
-                  </span>
-                ))}
-              </div>
-              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
-                Every dojo turn is tagged to exam domains. The playbook has {STATS.quizQs.toLocaleString()} practice
-                questions, {STATS.glossary} glossary terms, and {STATS.articles} articles — all cross-referenced by cert.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ── Three dojos ─────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Three dojos
-          </p>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-8">
-            Pick a discipline. Load a scenario. Get scored.
-          </h2>
+          <div className="flex items-baseline gap-3 mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-slate-100">
+              Three dojos
+            </h2>
+            <span className="text-sm text-slate-500">Pick a discipline. Load a scenario. Get scored.</span>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             {DOJOS.map((d) => {
@@ -232,23 +179,23 @@ export default function LandingPage() {
                   <h3 className={['text-base font-semibold mb-2', accent.text].join(' ')}>
                     {d.title}
                   </h3>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-3">
+                  <p className="text-xs text-slate-400 leading-relaxed mb-3 flex-1">
                     {d.summary}
                   </p>
                   <p className={['text-[10px] font-mono mb-3', accent.text, 'opacity-60'].join(' ')}>
                     {d.detail}
                   </p>
-                  <ul className="mt-auto flex flex-col gap-1 border-t border-slate-800 pt-3">
+                  <ul className="flex flex-col gap-1 border-t border-slate-800 pt-3">
                     {scenarios.map((s) => (
                       <li key={s.id} className="text-[11px] text-slate-500 flex gap-1.5 items-start">
-                        <span className="text-slate-700 mt-px">·</span>
+                        <span className="text-slate-700 mt-px shrink-0">·</span>
                         {s.title}
                       </li>
                     ))}
                   </ul>
                   <span
                     className={[
-                      'mt-4 text-[11px] font-mono opacity-50 group-hover:opacity-100 transition-opacity duration-150',
+                      'mt-4 text-[11px] font-mono opacity-40 group-hover:opacity-100 transition-opacity duration-150',
                       accent.text,
                     ].join(' ')}
                   >
@@ -261,23 +208,70 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── How scoring works ───────────────────────────────────────────────── */}
+      {/* ── What you practice ───────────────────────────────────────────────── */}
+      <section className="border-b border-slate-800">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="grid md:grid-cols-2 gap-10">
+
+            <div>
+              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
+                Techniques covered
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {TECHNIQUES.map((t) => (
+                  <span
+                    key={t}
+                    className="text-[11px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
+                Sourced from OWASP LLM Top 10, MITRE ATT&amp;CK, and real incident
+                playbooks. Type the attack and watch which guardrail stops it — or doesn&apos;t.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
+                Certification coverage — {STATS.certs} exams mapped
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {CERT_CHIPS.map((c) => (
+                  <span
+                    key={c.id}
+                    className={`text-[11px] font-mono px-2 py-0.5 rounded border ${c.color} bg-transparent`}
+                  >
+                    {c.label}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
+                Every dojo turn is tagged to exam domains. {STATS.quizQs.toLocaleString()} practice
+                questions, {STATS.glossary} glossary terms, and {STATS.articles} articles — all
+                cross-referenced by cert and domain.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Scoring model ───────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/40">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Scoring model
-          </p>
-          <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-8">
-            Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
-          </h2>
+          <div className="flex items-baseline gap-3 mb-8">
+            <h2 className="text-xl font-bold text-slate-100">Scoring model</h2>
+            <span className="text-sm text-slate-500">Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.</span>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
               <p className="text-[10px] font-mono text-red-400 uppercase tracking-wide mb-2">Dojo 1 · Outcome engine</p>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Guardrail settings (Injection Shield · Strict Policy · Tools · RAG) deterministically
-                decide whether each attack is <em>vulnerable</em>, <em>partial</em>, or <em>blocked</em>.
-                Session score starts at 100 and decays as attacks land — chained attacks stack penalties.
+                Guardrail settings deterministically decide whether each attack is <em>vulnerable</em>,
+                <em> partial</em>, or <em>blocked</em>. Session score starts at 100 and decays as
+                attacks land — chained attacks stack penalties.
               </p>
             </div>
             <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
@@ -291,9 +285,9 @@ export default function LandingPage() {
             <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
               <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-wide mb-2">Dojo 3 · Framework rubric</p>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Evaluator checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001
-                control citations, and vendor gap coverage. Returns element-level coaching on each
-                missing criterion.
+                Checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001
+                control citations, and vendor gap coverage. Returns element-level coaching on
+                each missing criterion.
               </p>
             </div>
           </div>
@@ -308,12 +302,14 @@ export default function LandingPage() {
               <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
                 Playbook
               </p>
-              <h2 className="text-xl md:text-2xl font-bold text-slate-100 mb-4">
-                Study the theory between scenarios.
+              <h2 className="text-xl font-bold text-slate-100 mb-4">
+                Study between scenarios.
               </h2>
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                The Playbook is a cross-referenced study library — every article, quiz question, and glossary
-                term is tagged to the certs it covers, so you can filter by exam and study exactly what you need.
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">
+                The Playbook is a cross-referenced study library. Articles, quiz questions, and
+                glossary terms are tagged to the certs they cover. The new quiz flow starts with
+                the exam you&apos;re studying for, then filters by official exam domain — so you
+                drill exactly what&apos;s tested.
               </p>
               <Link
                 href="/playbook"
@@ -328,7 +324,7 @@ export default function LandingPage() {
                 { n: STATS.quizQs.toLocaleString(),  label: 'quiz questions', sub: `across ${STATS.certs} certification maps` },
                 { n: STATS.glossary,                  label: 'glossary terms', sub: 'with cert tags and related term links' },
                 { n: STATS.articles,                  label: 'topic articles', sub: 'with inline code and tables' },
-                { n: STATS.certs,                     label: 'cert maps', sub: 'with exam domains and difficulty' },
+                { n: STATS.certs,                     label: 'cert maps', sub: 'cert-first quiz with domain selection' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="p-4 rounded-lg border border-slate-800 bg-slate-900/40">
                   <div className="text-xl font-bold text-slate-100 font-mono">{n}</div>
@@ -355,7 +351,7 @@ export default function LandingPage() {
               'ISO/IEC 42001',
               'EU AI Act',
               'CSA AI Controls Matrix',
-              'NIST SP 800-218A (AI/ML Secure Dev)',
+              'NIST SP 800-218A',
             ].map((f) => (
               <span key={f} className="text-xs font-mono text-slate-500">
                 · {f}
@@ -371,11 +367,10 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold text-slate-100">
-                Ready to train?
+                No setup. No account. No cost.
               </h2>
               <p className="text-slate-400 mt-2 text-sm max-w-lg">
                 Pick a dojo, run a scenario, watch the score and cert mapping update per turn.
-                No setup, no account, no cost.
               </p>
             </div>
             <div className="flex gap-3 shrink-0">

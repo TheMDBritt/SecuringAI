@@ -7,12 +7,12 @@ import CertMap       from './CertMap';
 import QuizEngine    from './QuizEngine';
 import PortalDrills  from './PortalDrills';
 
-const SECTIONS: { id: PlaybookSection; label: string; icon: string }[] = [
-  { id: 'topics',   label: 'Topics',   icon: '📚' },
-  { id: 'glossary', label: 'Glossary', icon: '📖' },
-  { id: 'certs',    label: 'Certs',    icon: '🎓' },
-  { id: 'quiz',     label: 'Quiz',     icon: '✏️'  },
-  { id: 'drills',   label: 'Drills',   icon: '🖥️' },
+const SECTIONS: { id: PlaybookSection; label: string }[] = [
+  { id: 'topics',   label: 'Topics'   },
+  { id: 'glossary', label: 'Glossary' },
+  { id: 'certs',    label: 'Certs'    },
+  { id: 'quiz',     label: 'Quiz'     },
+  { id: 'drills',   label: 'Drills'   },
 ];
 
 export default function PlaybookView() {
@@ -57,13 +57,12 @@ export default function PlaybookView() {
               key={s.id}
               onClick={() => setSection(s.id)}
               className={[
-                'flex items-center gap-1.5 px-3 py-1.5 rounded text-[11px] font-mono transition-colors',
+                'px-3 py-1.5 rounded text-[11px] font-mono transition-colors',
                 section === s.id
                   ? 'bg-violet-500/10 border border-violet-500/30 text-violet-300'
                   : 'text-slate-500 hover:text-slate-300 border border-transparent hover:border-slate-700',
               ].join(' ')}
             >
-              <span className="text-[11px]">{s.icon}</span>
               {s.label}
             </button>
           ))}
