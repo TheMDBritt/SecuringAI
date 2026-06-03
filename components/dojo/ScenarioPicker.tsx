@@ -26,16 +26,16 @@ const DOJO_ACCENT: Record<DojoId, string> = {
 
 const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
   1: {
-    label: 'Attack & Defense',
-    desc: 'Select a scenario to begin attacking or defending BlackBeltAI.',
+    label: 'LLM Attack & Defense',
+    desc: 'Select a scenario, configure guardrails on the right, then attack or probe BlackBeltAI. Outcomes are deterministic — guardrail state decides every result.',
   },
   2: {
-    label: 'SOC Assistant',
-    desc: 'Choose a SOC workflow, then load an incident from the right panel.',
+    label: 'AI-Assisted SOC',
+    desc: 'Choose a SOC workflow, then load a prebuilt incident from the right panel. Configure analyst persona and depth before submitting.',
   },
   3: {
-    label: 'AI Defense',
-    desc: 'Pick a scenario to build defenses against AI-powered attacks.',
+    label: 'AI GRC',
+    desc: 'Govern an AI deployment: classify risk under EU AI Act, draft ISO 42001 controls, run vendor reviews, or investigate a model failure.',
   },
 };
 
