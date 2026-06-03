@@ -329,19 +329,19 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'AI Security Fundamentals & Threat Landscape',
         categories: ['AI Security', 'CAIS'],
-        topics:     ['OWASP LLM Top 10'],
+        topics:     ['OWASP LLM Top 10', 'LLM Security Assessment'],
       },
       {
         name:       'Adversarial Machine Learning Attacks',
-        topics:     ['Membership Inference', 'Differential Privacy', 'Federated Learning Security'],
+        topics:     ['Membership Inference', 'Differential Privacy', 'Federated Learning Security', 'Evasion Attacks', 'Membership Inference Attack', 'Model Inversion Attack', 'Data Poisoning'],
       },
       {
         name:       'LLM Security & Prompt Injection Defense',
-        topics:     ['LLM Red Teaming', 'AI Red Team Methodology', 'Prompt Injection'],
+        topics:     ['LLM Red Teaming', 'AI Red Team Methodology', 'Prompt Injection', 'LLM Security Assessment', 'Secure AI Deployment'],
       },
       {
         name:       'Securing AI Pipelines & MLOps',
-        topics:     ['AI Supply Chain Security', 'MLOps Security'],
+        topics:     ['AI Supply Chain Security', 'MLOps Security', 'Supply Chain Attacks', 'Secure AI Deployment'],
       },
       {
         name:       'AI Governance, Risk & Compliance',
@@ -358,18 +358,18 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'Security and Risk Management',
         weight:     '15%',
-        topics:     ['Risk Management', 'Security Policies', 'Legal and Regulatory', 'Risk Appetite'],
+        topics:     ['Risk Management', 'Security Policies', 'Legal and Regulatory', 'Risk Appetite', 'Risk Management Framework', 'Risk Management', 'Threat Modelling'],
         categories: ['CISSP'],
       },
       {
         name:       'Asset Security',
         weight:     '10%',
-        topics:     ['Data Classification', 'Data Retention'],
+        topics:     ['Data Classification', 'Data Retention', 'Asset Classification', 'Data Privacy'],
       },
       {
         name:       'Security Architecture & Engineering',
         weight:     '13%',
-        topics:     ['Cryptography', 'Threat Modelling', 'Defense-in-Depth'],
+        topics:     ['Cryptography', 'Threat Modelling', 'Defense-in-Depth', 'Security Architecture', 'Zero Trust Architecture'],
       },
       {
         name:       'Communication & Network Security',
@@ -379,22 +379,22 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'Identity & Access Management',
         weight:     '13%',
-        topics:     ['IAM', 'Zero Trust'],
+        topics:     ['IAM', 'Zero Trust', 'Identity and Access Management', 'Privileged Access Management'],
       },
       {
         name:       'Security Assessment & Testing',
         weight:     '12%',
-        topics:     ['Pen Testing', 'Vulnerability Assessment'],
+        topics:     ['Pen Testing', 'Vulnerability Assessment', 'Security Assessment and Testing'],
       },
       {
         name:       'Security Operations',
         weight:     '13%',
-        topics:     ['Incident Response', 'Business Continuity'],
+        topics:     ['Incident Response', 'Business Continuity', 'Security Operations', 'Business Continuity and Disaster Recovery'],
       },
       {
         name:       'Software Development Security',
         weight:     '11%',
-        topics:     ['SDLC', 'AI Threat Modelling'],
+        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security'],
       },
     ],
   },
@@ -407,22 +407,22 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
         name:       'Information Security Governance',
         weight:     '17%',
         categories: ['CISM'],
-        topics:     ['Security Governance', 'Security Metrics', 'AI Governance'],
+        topics:     ['Security Governance', 'Security Metrics', 'AI Governance', 'Key Risk Indicators', 'Third-Party AI Risk'],
       },
       {
         name:       'Information Security Risk Management',
         weight:     '20%',
-        topics:     ['Risk Assessment', 'Risk Appetite', 'Risk Register', 'Third-Party Risk'],
+        topics:     ['Risk Assessment', 'Risk Appetite', 'Risk Register', 'Third-Party Risk', 'Business Impact Analysis', 'Key Risk Indicators'],
       },
       {
         name:       'Information Security Program',
         weight:     '33%',
-        topics:     ['Security Program', 'Security Strategy', 'KPIs'],
+        topics:     ['Security Program', 'Security Strategy', 'KPIs', 'AI Security Programme Maturity'],
       },
       {
         name:       'Incident Management',
         weight:     '30%',
-        topics:     ['Incident Response', 'Business Continuity', 'Recovery Objectives'],
+        topics:     ['Incident Response', 'Business Continuity', 'Recovery Objectives', 'Incident Classification', 'AI Incident Response', 'AI Crisis Management'],
       },
     ],
   },
