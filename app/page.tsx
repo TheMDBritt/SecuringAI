@@ -7,11 +7,11 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  18,
-  quizQs:    811,
+  quizQs:    846,
   glossary:  409,
   articles:   67,
   certs:      12,
-  incidents:  21,
+  incidents:  27,
 };
 
 interface DojoCard {
