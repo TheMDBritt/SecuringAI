@@ -317,7 +317,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'AI System Assessment & Audit',
         categories: ['AI Governance', 'CISM', 'GIAC-GASAE', 'CAIS'],
-        topics:     ['AI Governance', 'NIST AI RMF'],
+        topics:     ['AI Governance', 'NIST AI RMF', 'Model Cards and Documentation', 'AI Transparency Documentation', 'AI Bill of Materials (AI-BOM)'],
       },
     ],
   },
@@ -345,7 +345,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       },
       {
         name:       'AI Governance, Risk & Compliance',
-        topics:     ['AI Governance'],
+        topics:     ['AI Governance', 'AI Transparency Documentation', 'Model Cards and Documentation', 'NIST AI RMF', 'AI Bill of Materials (AI-BOM)'],
         categories: ['AI Governance'],
       },
     ],
@@ -394,7 +394,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'Software Development Security',
         weight:     '11%',
-        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security'],
+        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security', 'AI Transparency Documentation', 'Model Cards and Documentation'],
       },
     ],
   },
@@ -407,7 +407,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
         name:       'Information Security Governance',
         weight:     '17%',
         categories: ['CISM'],
-        topics:     ['Security Governance', 'Security Metrics', 'AI Governance', 'Key Risk Indicators', 'Third-Party AI Risk'],
+        topics:     ['Security Governance', 'Security Metrics', 'AI Governance', 'Key Risk Indicators', 'Third-Party AI Risk', 'AI Transparency Documentation', 'NIST AI RMF'],
       },
       {
         name:       'Information Security Risk Management',
