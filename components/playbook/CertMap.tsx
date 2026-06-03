@@ -214,6 +214,24 @@ const CERTS: CertInfo[] = [
     ],
     topTopics: ['Security strategy', 'Risk appetite', 'KPIs/KRIs', 'Board reporting', 'BIA', 'Incident response plan', 'Recovery objectives', 'AI governance', 'Third-party risk', 'Security program budgeting'],
   },
+  {
+    id: 'CAIS',
+    name: 'EC-Council Certified AI Security (C|AI Security)',
+    provider: 'EC-Council',
+    tagColor: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+    difficulty: 'Intermediate–Advanced',
+    questions: 'Practical + MCQ',
+    duration: '4 hours',
+    focus: 'Hands-on AI security certification from EC-Council. Covers adversarial ML, LLM vulnerability assessment, AI red teaming, securing AI pipelines, and AI governance. Prepares candidates to assess and harden AI systems in production.',
+    domains: [
+      { name: 'AI Security Fundamentals & Threat Landscape' },
+      { name: 'Adversarial Machine Learning Attacks' },
+      { name: 'LLM Security & Prompt Injection Defense' },
+      { name: 'Securing AI Pipelines & MLOps' },
+      { name: 'AI Governance, Risk & Compliance' },
+    ],
+    topTopics: ['Adversarial inputs', 'Data poisoning', 'Model inversion', 'LLM red teaming', 'Prompt injection', 'OWASP LLM Top 10', 'AI supply chain', 'MLOps security', 'AI risk frameworks', 'Responsible AI'],
+  },
 ];
 
 interface CertMapProps {
@@ -226,7 +244,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">11 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">12 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
         </div>
       </div>
 

