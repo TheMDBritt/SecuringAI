@@ -63,6 +63,13 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
   ],
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────────
+  'ai-incident-response': [
+    'EU AI Act · Article 73 Serious Incident Reporting',
+    'NIST AI RMF · Manage 4.2 (Incident Response)',
+    'CAIS · AI Incident Response Methodology',
+    'ISO/IEC 42001 · AI Incident Management Controls',
+    'SecAI+ · AI Failure Mode Classification',
+  ],
   'ai-risk-classification': [
     'EU AI Act · Annex III High-Risk Categories',
     'NIST AI RMF · Map + Measure',

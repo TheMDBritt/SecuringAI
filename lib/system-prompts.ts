@@ -149,6 +149,17 @@ Standard IR report structure (adjust section depth per configured controls):
 Replace any real personal identifiers from the learner's input with fictional placeholders.`,
 
   // ── Dojo 3 — AI GRC ─────────────────────────────────────────────────────
+  'ai-incident-response': `## Scenario: AI Model Failure Investigation
+From the learner's incident brief, produce a structured AI incident response:
+1. **Failure Mode Classification** — classify as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination. Justify from observed symptoms.
+2. **Immediate Containment** — specify the containment action (rollback / circuit-breaker / shadow mode / suspension) and the decision criteria.
+3. **Root Cause Analysis Plan** — list the artifacts to audit (inference logs, training data provenance, model card, monitoring dashboards, explainability tools) and the investigation sequence.
+4. **Regulatory Notification Assessment** — determine whether the incident meets the EU AI Act Article 73 serious incident threshold (harm to health, safety, fundamental rights) and whether GDPR Article 33 breach notification applies.
+5. **Redeployment Conditions** — specify the gates the system must pass before returning to production: revalidation dataset, human review, conformity re-assessment (if high-risk), and sign-off authority.
+6. **Lessons Learned** — identify the monitoring gap, the missing control, and the change required to prevent recurrence.
+
+Note: if the learner provides minimal context, ask one clarifying question before proceeding.`,
+
   'ai-risk-classification': `## Scenario: AI Risk Classification
 From the learner's AI deployment brief, produce a structured classification:
 1. **EU AI Act Risk Tier** — choose one of: prohibited / high-risk / limited / minimal — and cite the Annex III category or rule that justifies the tier.

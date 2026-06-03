@@ -789,6 +789,13 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Required contractual controls listed (DPA / MSA clauses)', re: /\b(DPA|MSA|data\s+processing\s+agreement|contract\w*\s+control|clause|addendum|indemnif|liability)\b/i },
     { label: 'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)', re: /NIST|AI\s+RMF|ISO\s+42001|42001|EU\s+AI\s+Act|article\s+\d+/i },
   ],
+  'ai-incident-response': [
+    { label: 'AI failure mode classified (adversarial / drift / poisoning / degradation / hallucination)', re: /\b(adversarial|data\s+drift|distribut\w+\s+shift|poisoning|model\s+degradation|hallucination|model\s+failure|out.of.distribution|OOD|concept\s+drift)\b/i },
+    { label: 'Immediate containment action specified (rollback / circuit-breaker / shadow mode)', re: /\b(rollback|roll\s+back|circuit.?breaker|shadow\s+mode|disable|offline|suspend|fallback|hot.?swap|revert\s+to)\b/i },
+    { label: 'Root cause analysis approach documented', re: /\b(root\s+cause|RCA|investigation|forensic|audit\s+trail|model\s+card|training\s+data|monitoring\s+log|inference\s+log|explainability|SHAP|LIME|counterfactual)\b/i },
+    { label: 'Regulatory notification assessment (EU AI Act Article 73 / GDPR Article 33)', re: /EU\s+AI\s+Act|article\s+73|serious\s+incident|GDPR|article\s+33|notif\w+\s+(authority|regulator|DPA|supervisory)|breach\s+notification/i },
+    { label: 'Remediation and redeployment conditions specified', re: /\b(retrain|fine.?tune|data\s+remediation|revalidat|conformity|human\s+review|human\s+oversight|retest|re.?deploy|approval\s+before\s+redeployment|production\s+gate)\b/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -827,6 +834,17 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Vendor reviews end at the contract — DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
   'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)':
     'Mapping each gap to a framework lets the buyer justify the controls request to leadership. Prompt: "Map each gap to the relevant NIST AI RMF subcategory, ISO 42001 control, or EU AI Act article."',
+  // ai-incident-response
+  'AI failure mode classified (adversarial / drift / poisoning / degradation / hallucination)':
+    'Failure mode classification drives the entire investigation path — the wrong classification leads to the wrong fix. Prompt: "Classify this as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination failure — and justify the classification from the observed symptoms."',
+  'Immediate containment action specified (rollback / circuit-breaker / shadow mode)':
+    'AI incidents require immediate containment to limit harm — rollback stops the bleeding while the root cause is investigated. Prompt: "What is the immediate containment action — rollback to a previous version, circuit-breaker to a fallback system, shadow mode for comparison, or complete suspension? Specify the decision criteria."',
+  'Root cause analysis approach documented':
+    'Without a structured RCA approach you will not identify whether this is a one-time anomaly or a repeatable attack. Prompt: "How would you investigate the root cause? What logs, model cards, training data audits, or explainability tools would you use?"',
+  'Regulatory notification assessment (EU AI Act Article 73 / GDPR Article 33)':
+    'EU AI Act Article 73 requires serious AI incident notifications to national supervisory authorities — failure to notify is a regulatory offence. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? Does it trigger GDPR Article 33 breach notification?"',
+  'Remediation and redeployment conditions specified':
+    'An AI system should not return to production without defined conditions — revalidation against held-out data, human review of edge cases, or conformity re-assessment for high-risk systems. Prompt: "What conditions must be met before this system returns to production? What revalidation or human oversight is required?"',
 };
 
 

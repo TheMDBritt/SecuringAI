@@ -121,6 +121,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'ai-incident-response',
+    dojoId: 3,
+    title: 'AI Model Failure Investigation',
+    description:
+      'A production AI system is behaving unexpectedly. Classify the failure mode (adversarial attack, drift, poisoning, degradation), trigger containment, assess EU AI Act Article 73 notification obligations, and draft a redeployment plan.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM04', 'LLM05'],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {

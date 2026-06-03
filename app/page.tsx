@@ -7,7 +7,7 @@ import type { DojoId } from '@/types';
 // ── Static counts ─────────────────────────────────────────────────────────────
 // Update when playbook content changes.
 const STATS = {
-  scenarios:  12,
+  scenarios:  13,
   quizQs:    574,
   glossary:  321,
   articles:   57,
@@ -45,9 +45,9 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI: classify deployments under EU AI Act risk tiers, draft ISO 42001-aligned policy clauses, and run third-party AI vendor reviews.',
+    summary: 'Govern AI: classify deployments under EU AI Act risk tiers, draft ISO 42001 policy clauses, run vendor reviews, and investigate AI model failures under Article 73.',
     accent: 'emerald',
-    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
+    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk · Incident Response',
   },
 ];
 
