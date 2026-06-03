@@ -38,7 +38,8 @@ export type Dojo2AttackCategory =
   | 'DNS Tunneling'
   | 'Supply Chain'
   | 'Cloud Identity Abuse'
-  | 'Malware Execution';
+  | 'Malware Execution'
+  | 'Data Exfiltration';
 
 export interface Dojo2MitreRef {
   tactic: string;
@@ -1143,6 +1144,91 @@ technical kill chain, ransomware-specific lessons (why traditional backups did n
 GDPR and SEC disclosure obligations, 30/60/90-day recovery roadmap, and strategic recommendations to
 prevent recurrence. Include a section on how AI-powered detection tools could have shortened the
 6-day dwell time.`,
+  },
+
+  {
+    id: 'AE-004',
+    title: 'Alert Enrichment – AI Inference API Compromise: Model Weights Exfiltration',
+    taskType: 'alert-enrichment',
+    difficulty: 'advanced',
+    attackCategory: 'Data Exfiltration',
+    mitre: {
+      tactic: 'Collection / Exfiltration',
+      techniques: [
+        'T1530 – Data from Cloud Storage Object',
+        'T1552.001 – Unsecured Credentials: Credentials in Files',
+        'T1078.004 – Valid Accounts: Cloud Accounts',
+        'T1537 – Transfer Data to Cloud Account',
+      ],
+    },
+    iocs: {
+      ips: ['185.220.101.47', '10.4.0.12'],
+      domains: ['model-weights-dl.b2cdn.io', 'hf-mirror-download.org'],
+      hashes: ['9c1e2a3f4b5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f'],
+      other: [
+        'SA key: ml-inference-sa@prod-ml-461820.iam.gserviceaccount.com',
+        'GCS bucket: gs://prod-model-registry-461820',
+        'Model: gpt2-finetuned-internal-v4.bin (14.3 GB)',
+        'kubectl exec ml-inference-pod-6c7f9d',
+      ],
+    },
+    description:
+      'GCP Security Command Center + SIEM alert cluster: a compromised ML inference pod SA key was used to enumerate and exfiltrate 14.3 GB of proprietary fine-tuned model weights from a private GCS bucket to an external CDN.',
+    incidentData: `INCIDENT: AI Infrastructure Compromise — GCP Security Command Center
+Alert ID: SCC-2024-0441 | Severity: CRITICAL | Status: Active
+Detection Time: 2024-05-14T03:17:22Z | Project: prod-ml-461820
+
+=== ALERT 1: Anomalous GCS Data Access (03:17:22Z) ===
+Principal: ml-inference-sa@prod-ml-461820.iam.gserviceaccount.com
+Action: storage.objects.list + storage.objects.get
+Resource: gs://prod-model-registry-461820/models/gpt2-finetuned-internal-v4.bin
+Source IP: 10.4.0.12 (internal — ml-inference-pod-6c7f9d, namespace: production)
+Bytes Read: 14,337,484,832 bytes (14.3 GB) over 23 minutes
+Finding Type: ANOMALOUS_IAM_GRANT / Exfil risk score: 98
+
+=== ALERT 2: kubectl exec into Inference Pod (03:11:04Z) ===
+Actor: sre-automation@corp.com (service account — NOT a human SRE)
+Target: ml-inference-pod-6c7f9d (namespace: production)
+Command: kubectl exec ml-inference-pod-6c7f9d -- /bin/sh
+Kubeconfig Source: CI pipeline secret (GitLab job ID 88441)
+User-Agent: kubectl/1.28.2 linux/amd64
+NOTE: No matching CI pipeline was scheduled at this time.
+
+=== ALERT 3: Suspicious Outbound Transfer from Pod Egress (03:18:44Z) ===
+Source: 10.4.0.12 (ml-inference-pod-6c7f9d)
+Destination: 185.220.101.47 (External) → model-weights-dl.b2cdn.io
+Protocol: HTTPS/443 | Duration: 22m 41s
+Data Transferred: 14.3 GB (matches GCS read volume exactly)
+Cloud Armor: Rule bypassed — inference pod in allowlist (WAF exception for model serving)
+
+=== ALERT 4: SA Key Enumeration — IAM Anomaly (03:09:51Z) ===
+Action: iam.serviceAccountKeys.list + iam.serviceAccountKeys.get
+SA: ml-inference-sa@prod-ml-461820.iam.gserviceaccount.com
+Source: 185.220.101.47 (EXTERNAL — pre-compromise recon)
+Result: 1 user-managed key found (created 847 days ago, no rotation policy)
+Enrichment Needed: [PENDING]
+
+=== ALERT 5: GitLab CI Secret Accessed Outside Pipeline (03:10:22Z) ===
+Secret: KUBECONFIG_PROD (GitLab CI/CD variable, project: ml-platform/inference)
+Accessed By: IP 185.220.101.47 via GitLab API (Personal Access Token)
+PAT Owner: ci-automation (service account — PAT last rotated: 14 months ago)
+Scope: read_repository, read_registry, k8s_deploy
+Enrichment Needed: [PENDING]
+
+=== THREAT INTEL (Needs Enrichment) ===
+185.220.101.47 — [PENDING ENRICHMENT]
+model-weights-dl.b2cdn.io — [PENDING ENRICHMENT]
+hf-mirror-download.org — [PENDING ENRICHMENT]
+ml-inference-sa key age 847 days — [PENDING ENRICHMENT]
+
+=== CONTEXT ===
+The fine-tuned model (gpt2-finetuned-internal-v4.bin) was trained on 18 months
+of proprietary customer interaction data. Its weights represent a significant
+trade secret and may contain memorised PII if the training set was not
+differentially private. The model serves the production AI chatbot — 47,000
+active users. No model poisoning confirmed yet.
+
+Enrich all pending IOCs, reconstruct the full attack chain (initial access → lateral movement → collection → exfiltration), assess the impact (trade secret loss, potential PII exposure, GDPR Art. 33 obligations), identify all compromised credentials and their blast radius, and recommend immediate containment steps to stop ongoing exfiltration.`,
   },
 ];
 
