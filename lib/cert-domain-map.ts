@@ -370,12 +370,12 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'Security Architecture & Engineering',
         weight:     '13%',
-        topics:     ['Cryptography', 'Threat Modelling', 'Defense-in-Depth', 'Security Architecture', 'Zero Trust Architecture'],
+        topics:     ['Cryptography', 'Threat Modelling', 'Defense-in-Depth', 'Security Architecture', 'Zero Trust Architecture', 'PKI', 'Access Control Models', 'Bell-LaPadula', 'Biba Model', 'Security Models'],
       },
       {
         name:       'Communication & Network Security',
         weight:     '13%',
-        topics:     ['Network Security'],
+        topics:     ['Network Security', 'Wireless Security', 'VPN', 'Firewall', 'SDN Security'],
       },
       {
         name:       'Identity & Access Management',
@@ -385,17 +385,17 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:       'Security Assessment & Testing',
         weight:     '12%',
-        topics:     ['Pen Testing', 'Vulnerability Assessment', 'Security Assessment and Testing'],
+        topics:     ['Pen Testing', 'Vulnerability Assessment', 'Security Assessment and Testing', 'SAST', 'DAST', 'SOC 2', 'CVSS', 'Penetration Testing'],
       },
       {
         name:       'Security Operations',
         weight:     '13%',
-        topics:     ['Incident Response', 'Business Continuity', 'Security Operations', 'Business Continuity and Disaster Recovery'],
+        topics:     ['Incident Response', 'Business Continuity', 'Security Operations', 'Business Continuity and Disaster Recovery', 'Digital Forensics', 'Chain of Custody', 'Hot Site', 'Cold Site', 'Warm Site'],
       },
       {
         name:       'Software Development Security',
         weight:     '11%',
-        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security', 'AI Transparency Documentation', 'Model Cards and Documentation'],
+        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security', 'AI Transparency Documentation', 'Model Cards and Documentation', 'DevSecOps', 'Supply Chain Attacks', 'SAMM', 'SBOM'],
       },
     ],
   },

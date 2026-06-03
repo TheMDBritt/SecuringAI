@@ -7,8 +7,8 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  15,
-  quizQs:    752,
-  glossary:  384,
+  quizQs:    811,
+  glossary:  409,
   articles:   67,
   certs:      12,
   incidents:  21,
@@ -102,6 +102,31 @@ const SOURCED_FROM = [
   'NIST SP 800-218A',
 ];
 
+// ── Scoring rows for the scoring table ────────────────────────────────────────
+const SCORING_ROWS = [
+  {
+    dojo: 'Dojo 1',
+    color: 'text-red-400',
+    engine: 'Outcome engine',
+    how: 'Guardrail config (Injection Shield, Strict Policy, Tools, RAG) deterministically produces vulnerable / partial / blocked per turn. Session score starts at 100 and decays on each successful attack; chained attacks stack penalties.',
+    maps: 'OWASP LLM Top 10 · MITRE ATLAS',
+  },
+  {
+    dojo: 'Dojo 2',
+    color: 'text-cyan-400',
+    engine: 'Quality rubric',
+    how: 'Per-scenario regex rubrics score IOC extraction, MITRE T-codes, executive summaries, detection rule structure, and confidence blocks. Disabled analyst controls are excluded from scoring.',
+    maps: 'MITRE ATT&CK · SecAI+ · GIAC GASAE',
+  },
+  {
+    dojo: 'Dojo 3',
+    color: 'text-emerald-400',
+    engine: 'Framework rubric',
+    how: 'Evaluator checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001 control citations, and vendor gap coverage — returns per-element coaching on missing criteria.',
+    maps: 'EU AI Act · ISO 42001 · NIST AI RMF',
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
@@ -109,24 +134,26 @@ export default function LandingPage() {
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
-          <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+          <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
             {/* Left — headline */}
             <div className="md:col-span-3">
               <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-4">
                 AI Security Training · Free · No account required
               </p>
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-100 leading-[1.08]">
-                Attack LLMs.<br />Defend against them.<br />Govern AI risk.
+              <h1 className="text-4xl md:text-[52px] font-bold tracking-tight text-slate-100 leading-[1.06]">
+                Attack LLMs.<br />
+                Defend against them.<br />
+                Govern AI risk.
               </h1>
-              <p className="mt-5 text-base text-slate-400 max-w-xl leading-relaxed">
-                Three interactive dojos spanning LLM attack techniques, AI-assisted SOC work, and
+              <p className="mt-5 text-[15px] text-slate-400 max-w-xl leading-relaxed">
+                Three interactive dojos spanning LLM attack techniques, AI-assisted SOC operations, and
                 AI governance — scored against OWASP LLM Top 10, MITRE ATT&amp;CK, and the 12
                 AI security certifications the field is converging on.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
                   href="/dojo"
-                  className="px-5 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-colors duration-150"
+                  className="px-5 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150"
                 >
                   Enter the dojo →
                 </Link>
@@ -137,18 +164,21 @@ export default function LandingPage() {
                   Open the playbook
                 </Link>
               </div>
+              <p className="mt-5 text-[11px] text-slate-600 font-mono">
+                No login. No setup. Works without an API key in stub mode.
+              </p>
             </div>
 
             {/* Right — live stats grid */}
             <div className="md:col-span-2">
               <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
                 {[
-                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions', sub: `across ${STATS.certs} certs` },
-                  { n: STATS.scenarios,               label: 'dojo scenarios', sub: '3 disciplines' },
-                  { n: STATS.glossary,                label: 'glossary terms', sub: 'cert-tagged' },
-                  { n: STATS.articles,                label: 'topic articles', sub: 'with code + tables' },
-                  { n: STATS.incidents,               label: 'SOC incidents',  sub: 'prebuilt Dojo 2' },
-                  { n: STATS.certs,                   label: 'certs mapped',   sub: 'official domains' },
+                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs` },
+                  { n: STATS.scenarios,               label: 'dojo scenarios',  sub: '3 disciplines' },
+                  { n: STATS.glossary,                label: 'glossary terms',  sub: 'cert-tagged' },
+                  { n: STATS.articles,                label: 'topic articles',  sub: 'with code + tables' },
+                  { n: STATS.incidents,               label: 'SOC incidents',   sub: 'prebuilt Dojo 2' },
+                  { n: STATS.certs,                   label: 'certs mapped',    sub: 'official domains' },
                 ].map(({ n, label, sub }) => (
                   <div key={label} className="bg-slate-900 px-4 py-4">
                     <div className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n}</div>
@@ -232,6 +262,45 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── Scoring table ─────────────────────────────────────────────────────── */}
+      <section className="border-b border-slate-800 bg-slate-900/30">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="mb-6">
+            <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-1">
+              How scoring works
+            </p>
+            <h2 className="text-lg font-bold text-slate-100">
+              Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
+            </h2>
+          </div>
+
+          <div className="border border-slate-800 rounded-lg overflow-hidden">
+            <table className="w-full text-xs text-left">
+              <thead>
+                <tr className="border-b border-slate-800">
+                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest w-24">Dojo</th>
+                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest w-36">Engine</th>
+                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest">How it scores</th>
+                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest hidden md:table-cell">Framework</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800">
+                {SCORING_ROWS.map((row) => (
+                  <tr key={row.dojo} className="hover:bg-slate-800/30 transition-colors duration-100">
+                    <td className="px-4 py-3">
+                      <span className={`font-mono font-semibold ${row.color}`}>{row.dojo}</span>
+                    </td>
+                    <td className="px-4 py-3 font-mono text-slate-400 text-[11px]">{row.engine}</td>
+                    <td className="px-4 py-3 text-slate-400 leading-relaxed max-w-xs">{row.how}</td>
+                    <td className="px-4 py-3 font-mono text-slate-600 text-[10px] hidden md:table-cell">{row.maps}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       {/* ── Playbook + technique tags ─────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
@@ -277,49 +346,6 @@ export default function LandingPage() {
                 Every dojo turn maps to exam domains. Quiz: select a cert,
                 drill by domain, track weak areas. {STATS.quizQs.toLocaleString()} questions, {STATS.glossary} glossary terms,
                 {' '}{STATS.articles} articles — all cross-referenced by cert.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Scoring model ────────────────────────────────────────────────────── */}
-      <section className="border-b border-slate-800 bg-slate-900/40">
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex items-baseline justify-between mb-6">
-            <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-1">
-                Scoring
-              </p>
-              <h2 className="text-lg font-bold text-slate-100">
-                Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
-              <p className="text-[10px] font-mono text-red-400 uppercase tracking-wide mb-2">Dojo 1 · Outcome engine</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Guardrail config (Injection Shield · Strict Policy · Tools · RAG) deterministically
-                decides <em>vulnerable</em>, <em>partial</em>, or <em>blocked</em> for each turn.
-                Session score starts at 100 and decays as attacks land — chained attacks stack penalties.
-              </p>
-            </div>
-            <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
-              <p className="text-[10px] font-mono text-cyan-400 uppercase tracking-wide mb-2">Dojo 2 · Quality rubric</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Per-scenario regex rubrics score the AI analyst for IOC extraction,
-                MITRE T-codes, executive summaries, detection rule structure, and confidence blocks.
-                Disabled analyst controls are excluded from scoring.
-              </p>
-            </div>
-            <div className="p-4 rounded-lg border border-slate-800 bg-slate-900/60">
-              <p className="text-[10px] font-mono text-emerald-400 uppercase tracking-wide mb-2">Dojo 3 · Framework rubric</p>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                Evaluator checks EU AI Act tier assignment, NIST AI RMF function references,
-                ISO 42001 control citations, and vendor gap coverage — returns per-element
-                coaching on missing criteria.
               </p>
             </div>
           </div>
@@ -378,7 +404,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Sources ──────────────────────────────────────────────────────────── */}
-      <section className="border-b border-slate-800 bg-slate-900/40">
+      <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-6">
           <p className="text-[11px] font-mono text-slate-600 uppercase tracking-widest mb-3">
             Sourced from
@@ -394,7 +420,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
-      <section className="bg-slate-900/40">
+      <section>
         <div className="max-w-6xl mx-auto px-6 py-14">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div>
@@ -408,7 +434,7 @@ export default function LandingPage() {
             <div className="flex gap-3 shrink-0">
               <Link
                 href="/dojo"
-                className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-sm transition-colors duration-150"
+                className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150"
               >
                 Enter the dojo →
               </Link>
