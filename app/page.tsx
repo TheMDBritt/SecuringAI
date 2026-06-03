@@ -9,7 +9,7 @@ const STATS = {
   scenarios:  14,
   quizQs:    693,
   glossary:  367,
-  articles:   61,
+  articles:   64,
   certs:      12,
   incidents:  18,
 };
