@@ -2941,5 +2941,85 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['CISSP', 'SecAI', 'CAISP'],
     related: ['Threat Modelling', 'Attack Surface', 'PASTA', 'Risk Assessment', 'Security Architecture'],
   },
+
+  // ─── Terms added 2026-06 ─────────────────────────────────────────────────
+
+  {
+    term: 'Model Extraction Attack',
+    definition: 'An attack in which an adversary queries an ML model API to reconstruct a surrogate model that approximates the target model\'s behavior. The attacker systematically varies inputs and records outputs (especially confidence scores and logits) to map decision boundaries. Outcome: a high-fidelity duplicate of a proprietary model without accessing its weights, enabling IP theft, adversarial example transfer, and policy reverse-engineering. Defenses: output quantization (return class labels only, not probabilities), rate limiting, query anomaly detection (flag systematic low-variance feature sweeps), and model watermarking so extracted surrogates can be traced. Source: MITRE ATLAS AML.T0040, GIAC GOAA, OWASP LLM10.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'CAIS', 'SecAI', 'CAISP'],
+    related: ['Membership Inference', 'Model Inversion', 'MITRE ATLAS', 'Differential Privacy', 'OWASP LLM10'],
+  },
+  {
+    term: 'Membership Inference Attack',
+    definition: 'A privacy attack that determines whether a specific data record was used in an ML model\'s training set by exploiting the difference in model confidence between training members (higher confidence, lower loss) and non-members. Successfully demonstrates that training data privacy is not guaranteed by distributing the model. High-risk in sensitive domains: medical AI (reveals patient records in training), financial AI (reveals customer transaction history), generative models (reveals what content was trained on — copyright implications). Primary defense: differential privacy during training, which provides a formal mathematical bound on per-record information leakage. Source: Shokri et al. 2017, MITRE ATLAS AML.T0024, GIAC GOAA.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'CAIS', 'CAISP'],
+    related: ['Differential Privacy', 'Model Extraction Attack', 'Model Inversion', 'GDPR', 'Training Data Poisoning'],
+  },
+  {
+    term: 'Indirect Prompt Injection',
+    definition: 'A form of prompt injection where the malicious payload is embedded in external content that an AI system retrieves and processes (documents, emails, web pages, tool outputs) rather than in the direct user input. When the AI ingests the attacker-controlled content, it follows the embedded instructions — hijacking its behavior without the legitimate user ever sending the attack. Particularly dangerous in agentic systems with tool access: an indirect injection in a retrieved email can cause the AI to forward emails, make purchases, or modify files. OWASP LLM01 (2025) and LLM08 (Excessive Agency) both apply. Defenses: instruction hierarchy enforcement, document sandboxing, post-retrieval content sanitization, and action allowlisting at the orchestration layer. Source: OWASP LLM01 2025, GIAC GOAA/GASAE.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'GIAC-GASAE', 'SecAI', 'CAISP', 'CAIS'],
+    related: ['Prompt Injection', 'RAG Injection', 'Excessive Agency (LLM08)', 'OWASP LLM01', 'Agentic AI'],
+  },
+  {
+    term: 'Differential Privacy (DP)',
+    definition: 'A mathematical framework that provides a formal guarantee on how much information any single training record contributes to a model\'s outputs. Defined by privacy budget ε (epsilon): smaller ε means stronger privacy. Implemented in ML via DP-SGD (differentially private stochastic gradient descent) — adds calibrated Gaussian noise to gradients and clips individual record contributions. Trade-off: privacy vs. utility — larger noise (stronger DP) reduces model accuracy. Use cases: federated learning across sensitive institutions, medical AI, financial models where membership inference is critical. Privacy accounting tracks cumulative budget across multiple DP computations. Source: Abadi et al. "Deep Learning with Differential Privacy" (Google 2016), Apple and Google production DP deployments.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'Google-MLE', 'CAISP'],
+    related: ['Membership Inference Attack', 'Federated Learning', 'Model Extraction Attack', 'DP-SGD', 'Privacy-Preserving ML'],
+  },
+  {
+    term: 'Crescendo Jailbreak',
+    definition: 'A multi-turn jailbreak technique documented by Microsoft AI Red Team (2024) that gradually escalates the conversation from benign to harmful topics. The attacker starts with a closely related but harmless question, then uses each successful answer as a stepping stone for progressively more harmful follow-up questions. The LLM follows the conversational context and answers because each individual step appears to be a logical continuation — no single message triggers safety filters. Defense requires evaluating the full conversation trajectory rather than just the current turn. Named after the musical term for gradually increasing intensity. Source: "Great, Now Write an Essay About How to Hotwire a Car" (Microsoft AI Red Team, 2024).',
+    category: 'LLM Security',
+    certTags: ['GIAC-GOAA', 'SecAI', 'CAIS'],
+    related: ['Jailbreak', 'Many-Shot Jailbreaking', 'Prompt Injection', 'LLM01', 'AI Red Teaming'],
+  },
+  {
+    term: 'Many-Shot Jailbreaking',
+    definition: 'A jailbreak attack that exploits in-context learning by pre-filling the context window with hundreds of fabricated Q&A pairs demonstrating the model complying with harmful requests. The model\'s in-context learning mechanism treats these examples as authoritative and replicates the behavior. Attack scales with context window size — 256-shot attacks are substantially more effective than 16-shot. Critical concern for models with 200K+ token contexts. Identified and documented by Anthropic (2024). Defense: safety classifiers that evaluate patterns across the full conversation history rather than just the final message; per-turn safety checks that are not influenced by prior context patterns. Source: Anthropic "Many-shot jailbreaking" (2024).',
+    category: 'LLM Security',
+    certTags: ['GIAC-GOAA', 'SecAI'],
+    related: ['Jailbreak', 'Crescendo Jailbreak', 'In-Context Learning', 'LLM01', 'Context Window'],
+  },
+  {
+    term: 'AI-BOM (AI Bill of Materials)',
+    definition: 'A transparency artifact that documents the components of an AI system — analogous to Software Bill of Materials (SBOM) but extended for AI artifacts. Contents: base model name, version, and source; fine-tuning datasets and their provenance; training framework and library versions with hashes; inference runtime and serving stack; third-party APIs and plugins integrated; training compute and hardware; data collection methodology and consent basis. AI-BOM supports supply chain security (detect compromised model components), regulatory compliance (EU AI Act Article 11 technical documentation), and incident response (identify which component introduced a vulnerability). Emerging standard format being developed by CISA and NIST. Source: EU AI Act Article 11, ISO/IEC 42001, GIAC GASAE.',
+    category: 'AI Governance',
+    certTags: ['GIAC-GASAE', 'CAISP', 'SecAI'],
+    related: ['Model Card', 'System Card', 'SBOM', 'EU AI Act', 'Supply Chain Risk'],
+  },
+  {
+    term: 'Concept Drift',
+    definition: 'A model monitoring failure mode where the statistical relationship between inputs and the target variable changes over time in production — even when the input distribution appears stable. Distinct from data drift (input distribution changes): concept drift changes the meaning of the target label without changing inputs. Example: a fraud detection model trained in a stable economy may show unchanged accuracy metrics but make wrong decisions after economic disruption, because fraudsters\' behavioral patterns shifted. Requires ground truth comparison (comparing predictions to actual outcomes) or downstream business metric monitoring to detect. Hard to catch with standard statistical drift tests (PSI, KS test) that only examine input distributions. Source: Google MLE Professional, NIST AI RMF MEASURE 2.5.',
+    category: 'MLOps',
+    certTags: ['Google-MLE', 'CAISP'],
+    related: ['Data Drift', 'Model Monitoring', 'Distribution Shift', 'MLOps', 'Model Lifecycle'],
+  },
+  {
+    term: 'Byzantine Fault Tolerance (Federated Learning)',
+    definition: 'A property of a federated learning aggregation algorithm that allows the system to produce correct results even when some clients (up to a threshold fraction) submit corrupted or adversarial gradient updates. Named after the Byzantine Generals Problem in distributed systems. Algorithms: Krum (selects the update most similar to a majority), coordinate-wise median (takes per-gradient-dimension median — robust to outliers), FedBE (Bayesian ensemble approach), FLTrust (scores client updates relative to a server-computed trusted reference). Limitation: adaptive attackers can craft updates that appear legitimate to these aggregators, requiring combination with differential privacy and client verification. Source: El Mhamdi et al. "The Hidden Vulnerability of Distributed Learning in Byzantium" (2018), Google MLE.',
+    category: 'AI Security',
+    certTags: ['Google-MLE', 'GIAC-GOAA', 'CAISP'],
+    related: ['Federated Learning', 'Training Data Poisoning', 'Differential Privacy', 'Secure Aggregation', 'Distributed ML'],
+  },
+  {
+    term: 'MITRE ATLAS',
+    definition: 'Adversarial Threat Landscape for AI Systems — MITRE\'s framework for adversarial ML attacks, structured parallel to MITRE ATT&CK. Published 2021, updated continuously. Covers: Reconnaissance (gather ML model information, LLM data gathering), ML Model Access (compromised ML model supply chain, ML service), attacks on model confidentiality (model extraction, model inversion), integrity (data poisoning, backdoor attacks, adversarial examples), and availability (model denial of service), plus LLM-specific attacks (prompt injection, jailbreak). Each technique has AML.T code (e.g., AML.T0018 Backdoor ML Model, AML.T0040 ML Model Inference API Access). Integrates with ATT&CK for full attack chain coverage: use ATT&CK for the infrastructure attack path to reach the AI system, ATLAS for the ML-layer techniques. Source: atlas.mitre.org, GIAC GASAE, CAIS.',
+    category: 'AI Security',
+    certTags: ['GIAC-GASAE', 'GIAC-GOAA', 'CAIS', 'SecAI', 'CAISP'],
+    related: ['MITRE ATT&CK', 'Model Extraction Attack', 'Training Data Poisoning', 'AI Red Teaming', 'Adversarial ML'],
+  },
+  {
+    term: 'Shadow AI',
+    definition: 'The unauthorized use of AI tools and services by employees outside the organization\'s approved technology stack — analogous to Shadow IT but specific to AI. Common examples: submitting confidential documents to public ChatGPT or Claude sessions, using unapproved AI coding assistants, building unauthorized AI-powered workflows in personal cloud accounts. Risks: data exfiltration to vendor training datasets, violation of data classification policies, regulatory non-compliance (GDPR, HIPAA), IP leakage of proprietary code/trade secrets. Governance approach: AI Acceptable Use Policy with data classification restrictions, Microsoft Defender for Cloud Apps (MCAS) for discovery and blocking, Microsoft Purview AI Hub for visibility into AI interactions. Source: CISM, ISACA AI Risk Management, Azure AI-103.',
+    category: 'AI Governance',
+    certTags: ['CISM', 'Azure-AI103', 'GIAC-GASAE', 'SecAI'],
+    related: ['AI Acceptable Use Policy', 'Data Loss Prevention (DLP)', 'Microsoft Defender for Cloud Apps', 'Data Classification', 'Third-Party AI Vendor Risk'],
+  },
 ];
 
