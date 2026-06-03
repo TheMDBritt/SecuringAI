@@ -317,7 +317,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       },
       {
         name:       'AI System Assessment & Audit',
-        categories: ['AI Governance', 'CISM', 'GIAC-GASAE', 'CAIS'],
+        categories: ['AI Governance', 'GIAC-GASAE', 'CAIS'],
         topics:     ['AI Governance', 'NIST AI RMF', 'Model Cards and Documentation', 'AI Transparency Documentation', 'AI Bill of Materials (AI-BOM)'],
       },
     ],
@@ -352,81 +352,6 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
     ],
   },
 
-  {
-    id:   'CISSP',
-    name: 'ISC2 CISSP',
-    domains: [
-      {
-        name:       'Security and Risk Management',
-        weight:     '15%',
-        topics:     ['Risk Management', 'Security Policies', 'Legal and Regulatory', 'Risk Appetite', 'Risk Management Framework', 'Risk Management', 'Threat Modelling'],
-        categories: ['CISSP'],
-      },
-      {
-        name:       'Asset Security',
-        weight:     '10%',
-        topics:     ['Data Classification', 'Data Retention', 'Asset Classification', 'Data Privacy'],
-      },
-      {
-        name:       'Security Architecture & Engineering',
-        weight:     '13%',
-        topics:     ['Cryptography', 'Threat Modelling', 'Defense-in-Depth', 'Security Architecture', 'Zero Trust Architecture', 'PKI', 'Access Control Models', 'Bell-LaPadula', 'Biba Model', 'Security Models'],
-      },
-      {
-        name:       'Communication & Network Security',
-        weight:     '13%',
-        topics:     ['Network Security', 'Wireless Security', 'VPN', 'Firewall', 'SDN Security'],
-      },
-      {
-        name:       'Identity & Access Management',
-        weight:     '13%',
-        topics:     ['IAM', 'Zero Trust', 'Identity and Access Management', 'Privileged Access Management'],
-      },
-      {
-        name:       'Security Assessment & Testing',
-        weight:     '12%',
-        topics:     ['Pen Testing', 'Vulnerability Assessment', 'Security Assessment and Testing', 'SAST', 'DAST', 'SOC 2', 'CVSS', 'Penetration Testing'],
-      },
-      {
-        name:       'Security Operations',
-        weight:     '13%',
-        topics:     ['Incident Response', 'Business Continuity', 'Security Operations', 'Business Continuity and Disaster Recovery', 'Digital Forensics', 'Chain of Custody', 'Hot Site', 'Cold Site', 'Warm Site'],
-      },
-      {
-        name:       'Software Development Security',
-        weight:     '11%',
-        topics:     ['SDLC', 'AI Threat Modelling', 'Software Development Security', 'AI Transparency Documentation', 'Model Cards and Documentation', 'DevSecOps', 'Supply Chain Attacks', 'SAMM', 'SBOM'],
-      },
-    ],
-  },
-
-  {
-    id:   'CISM',
-    name: 'ISACA CISM',
-    domains: [
-      {
-        name:       'Information Security Governance',
-        weight:     '17%',
-        categories: ['CISM'],
-        topics:     ['Security Governance', 'Security Metrics', 'AI Governance', 'Key Risk Indicators', 'Third-Party AI Risk', 'AI Transparency Documentation', 'NIST AI RMF'],
-      },
-      {
-        name:       'Information Security Risk Management',
-        weight:     '20%',
-        topics:     ['Risk Assessment', 'Risk Appetite', 'Risk Register', 'Third-Party Risk', 'Business Impact Analysis', 'Key Risk Indicators'],
-      },
-      {
-        name:       'Information Security Program',
-        weight:     '33%',
-        topics:     ['Security Program', 'Security Strategy', 'KPIs', 'AI Security Programme Maturity'],
-      },
-      {
-        name:       'Incident Management',
-        weight:     '30%',
-        topics:     ['Incident Response', 'Business Continuity', 'Recovery Objectives', 'Incident Classification', 'AI Incident Response', 'AI Crisis Management'],
-      },
-    ],
-  },
 ];
 
 /** Fast lookup by cert ID */

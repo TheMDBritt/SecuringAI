@@ -43,8 +43,6 @@ const CERT_BADGE: Record<string, string> = {
   'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
   'CAIS':         'bg-rose-500/10 text-rose-400 border-rose-500/30',
-  'CISSP':        'bg-sky-500/10 text-sky-400 border-sky-500/30',
-  'CISM':         'bg-teal-500/10 text-teal-400 border-teal-500/30',
 };
 
 const CERT_TEXT: Record<string, string> = {
@@ -58,8 +56,6 @@ const CERT_TEXT: Record<string, string> = {
   'GIAC-GASAE':   'text-orange-400',
   'CAISP':        'text-purple-400',
   'CAIS':         'text-rose-400',
-  'CISSP':        'text-sky-400',
-  'CISM':         'text-teal-400',
 };
 
 const DIFFICULTY_STYLE: Record<QuizDifficulty, string> = {

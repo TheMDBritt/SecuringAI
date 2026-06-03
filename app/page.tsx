@@ -7,10 +7,10 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  18,
-  quizQs:    846,
+  quizQs:    682,
   glossary:  420,
-  articles:   67,
-  certs:      12,
+  articles:   61,
+  certs:      10,
   incidents:  27,
 };
 
@@ -88,8 +88,6 @@ const CERT_CHIPS = [
   { id: 'Azure-AI103', label: 'Azure AI-103',              color: 'text-blue-400 border-blue-500/30' },
   { id: 'Azure-AI901', label: 'Azure AI-901',              color: 'text-blue-400 border-blue-500/30' },
   { id: 'Google-MLE',  label: 'Google MLE',               color: 'text-emerald-400 border-emerald-500/30' },
-  { id: 'CISSP',       label: 'ISC2 CISSP',               color: 'text-sky-400 border-sky-500/30' },
-  { id: 'CISM',        label: 'ISACA CISM',               color: 'text-teal-400 border-teal-500/30' },
 ];
 
 const SOURCED_FROM = [
@@ -147,7 +145,7 @@ export default function LandingPage() {
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-xl leading-relaxed">
                 Three interactive dojos spanning LLM attack techniques, AI-assisted SOC operations, and
-                AI governance — scored against OWASP LLM Top 10, MITRE ATT&amp;CK, and the 12
+                AI governance — scored against OWASP LLM Top 10, MITRE ATT&amp;CK, and the 10
                 AI security certifications the field is converging on.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
