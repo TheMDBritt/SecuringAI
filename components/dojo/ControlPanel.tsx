@@ -1192,6 +1192,34 @@ function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload,
 
 // ─── Dojo 3 — GRC Toolkit ─────────────────────────────────────────────────────
 
+const MODEL_CARD_SECTIONS = [
+  { label: 'Intended Use & Scope',     prompt: 'Draft the Intended Use section of a model card: describe the primary use case, the target users, and explicitly state out-of-scope uses where the model should NOT be applied.' },
+  { label: 'Training Data & Lineage',  prompt: 'Draft the Training Data section of a model card: describe the data sources, collection methodology, consent basis, preprocessing steps, and any known limitations or biases in the training data.' },
+  { label: 'Evaluation & Performance', prompt: 'Draft the Evaluation Results section: describe the benchmark datasets used, key metrics (accuracy, F1, AUC), performance across demographic subgroups, and what the evaluation reveals about the model\'s limitations.' },
+  { label: 'Bias & Fairness Assessment', prompt: 'Conduct a bias and fairness assessment: identify protected attributes relevant to this use case, describe any disparate performance across demographic groups, and propose mitigations (re-sampling, post-processing, fairness constraints).' },
+  { label: 'AI-BOM Components',        prompt: 'Generate an AI Bill of Materials (AI-BOM): list the base model name and version, fine-tuning datasets with provenance, training framework and library dependencies with versions and hashes, inference runtime, and third-party APIs integrated.' },
+  { label: 'EU AI Act Art. 11–15 Map', prompt: 'Map this model card against EU AI Act Articles 11–15: technical documentation (Art. 11), record-keeping (Art. 12), transparency to users (Art. 13), human oversight requirements (Art. 14), and accuracy/robustness/cybersecurity (Art. 15). Identify which requirements are met, partial, or missing.' },
+];
+
+const ATLAS_CATEGORIES = [
+  'AML.T0043 – Craft Adversarial Data',
+  'AML.T0018 – Backdoor ML Model',
+  'AML.T0020 – Poison Training Data',
+  'AML.T0040 – ML Inference API Access',
+  'AML.T0051 – LLM Prompt Injection',
+  'AML.T0048 – Exfil via Generative AI',
+  'AML.T0068 – Evade ML Model',
+  'AML.T0056 – LLM Meta Prompt Extraction',
+];
+
+const RED_TEAM_SECTIONS = [
+  { label: 'Engagement Scope',         prompt: 'Define the red team engagement scope: what AI system components are in scope (model API, RAG pipeline, agentic tools, admin interfaces), what is explicitly out of scope, the threat actor profile being simulated (insider / nation-state / financially motivated), and the rules of engagement.' },
+  { label: 'ATLAS Attack Coverage',    prompt: 'Build the MITRE ATLAS attack coverage matrix: for each selected ATLAS technique, describe the test case (how the attack was executed), the outcome (succeeded / partially mitigated / blocked), and the guardrail configuration at the time of testing.' },
+  { label: 'Findings Register',        prompt: 'Document findings in a structured register: for each finding include ID, severity (Critical/High/Medium/Low), CVSS-equivalent score, ATLAS technique, reproduction steps, the business impact if exploited in production, and the evidence collected.' },
+  { label: 'Executive Summary',        prompt: 'Write the executive summary for an AI red team report: 3-5 sentences covering what was tested, the most critical finding, the overall risk posture, and the top-priority action the organization should take in the next 30 days. Board-ready, no technical jargon.' },
+  { label: 'Remediation Roadmap',      prompt: 'Produce a remediation roadmap: tier all findings into Immediate (0–30 days), Short-term (30–90 days), and Strategic (90+ days). For each tier, list the findings, required controls, owners, and success criteria. Map each remediation to the relevant NIST AI RMF Manage function subcategory.' },
+];
+
 const POLICY_CLAUSES = [
   'All AI-generated outputs that drive business decisions must be reviewed by a human before action.',
   'AI systems processing personal data must record purpose, lawful basis, and retention period.',
@@ -1244,9 +1272,11 @@ interface Dojo3PanelProps {
 }
 
 function Dojo3Panel({ disabled, scenarioId, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
-  const isRiskScenario   = scenarioId === 'ai-risk-classification';
-  const isPolicyScenario = scenarioId === 'policy-and-controls';
-  const isVendorScenario = scenarioId === 'third-party-vendor-review';
+  const isRiskScenario         = scenarioId === 'ai-risk-classification';
+  const isPolicyScenario       = scenarioId === 'policy-and-controls';
+  const isVendorScenario       = scenarioId === 'third-party-vendor-review';
+  const isTransparencyScenario = scenarioId === 'ai-model-transparency';
+  const isRedTeamScenario      = scenarioId === 'ai-red-team-report';
 
   function setLens(value: FrameworkLens) {
     onDojo3ConfigChange({ ...dojo3Config, frameworkLens: value });
@@ -1390,6 +1420,93 @@ function Dojo3Panel({ disabled, scenarioId, dojo3Config, onDojo3ConfigChange, on
             </div>
           )}
         </PanelSection>
+      )}
+
+      {/* ── Model Card Sections (AI Model Transparency) ───────────────────────── */}
+      {isTransparencyScenario && (
+        <PanelSection title="Model Card Builder">
+          <p className="text-[10px] text-slate-500 mb-2">
+            Generate each section of a model card and AI-BOM, or map against EU AI Act Articles 11–15.
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {MODEL_CARD_SECTIONS.map((item) => (
+              <button
+                key={item.label}
+                disabled={disabled}
+                onClick={() => onSendPayload(item.prompt)}
+                className={[
+                  'w-full text-left px-2.5 py-2 rounded border transition-colors text-xs',
+                  'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                  'disabled:opacity-40 disabled:cursor-not-allowed',
+                ].join(' ')}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </PanelSection>
+      )}
+
+      {/* ── ATLAS Attack Categories + Report Sections (AI Red Team Report) ───── */}
+      {isRedTeamScenario && (
+        <>
+          <PanelSection title="MITRE ATLAS Scope">
+            <p className="text-[10px] text-slate-500 mb-2">
+              Select attack categories to include in the engagement scope.
+            </p>
+            <div className="flex flex-col gap-1">
+              {ATLAS_CATEGORIES.map((cat) => {
+                const selected = dojo3Config.vendorGapAreas.includes(cat);
+                return (
+                  <button
+                    key={cat}
+                    disabled={disabled}
+                    onClick={() => {
+                      const next = selected
+                        ? dojo3Config.vendorGapAreas.filter((a) => a !== cat)
+                        : [...dojo3Config.vendorGapAreas, cat];
+                      onDojo3ConfigChange({ ...dojo3Config, vendorGapAreas: next });
+                    }}
+                    className={[
+                      'w-full text-left flex gap-2 items-start px-2 py-1.5 rounded border transition-colors text-[11px] font-mono',
+                      selected
+                        ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
+                        : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                      'disabled:opacity-40 disabled:cursor-not-allowed',
+                    ].join(' ')}
+                  >
+                    <span className={['mt-0.5 shrink-0 w-3 h-3 rounded border flex items-center justify-center',
+                      selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600'].join(' ')}>
+                      {selected && <span className="text-[8px] text-slate-900 font-bold">✓</span>}
+                    </span>
+                    <span>{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </PanelSection>
+          <PanelSection title="Report Sections">
+            <p className="text-[10px] text-slate-500 mb-2">
+              Generate each section of the red team report.
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {RED_TEAM_SECTIONS.map((item) => (
+                <button
+                  key={item.label}
+                  disabled={disabled}
+                  onClick={() => onSendPayload(item.prompt)}
+                  className={[
+                    'w-full text-left px-2.5 py-2 rounded border transition-colors text-xs',
+                    'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                    'disabled:opacity-40 disabled:cursor-not-allowed',
+                  ].join(' ')}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </PanelSection>
+        </>
       )}
 
       {/* ── Policy Clause Library (Policy & Controls Drafting) ──────────────── */}
