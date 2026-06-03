@@ -8,7 +8,7 @@ import type { DojoId } from '@/types';
 // Update when playbook content changes.
 const STATS = {
   scenarios:  13,
-  quizQs:    609,
+  quizQs:    629,
   glossary:  321,
   articles:   57,
   certs:      12,
