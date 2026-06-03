@@ -2636,4 +2636,25 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'AWS-AIF-C01'],
     related: ['Membership Inference Attack', 'Privacy-Preserving ML', 'Federated Learning', 'Training Data Privacy', 'DP-SGD'],
   },
+  {
+    term: 'System Card',
+    definition: 'A documentation format that describes a deployed AI system in its full operational context — complementing a model card (which documents the underlying ML model) with deployment-specific details. Popularised by Meta (2022) for LLaMA model releases. A system card covers: the system\'s intended purpose and the task it performs; the user population and deployment environment; performance characteristics and limitations in the deployed context; known failure modes and their mitigations; the human-in-the-loop design — who oversees the system and how; escalation paths for contested or high-stakes decisions; incident reporting contacts; and regulatory status (EU AI Act risk tier, conformity assessment). For high-risk AI systems under the EU AI Act (Annex III), Annex IV technical documentation requirements are broadly equivalent to a system card scope. The distinction: a model card travels with the model; a system card travels with the deployed application.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CAISP', 'CISM', 'CAIS'],
+    related: ['Model Card', 'AI Bill of Materials (AI-BOM)', 'EU AI Act Risk Tiers', 'Human Oversight', 'Technical Documentation'],
+  },
+  {
+    term: 'Adversarial Robustness',
+    definition: 'The property of an AI model that measures its resistance to adversarial attacks — deliberate, crafted perturbations to inputs designed to cause misclassification or unexpected output. Formally, an ε-robust model satisfies: f(x) = f(x + δ) for all perturbations δ with ‖δ‖ ≤ ε (the allowed perturbation budget). Techniques to improve robustness: adversarial training (including adversarial examples in the training set); randomised smoothing (certifies a specific Lp-ball radius around each input); certified defenses (interval bound propagation, abstract interpretation). Adversarial robustness is not equivalent to standard generalisation — a model may have 95% test accuracy but be trivially broken by FGSM attacks. EU AI Act Article 15(3) explicitly mandates that high-risk AI systems be resilient against adversarial attacks, making adversarial robustness a legal requirement for Annex III systems. Evaluated using FGSM, PGD, Carlini-Wagner (CW), and AutoAttack benchmarks. CAIS, CAISP, and SecAI technical topic.',
+    category: 'AI Security',
+    certTags: ['CAIS', 'CAISP', 'SecAI', 'GIAC-GOAA'],
+    related: ['Evasion Attack', 'FGSM', 'Certified Robustness', 'Adversarial Training', 'Feature Squeezing'],
+  },
+  {
+    term: 'NIST AI RMF MAP Function',
+    definition: 'The MAP function is one of four core functions in the NIST AI Risk Management Framework (NIST AI 100-1, 2023). It focuses on context establishment, risk identification, and risk categorisation for a specific AI system or use case. Key MAP subcategories: MAP 1.1 — AI risk assessment context established (intended use, scope, stakeholders); MAP 1.5 — organisational risk priorities applied; MAP 2.1 — benefits and positive impacts documented; MAP 2.3 — scientific findings on AI risks used to inform the assessment; MAP 3.5 — risk tolerance applied across demographic groups; MAP 5.1 — likelihood and impact of identified risks estimated; MAP 5.2 — practitioners understand residual negative impacts. MAP is system-specific — it begins when a particular AI deployment is being evaluated (in contrast to GOVERN, which is organisational). MAP feeds into MEASURE (quantification) and MANAGE (response). Together with GOVERN, MAP and MEASURE provide the analytical foundation that MANAGE uses to allocate resources, implement controls, and monitor deployed AI systems. SecAI, CISM, and CAISP governance topic.',
+    category: 'AI Governance',
+    certTags: ['SecAI', 'CISM', 'CAISP', 'CISSP'],
+    related: ['NIST AI RMF', 'AI Risk Assessment', 'EU AI Act Risk Tiers', 'ISO 42001', 'Risk Register'],
+  },
 ];

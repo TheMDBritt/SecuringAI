@@ -5237,4 +5237,104 @@ Providers must:
 - "A recruitment AI misclassified a large number of applicants — what's the reporting obligation?" → **Article 73 serious incident reporting** if fundamental rights affected
 - "Who bears full provider obligations when a company fine-tunes a foundation model?" → The **company that fine-tuned it** becomes the provider`,
   },
+
+  // ─── New Article: AI Model Transparency & Documentation ────────────────────
+  {
+    id: 'ai-model-transparency-docs',
+    category: 'AI Governance',
+    title: 'AI Model Transparency — Model Cards, System Cards, and AI-BOMs',
+    certTags: ['SecAI', 'CAISP', 'CISM', 'CAIS', 'CISSP'],
+    vocab: ['Model Card', 'System Card', 'AI-BOM', 'Technical Documentation', 'NIST AI RMF MAP', 'EU AI Act Art. 11', 'EU AI Act Art. 13', 'EU AI Act Art. 15'],
+    content: `## Why AI Transparency Documentation Matters
+
+Transparency documentation communicates what an AI system does, how it was built, what it can and cannot do reliably, and who is responsible for overseeing it. It bridges the gap between model developers, deployers, regulators, and end users — and for high-risk AI systems under the EU AI Act, it is a legal requirement.
+
+Three artifact types form the core of the field: **model cards**, **system cards**, and **AI Bills of Materials (AI-BOMs)**.
+
+## Model Cards
+
+Model cards (Mitchell et al., Google, 2019) travel with the underlying ML model and document:
+
+| Section | What to Include |
+|---|---|
+| Model Details | Name, version, architecture, training date, primary intended uses |
+| Training Data | Dataset names, sources, preprocessing, size, known limitations |
+| Evaluation Results | Metrics disaggregated by demographic subgroup, geography, and context |
+| Out-of-Scope Uses | Explicitly stated prohibited uses and misuse scenarios |
+| Ethical Considerations | Potential harms, bias analysis, fairness constraints |
+| Caveats and Recommendations | Deployment prerequisites, human oversight requirements |
+
+Hugging Face hosts model cards for all models in its registry. The EU AI Act Annex IV technical documentation requirements overlap significantly with model card content.
+
+## System Cards
+
+System cards (Meta, 2022) document the **deployed system in context** — complementing the model card with operational and governance information:
+
+- **System purpose**: the specific task and user population
+- **Deployment environment**: infrastructure, integrations, access controls
+- **Performance in context**: accuracy, latency, degradation conditions, edge cases
+- **Failure modes and mitigations**: what can go wrong and how it is handled
+- **Human-in-the-loop design**: who oversees the system, authority, escalation path
+- **Incident response**: contact points, reporting obligations, remediation SLA
+- **Regulatory status**: EU AI Act risk tier, conformity assessment status
+
+The critical distinction: a model card travels with the model; a system card travels with the deployed application. The same underlying model may have many system cards across different deployments.
+
+## AI Bill of Materials (AI-BOM)
+
+An AI-BOM extends the Software Bill of Materials (SBOM) concept to cover AI-specific supply chain components:
+
+- **Base model(s)**: name, version, source URL, SHA-256 hash, licence
+- **Training datasets**: names, versions, data collection period, consent mechanism, known biases
+- **Fine-tuning datasets**: provenance, any PII, consent basis
+- **ML framework versions**: PyTorch, TensorFlow, Hugging Face Transformers (pinned)
+- **Inference libraries**: ONNX, TensorRT, vLLM — versions and known CVEs
+- **Third-party plugins / RAG data sources**: names, access controls, update frequency
+- **Model signing chain**: who certified each artefact, cryptographic signature
+
+**Security relevance**: ATLAS AML.T0018 (Backdoor ML Model) exploits AI supply chain gaps. A backdoor can be injected through any component in the AI-BOM — poisoned training data, a malicious PyPI package, or tampered model weights. Without a signed AI-BOM, you cannot detect that the model in production is not the model you approved.
+
+## NIST AI RMF MAP Function — Key Subcategories
+
+| Subcategory | What It Requires | Documentation That Satisfies It |
+|---|---|---|
+| MAP 1.1 | Establish AI risk assessment context | System card: intended use, scope, stakeholders |
+| MAP 2.1 | Document expected benefits | Model card: use cases, performance benchmarks |
+| MAP 2.3 | Use scientific literature on AI risks | Model card: known failure modes, bias research citations |
+| MAP 3.5 | Apply risk tolerance to demographic groups | Model card: disaggregated evaluation results |
+| MAP 5.2 | Practitioners understand residual negative impacts | System card: failure modes, escalation path |
+
+## EU AI Act Articles 11–15
+
+For high-risk AI systems (Annex III), Articles 11–15 set specific technical obligations:
+
+| Article | Obligation | Consequence if Missing |
+|---|---|---|
+| Art. 11 | Technical documentation (Annex IV, 14 items) | Cannot affix CE mark; non-compliant system |
+| Art. 12 | Logging ≥6 months for high-risk under human oversight | Penalty; inability to investigate incidents |
+| Art. 13 | Instructions for use supplied to deployers | Deployer cannot meet Art. 14 oversight obligations |
+| Art. 14 | Human oversight: override capability + qualified personnel | System non-compliant; deployer liability for harm |
+| Art. 15 | Accuracy, robustness, adversarial resilience | Cannot achieve conformity assessment |
+
+**Art. 15(3) adversarial robustness** mandates that high-risk AI systems be resilient against adversarial attacks — evasion, data poisoning, backdoor — making adversarial robustness a legal requirement for the first time globally.
+
+## Documentation Maturity Model
+
+| Level | Artefacts Present | Coverage |
+|---|---|---|
+| 0 — None | No documentation | Non-compliant for high-risk AI |
+| 1 — Basic | Model card | Intended use and limitations documented |
+| 2 — Intermediate | Model card + system card | Deployment context and oversight documented |
+| 3 — Advanced | All above + AI-BOM | Full supply chain transparency |
+| 4 — Certified | All above + signed artefacts + third-party audit | EU AI Act Annex IV compliant |
+
+## Exam Tips (SecAI, CAISP, CISM)
+
+- "Which EU AI Act article requires technical documentation?" → **Article 11 (Annex IV)**
+- "A model card disaggregates evaluation results by subgroup — which NIST AI RMF subcategory?" → **MAP 3.5**
+- "Key difference between model card and system card?" → Model card = ML model; system card = deployed application in context
+- "How does an AI-BOM differ from an SBOM?" → AI-BOM adds training datasets, model weights, fine-tuning data, and model signing chain
+- "EU AI Act Art. 15(3) mandates what security property?" → **Adversarial robustness**
+- "Minimum log retention for high-risk AI under EU AI Act Art. 12?" → **6 months**`,
+  },
 ];
