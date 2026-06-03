@@ -47,6 +47,15 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM09'],
   },
+  {
+    id: 'system-prompt-leakage',
+    dojoId: 1,
+    title: 'System Prompt Leakage',
+    description:
+      'Extract BlackBeltAI\'s full hidden system prompt using repetition requests, ChatML injection markers, translation tricks, and boundary-injection techniques.',
+    difficulty: 'intermediate',
+    owaspTags: ['LLM07'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {

@@ -37,6 +37,13 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'CAISP · Retrieval Poisoning Defense',
     'CSA AICM · Data Provenance',
   ],
+  'system-prompt-leakage': [
+    'OWASP LLM07 — System Prompt Leakage',
+    'SecAI+ · System Prompt Confidentiality',
+    'CAISP · AI Input Validation',
+    'NIST AI RMF · Measure 2.6',
+    'CSA AICM · Prompt Security Controls',
+  ],
 
   // ── Dojo 2 — Using AI for defense ───────────────────────────────────────────
   'log-triage': [
