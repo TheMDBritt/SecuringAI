@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Header } from '@/components/layout/Header';
 
-const TITLE = 'LLM DOJO — Free LLM Security Training';
+const TITLE = 'LLM DOJO — Free AI Security Training';
 const DESCRIPTION =
-  'Free hands-on AI security training. Three dojos covering LLM attack and defense, AI-assisted SOC operations, and AI GRC. 701 quiz questions across 12 certs including SecAI+, CAISP, GIAC GOAA, SC-500, and EC-Council C|AI Security.';
+  'Free hands-on AI security training. Three interactive dojos: LLM attack and defense, AI-assisted SOC, and AI GRC. 789 quiz questions across 10 certs including CompTIA SecAI+, SC-500, GIAC GOAA, CAISP, and EC-Council C|AI Security. No account required.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),

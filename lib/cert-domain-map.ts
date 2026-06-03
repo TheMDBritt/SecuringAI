@@ -155,6 +155,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:    'Manage Identity & Access (Entra ID, PIM, CA)',
         weight:  '20–25%',
+        categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Entra ID', 'Privileged Identity Management', 'Identity Protection',
           'Managed Identity', 'Workload Identity', 'Workload Identity Federation',
@@ -165,30 +166,34 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       {
         name:    'Secure Networking & Infrastructure',
         weight:  '15–20%',
+        categories: ['Microsoft Cloud & AI Security'],
         topics:  ['Azure Policy', 'Azure Firewall', 'Azure DDoS', 'Network Security Groups', 'Private Endpoints'],
       },
       {
         name:    'Secure Compute, Storage, Data',
         weight:  '15–20%',
+        categories: ['Microsoft Cloud & AI Security'],
         topics:  ['Azure Key Vault', 'Storage Security', 'VM Security', 'Container Security'],
       },
       {
         name:    'Manage Security Operations (Defender XDR, Sentinel, Copilot)',
         weight:  '20–25%',
+        categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Defender XDR', 'Microsoft Sentinel', 'KQL', 'Advanced Hunting',
-          'Microsoft Security Copilot', 'Automatic Attack Disruption', 'Insider Risk Management',
-          'Microsoft Defender for Cloud', 'Case Study',
+          'Microsoft Security Copilot', 'Security Copilot', 'Automatic Attack Disruption',
+          'Insider Risk Management', 'Microsoft Defender for Cloud',
         ],
       },
       {
         name:    'Secure AI Workloads & Govern Data with Purview',
         weight:  '20–25%',
+        categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Purview', 'Azure OpenAI Service', 'Azure AI Content Safety',
           'Azure AI Foundry', 'Defender for AI Workloads', 'DSPM for AI',
           'AI Security Posture Management', 'Prompt Shields', 'Copilot Agent',
-          'M365 Copilot', 'Copilot Studio',
+          'M365 Copilot', 'Copilot Studio', 'Azure AI Foundry', 'Security Copilot',
         ],
       },
     ],

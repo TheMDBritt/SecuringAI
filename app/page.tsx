@@ -7,11 +7,11 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  18,
-  quizQs:    721,
-  glossary:  420,
-  articles:   61,
+  quizQs:    789,
+  glossary:  436,
+  articles:   64,
   certs:      10,
-  incidents:  27,
+  incidents:  29,
 };
 
 interface DojoCard {
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 27 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
+    summary: 'Operate as an AI SOC analyst across 29 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -51,30 +51,30 @@ const DOJOS: DojoCard[] = [
 ];
 
 const TECHNIQUES = [
-  'Prompt Injection (LLM01)',
-  'Insecure Output Handling (LLM02)',
-  'Training Data Poisoning (LLM03)',
-  'Model Denial of Service (LLM04)',
-  'Supply Chain Risk (LLM05)',
-  'Sensitive Data Disclosure (LLM06)',
-  'System Prompt Leakage (LLM07)',
-  'Excessive Agency (LLM08)',
-  'Vector & Embedding Attacks (LLM09)',
-  'Model Theft (LLM10)',
-  'SSH Brute Force',
-  'WMI Lateral Movement',
-  'C2 Beaconing',
-  'Credential Dumping',
-  'Cloud IAM Escalation',
-  'Fileless Malware',
-  'Ransomware Kill Chain',
-  'Sigma/KQL Rule Generation',
-  'EU AI Act Risk Tiering',
-  'ISO 42001 Controls',
-  'Vendor Gap Analysis',
-  'AI Red Teaming (MITRE ATLAS)',
-  'Adversarial ML',
-  'Model Inversion & Extraction',
+  { label: 'Prompt Injection',       tag: 'LLM01',       dojo: 1 },
+  { label: 'Insecure Output',        tag: 'LLM02',       dojo: 1 },
+  { label: 'Training Data Poisoning',tag: 'LLM03',       dojo: 1 },
+  { label: 'Supply Chain Risk',      tag: 'LLM05',       dojo: 1 },
+  { label: 'Sensitive Data Leak',    tag: 'LLM06',       dojo: 1 },
+  { label: 'System Prompt Leakage',  tag: 'LLM07',       dojo: 1 },
+  { label: 'Excessive Agency',       tag: 'LLM08',       dojo: 1 },
+  { label: 'RAG / Vector Attacks',   tag: 'LLM09',       dojo: 1 },
+  { label: 'Model Theft',            tag: 'LLM10',       dojo: 1 },
+  { label: 'Indirect Injection',     tag: 'AML.T0054.001', dojo: 1 },
+  { label: 'Model Inversion',        tag: 'AML.T0024',   dojo: 1 },
+  { label: 'Log Triage',             tag: 'SOC',         dojo: 2 },
+  { label: 'Alert Enrichment',       tag: 'SOC',         dojo: 2 },
+  { label: 'Sigma / KQL Gen',        tag: 'SecAI+',      dojo: 2 },
+  { label: 'IR Report Drafting',     tag: 'SOC',         dojo: 2 },
+  { label: 'EU AI Act Risk Tier',    tag: 'Annex III',   dojo: 3 },
+  { label: 'ISO 42001 Controls',     tag: 'GRC',         dojo: 3 },
+  { label: 'Vendor Gap Analysis',    tag: 'GRC',         dojo: 3 },
+  { label: 'AI Red Teaming',         tag: 'ATLAS',       dojo: 1 },
+  { label: 'Many-Shot Jailbreak',    tag: 'LLM01',       dojo: 1 },
+  { label: 'Crescendo Attack',       tag: 'Red Team',    dojo: 1 },
+  { label: 'Backdoor / Trojan',      tag: 'AML.T0018',   dojo: 1 },
+  { label: 'Purview DSPM for AI',    tag: 'SC-500',      dojo: 3 },
+  { label: 'Security Copilot KQL',   tag: 'SC-500',      dojo: 2 },
 ];
 
 const CERT_CHIPS = [
@@ -131,22 +131,22 @@ export default function LandingPage() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-14 md:py-20">
-          <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
+        <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
+          <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
             {/* Left — headline */}
             <div className="md:col-span-3">
               <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-4">
                 AI Security Training · Free · No account required
               </p>
-              <h1 className="text-4xl md:text-[52px] font-bold tracking-tight text-slate-100 leading-[1.06]">
+              <h1 className="text-[38px] md:text-[50px] font-bold tracking-tight text-slate-100 leading-[1.07]">
                 Attack LLMs.<br />
                 Defend against them.<br />
                 Govern AI risk.
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-xl leading-relaxed">
-                Three interactive dojos spanning LLM attack techniques, AI-assisted SOC operations, and
-                AI governance — scored against OWASP LLM Top 10, MITRE ATT&amp;CK, and the 10
-                AI security certifications the field is converging on.
+                Three interactive dojos. Run prompt injection against live guardrails, triage real SOC
+                incidents with AI, and classify EU AI Act risk tiers — every turn scored and mapped to
+                the {STATS.certs} AI security certifications the field is converging on.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
@@ -162,9 +162,11 @@ export default function LandingPage() {
                   Open the playbook
                 </Link>
               </div>
-              <p className="mt-5 text-[11px] text-slate-600 font-mono">
-                No login. No setup. Works without an API key in stub mode.
-              </p>
+              <div className="mt-5 flex items-center gap-4">
+                <p className="text-[11px] text-slate-600 font-mono">
+                  No login · No setup · Stub mode — no API key needed
+                </p>
+              </div>
             </div>
 
             {/* Right — live stats grid */}
@@ -184,6 +186,16 @@ export default function LandingPage() {
                     <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
                   </div>
                 ))}
+              </div>
+              {/* Terminal-style callout */}
+              <div className="mt-3 px-3 py-2.5 rounded border border-slate-800 bg-slate-900/60 font-mono text-[11px] text-slate-500 leading-relaxed">
+                <span className="text-slate-700">$ </span>
+                <span className="text-cyan-500">dojo</span>
+                <span className="text-slate-400"> --scenario prompt-injection --guardrails strict</span>
+                <br />
+                <span className="text-slate-700">→ </span>
+                <span className="text-red-400">BLOCKED</span>
+                <span className="text-slate-500"> · LLM01 · score: 94/100</span>
               </div>
             </div>
           </div>
@@ -307,21 +319,27 @@ export default function LandingPage() {
             {/* Technique tags */}
             <div>
               <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
-                Attack &amp; defense techniques
+                {TECHNIQUES.length} attack &amp; defense techniques
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {TECHNIQUES.map((t) => (
                   <span
-                    key={t}
-                    className="text-[11px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
+                    key={t.label}
+                    className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
                   >
-                    {t}
+                    {t.label}
+                    <span className="text-slate-600">·</span>
+                    <span className={
+                      t.dojo === 1 ? 'text-red-500/70' :
+                      t.dojo === 2 ? 'text-cyan-500/70' :
+                      'text-emerald-500/70'
+                    }>{t.tag}</span>
                   </span>
                 ))}
               </div>
               <p className="mt-4 text-xs text-slate-600 leading-relaxed">
-                Sourced from OWASP LLM Top 10, MITRE ATT&amp;CK, and real incident playbooks.
-                Type the attack — see exactly which control stops it.
+                Sourced from OWASP LLM Top 10 (2025), MITRE ATT&amp;CK + ATLAS, and official exam study guides.
+                Each tag maps to the framework reference — type the attack and see which guardrail decides the outcome.
               </p>
             </div>
 
@@ -359,20 +377,20 @@ export default function LandingPage() {
                 Playbook
               </p>
               <h2 className="text-xl font-bold text-slate-100 mb-3">
-                Study between scenarios.
+                {STATS.quizQs.toLocaleString()} questions. {STATS.certs} certs. Drill by domain.
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-4">
-                The Playbook is a cross-referenced study library. Every article, quiz question,
-                and glossary term is tagged to its cert domains — filter by exam, drill the
-                weak areas, study exactly what matters for your target cert.
+                Every article, quiz question, and glossary term is tagged to its cert exam domain.
+                Select a cert, choose which domains to drill, set difficulty and question count —
+                results show per-domain breakdown so you know exactly where to focus.
               </p>
               <div className="p-3.5 rounded-lg border border-slate-800 bg-slate-900/40 mb-5">
-                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow</p>
+                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow — exam first</p>
                 <ol className="text-xs text-slate-400 space-y-1 leading-relaxed">
-                  <li><span className="font-mono text-slate-600 mr-2">1.</span>Pick a cert</li>
-                  <li><span className="font-mono text-slate-600 mr-2">2.</span>Select exam domains</li>
-                  <li><span className="font-mono text-slate-600 mr-2">3.</span>Set difficulty + count</li>
-                  <li><span className="font-mono text-slate-600 mr-2">4.</span>See per-domain score breakdown</li>
+                  <li><span className="font-mono text-slate-700 mr-2">01</span>Select a cert (SecAI+, SC-500, GIAC-GOAA…)</li>
+                  <li><span className="font-mono text-slate-700 mr-2">02</span>Pick domains from that exam&apos;s official objectives</li>
+                  <li><span className="font-mono text-slate-700 mr-2">03</span>Configure difficulty · question count · mock exam mode</li>
+                  <li><span className="font-mono text-slate-700 mr-2">04</span>Get per-domain score breakdown + weak area targeting</li>
                 </ol>
               </div>
               <Link
@@ -385,10 +403,10 @@ export default function LandingPage() {
 
             <div className="grid grid-cols-2 gap-3">
               {[
-                { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs, drill by domain` },
-                { n: STATS.glossary,                label: 'glossary terms',  sub: 'cert-tagged with related links' },
-                { n: STATS.articles,                label: 'topic articles',  sub: 'with inline code and tables' },
-                { n: STATS.certs,                   label: 'cert maps',       sub: 'official domains + question counts' },
+                { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs, mapped to exam domains` },
+                { n: STATS.glossary,                label: 'glossary terms',  sub: 'cert-tagged, A–Z filterable by cert' },
+                { n: STATS.articles,                label: 'topic articles',  sub: 'with code examples and comparison tables' },
+                { n: STATS.certs,                   label: 'cert maps',       sub: 'official exam objectives + domain weights' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="p-4 rounded-lg border border-slate-800 bg-slate-900/40">
                   <div className="text-xl font-bold text-slate-100 font-mono">{n}</div>
@@ -419,29 +437,51 @@ export default function LandingPage() {
 
       {/* ── CTA ──────────────────────────────────────────────────────────────── */}
       <section>
-        <div className="max-w-6xl mx-auto px-6 py-14">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-100">
-                No setup. No account. No cost.
-              </h2>
-              <p className="text-slate-400 mt-2 text-sm max-w-lg">
-                Pick a dojo, load a scenario, watch the score and cert mapping update per turn.
-              </p>
-            </div>
-            <div className="flex gap-3 shrink-0">
-              <Link
-                href="/dojo"
-                className="px-6 py-3 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150"
-              >
-                Enter the dojo →
-              </Link>
-              <Link
-                href="/playbook"
-                className="px-6 py-3 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium text-sm transition-colors duration-150"
-              >
-                Study the playbook
-              </Link>
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="border border-slate-800 rounded-lg p-6 md:p-8 bg-slate-900/30">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+              <div className="max-w-xl">
+                <h2 className="text-xl md:text-2xl font-bold text-slate-100">
+                  No setup. No account. No cost.
+                </h2>
+                <p className="text-slate-400 mt-2 text-sm leading-relaxed">
+                  Pick a dojo, load a scenario, submit your attack. The guardrail configuration
+                  decides the outcome — same payload, same config, same result, every time.
+                  Score and cert mapping update per turn.
+                </p>
+                <div className="mt-4 grid grid-cols-3 gap-3">
+                  {[
+                    { label: 'Dojo 1', sub: '8 attack scenarios', color: 'text-red-400' },
+                    { label: 'Dojo 2', sub: '29 SOC incidents',   color: 'text-cyan-400' },
+                    { label: 'Dojo 3', sub: '7 GRC scenarios',    color: 'text-emerald-400' },
+                  ].map((d) => (
+                    <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
+                      <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>
+                      <div className="text-[10px] text-slate-500 mt-0.5">{d.sub}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 shrink-0">
+                <Link
+                  href="/dojo"
+                  className="px-6 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150 text-center"
+                >
+                  Enter the dojo →
+                </Link>
+                <Link
+                  href="/playbook"
+                  className="px-6 py-2.5 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium text-sm transition-colors duration-150 text-center"
+                >
+                  Study the playbook
+                </Link>
+                <Link
+                  href="/about"
+                  className="px-6 py-2.5 text-center text-[11px] font-mono text-slate-600 hover:text-slate-400 transition-colors duration-150"
+                >
+                  How scoring works →
+                </Link>
+              </div>
             </div>
           </div>
         </div>
