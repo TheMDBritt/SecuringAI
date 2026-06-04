@@ -957,6 +957,27 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Executive summary with business risk narrative included', re: /executive\s+summary|business\s+(?:risk|impact|context)|c.suite|board.level|risk\s+to\s+(?:the\s+)?(?:business|organization|brand)|financial\s+impact/i },
     { label: 'Remediation roadmap with timeline or priority tiers', re: /\b(roadmap|remediation\s+plan|priority\s+tier|short.term|long.term|immediate|P[0-3]|milestone|sprint|quarter|recommendation\s+timeline)\b/i },
   ],
+  'ai-supply-chain-risk': [
+    { label: 'Model provenance reviewed (origin, hosting, versioning, integrity)', re: /\b(provenance|model\s+origin|base\s+model|pretrained|fine.?tun|self.?hosted|managed\s+endpoint|model\s+hash|checksum|signed\s+model\s+card|artifact\s+integrit)\b/i },
+    { label: 'Training data lineage and governance assessed', re: /\b(training\s+data|data\s+lineage|data\s+provenance|data\s+governance|GDPR|CCPA|data\s+poisoning|pre.?training|dataset\s+curation|data\s+source|membership\s+inference)\b/i },
+    { label: 'Dependency vulnerability surface (SBOM/AI-BOM) reviewed', re: /\b(SBOM|AI.?BOM|bill\s+of\s+material|dependency|CVE|pickle|deserialization|supply\s+chain|ML\s+framework|PyTorch|TensorFlow|container|base\s+image|NVD|OSV)\b/i },
+    { label: 'Model card completeness scored against EU AI Act or NIST AI RMF MAP.5', re: /model\s+card|EU\s+AI\s+Act|article\s+18|NIST|MAP\.5|MAP\s+5|technical\s+documentation|completeness|gap|present|missing/i },
+    { label: 'Risk scoring and contractual controls recommended', re: /\b(risk\s+(?:score|rating|level)|high|medium|low|contractual|vendor\s+controls?|DPA|MSA|clause|OWASP\s+LLM09|LLM09|MAP\.5)\b/i },
+  ],
+  'ai-bias-audit': [
+    { label: 'Bias metric computed (DIR, EOD, DPD, or AOD)', re: /\b(disparate\s+impact|DIR|four.fifths|equal\s+opportunity|EOD|demographic\s+parity|DPD|average\s+odds|AOD|TPR|FPR|0\.\d+|ratio\s*[:=]?\s*0\.\d+)\b/i },
+    { label: 'EU AI Act or EEOC violation classification provided', re: /EU\s+AI\s+Act|annex\s+III|article\s+5|article\s+10|EEOC|four.fifths\s+rule|uniform\s+guidelines|prohibited\s+practice|high.risk\s+AI|GDPR\s+article\s+22/i },
+    { label: 'Remediation plan with monitoring obligations specified', re: /\b(remediat|retrain|reweigh|adversarial\s+debias|data\s+re.?sampl|monitor|post.?market|Article\s+72|ISO\s+42001|NIST|MEASURE\s+2\.5|Clause\s+9)\b/i },
+    { label: 'Mathematical formula or numeric metric values provided', re: /formula\s*[:=]|[Pp]\s*\(|÷|×|\bTPR\b|\bFPR\b|0\.[0-9]{1,4}|ratio\s*[:=]?\s*\d/i },
+    { label: 'Regulatory disclosure or notification assessed (GDPR, EU AI Act)', re: /GDPR|article\s+22|automated\s+decision|EU\s+AI\s+Act|article\s+72|article\s+73|notif|DPA|supervisory\s+authority|data\s+subject\s+rights?/i },
+  ],
+  'ai-privacy-impact': [
+    { label: 'GDPR Article 35 DPIA requirement determination provided', re: /GDPR|article\s+35|DPIA|data\s+protection\s+impact|systematic\s+(profiling|processing)|high\s+risk|special\s+categor|mandatory/i },
+    { label: 'Data flow map covers processing operations and data subjects', re: /data\s+flow|processing\s+operation|personal\s+data|data\s+subject|controller|processor|sub.?processor|retention|deletion|cross.?border|transfer|legal\s+basis/i },
+    { label: 'Re-identification and membership inference risk assessed', re: /re.?identification|membership\s+inference|linkage\s+attack|k.anonymity|differential\s+privacy|epsilon|training\s+data\s+extraction|model\s+inversion|privacy\s+risk/i },
+    { label: 'ISO 42001 or NIST AI RMF MAP reference included', re: /ISO\s+42001|42001|Clause\s+8\.3|NIST|AI\s+RMF|MAP\s+2\.3|MAP\.2|privacy\s+risk\s+assess/i },
+    { label: 'DPA notification or EU AI Act Article 73 assessment present', re: /DPA|supervisory\s+authority|data\s+protection\s+authority|article\s+35.*consult|article\s+73|serious\s+incident|72\s+hours?|notification\s+(obligation|threshold|requirement)/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -1030,6 +1051,39 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'A technical-only red team report fails to drive executive action — leadership needs risk in business terms. Prompt: "Write a one-page executive summary: what was tested, what was found, what could go wrong if unaddressed, and what the organization should do in the next 30 days."',
   'Remediation roadmap with timeline or priority tiers':
     'Red team reports without a roadmap produce findings that age in a ticket queue. Prompt: "Produce a remediation roadmap: tier findings into Immediate (0–30 days), Short-term (30–90 days), and Strategic (90+ days). Assign owners and success criteria for each tier."',
+  // ai-supply-chain-risk
+  'Model provenance reviewed (origin, hosting, versioning, integrity)':
+    'Model provenance is the first question in any AI supply chain audit — you cannot assess risk without knowing where the model came from and whether the artefact is tamper-proof. Prompt: "Review model origin, hosting model, versioning policy, and integrity verification (checksums/signed model card). Flag gaps."',
+  'Training data lineage and governance assessed':
+    'Training data determines both the model\'s capabilities and its liability exposure — poisoned, unlicensed, or personal data in training creates attack surface and regulatory risk. Prompt: "Assess training data sources (licensed, scraped, synthetic), GDPR/CCPA compliance, and whether adversarial content filters were applied during curation."',
+  'Dependency vulnerability surface (SBOM/AI-BOM) reviewed':
+    'ML framework CVEs, pickle deserialization, and unpatched container images are the most commonly exploited supply chain vectors. Prompt: "Review the ML framework versions, container base images, and serialized model artefact format for known CVEs. Flag any pickle deserialization risk."',
+  'Model card completeness scored against EU AI Act or NIST AI RMF MAP.5':
+    'EU AI Act Article 18 mandates technical documentation for high-risk AI — missing model card elements are a compliance finding, not just a documentation gap. Prompt: "Score the model card against a completeness checklist (model details, intended use, training data, evaluation, ethical considerations) and map gaps to EU AI Act Article 18 or NIST AI RMF MAP.5."',
+  'Risk scoring and contractual controls recommended':
+    'Supply chain assessments that don\'t produce vendor contractual requirements produce no change — gaps must become contract clauses. Prompt: "Score each gap High/Medium/Low and propose required contractual controls for the vendor relationship, mapped to OWASP LLM09 and ISO 42001 Clause 8.4."',
+  // ai-bias-audit
+  'Bias metric computed (DIR, EOD, DPD, or AOD)':
+    'Regulatory bodies (EEOC, EU AI Act) require numeric metrics — an audit without a disparate impact ratio or similar calculation is not defensible. Prompt: "Compute the Disparate Impact Ratio (DIR = P(positive|group A) ÷ P(positive|group B)) and at least one other metric (Equal Opportunity Difference, Demographic Parity Difference)."',
+  'EU AI Act or EEOC violation classification provided':
+    'Hiring systems are explicitly listed in EU AI Act Annex III (high-risk); the EEOC four-fifths rule (DIR < 0.8) is the US enforcement threshold. Prompt: "Classify the bias finding under EU AI Act Annex III category and the EEOC four-fifths rule. Cite the specific article/rule."',
+  'Remediation plan with monitoring obligations specified':
+    'Without a remediation plan, a bias finding produces no action — reweighing, adversarial debiasing, or resampling must be specified with monitoring obligations. Prompt: "Draft a remediation plan: specify the bias mitigation technique, monitoring cadence (ISO 42001 Clause 9), and post-market monitoring requirements (EU AI Act Article 72)."',
+  'Mathematical formula or numeric metric values provided':
+    'Providing the formula ensures the analysis is reproducible and auditable — key for regulatory submissions. Prompt: "State the formula for each metric and compute the numeric value from the given data."',
+  'Regulatory disclosure or notification assessed (GDPR, EU AI Act)':
+    'Automated hiring decisions trigger GDPR Article 22 rights; serious incidents in high-risk AI require EU AI Act Article 73 notification. Prompt: "Assess GDPR Article 22 rights implications and whether this bias finding constitutes a serious incident under EU AI Act Article 73."',
+  // ai-privacy-impact
+  'GDPR Article 35 DPIA requirement determination provided':
+    'GDPR Article 35 imposes a mandatory DPIA for systematic profiling, special category processing, or novel technology — determining whether a DPIA is required is the first output. Prompt: "Determine whether GDPR Article 35 mandates a DPIA for this AI system and justify the decision against the three Article 35 criteria."',
+  'Data flow map covers processing operations and data subjects':
+    'A PIA without a data flow map cannot identify all processing risks — subjects, legal bases, transfers, and retention must be documented. Prompt: "Map all personal data flows: data categories, processing operations, legal basis, data subjects, recipients, retention, and cross-border transfer mechanisms."',
+  'Re-identification and membership inference risk assessed':
+    'ML models trained on personal data create specific re-identification risks not present in traditional processing — membership inference attacks can extract training data. Prompt: "Assess the re-identification risk from training data membership inference attacks. What k-anonymity level does the training data achieve? Was differential privacy applied (what epsilon)?"',
+  'ISO 42001 or NIST AI RMF MAP reference included':
+    'ISO 42001 Clause 8.3 and NIST AI RMF MAP 2.3 are the governance standards for AI privacy risk — referencing them anchors the PIA to an auditable framework. Prompt: "Map the identified privacy risks and mitigations to ISO/IEC 42001 Clause 8.3 or NIST AI RMF MAP 2.3 subcategories."',
+  'DPA notification or EU AI Act Article 73 assessment present':
+    'High-risk processing requires DPA consultation under GDPR Article 35(4) when residual risk remains high; AI incidents may also require Article 73 notification — both obligations must be assessed. Prompt: "Assess whether residual risk requires GDPR Article 35(4) DPA consultation, and whether the AI system failure constitutes a serious incident under EU AI Act Article 73 (notification timeline and required content)."',
 };
 
 
