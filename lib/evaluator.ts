@@ -749,8 +749,23 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline|\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}/i },
     { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)|entry\s+point|attack\s+chain/i },
     { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication|reset.*password|disable.*account|re.?image/i },
-    // Require explicit section heading or structured phrase — not just "lessons" or "going forward" anywhere
     { label: 'Lessons learned section included', re: /##\s*lessons?\s+learned|lessons?\s+learned\s*\n|post.?incident\s+review|retrospective|prevent.*recurrence\s*[:;]|lessons?\s+learned\s*:/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'threat-hunt': [
+    { label: 'Threat hunting hypothesis stated (falsifiable)', re: /hypothesis|we\s+(expect|hypothesize|believe|suspect|assume)|hunting\s+for|looking\s+for|behavior\s+(suggests?|indicates?)/i },
+    { label: 'MITRE ATT&CK technique referenced (T-code)', re: /T\d{4}(\.\d{3})?|MITRE\s+ATT&?CK|tactic|technique/i },
+    { label: 'KQL or Sigma detection query provided', re: /\b(KQL|Sigma|SecurityEvent|AzureActivity|SigninLogs|DeviceProcess|DeviceNetwork|detection:\s*\n|title:|logsource:)\b/i },
+    { label: 'False positive considerations addressed', re: /false\s+positive|benign|tuning|exclusion|legitimate|whitelist|allowlist|noise\s+reduction/i },
+    { label: 'Data sources or log tables specified', re: /\b(SecurityEvent|AzureActivity|SigninLogs|Sysmon|DeviceProcess|DeviceNetwork|CommonSecurityLog|Syslog|table|log\s+source)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'malware-behavior': [
+    { label: 'Malware family or category identified', re: /ransomware|infostealer|RAT|loader|wiper|trojan|backdoor|dropper|malware\s+family|likely\s+(family|category)|classified\s+as/i },
+    { label: 'MITRE ATT&CK technique mapped (T-code)', re: /T\d{4}(\.\d{3})?|ATT&?CK|persistence|defense\s+evasion|lateral\s+movement|exfiltration|command\s+and\s+control/i },
+    { label: 'IOCs extracted (hashes, IPs, domains, registry keys)', re: /\b(sha256|md5|sha1|IOC|indicator|registry|HKLM|HKCU|C2|command.?and.?control|\.exe|\.dll|malicious\s+IP|malicious\s+domain)\b/i },
+    { label: 'Detection rule (KQL or Sigma) provided', re: /\b(KQL|Sigma|DeviceProcess|DeviceNetwork|SecurityEvent|title:|detection:\s*\n|logsource:|condition:)\b/i },
+    { label: 'Containment or remediation playbook included', re: /contain|isolat|eradicat|remediat|reimag|quarantin|block|revoke|playbook|step\s+\d|first.?.step/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
 };
@@ -832,6 +847,16 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     '(2) schedules a lessons-learned meeting with all responders within 5 business days, ' +
     '(3) tracks all remediation items in a project tracker with owners and deadlines, ' +
     '(4) files regulatory notifications if the incident meets breach thresholds (GDPR 72h, HIPAA 60d).',
+  'threat-hunt':
+    'What a real threat hunter does after the query: (1) runs the query against production data and reviews hits for true vs. false positives, ' +
+    '(2) pivots on confirmed hits to expand scope (lateral movement, persistence, exfil), ' +
+    '(3) converts validated queries into scheduled detection alerts with on-call escalation paths, ' +
+    '(4) documents hunting findings and ATT&CK coverage gaps in the threat intelligence platform.',
+  'malware-behavior':
+    'What a real malware analyst does after the analysis: (1) submits the sample to VirusTotal, MalwareBazaar, and internal sandbox for family confirmation, ' +
+    '(2) imports extracted IOCs into the SIEM and threat intel platform for retroactive hunting, ' +
+    '(3) hands detection rules to the engineering team for testing and production deployment, ' +
+    '(4) produces a one-page threat brief for the CISO with business impact and remediation timeline.',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {

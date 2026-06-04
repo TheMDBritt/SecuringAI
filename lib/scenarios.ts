@@ -116,6 +116,26 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'threat-hunt',
+    dojoId: 2,
+    title: 'Threat Hunt Query',
+    description:
+      'Give BlackBeltAI a threat actor TTP or minimal IOC seed. It generates SIEM hunting hypotheses, KQL/Sigma queries, and explains the detection logic.',
+    difficulty: 'intermediate',
+    owaspTags: [],
+    mitreAttackIds: ['T1071', 'T1041', 'T1018', 'T1087'],
+  },
+  {
+    id: 'malware-behavior',
+    dojoId: 2,
+    title: 'Malware Behavior Analysis',
+    description:
+      'Submit a malware behavior report or sandbox log. BlackBeltAI maps capabilities to MITRE ATT&CK, identifies the malware family, and proposes detection rules and containment steps.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: ['T1055', 'T1027', 'T1082', 'T1547'],
+  },
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
   {

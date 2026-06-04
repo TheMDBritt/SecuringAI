@@ -17,7 +17,7 @@ const CERT_BADGE: Record<string, string> = {
 };
 
 const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-const CERT_LIST  = ['All', 'SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP', 'CAIS', 'SC-500'];
+const CERT_LIST  = ['All', 'SecAI', 'SC-500', 'AWS-AIF-C01', 'Azure-AI901', 'Azure-AI103', 'Google-MLE', 'GIAC-GOAA', 'GIAC-GASAE', 'CAISP', 'CAIS'];
 
 export default function GlossaryPanel() {
   const [search, setSearch]     = useState('');

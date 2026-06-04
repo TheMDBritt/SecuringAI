@@ -38,6 +38,22 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'CSA AICM · Data Provenance',
   ],
 
+  // ── Dojo 1 — additional ─────────────────────────────────────────────────────
+  'model-extraction': [
+    'OWASP LLM02 — Sensitive Information Disclosure',
+    'OWASP LLM10 — Model Theft',
+    'SecAI+ · Model Fingerprinting Defense',
+    'GIAC-GOAA · Model Probing Techniques',
+    'CAISP · AI Asset Inventory & Disclosure',
+  ],
+  'indirect-injection': [
+    'OWASP LLM01 — Prompt Injection',
+    'OWASP LLM09 — Overreliance',
+    'SecAI+ · Indirect Injection Vectors',
+    'GIAC-GOAA · Third-Party Content Exploitation',
+    'CAISP · Supply Chain Input Validation',
+  ],
+
   // ── Dojo 2 — Using AI for defense ───────────────────────────────────────────
   'log-triage': [
     'SecAI+ · AI-Assisted SOC Operations',
@@ -60,6 +76,21 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'SecAI+ · AI-Assisted Incident Response',
     'AAISM · IR Documentation & Review',
     'NIST AI RMF · Manage 4.2',
+  ],
+
+  'threat-hunt': [
+    'SecAI+ · AI-Assisted Threat Hunting',
+    'GIAC-GASAE · Threat Hunting Automation',
+    'MITRE ATT&CK · Proactive Detection',
+    'SC-500 · Microsoft Sentinel KQL',
+    'CAISP · Hypothesis-Driven Detection',
+  ],
+  'malware-behavior': [
+    'SecAI+ · AI-Assisted Malware Analysis',
+    'GIAC-GASAE · Automated Malware Triage',
+    'MITRE ATT&CK · Defense Evasion / Persistence',
+    'SC-500 · Defender XDR Behavioral Analysis',
+    'CAISP · AI-Driven Reverse Engineering',
   ],
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────────
@@ -90,5 +121,19 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'EU AI Act · Article 25 Provider Obligations',
     'NIST AI RMF · Govern 6 (Third-Party)',
     'CSA AICM · Vendor Assurance',
+  ],
+  'ai-model-transparency': [
+    'ISO/IEC 42001 · Transparency & Documentation',
+    'EU AI Act · Articles 11–15 Technical Documentation',
+    'NIST AI RMF · MAP Subcategories',
+    'SecAI+ · AI Disclosure Requirements',
+    'CAISP · Model Documentation Audit',
+  ],
+  'ai-red-team-report': [
+    'MITRE ATLAS · Adversarial ML Threat Matrix',
+    'NIST AI RMF · Manage + Govern Controls',
+    'SecAI+ · AI Red Team Methodology',
+    'CAISP · AI Security Assessment',
+    'OWASP LLM Top 10 · Attack Surface Coverage',
   ],
 };
