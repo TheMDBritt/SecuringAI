@@ -35,10 +35,12 @@ export function Footer() {
               <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-2">Certifications</p>
               <div className="flex flex-col gap-1.5 text-xs text-slate-500">
                 <span>CompTIA SecAI+</span>
+                <span>ISC2 CAISP</span>
+                <span>EC-Council C|AI Security</span>
+                <span>GIAC GOAA · GASAE</span>
                 <span>Microsoft SC-500</span>
-                <span>EC-Council CAIS</span>
-                <span>GIAC GOAA / GASAE</span>
                 <span>AWS AIF-C01 · Azure AI-103</span>
+                <span>Azure AI-901 · Google MLE</span>
               </div>
             </div>
           </div>
@@ -48,7 +50,7 @@ export function Footer() {
           <p className="text-[10px] font-mono text-slate-700">
             Independent · Unaffiliated with any certification provider · Check official exam objectives before scheduling.
           </p>
-          <p className="text-[10px] font-mono text-slate-700">stub mode</p>
+          <p className="text-[10px] font-mono text-slate-700">No login · No API key · No ads</p>
         </div>
       </div>
     </footer>
