@@ -66,3 +66,26 @@ input:focus {
 .cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+/* Reduced motion override */
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(6, 182, 212, 0.2);
+  color: #e2e8f0;
+}
+
+/* Mono code blocks */
+code {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import type { DojoId, Scenario, Difficulty, Dojo2Config } from '@/types';
+import type { DojoId, Scenario, Dojo2Config } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { DOJO2_TASK_LABELS, DOJO2_PERSONA_LABELS, DIFFICULTY_BADGE_CLASSES } from '@/lib/dojo2-scenarios';
 
@@ -9,72 +9,39 @@ interface ScenarioPickerProps {
   selected: Scenario | null;
   onSelect: (s: Scenario) => void;
   dojoId: DojoId;
-  /** Dojo 2 only: the specific incident loaded from the right panel. */
   activeDojo2Scenario?: Dojo2IncidentScenario | null;
-  /** Dojo 2 only: live analyst config for the active scenario preview. */
   dojo2Config?: Dojo2Config;
 }
 
-// Canonical values live in DIFFICULTY_BADGE_CLASSES (dojo2-scenarios.ts) — aliased here for local use
 const DIFFICULTY_BADGE = DIFFICULTY_BADGE_CLASSES;
 
-const DOJO_ACCENT: Record<DojoId, string> = {
-  1: 'border-red-500 bg-red-500/5',
-  2: 'border-cyan-500 bg-cyan-500/5',
-  3: 'border-emerald-500 bg-emerald-500/5',
+const DOJO_ACCENT: Record<DojoId, { selected: string; dot: string; label: string }> = {
+  1: { selected: 'border-red-500/60 bg-red-500/5',    dot: 'bg-red-500',     label: 'LLM Attack & Defense' },
+  2: { selected: 'border-cyan-500/60 bg-cyan-500/5',  dot: 'bg-cyan-500',    label: 'AI-Assisted SOC' },
+  3: { selected: 'border-emerald-500/60 bg-emerald-500/5', dot: 'bg-emerald-500', label: 'AI GRC' },
 };
 
-const DOJO_HEADER: Record<DojoId, { label: string; desc: string }> = {
-  1: {
-    label: 'LLM Attack & Defense',
-    desc: 'Select a scenario, configure guardrails on the right, then attack or probe BlackBeltAI. Outcomes are deterministic — guardrail state decides every result.',
-  },
-  2: {
-    label: 'AI-Assisted SOC',
-    desc: 'Choose a SOC workflow, then load a prebuilt incident from the right panel. Configure analyst persona and depth before submitting.',
-  },
-  3: {
-    label: 'AI GRC',
-    desc: 'Govern an AI deployment: classify risk under EU AI Act, draft ISO 42001 controls, run vendor reviews, or investigate a model failure.',
-  },
+const DOJO_HEADER_DESC: Record<DojoId, string> = {
+  1: 'Configure guardrails on the right, pick a scenario, then attack. Outcomes are deterministic — guardrail state decides every result.',
+  2: 'Choose a SOC workflow, load an incident from the right panel, configure analyst depth and persona before submitting.',
+  3: 'Pick a GRC scenario. Use the framework toolkit on the right to build your response.',
 };
-
-// ─── Dojo 2 label maps ────────────────────────────────────────────────────────
 
 const DEPTH_LABELS: Record<string, string> = {
-  basic:    'Basic',
-  standard: 'Standard',
-  deep:     'Deep',
+  basic: 'Basic', standard: 'Standard', deep: 'Deep',
 };
-
 const STYLE_LABELS: Record<string, string> = {
-  concise:    'Concise',
-  detailed:   'Detailed',
-  structured: 'Structured',
+  concise: 'Concise', detailed: 'Detailed', structured: 'Structured',
 };
-
 const CONTEXT_LABELS: Record<string, string> = {
-  none:    'None',
-  limited: 'Limited',
-  full:    'Full',
+  none: 'None', limited: 'Limited', full: 'Full',
 };
-
 const RISK_COLOR: Record<string, string> = {
-  low:      'text-emerald-400',
-  medium:   'text-amber-400',
-  high:     'text-orange-400',
-  critical: 'text-red-400',
+  low: 'text-emerald-400', medium: 'text-amber-400', high: 'text-orange-400', critical: 'text-red-400',
 };
-
 const CONFIDENCE_COLOR: Record<string, string> = {
-  low:    'text-slate-400',
-  medium: 'text-amber-400',
-  high:   'text-emerald-400',
+  low: 'text-slate-400', medium: 'text-amber-400', high: 'text-emerald-400',
 };
-
-// DIFF_BADGE — same as DIFFICULTY_BADGE; aliased for in-file clarity
-const DIFF_BADGE = DIFFICULTY_BADGE_CLASSES;
-
 const TASK_BADGE: Record<string, string> = {
   'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',
   'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
@@ -85,8 +52,6 @@ const TASK_BADGE: Record<string, string> = {
   'cloud-identity-abuse': 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
   'ai-system-compromise': 'bg-rose-500/10 text-rose-400 border-rose-500/30',
 };
-
-// ─── Active Scenario Preview (Dojo 2 only) ────────────────────────────────────
 
 function ConfigRow({ label, value, valueClass }: { label: string; value: string; valueClass?: string }) {
   return (
@@ -129,7 +94,6 @@ function Dojo2ActivePreview({
         Active Scenario
       </p>
 
-      {/* Incident / workflow info */}
       {activeDojo2Scenario ? (
         <div className="mb-2.5">
           <p className="text-xs font-medium text-slate-100 leading-snug mb-1.5">
@@ -142,7 +106,7 @@ function Dojo2ActivePreview({
             <span className="text-[9px] px-1.5 py-0.5 rounded border font-mono border-slate-600 text-slate-400">
               {activeDojo2Scenario.attackCategory}
             </span>
-            <span className={['text-[9px] px-1.5 py-0.5 rounded border font-mono', DIFF_BADGE[activeDojo2Scenario.difficulty]].join(' ')}>
+            <span className={['text-[9px] px-1.5 py-0.5 rounded border font-mono', DIFFICULTY_BADGE[activeDojo2Scenario.difficulty]].join(' ')}>
               {activeDojo2Scenario.difficulty}
             </span>
           </div>
@@ -154,12 +118,11 @@ function Dojo2ActivePreview({
         </div>
       ) : null}
 
-      {/* Analyst config */}
       <div className="border-t border-slate-700/60 pt-2 flex flex-col">
-        <ConfigRow label="Persona"     value={DOJO2_PERSONA_LABELS[config.persona]} />
-        <ConfigRow label="Depth"       value={DEPTH_LABELS[config.analysisDepth]} />
-        <ConfigRow label="Style"       value={STYLE_LABELS[config.responseStyle]} />
-        <ConfigRow label="Context"     value={CONTEXT_LABELS[config.contextLevel]} />
+        <ConfigRow label="Persona"    value={DOJO2_PERSONA_LABELS[config.persona]} />
+        <ConfigRow label="Depth"      value={DEPTH_LABELS[config.analysisDepth]} />
+        <ConfigRow label="Style"      value={STYLE_LABELS[config.responseStyle]} />
+        <ConfigRow label="Context"    value={CONTEXT_LABELS[config.contextLevel]} />
         <ConfigRow
           label="Confidence"
           value={config.confidenceLevel.charAt(0).toUpperCase() + config.confidenceLevel.slice(1)}
@@ -172,17 +135,14 @@ function Dojo2ActivePreview({
         />
       </div>
 
-      {/* Feature toggles */}
       <div className="flex flex-wrap gap-1 mt-2 border-t border-slate-700/60 pt-2">
-        <FeaturePill label="IOC Extraction"   enabled={config.iocExtraction} />
-        <FeaturePill label="MITRE Mapping"    enabled={config.mitreMapping} />
-        <FeaturePill label="Threat Corr."     enabled={config.threatCorrelation} />
+        <FeaturePill label="IOC Extraction" enabled={config.iocExtraction} />
+        <FeaturePill label="MITRE Mapping"  enabled={config.mitreMapping} />
+        <FeaturePill label="Threat Corr."   enabled={config.threatCorrelation} />
       </div>
     </div>
   );
 }
-
-// ─── Main export ──────────────────────────────────────────────────────────────
 
 export function ScenarioPicker({
   scenarios,
@@ -192,78 +152,75 @@ export function ScenarioPicker({
   activeDojo2Scenario,
   dojo2Config,
 }: ScenarioPickerProps) {
-  const header = DOJO_HEADER[dojoId];
-
-  // For Dojo 2, the highlighted card is the one matching the active incident's task type
-  // (which may have been auto-selected when loading from the right panel).
-  function isCardSelected(scenario: Scenario): boolean {
-    return selected?.id === scenario.id;
-  }
+  const accent = DOJO_ACCENT[dojoId];
 
   return (
     <div className="p-3 flex flex-col gap-3">
-      {/* Section header */}
-      <div>
-        <p className="text-xs font-mono text-slate-500 uppercase tracking-widest mb-1">
-          Scenarios
-        </p>
-        <p className="text-xs text-slate-400">{header.desc}</p>
+      {/* Header */}
+      <div className="pb-2 border-b border-slate-800">
+        <div className="flex items-center gap-1.5 mb-1">
+          <span className={`w-1.5 h-1.5 rounded-full ${accent.dot}`} />
+          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+            {scenarios.length} scenarios
+          </p>
+        </div>
+        <p className="text-[11px] text-slate-500 leading-snug">{DOJO_HEADER_DESC[dojoId]}</p>
       </div>
 
       {/* Scenario cards */}
-      <div className="flex flex-col gap-2">
-        {scenarios.map((scenario) => {
-          const isSelected = isCardSelected(scenario);
+      <div className="flex flex-col gap-1.5">
+        {scenarios.map((scenario, idx) => {
+          const isSelected = selected?.id === scenario.id;
           return (
             <button
               key={scenario.id}
               onClick={() => onSelect(scenario)}
               className={[
-                'w-full text-left p-3 rounded border transition-all',
+                'w-full text-left p-2.5 rounded border transition-all duration-150 group',
                 isSelected
-                  ? DOJO_ACCENT[dojoId]
-                  : 'border-slate-700 bg-slate-800/40 hover:bg-slate-800 hover:border-slate-600',
+                  ? accent.selected
+                  : 'border-slate-700/60 bg-slate-800/30 hover:bg-slate-800/60 hover:border-slate-600',
               ].join(' ')}
             >
-              {/* Title + difficulty */}
               <div className="flex items-start justify-between gap-2 mb-1">
-                <span className="text-sm font-medium text-slate-100 leading-snug">
-                  {scenario.title}
-                </span>
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="font-mono text-[9px] text-slate-700 shrink-0">
+                    {String(idx + 1).padStart(2, '0')}
+                  </span>
+                  <span className="text-[12px] font-medium text-slate-200 leading-snug group-hover:text-slate-100 transition-colors duration-150 truncate">
+                    {scenario.title}
+                  </span>
+                </div>
                 <span
                   className={[
-                    'shrink-0 text-[10px] px-1.5 py-0.5 rounded border font-mono uppercase',
+                    'shrink-0 text-[9px] px-1.5 py-0.5 rounded border font-mono uppercase tracking-wide',
                     DIFFICULTY_BADGE[scenario.difficulty],
                   ].join(' ')}
                 >
-                  {scenario.difficulty}
+                  {scenario.difficulty.slice(0, 3)}
                 </span>
               </div>
 
-              {/* Description */}
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {scenario.description}
-              </p>
+              {isSelected && (
+                <p className="text-[11px] text-slate-400 leading-snug mt-1 mb-1.5">
+                  {scenario.description}
+                </p>
+              )}
 
-              {/* Tags */}
-              {scenario.owaspTags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {scenario.owaspTags.map((tag) => (
+              {isSelected && (scenario.owaspTags.length > 0 || (scenario.mitreAttackIds && scenario.mitreAttackIds.length > 0)) && (
+                <div className="flex flex-wrap gap-1">
+                  {scenario.owaspTags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono"
+                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/80 text-slate-400 font-mono"
                     >
                       {tag}
                     </span>
                   ))}
-                </div>
-              )}
-              {scenario.mitreAttackIds && scenario.mitreAttackIds.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {scenario.mitreAttackIds.map((id) => (
+                  {scenario.mitreAttackIds && scenario.mitreAttackIds.slice(0, 2).map((id) => (
                     <span
                       key={id}
-                      className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/50 text-slate-500 font-mono"
+                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/50 text-slate-500 font-mono"
                     >
                       {id}
                     </span>
@@ -275,7 +232,7 @@ export function ScenarioPicker({
         })}
       </div>
 
-      {/* Dojo 2: Active Scenario Preview — shown whenever a scenario or incident is active */}
+      {/* Dojo 2: Active Scenario Preview */}
       {dojoId === 2 && dojo2Config && (selected || activeDojo2Scenario) && (
         <Dojo2ActivePreview
           selected={selected}
