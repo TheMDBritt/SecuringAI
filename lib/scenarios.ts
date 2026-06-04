@@ -92,6 +92,16 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: ['LLM01', 'LLM06'],
   },
+  {
+    id: 'many-shot-jailbreak',
+    dojoId: 1,
+    title: 'Many-Shot Jailbreaking',
+    description:
+      'Exploit long-context LLMs by prepending dozens of simulated "compliant" Q&A pairs before the actual prohibited request. The model pattern-matches against the fake in-context examples and breaks safety alignment. Demonstrates why token-count-agnostic safety training is insufficient for large context windows.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM07'],
+    mitreAttackIds: ['AML.T0049'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
