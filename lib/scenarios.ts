@@ -256,6 +256,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'ai-conformity-assessment',
+    dojoId: 3,
+    title: 'AI Conformity Assessment',
+    description:
+      'Walk a high-risk AI system through EU AI Act conformity assessment (Article 43): verify technical documentation completeness (Annex IV), confirm the QMS satisfies Annex IX, identify notified body requirements, and produce a declaration of conformity checklist. Cross-map findings to ISO/IEC 42001 Annex A controls and NIST AI RMF GOVERN function outputs.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {
