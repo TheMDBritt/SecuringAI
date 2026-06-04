@@ -14,7 +14,7 @@ interface QuizSettings {
   category:       string;
   difficulty:     QuizDifficulty | 'all';
   certFilter:     string;
-  count:          10 | 25 | 50 | 60 | 100;
+  count:          10 | 25 | 50 | 60 | 65 | 100;
   /** Mock-exam mode: timer + no per-question feedback. */
   examMode?:      boolean;
   /** Total exam time in seconds (only used when examMode). */
@@ -317,7 +317,7 @@ function Step3Options({
   onStart: (s: QuizSettings) => void;
 }) {
   const [difficulty, setDifficulty] = useState<QuizDifficulty | 'all'>('all');
-  const [count, setCount]           = useState<10 | 25 | 50 | 100>(25);
+  const [count, setCount]           = useState<10 | 25 | 50 | 60 | 65 | 100>(25);
 
   const selectedDomains = useMemo(
     () => cert.domains.filter((d) => selectedDomainIds.has(d.id)),
@@ -336,11 +336,12 @@ function Step3Options({
 
   const finalCount = Math.min(count, pool.length);
 
-  const sc500Pool = useMemo(
-    () => QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SC-500')).length,
-    [],
+  const certPool = useMemo(
+    () => QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert.id)).length,
+    [cert.id],
   );
-  const showMockExamPreset = cert.id === 'SC-500' && sc500Pool >= 60;
+  const mockConfig = cert.mockExam;
+  const showMockExamPreset = !!mockConfig && certPool >= (mockConfig.questions ?? 50);
 
   const buildSettings = useCallback(
     (overrides: Partial<QuizSettings> = {}): QuizSettings => ({
@@ -383,22 +384,23 @@ function Step3Options({
         </div>
       </div>
 
-      {/* Mock exam preset (SC-500 only) */}
-      {showMockExamPreset && (
+      {/* Mock exam preset (cert-driven) */}
+      {showMockExamPreset && mockConfig && (
         <button
           onClick={() =>
             onStart({
-              category: 'All', difficulty: 'all', certFilter: 'SC-500',
-              count: 60, examMode: true, examSec: 90 * 60,
+              category: 'All', difficulty: 'all', certFilter: cert.id,
+              count: mockConfig.questions as QuizSettings['count'],
+              examMode: true, examSec: mockConfig.durationMin * 60,
               selectedCert: cert,
               selectedDomainIds: Array.from(selectedDomainIds),
             })
           }
-          className="w-full mb-5 p-3 rounded-lg border border-cyan-500/40 bg-cyan-500/5 hover:bg-cyan-500/10 transition-colors text-left"
+          className={`w-full mb-5 p-3 rounded-lg border transition-colors text-left ${cert.badgeClass.replace('text-', 'border-').replace('/15', '/40').replace('bg-', 'bg-').replace('/15', '/5')} hover:opacity-90`}
         >
           <div className="flex items-center justify-between mb-1">
-            <span className="text-sm font-semibold text-cyan-300">Mock SC-500 Exam</span>
-            <span className="text-[10px] font-mono text-cyan-400/70">60 Q · 90 min · no hints</span>
+            <span className="text-sm font-semibold text-slate-200">Mock {cert.id} Exam</span>
+            <span className="text-[10px] font-mono text-slate-400">{mockConfig.questions} Q · {mockConfig.durationMin} min · no hints</span>
           </div>
           <p className="text-[11px] text-slate-400 leading-relaxed">Timed simulation. No per-question feedback until the end.</p>
         </button>
@@ -767,7 +769,7 @@ function SummaryScreen({
 
   const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 60 ? 'text-amber-400' : 'text-red-400';
   const scoreBg    = pct >= 80 ? 'border-emerald-500/20 bg-emerald-500/5' : pct >= 60 ? 'border-amber-500/20 bg-amber-500/5' : 'border-red-500/20 bg-red-500/5';
-  const passThreshold = 72; // Most AI certs require ~72%+
+  const passThreshold = cert?.passingScore ?? 70;
   const passed = pct >= passThreshold;
 
   return (

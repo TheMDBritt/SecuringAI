@@ -23,6 +23,10 @@ export interface ExamCert {
   /** Tailwind utility classes applied to the cert badge. */
   badgeClass: string;
   domains: ExamDomain[];
+  /** Official passing score percentage (0–100). Shown on result screen. */
+  passingScore?: number;
+  /** If set, a mock exam preset button is shown with these params. */
+  mockExam?: { questions: number; durationMin: number };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,9 +35,11 @@ export const EXAM_CERTS: ExamCert[] = [
   // ── SecAI+ (CompTIA) ───────────────────────────────────────────────────────
   {
     id: 'SecAI',
-    name: 'SecurityAI+',
+    name: 'CompTIA SecurityAI+',
     provider: 'CompTIA',
     badgeClass: 'bg-red-500/15 text-red-400 border-red-500/40',
+    passingScore: 75,
+    mockExam: { questions: 60, durationMin: 60 },
     domains: [
       {
         id: 'secai-d1',
@@ -84,6 +90,8 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'AWS Certified AI Practitioner',
     provider: 'Amazon Web Services',
     badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
+    passingScore: 70,
+    mockExam: { questions: 65, durationMin: 90 },
     domains: [
       {
         id: 'aws-d1',
@@ -141,6 +149,8 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'Azure AI Fundamentals',
     provider: 'Microsoft',
     badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
+    passingScore: 70,
+    mockExam: { questions: 50, durationMin: 45 },
     domains: [
       {
         id: 'ai900-d1',
@@ -194,6 +204,8 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'Azure AI Engineer Associate',
     provider: 'Microsoft',
     badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
+    passingScore: 70,
+    mockExam: { questions: 50, durationMin: 100 },
     domains: [
       {
         id: 'ai102-d1',
@@ -248,6 +260,8 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'Professional Machine Learning Engineer',
     provider: 'Google Cloud',
     badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40',
+    passingScore: 80,
+    mockExam: { questions: 60, durationMin: 120 },
     domains: [
       {
         id: 'gmle-d1',
@@ -309,6 +323,7 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'GIAC Offensive AI Analyst',
     provider: 'GIAC / SANS',
     badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    passingScore: 73,
     domains: [
       {
         id: 'goaa-d1',
@@ -358,6 +373,7 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'GIAC AI Security Automation Engineer',
     provider: 'GIAC / SANS',
     badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    passingScore: 70,
     domains: [
       {
         id: 'gasae-d1',
@@ -365,6 +381,7 @@ export const EXAM_CERTS: ExamCert[] = [
         categories: [
           'AI Security',
           'AI & ML Fundamentals',
+          'Emerging Trends',
         ],
       },
       {
@@ -373,6 +390,7 @@ export const EXAM_CERTS: ExamCert[] = [
         categories: [
           'Red Teaming AI',
           'Computer Vision',
+          'AI Security',
         ],
       },
       {
@@ -381,6 +399,7 @@ export const EXAM_CERTS: ExamCert[] = [
         categories: [
           'NLP',
           'AI Ethics & Bias',
+          'Generative AI & LLMs',
         ],
       },
       {
@@ -388,6 +407,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 4: SOAR-Driven Incident Response',
         categories: [
           'AI in Security Ops',
+          'AI Security',
         ],
       },
       {
@@ -395,6 +415,8 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 5: Infrastructure Remediation Automation',
         categories: [
           'Data Engineering',
+          'MLOps',
+          'Cloud AI Platforms',
         ],
       },
     ],
@@ -403,9 +425,11 @@ export const EXAM_CERTS: ExamCert[] = [
   // ── SC-500: Microsoft Security Operations Analyst ─────────────────────────
   {
     id: 'SC-500',
-    name: 'Microsoft Security Operations Analyst',
+    name: 'Microsoft Cloud & AI Security Engineer',
     provider: 'Microsoft',
     badgeClass: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/40',
+    passingScore: 70,
+    mockExam: { questions: 60, durationMin: 100 },
     domains: [
       {
         id: 'sc500-d1',
@@ -431,6 +455,15 @@ export const EXAM_CERTS: ExamCert[] = [
         topics: [
           'Microsoft Defender for Cloud',
           'AI Security Posture Management',
+          'Azure Network Security Groups',
+          'Azure Network Security',
+          'Azure Firewall',
+          'Private Endpoints',
+          'Azure DDoS',
+          'Azure Policy',
+          'Network Security',
+          'Azure Virtual Network',
+          'Network Segmentation',
         ],
       },
       {
@@ -444,6 +477,12 @@ export const EXAM_CERTS: ExamCert[] = [
           'Insider Risk Management',
           'Adaptive Protection',
           'Data Security',
+          'Azure Storage & Compute Security',
+          'Azure Key Vault',
+          'Azure Storage Account',
+          'Storage Security',
+          'Encryption at Rest',
+          'Defender for Cloud',
         ],
       },
       {
@@ -486,6 +525,7 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'Certified AI Security Professional',
     provider: 'Practical DevSecOps',
     badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/40',
+    passingScore: 70,
     domains: [
       {
         id: 'caisp-d1',
@@ -518,8 +558,10 @@ export const EXAM_CERTS: ExamCert[] = [
         id: 'caisp-d4',
         name: 'Domain 4: Securing LLM & RAG Deployments',
         categories: [
-          'Computer Vision',
+          'AI Security',
+          'Generative AI & LLMs',
           'AI in Security Ops',
+          'Emerging Trends',
         ],
       },
       {
@@ -527,6 +569,8 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 5: AI Security Assessment & Audit',
         categories: [
           'AI Governance',
+          'AI Security',
+          'Red Teaming AI',
         ],
       },
     ],
@@ -535,9 +579,10 @@ export const EXAM_CERTS: ExamCert[] = [
   // ── CAIS (EC-Council C|AI Security) ───────────────────────────────────────
   {
     id: 'CAIS',
-    name: 'Certified AI Security (C|AI Security)',
+    name: 'C|AI Security',
     provider: 'EC-Council',
     badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/40',
+    passingScore: 70,
     domains: [
       {
         id: 'cais-d1',
