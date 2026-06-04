@@ -213,16 +213,22 @@ export function DojoTabs() {
       <div className="flex border-b border-slate-700 bg-slate-900 shrink-0">
         {TABS.map((tab) => {
           const isActive = tab.id === activeDojoId;
+          const scenarioCount = getScenariosByDojo(tab.id).length;
           return (
             <button
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={[
-                'flex flex-col items-start px-5 py-3 border-b-2 transition-colors text-left',
+                'flex flex-col items-start px-5 py-2.5 border-b-2 transition-colors text-left',
                 isActive ? TAB_COLOR[tab.color] : TAB_INACTIVE,
               ].join(' ')}
             >
-              <span className="text-xs text-slate-500 font-mono">{tab.sublabel}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] text-slate-500 font-mono">{tab.sublabel}</span>
+                <span className={['text-[9px] font-mono opacity-50', isActive ? '' : 'text-slate-600'].join(' ')}>
+                  {scenarioCount}s
+                </span>
+              </div>
               <span className="text-sm font-medium mt-0.5">{tab.label}</span>
             </button>
           );
