@@ -1,4 +1,6 @@
 'use client';
+import { useMemo } from 'react';
+import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 
 interface CertInfo {
   id:         string;
@@ -11,7 +13,6 @@ interface CertInfo {
   domains:    { name: string; pct?: string }[];
   focus:      string;
   topTopics:  string[];
-  quizCount:  number;
 }
 
 const CERTS: CertInfo[] = [
@@ -31,7 +32,6 @@ const CERTS: CertInfo[] = [
       { name: 'AI Governance & Compliance',pct: '19%' },
     ],
     topTopics: ['OWASP LLM Top 10', 'Adversarial attacks', 'Guardrails', 'NIST AI RMF', 'AI-powered SIEM', 'Prompt injection', 'EU AI Act'],
-    quizCount: 375,
   },
   {
     id: 'AWS-AIF-C01',
@@ -50,7 +50,6 @@ const CERTS: CertInfo[] = [
       { name: 'Security, Compliance & Governance',  pct: '14%' },
     ],
     topTopics: ['Amazon Bedrock', 'Amazon SageMaker', 'Amazon Q', 'RAG', 'Foundation models', 'Responsible AI', 'Prompt engineering'],
-    quizCount: 162,
   },
   {
     id: 'Azure-AI901',
@@ -69,7 +68,6 @@ const CERTS: CertInfo[] = [
       { name: 'Generative AI Workloads' },
     ],
     topTopics: ['Azure AI Foundry', 'Azure OpenAI', 'Generative AI', 'Computer Vision', 'Responsible AI', 'AI agents'],
-    quizCount: 113,
   },
   {
     id: 'Azure-AI103',
@@ -88,7 +86,6 @@ const CERTS: CertInfo[] = [
       { name: 'Responsible AI & Monitoring',         pct: '10–15%' },
     ],
     topTopics: ['Azure AI Foundry', 'Azure OpenAI Service', 'AI agents', 'Azure AI Search', 'Semantic Kernel', 'RAG pipelines'],
-    quizCount: 112,
   },
   {
     id: 'Google-MLE',
@@ -108,7 +105,6 @@ const CERTS: CertInfo[] = [
       { name: 'Monitor AI Solutions',                pct: '~20%' },
     ],
     topTopics: ['Vertex AI', 'BigQuery ML', 'Vertex AI Pipelines', 'Model monitoring', 'MLOps', 'Responsible AI', 'Feature Store'],
-    quizCount: 106,
   },
   {
     id: 'GIAC-GOAA',
@@ -127,7 +123,6 @@ const CERTS: CertInfo[] = [
       { name: 'Malicious AI Applications' },
     ],
     topTopics: ['Prompt injection', 'Jailbreaking', 'RAG attacks', 'Tool abuse', 'Data exfiltration', 'Red teaming LLMs', 'Vector DB attacks'],
-    quizCount: 121,
   },
   {
     id: 'GIAC-GASAE',
@@ -146,7 +141,6 @@ const CERTS: CertInfo[] = [
       { name: 'Host Remediation & Infrastructure Automation' },
     ],
     topTopics: ['SOAR', 'AI-powered SIEM', 'Detection rule generation', 'Automated triage', 'Playbook automation', 'AI threat hunting'],
-    quizCount: 107,
   },
   {
     id: 'SC-500',
@@ -165,7 +159,6 @@ const CERTS: CertInfo[] = [
       { name: 'Secure AI Workloads & Govern Data with Purview', pct: '20–25%' },
     ],
     topTopics: ['Microsoft Entra ID', 'Defender XDR', 'Microsoft Sentinel', 'KQL', 'Defender for Cloud', 'Purview DSPM for AI', 'Azure OpenAI', 'Prompt Shields', 'Security Copilot', 'Conditional Access', 'PIM', 'Zero Trust'],
-    quizCount: 192,
   },
   {
     id: 'CAISP',
@@ -184,7 +177,6 @@ const CERTS: CertInfo[] = [
       { name: 'AI System Assessment & Audit' },
     ],
     topTopics: ['LLM security assessment', 'RAG security', 'Model supply chain', 'AI deployment hardening', 'Security audit', 'Red teaming'],
-    quizCount: 209,
   },
   {
     id: 'CAIS',
@@ -194,7 +186,7 @@ const CERTS: CertInfo[] = [
     difficulty: 'Intermediate–Advanced',
     questions: 'Practical + MCQ',
     duration: '4 hours',
-    focus: 'Hands-on AI security certification from EC-Council. Covers adversarial ML, LLM vulnerability assessment, AI red teaming, securing AI pipelines, and AI governance. Prepares candidates to assess and harden AI systems in production.',
+    focus: 'Hands-on AI security certification from EC-Council. Covers adversarial ML, LLM vulnerability assessment, AI red teaming, securing AI pipelines, and AI governance.',
     domains: [
       { name: 'AI Security Fundamentals & Threat Landscape' },
       { name: 'Adversarial Machine Learning Attacks' },
@@ -203,7 +195,6 @@ const CERTS: CertInfo[] = [
       { name: 'AI Governance, Risk & Compliance' },
     ],
     topTopics: ['Adversarial inputs', 'Data poisoning', 'Model inversion', 'LLM red teaming', 'Prompt injection', 'OWASP LLM Top 10', 'AI supply chain', 'MLOps security', 'AI risk frameworks', 'Responsible AI'],
-    quizCount: 130,
   },
 ];
 
@@ -212,77 +203,94 @@ interface CertMapProps {
 }
 
 export default function CertMap({ onCertFilter }: CertMapProps) {
+  const quizCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    CERTS.forEach((cert) => {
+      counts[cert.id] = QUIZ_QUESTIONS.filter((q) =>
+        q.certTags.includes(cert.id),
+      ).length;
+    });
+    return counts;
+  }, []);
+
   return (
     <div className="h-full overflow-y-auto p-4 space-y-4">
       <div className="flex items-center justify-between mb-2">
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">10 certifications mapped to Playbook topics. Click a cert to filter study materials.</p>
+          <p className="text-xs text-slate-500 mt-0.5">
+            10 AI security certifications mapped to exam domains, quiz questions, and glossary terms.
+          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {CERTS.map((cert) => (
-          <div key={cert.id} className="border border-slate-700 rounded-xl bg-slate-800/40 overflow-hidden">
-            {/* Header */}
-            <div className="px-4 py-3 border-b border-slate-700/50 flex items-start justify-between gap-2">
-              <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${cert.tagColor}`}>
-                    {cert.id}
-                  </span>
-                  <span className="text-[10px] text-slate-500 font-mono">{cert.provider}</span>
-                </div>
-                <h3 className="text-sm font-semibold text-slate-100 mt-1">{cert.name}</h3>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="text-[10px] font-mono text-slate-500">{cert.difficulty}</div>
-                <div className="text-[10px] font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
-                <div className="text-[10px] font-mono text-cyan-700 mt-0.5">{cert.quizCount} practice Qs</div>
-              </div>
-            </div>
-
-            {/* Focus */}
-            <div className="px-4 py-2 border-b border-slate-700/30">
-              <p className="text-[11px] text-slate-400 leading-relaxed">{cert.focus}</p>
-            </div>
-
-            {/* Domains */}
-            <div className="px-4 py-3 border-b border-slate-700/30">
-              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
-              <div className="space-y-1">
-                {cert.domains.map((d) => (
-                  <div key={d.name} className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] text-slate-400">{d.name}</span>
-                    {d.pct && <span className="text-[10px] font-mono text-slate-600">{d.pct}</span>}
+        {CERTS.map((cert) => {
+          const quizCount = quizCounts[cert.id] ?? 0;
+          return (
+            <div key={cert.id} className="border border-slate-700 rounded-xl bg-slate-800/40 overflow-hidden">
+              {/* Header */}
+              <div className="px-4 py-3 border-b border-slate-700/50 flex items-start justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${cert.tagColor}`}>
+                      {cert.id}
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-mono">{cert.provider}</span>
                   </div>
-                ))}
+                  <h3 className="text-sm font-semibold text-slate-100 mt-1">{cert.name}</h3>
+                </div>
+                <div className="text-right shrink-0">
+                  <div className="text-[10px] font-mono text-slate-500">{cert.difficulty}</div>
+                  <div className="text-[10px] font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
+                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">
+                    <span className="text-slate-300 font-semibold">{quizCount}</span> practice Qs
+                  </div>
+                </div>
+              </div>
+
+              {/* Focus */}
+              <div className="px-4 py-2 border-b border-slate-700/30">
+                <p className="text-[11px] text-slate-400 leading-relaxed">{cert.focus}</p>
+              </div>
+
+              {/* Domains */}
+              <div className="px-4 py-3 border-b border-slate-700/30">
+                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
+                <div className="space-y-1">
+                  {cert.domains.map((d) => (
+                    <div key={d.name} className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] text-slate-400">{d.name}</span>
+                      {d.pct && <span className="text-[10px] font-mono text-slate-600">{d.pct}</span>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Top topics */}
+              <div className="px-4 py-3">
+                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
+                <div className="flex flex-wrap gap-1">
+                  {cert.topTopics.map((t) => (
+                    <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Filter button */}
+              <div className="px-4 pb-3">
+                <button
+                  onClick={() => onCertFilter(cert.id)}
+                  className={`w-full text-[11px] font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
+                >
+                  Filter by {cert.id} · {quizCount} Qs →
+                </button>
               </div>
             </div>
-
-            {/* Top topics */}
-            <div className="px-4 py-3">
-              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
-              <div className="flex flex-wrap gap-1">
-                {cert.topTopics.map((t) => (
-                  <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Filter button */}
-            <div className="px-4 pb-3">
-              <button
-                onClick={() => onCertFilter(cert.id)}
-                className={`w-full text-[11px] font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
-              >
-                Filter by {cert.id} · {cert.quizCount} Qs →
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

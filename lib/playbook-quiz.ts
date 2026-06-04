@@ -4111,7 +4111,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Federated learning (FL) keeps training data on local devices/servers. Each participant trains on their data locally and sends only model gradient updates to a central aggregator. The raw data never leaves the source. Used by Google (keyboard prediction), Apple (Siri), and healthcare consortia sharing patient data insights without sharing patient records.',
   },
 {
-    id: 'ethics-001',
+    id: 'ethics-001-v2',
     topic: 'Algorithmic Bias',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
@@ -4127,7 +4127,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Historical bias occurs when training data encodes past discriminatory practices — e.g., a hiring model trained on historical hiring decisions that favored certain demographics will learn to replicate those biases, even without explicit demographic features.',
   },
 {
-    id: 'ethics-002',
+    id: 'ethics-002-v2',
     topic: 'Fairness Metrics',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4143,7 +4143,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Demographic parity requires that the proportion of positive predictions is equal across groups (e.g., loan approval rate the same for all racial groups). It does not require equal accuracy — a model can satisfy demographic parity while having different error rates per group.',
   },
 {
-    id: 'ethics-003',
+    id: 'ethics-003-v2',
     topic: 'Fairness Metrics',
     category: 'AI Ethics & Bias',
     difficulty: 'advanced',
@@ -4159,7 +4159,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'The impossibility theorem (Chouldechova, Kleinberg et al.) proves that when base rates differ between groups, you cannot simultaneously satisfy demographic parity, equalized odds, and calibration. Organizations must choose which fairness criterion matches their use case and document that choice.',
   },
 {
-    id: 'ethics-004',
+    id: 'ethics-004-v2',
     topic: 'Explainability',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4175,7 +4175,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'SHAP (SHapley Additive exPlanations) uses Shapley values from game theory to fairly attribute prediction contribution to each feature. Each feature\'s SHAP value represents how much it pushed the prediction above or below the base rate. SHAP is model-agnostic and globally consistent.',
   },
 {
-    id: 'ethics-005',
+    id: 'ethics-005-v2',
     topic: 'Explainability',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4191,7 +4191,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'LIME perturbs the input around a single instance, gets predictions for the perturbed samples, then fits a locally faithful linear model to explain that one prediction. It is faster but less consistent than SHAP — LIME explanations can vary across runs due to random perturbation sampling.',
   },
 {
-    id: 'ethics-006',
+    id: 'ethics-006-v2',
     topic: 'Bias Mitigation',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4207,7 +4207,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Post-processing applies to an already-trained model. The most common technique is threshold optimization — setting different classification thresholds per demographic group to equalize FPR, TPR, or other fairness metrics. It avoids retraining but requires group membership at inference time.',
   },
 {
-    id: 'ethics-007',
+    id: 'ethics-007-v2',
     topic: 'Model Cards',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
@@ -4223,7 +4223,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Model cards (proposed by Mitchell et al. at Google) are standardized documentation for ML models. They include: intended use, out-of-scope uses, training data description, evaluation results broken down by subgroup, ethical considerations, and caveats. Required by many enterprise AI governance frameworks.',
   },
 {
-    id: 'ethics-008',
+    id: 'ethics-008-v2',
     topic: 'Disparate Impact',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4239,7 +4239,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Disparate impact occurs when an AI system produces discriminatory outcomes for protected groups even without using protected attributes directly — proxies (zip code, name, browsing history) can encode protected characteristics. Under US EEOC guidelines, a tool with a selection rate below 80% of the highest group triggers adverse impact review.',
   },
 {
-    id: 'ethics-009',
+    id: 'ethics-009-v2',
     topic: 'AI Governance',
     category: 'AI Ethics & Bias',
     difficulty: 'beginner',
@@ -4255,7 +4255,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Microsoft\'s six Responsible AI principles are: Fairness, Reliability & Safety, Privacy & Security, Inclusiveness, Transparency, and Accountability. Profitability is not a Responsible AI principle — though commercial viability is an organizational goal, it is not part of the published ethical framework.',
   },
 {
-    id: 'ethics-010',
+    id: 'ethics-010-v2',
     topic: 'GDPR and AI',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4271,7 +4271,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'GDPR Article 22 gives individuals the right not to be subject to solely automated decisions (including profiling) that produce significant legal or similarly significant effects. They can request human review of automated decisions and receive an explanation of the logic involved.',
   },
 {
-    id: 'ethics-011',
+    id: 'ethics-011-v2',
     topic: 'Transparency',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4287,7 +4287,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'The EU AI Act mandates that high-risk AI systems (employment, credit, education, law enforcement, etc.) include: technical documentation, automatic logging, information for users, human oversight measures, and accuracy/robustness/cybersecurity requirements. They must undergo conformity assessment before market placement.',
   },
 {
-    id: 'ethics-012',
+    id: 'ethics-012-v2',
     topic: 'Bias Types',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4303,7 +4303,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Representation bias results from underrepresentation of certain groups in training data. For example, a face recognition dataset with 80% lighter-skinned subjects will have significantly worse accuracy on darker-skinned subjects (as demonstrated in the Gender Shades audit of commercial face recognition APIs).',
   },
 {
-    id: 'ethics-013',
+    id: 'ethics-013-v2',
     topic: 'Privacy',
     category: 'AI Ethics & Bias',
     difficulty: 'advanced',
@@ -4319,7 +4319,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'DP-SGD clips per-example gradients and adds calibrated Gaussian noise during training. The privacy guarantee (ε, δ) mathematically bounds how much any single training example can affect model parameters — limiting an attacker\'s ability to determine whether a specific record was in the training set (membership inference).',
   },
 {
-    id: 'ethics-014',
+    id: 'ethics-014-v2',
     topic: 'Accountability',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4335,7 +4335,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'AI audits systematically evaluate AI systems against ethical, legal, and technical criteria — including bias testing across subgroups, compliance with regulations (GDPR, EU AI Act), security controls, documentation completeness, and operational monitoring. Third-party audits are increasingly required for high-risk AI deployments.',
   },
 {
-    id: 'ethics-015',
+    id: 'ethics-015-v2',
     topic: 'Deepfakes',
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate',
@@ -4351,7 +4351,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'C2PA embeds cryptographically signed metadata into media files recording their origin, creation tool, and edit history. This allows consumers, platforms, and fact-checkers to verify whether content was AI-generated and trace its provenance chain — addressing misinformation and deepfake attribution.',
   },
 {
-    id: 'data-001',
+    id: 'data-001-v2',
     topic: 'Data Pipelines',
     category: 'Data Engineering',
     difficulty: 'beginner',
@@ -4367,7 +4367,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'ETL (Extract-Transform-Load) applies transformations before loading — suited for strict schema requirements. ELT (Extract-Load-Transform) loads raw data into a cloud warehouse first, then transforms using the warehouse\'s compute (e.g., BigQuery, Snowflake). ELT scales better for large datasets.',
   },
 {
-    id: 'data-002',
+    id: 'data-002-v2',
     topic: 'Training-Serving Skew',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4383,7 +4383,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Training-serving skew occurs when the feature computation logic differs between training and serving — e.g., training uses a batch-computed mean while serving recomputes it differently, or data types differ (float64 vs float32). The model sees different feature distributions than it was trained on, degrading predictions.',
   },
 {
-    id: 'data-003',
+    id: 'data-003-v2',
     topic: 'Feature Stores',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4399,7 +4399,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'A Feature Store (Feast, Tecton, Vertex AI Feature Store) centralizes feature definitions and serves them consistently to both training pipelines and online inference. This eliminates training-serving skew by ensuring both paths use identical feature computation logic.',
   },
 {
-    id: 'data-004',
+    id: 'data-004-v2',
     topic: 'Data Versioning',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4415,7 +4415,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'DVC extends Git for ML: it tracks large data files and model artifacts in remote storage (S3, GCS, Azure) while storing lightweight pointer files in Git. It also versions ML pipelines as DAGs, enabling reproducible experiments with dvc repro and data/model sharing via dvc push/pull.',
   },
 {
-    id: 'data-005',
+    id: 'data-005-v2',
     topic: 'Data Drift',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4431,7 +4431,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'The KS test measures the maximum distance between two empirical cumulative distribution functions — it works for continuous features and requires no distributional assumptions. PSI (Population Stability Index) is also widely used. Chi-squared is for categorical features.',
   },
 {
-    id: 'data-006',
+    id: 'data-006-v2',
     topic: 'Data Security',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4447,7 +4447,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Data lineage tracks data from source through transformation to model output. For GDPR right-to-erasure, organizations must know which models were trained on a specific individual\'s data to assess retraining needs. For audits, lineage proves data quality and consent chain.',
   },
 {
-    id: 'data-007',
+    id: 'data-007-v2',
     topic: 'Data Types',
     category: 'Data Engineering',
     difficulty: 'beginner',
@@ -4463,7 +4463,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Semi-structured data has some organizational properties (tags, markers, hierarchy) but no fixed schema — JSON, XML, and YAML are examples. Relational tables are structured (fixed schema). Video, audio, and free text are unstructured (no inherent organization).',
   },
 {
-    id: 'data-008',
+    id: 'data-008-v2',
     topic: 'Privacy',
     category: 'Data Engineering',
     difficulty: 'advanced',
@@ -4479,7 +4479,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'DP-SGD clips per-example gradients to bound their sensitivity (L2 norm ≤ C), then adds calibrated Gaussian noise to the sum before averaging. This ensures the published gradient update does not reveal too much about any single training example, providing (ε, δ)-differential privacy guarantees.',
   },
 {
-    id: 'data-009',
+    id: 'data-009-v2',
     topic: 'Data Augmentation',
     category: 'Data Engineering',
     difficulty: 'beginner',
@@ -4495,7 +4495,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Data augmentation creates new training examples by applying label-preserving transformations: image flipping, rotation, cropping, color jitter for CV; synonym replacement, back-translation for NLP; adding noise for audio. It improves generalization and reduces overfitting when labeled data is scarce.',
   },
 {
-    id: 'data-010',
+    id: 'data-010-v2',
     topic: 'Data Balancing',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4511,7 +4511,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'SMOTE creates synthetic minority examples by selecting a minority instance, finding its k nearest minority neighbors, and interpolating along the line segment between them. This avoids simple duplication (which causes overfitting) while increasing minority class representation.',
   },
 {
-    id: 'data-011',
+    id: 'data-011-v2',
     topic: 'Data Provenance',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4527,7 +4527,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Data provenance documents the complete history of a dataset: where it came from, how it was collected, what consents were obtained, what transformations were applied, and who had access. It is critical for compliance (GDPR, EU AI Act), reproducibility, and trust in AI system outputs.',
   },
 {
-    id: 'data-012',
+    id: 'data-012-v2',
     topic: 'Watermarking',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4543,7 +4543,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Dataset watermarking embeds subtle patterns into training data. If a model trained on this data is later stolen or misused, querying the model can detect these patterns — proving it was trained on the watermarked data. Output watermarking embeds signatures in LLM-generated text for AI content attribution.',
   },
 {
-    id: 'data-013',
+    id: 'data-013-v2',
     topic: 'Data Cleansing',
     category: 'Data Engineering',
     difficulty: 'beginner',
@@ -4559,7 +4559,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Data cleansing removes or corrects: duplicate records, missing values (imputation or removal), outliers, inconsistent formatting, incorrect labels, and structural errors. Clean data is fundamental to model quality — "garbage in, garbage out" directly applies to ML systems.',
   },
 {
-    id: 'data-014',
+    id: 'data-014-v2',
     topic: 'Vector Databases',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -4575,7 +4575,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'A vector database (Pinecone, Weaviate, Chroma, pgvector) stores embedding vectors of document chunks. At query time, the user query is embedded and an ANN search finds the most semantically similar chunks. These chunks are injected into the LLM prompt as context — grounding the response in real data.',
   },
 {
-    id: 'data-015',
+    id: 'data-015-v2',
     topic: 'Data Integrity',
     category: 'Data Engineering',
     difficulty: 'intermediate',
@@ -9444,7 +9444,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'OWASP LLM08 (Excessive Agency) specifically calls out over-privileged agents as a critical risk. If an agent with write-to-database permission is compromised via prompt injection, the attacker gains database write access. Least privilege principles for agents mean: (1) scope tool access to minimum required function, (2) use read-only access where writes aren\'t needed, (3) require confirmation for irreversible/high-impact actions (deletion, sending messages, financial transactions), (4) use short-lived credentials. Source: OWASP LLM Top 10 LLM08, Azure AI Foundry agent security guide.',
   },
 {
-    id: 'cais-adv-001',
+    id: 'cais-adv-001-v2',
     topic: 'Evasion Attacks',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -9460,7 +9460,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Adversarial patches (Goodfellow et al., Brown et al.) are physical-world evasion attacks. Unlike digital perturbations (imperceptible pixel noise), patches are physical objects that fool cameras feeding computer vision models. Research has demonstrated patches that fool stop sign classifiers (traffic safety risk), face recognition systems, and object detection models (hiding people from surveillance). Defense techniques include adversarial training, certified defenses, and input preprocessing (JPEG compression, randomized smoothing). Source: Brown et al. "Adversarial Patch" (2017), MITRE ATLAS AML.T0047.',
   },
 {
-    id: 'cais-adv-002',
+    id: 'cais-adv-002-v2',
     topic: 'LLM Security Assessment',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10549,7 +10549,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Azure AI Content Safety for production LLM deployments: (1) Content Safety provides: Prompt Shield (detects jailbreaks and indirect prompt injection in user inputs), Groundedness Detection (verifies model responses are grounded in provided documents), Protected Material Detection (detects copyrighted text or code in outputs), Custom Categories (domain-specific harmful content definitions); (2) Harm categories: Hate and Fairness, Sexual Content, Violence, Self-Harm — each rated 0 (safe) to 7 (extreme) severity; (3) Configuration in Azure OpenAI: enable content filtering at the deployment level; configure input filters and output filters per category independently; (4) Integration with Azure AI Foundry: content safety is automatically configurable when deploying models in AI Foundry, with a visual dashboard showing filter hit rates; (5) Azure Firewall operates at the network layer and uses static rules — it cannot understand semantic intent of natural language; (6) Blocklists are too brittle (easily bypassed, high maintenance burden) compared to ML-based classification. Source: Microsoft AI-900 exam guide, Azure AI Content Safety documentation.',
   },
   {
-    id: 'cais-016',
+    id: 'cais-016-v2',
     topic: 'Membership Inference Attack',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10565,7 +10565,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Membership inference attack mechanics (Shokri et al., 2017): (1) Core observation: ML models often memorize training data to varying degrees, resulting in higher confidence (lower entropy) on training records vs. unseen test records; (2) Attack implementation: the attacker trains a shadow model on auxiliary data (similar distribution to the target\'s training data); a binary classifier is trained on shadow model outputs to predict membership in the target model; (3) Metric exploited: output probability vector entropy — for a member record, the model outputs high confidence (low entropy); for a non-member, lower confidence (higher entropy); (4) Severity factors: larger models memorize more; models trained longer (more epochs) show larger confidence gaps; models without regularization are more vulnerable; (5) Defenses: differential privacy (adds calibrated noise to gradients during training, limiting memorization), output perturbation (return top-k predictions without full probability vector), temperature scaling (flatten output probabilities), early stopping. Source: EC-Council CAIS, Shokri et al. (2017) Membership Inference Attacks against Machine Learning Models, NIST CSWP 29.',
   },
   {
-    id: 'cais-017',
+    id: 'cais-017-v2',
     topic: 'Data Poisoning',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10581,7 +10581,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Clean-label backdoor poisoning is the most dangerous training-time attack variant: (1) Clean-label property: the poisoned examples have correct labels — human data reviewers see correctly labeled images and approve them; standard data validation (label accuracy checks) passes; (2) Trigger mechanism: the yellow sticker is an out-of-distribution feature that the model learns to associate with misclassification from the 200 poisoned examples (0.2% of training data); (3) Inference-time behavior: clean stop signs → correctly classified; stop signs with yellow sticker → misclassified — the model appears normal until the trigger is present; (4) Physical-world attack: the trigger can be a physical sticker applied to real-world signs post-deployment, making this a real-world safety threat; (5) Detection: spectral signatures test (Chen et al., 2019) detects backdoors by analyzing feature space; STRIP perturbs inputs to detect backdoor activation; Neural Cleanse reconstructs potential triggers by reverse engineering the model; dataset provenance tracking. Source: EC-Council CAIS, Turner et al. (2019) Label-Consistent Backdoor Attacks.',
   },
   {
-    id: 'cais-018',
+    id: 'cais-018-v2',
     topic: 'Model Inversion Attack',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10597,7 +10597,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Model inversion attack mechanics and privacy implications: (1) Optimization objective: given target class y (a specific person\'s identity), solve x* = argmax P(y|x) — find the image x that the model is most confident is person y; implemented via gradient ascent on input pixels using the model\'s output gradients; (2) Attack variants: Fredrikson et al. (2015) pharmacogenomics model inversion — reconstructed patient faces from a medical ML API; Generative Model Inversion — uses a GAN generator to search in the latent space (more efficient, better reconstruction quality); Black-box inversion — uses only API confidence scores without gradients; (3) Privacy violation: the model\'s weights encode statistical patterns from training images sufficient to reconstruct recognizable likenesses — GDPR Article 5 data minimization principle is violated if the model retains recoverable individual-level information; (4) Defenses: differential privacy during training (adds noise that degrades reconstruction quality), output perturbation (round or perturb confidence scores), rate limiting and query anomaly detection. Source: EC-Council CAIS, Fredrikson et al. (2015) Model Inversion Attacks that Exploit Confidence Information.',
   },
   {
-    id: 'cais-019',
+    id: 'cais-019-v2',
     topic: 'Evasion Attacks',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -10613,7 +10613,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Fundamental properties enabling adversarial examples: (1) High-dimensional linearity: Goodfellow et al. (2015) argue that adversarial vulnerability is a consequence of the linear nature of neural network components in high-dimensional spaces — even small perturbations in many dimensions accumulate to large dot products with weight vectors, flipping the classification; (2) FGSM intuition: perturbation = epsilon * sign(gradient_x L(theta, x, y)) — move each pixel by epsilon in the direction that maximally increases loss; in high dimensions, the sum of these small steps exceeds the decision boundary distance; (3) Human vs. model perception mismatch: human visual system is robust to high-frequency noise but sensitive to shape, texture, color at coarse resolution; CNNs use different feature representations that can be perturbed without affecting human perception; (4) Adversarial examples affect state-of-the-art models trained on millions of examples — this is NOT about training data size; (5) Defenses: adversarial training (augment training set with adversarial examples), certified defenses (randomized smoothing provides provable robustness guarantees), input preprocessing (feature squeezing, JPEG compression). Source: EC-Council CAIS, Goodfellow et al. (2015) Explaining and Harnessing Adversarial Examples.',
   },
   {
-    id: 'cais-020',
+    id: 'cais-020-v2',
     topic: 'Secure AI Deployment',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -10629,7 +10629,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Prompt injection defense — instruction intent classification: (1) The fundamental problem: LLMs cannot natively distinguish between data I should process and instructions I should follow in user-provided content — both arrive as tokens in the same context window; (2) Instruction intent classifier approach: train or prompt a smaller, faster model to classify user inputs as data (safe) vs. instruction-like (suspicious) based on: imperative verb patterns (ignore, override, pretend), system context references (your instructions, previous prompt), jailbreak templates (DAN, persona adoption); (3) Defense-in-depth stack for prompt injection: (a) Input classifier; (b) Prompt construction using clear delimiters (XML tags, triple quotes) to separate system context from user data; (c) Output validation before executing any agent actions; (d) Human approval gates for high-impact tool calls; (4) Rate limiting and TLS address different threat vectors entirely — they do not affect semantic content processing. Source: EC-Council CAIS, OWASP LLM01:2025 Prompt Injection defense guidance.',
   },
   {
-    id: 'cais-021',
+    id: 'cais-021-v2',
     topic: 'AI Supply Chain Security',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10645,7 +10645,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Supply chain security risk for pre-trained models: (1) Backdoor threat: a threat actor who published the model (or compromised the model author\'s account) could have embedded a backdoor during training — the model performs normally on clean inputs but misclassifies any input containing a specific trigger pattern; (2) Real-world precedent: BadNets (2017) demonstrated backdoors in models hosted on sharing platforms; NLP models with backdoored embeddings distributed via Hugging Face were demonstrated by Wallace et al.; (3) Technical controls: Neural Cleanse — reverse engineers potential trigger patterns by optimization; STRIP — perturbs inputs to detect high-confidence predictions that should not exist (backdoor activation is abnormally robust to perturbation); Activation clustering — clusters internal activations to detect anomalous neuron behavior; ProtectAI Guardian — model scanning tool; (4) Hash pinning: after approving a model version, record the SHA256 hash of the weights file and verify on every deployment — prevents silent weight substitution; (5) License compliance and version compatibility are important but are secondary to the backdoor risk for supply chain security. Source: EC-Council CAIS, NIST AI 100-4, Gu et al. (2017) BadNets.',
   },
   {
-    id: 'cais-022',
+    id: 'cais-022-v2',
     topic: 'Differential Privacy',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -10661,7 +10661,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Differential privacy for ML training: (1) Formal guarantee: (epsilon, delta)-DP means that for any two datasets D and D\' differing by one record, and any output S: Pr[M(D) in S] <= e^epsilon * Pr[M(D\') in S] + delta — the model\'s output distribution changes by at most e^epsilon regardless of any individual\'s data; (2) DP-SGD mechanism: clip per-sample gradients to L2-norm bound C (limits sensitivity), add Gaussian noise N(0, sigma^2 * C^2) to the sum of clipped gradients at each step; the noise masks individual contributions while preserving aggregate gradient signal; (3) Privacy budget epsilon: smaller epsilon = stronger privacy = more noise = lower accuracy; typical values: epsilon=1 (strong), epsilon=8 (moderate), epsilon=10+ (weak); (4) Why anonymization fails: re-identification attacks (Sweeney 1997 — 87% of Americans uniquely identified by zip+birthdate+sex) show anonymization does not provide mathematical guarantees; (5) Federated learning is complementary to DP (can combine them) but alone does not prevent membership inference from gradient updates; (6) Practical implementation: TensorFlow Privacy (tf-privacy library), PyTorch Opacus. Source: EC-Council CAIS, Dwork & Roth (2014) The Algorithmic Foundations of Differential Privacy, Abadi et al. (2016) Deep Learning with Differential Privacy.',
   },
   {
-    id: 'cais-023',
+    id: 'cais-023-v2',
     topic: 'LLM Security Assessment',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -10677,7 +10677,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Structured LLM security assessment methodology: (1) OWASP LLM Top 10 (2025) categories requiring specific test cases: LLM01 Prompt Injection (direct: user prompt crafting; indirect: poisoned retrieval documents), LLM02 Sensitive Information Disclosure (PII extraction, system prompt extraction), LLM03 Supply Chain (model provenance, plugin/tool dependencies), LLM04 Data and Model Poisoning, LLM05 Improper Output Handling (XSS, SSRF, code injection in rendered outputs), LLM06 Excessive Agency (tool scope beyond stated functionality), LLM07 System Prompt Leakage, LLM08 Vector/Embedding Weaknesses (RAG poisoning), LLM09 Misinformation (hallucination on verifiable claims), LLM10 Unbounded Consumption (resource exhaustion via long contexts); (2) Why traditional AppSec tools are insufficient: nmap/Burp Suite test the surrounding application security but do not test LLM-specific semantic vulnerabilities requiring understanding of model behavior; (3) Each finding needs reproduction steps, example prompt, model response, and CVSS-AI severity. Source: EC-Council CAIS, OWASP LLM Top 10 2025, NIST SP 600-1.',
   },
   {
-    id: 'cais-024',
+    id: 'cais-024-v2',
     topic: 'MLOps Security',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -10693,7 +10693,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Critical security failures in ad-hoc ML pipelines: (1) Provenance failure: the manual workflow lacks a tamper-evident record linking which code version produced the model (git commit hash), which dataset version was used (DVC hash or dataset ID), which hyperparameters were configured, who approved the model — without this audit trail, a model with an injected backdoor cannot be distinguished from a legitimate model; (2) Integrity failure: files on a shared network drive can be replaced, modified, or corrupted without any audit log — an attacker with network drive access could substitute a backdoored model for the approved one; without cryptographic signing (model hash recorded in a secured system, GPG signature), deployment tooling cannot detect substitution; (3) Correct architecture: version-controlled training code (git) → CI/CD pipeline → model artifact stored in ML model registry (MLflow, Vertex AI, Azure ML) with immutable versioning → deployment requires registry pull with hash verification → audit log of every deployment; (4) Compliance impact: SOC 2 Type II, HIPAA, and EU AI Act Article 13 require audit trails for AI system decisions — manual workflows do not produce the required records. Source: EC-Council CAIS, NIST AI RMF GOVERN function, EU AI Act Chapter 3.',
   },
   {
-    id: 'cais-025',
+    id: 'cais-025-v2',
     topic: 'AI Incident Response',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -11019,7 +11019,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ── GIAC-GOAA: Advanced Offensive AI ─────────────────────────────────────────
   {
-    id: 'goaa-adv-001',
+    id: 'goaa-adv-001-v2',
     topic: 'LLM Red Teaming',
     category: 'Red Teaming AI',
     difficulty: 'advanced',
@@ -11035,7 +11035,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Many-shot jailbreaking (Anthropic research, 2024): LLMs with large context windows can be exploited by prepending many (dozens to hundreds) of fake Q&A pairs that demonstrate the model "helpfully" answering harmful questions. By the time the actual malicious query appears, the model has been conditioned in-context to follow the demonstrated pattern — overriding safety training that operates primarily on the final query. The attack scales with context length: 256-shot is significantly more effective than 32-shot. Defense: context length limits, in-context instruction following monitoring, system prompt reinforcement. Source: Anthropic many-shot jailbreaking paper.',
   },
   {
-    id: 'goaa-adv-002',
+    id: 'goaa-adv-002-v2',
     topic: 'AI Red Team Methodology',
     category: 'Red Teaming AI',
     difficulty: 'advanced',
@@ -11181,7 +11181,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ── SecAI: AI Threat Modeling & Operations ───────────────────────────────────
   {
-    id: 'secai-adv-001',
+    id: 'secai-adv-001-v2',
     topic: 'AI Threat Modeling',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -11197,7 +11197,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'STRIDE Tampering maps to training data poisoning: the attacker modifies data (in the training pipeline or dataset storage) to alter the system\'s processing — specifically the model\'s learned decision boundaries. This directly satisfies the Tampering definition (unauthorized modification of data or system behavior). Repudiation is also relevant (it\'s hard to prove who poisoned the data), but the primary threat is Tampering. Note: training-time poisoning that causes inference-time misclassification also has Elevation of Privilege implications when the misclassification grants unauthorized access. Source: STRIDE for AI systems, Microsoft AI threat modeling guide.',
   },
   {
-    id: 'secai-adv-002',
+    id: 'secai-adv-002-v2',
     topic: 'AI Purple Teaming',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -11213,7 +11213,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'AI purple teaming combines offensive discovery and defensive response in a collaborative loop rather than sequential phases: (1) Red team attempts a prompt injection variant; (2) Blue team immediately observes whether controls detect it; (3) If not detected, blue team adjusts detection rules or guardrails; (4) Red team tests the new control with variants; (5) Loop continues with shared context. This accelerates the feedback cycle from months (traditional red team → report → fix) to hours/days. Microsoft AI Red Team (AIRT) uses this approach for Responsible AI evaluations. Source: Microsoft AI Red Team methodology.',
   },
   {
-    id: 'secai-adv-003',
+    id: 'secai-adv-003-v2',
     topic: 'OWASP LLM Top 10',
     category: 'AI Security',
     difficulty: 'intermediate',
@@ -11311,7 +11311,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ── CAISP & CAIS: AI System Assessment ───────────────────────────────────────
   {
-    id: 'caisp-adv-001',
+    id: 'caisp-adv-001-v2',
     topic: 'AI Security Assessment',
     category: 'AI Governance',
     difficulty: 'advanced',
@@ -11327,7 +11327,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'For AI security assessment, the system card or red team report is the primary technical artifact: it documents the specific attacks tested, the model\'s response to jailbreak techniques, hazard categories evaluated (CSAM, bioweapons, cyberweapons), threshold behaviors, and residual risks the supplier acknowledges. CAISP practical exams require candidates to evaluate AI systems — a system card provides testable, specific claims about security properties that can be verified through independent testing. SOC 2 covers the operational environment but not model-level security. Benchmark scores measure capability, not safety. Source: Practical DevSecOps CAISP curriculum, NIST AI RMF GOVERN function.',
   },
   {
-    id: 'caisp-adv-002',
+    id: 'caisp-adv-002-v2',
     topic: 'AI Supply Chain Security',
     category: 'AI Security',
     difficulty: 'advanced',
@@ -11343,7 +11343,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Open-source model supply chain security checklist: (1) Hash verification — compare downloaded model file SHA-256 against the repository-published hash (ensures integrity, but not security); (2) Model card review — check for disclosed limitations, biases, and security findings; (3) File format — safetensors format is safer than pickle (.pkl, .bin) files which can embed arbitrary Python code executed on load; (4) Static/behavioral scanning — tools like ModelScan detect malicious pickle payloads; (5) Red team probing — test for backdoors (does a specific trigger phrase cause target misclassification?), harmful content policy (does it bypass standard safety training?); (6) Sandboxed evaluation — run in an isolated environment before production; (7) Provenance review — know the training data, fine-tuning methodology, and who published the model. Source: CAISP curriculum, NIST AI RMF, "Compromising ML Models via Pickle" research.',
   },
   {
-    id: 'caisp-adv-003',
+    id: 'caisp-adv-003-v2',
     topic: 'AI Bill of Materials (AI-BOM)',
     category: 'AI Governance',
     difficulty: 'intermediate',
@@ -11591,7 +11591,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Key Vault soft delete is a ransomware and accidental deletion protection: deleted secrets/keys/certificates move to a "soft-deleted" state and are recoverable during the retention period (default 90 days). Without soft delete, an attacker who compromises Key Vault permissions (or an admin making an error) can permanently delete encryption keys — rendering encrypted data unrecoverable and completing a ransomware attack more effectively. Purge protection (companion setting) additionally prevents permanent deletion during the retention period even by authorized users. Source: Azure Key Vault soft delete documentation, SC-500.',
   },
   {
-    id: 'sc500-net-001',
+    id: 'sc500-net-001-v2',
     topic: 'Azure Firewall',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate',
@@ -11691,7 +11691,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ── GIAC-GASAE: Security Automation ──────────────────────────────────────────
   {
-    id: 'gasae-adv-001',
+    id: 'gasae-adv-001-v2',
     topic: 'Detection Rules',
     category: 'AI in Security Ops',
     difficulty: 'intermediate',
@@ -11707,7 +11707,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'In Sigma rules, the logsource section is critical: it defines which log category the rule operates against (product: windows, category: process_creation maps to Sysmon Event ID 1 / Windows Security 4688). If logsource is wrong, the compiled SIEM query targets the wrong table and never fires — even with perfect detection logic. For AI-generated rules: always validate that the logsource matches available data sources in the target SIEM (Sentinel, Splunk, Elastic) before deployment. Source: Sigma specification, GIAC GASAE curriculum.',
   },
   {
-    id: 'gasae-adv-002',
+    id: 'gasae-adv-002-v2',
     topic: 'AI-Driven Threat Intelligence',
     category: 'AI in Security Ops',
     difficulty: 'advanced',
@@ -12255,7 +12255,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
 // ── SC-500 Domain 5: Secure AI Workloads (new batch) ─────────────────────
 {
-  id: 'sc500-ai-001',
+  id: 'sc500-ai-001-v2',
   topic: 'Azure OpenAI Service',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'intermediate',
@@ -12271,7 +12271,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Prompt Shields in Azure AI Content Safety detects and blocks both direct jailbreak attacks (where the user attempts to override system instructions) and indirect prompt injection attacks (malicious content in retrieved documents). It is distinct from content filters that block harmful output categories (hate, violence, etc.) — Prompt Shields is specifically designed for adversarial system-prompt manipulation. Source: Microsoft Azure AI Content Safety documentation.',
 },
 {
-  id: 'sc500-ai-002',
+  id: 'sc500-ai-002-v2',
   topic: 'Azure AI Content Safety',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'intermediate',
@@ -12287,7 +12287,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'The Responsible AI (RAI) evaluation dashboard in Azure AI Foundry runs automated evaluations for groundedness, relevance, coherence, fluency, and safety metrics including hate/fairness, violence, and self-harm categories. It also supports custom evaluation datasets. This is the correct first step to measure bias before applying mitigations. Defender for AI Workloads detects runtime threats but not model-level bias. Source: Azure AI Foundry Responsible AI evaluation documentation.',
 },
 {
-  id: 'sc500-ai-003',
+  id: 'sc500-ai-003-v2',
   topic: 'Defender for AI Workloads',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'advanced',
@@ -12303,7 +12303,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Defender for AI Services (also surfaced within Defender CSPM when AI security posture management is enabled) monitors Azure OpenAI and Azure AI Services traffic for LLM-specific threats including prompt injection, jailbreaks, sensitive data in prompts, and model abuse patterns. It integrates with Microsoft Sentinel for correlation. Source: Microsoft Defender for Cloud — AI threat protection documentation.',
 },
 {
-  id: 'sc500-ai-004',
+  id: 'sc500-ai-004-v2',
   topic: 'Microsoft Security Copilot',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'intermediate',
@@ -12319,7 +12319,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Microsoft Security Copilot includes built-in promptbooks for specific workflows. The Microsoft Sentinel promptbook for Incident Investigation automatically pulls incident details, related alerts, entities, and timeline, then generates a natural-language summary and suggested next steps. Source: Microsoft Security Copilot documentation — Sentinel integration.',
 },
 {
-  id: 'sc500-ai-005',
+  id: 'sc500-ai-005-v2',
   topic: 'AI Security Posture Management',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'advanced',
@@ -12335,7 +12335,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Defender CSPM AI Security Posture Management discovers and assesses Azure OpenAI (models, deployments, endpoints), Azure AI Services, and Azure Machine Learning (workspaces, compute, models). It generates AI attack path analysis and recommends least-privilege fixes. Source: Microsoft Defender CSPM AI SPM documentation.',
 },
 {
-  id: 'sc500-ai-006',
+  id: 'sc500-ai-006-v2',
   topic: 'Copilot Agent',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'intermediate',
@@ -12351,7 +12351,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Copilot Studio agents grounded on SharePoint respect SharePoint permissions at query time. If a site grants broad access, the agent surfaces that content accordingly. The preventive control is to restrict SharePoint permissions AND apply Microsoft Purview sensitivity labels — labels can trigger DLP rules that block Copilot from surfacing labeled content to unauthorized users. Source: Microsoft Copilot Studio data security documentation.',
 },
 {
-  id: 'sc500-ai-007',
+  id: 'sc500-ai-007-v2',
   topic: 'DSPM for AI',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'advanced',
@@ -12367,7 +12367,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Microsoft Purview DLP supports Microsoft 365 Copilot as an enforced location. A DLP policy using built-in sensitive information types (SITs) — such as the U.S. Health Insurance Act (HIPAA) SIT group — will detect PHI in Copilot prompts and block or audit the submission. DSPM for AI provides visibility; DLP provides enforcement. Source: Microsoft Purview DLP — Microsoft 365 Copilot location documentation.',
 },
 {
-  id: 'sc500-ai-008',
+  id: 'sc500-ai-008-v2',
   topic: 'M365 Copilot',
   category: 'Microsoft Cloud & AI Security',
   difficulty: 'intermediate',
@@ -12431,7 +12431,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Automatic Attack Disruption contains threats by automatically disabling the compromised account in Microsoft Entra ID and revoking all active sessions when a high-confidence BEC or attacker-in-the-middle attack is detected. The SOC is notified and can review or undo the action. Source: Microsoft Defender XDR — Automatic Attack Disruption documentation.',
 },
 {
-  id: 'secai-d2-001',
+  id: 'secai-d2-001-v2',
   topic: 'OWASP LLM Top 10',
   category: 'AI Security',
   difficulty: 'intermediate',
@@ -12447,7 +12447,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'LLM09 covers scenarios where adversarial documents are stored in or injected into the vector database, so they are retrieved by the RAG pipeline and fed to the LLM. This enables indirect prompt injection at scale. It also covers embedding model tampering and retrieval index poisoning. Source: OWASP LLM Top 10 v2.0 (2025).',
 },
 {
-  id: 'secai-d2-002',
+  id: 'secai-d2-002-v2',
   topic: 'Guardrails Architecture',
   category: 'AI Security',
   difficulty: 'advanced',
@@ -12463,7 +12463,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Crescendo attacks bypass per-turn classifiers because each individual message is benign. A stateful output classifier that maintains conversation context across turns — tracking cumulative drift in topics or sentiment — is the most direct defense. This requires session-level context analysis. Source: NIST AI 100-1; OWASP LLM01/LLM08.',
 },
 {
-  id: 'secai-d2-003',
+  id: 'secai-d2-003-v2',
   topic: 'AI Red Teaming',
   category: 'AI Security',
   difficulty: 'advanced',
@@ -12479,7 +12479,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: "Encoding evasion exploits the gap between the safety filter's input processing and the LLM's decoding capability. The filter classifies encoded text as benign (it doesn't decode it). The LLM, trained on diverse internet content, decodes and responds to the harmful content. Fix: apply safety classifiers AFTER decoding. Source: OWASP LLM01; MITRE ATLAS AML.T0054.",
 },
 {
-  id: 'secai-d2-004',
+  id: 'secai-d2-004-v2',
   topic: 'Supply Chain Attacks',
   category: 'AI Security',
   difficulty: 'intermediate',
@@ -12495,7 +12495,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Model weight supply chain risk is mitigated by: (1) verifying the cryptographic hash of downloaded weights against the published checksum; and (2) scanning weight files with ML security tools like ModelScan that detect malicious payloads in pickle/safetensors files. Source: OWASP LLM05; NIST SP 800-218A ML SSDF.',
 },
 {
-  id: 'goaa-adv-001',
+  id: 'goaa-adv-001-v2-v2',
   topic: 'Prompt Injection Techniques',
   category: 'Red Teaming AI',
   difficulty: 'advanced',
@@ -12511,7 +12511,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Virtual context injection (roleplay/fictional framing) works because safety classifiers trained on direct harmful requests often fail to detect requests embedded in extensive fictional context. The adversarial content appears as character dialogue in a story. Defenses: train classifiers on fictional-context attacks; use semantic intent classifiers; implement per-turn harm scoring on outputs. Source: OWASP LLM01; ATLAS AML.T0054.001.',
 },
 {
-  id: 'goaa-adv-002',
+  id: 'goaa-adv-002-v2-v2',
   topic: 'Vector Database Attacks',
   category: 'Red Teaming AI',
   difficulty: 'advanced',
@@ -12527,7 +12527,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Indirect prompt injection via RAG context maps to OWASP LLM09 (Vector and Embedding Weaknesses) and the indirect injection variant of LLM01. The attacker plants adversarial instructions in documents the RAG pipeline retrieves. The LLM then follows those instructions. Defenses: sanitize retrieved content, implement context isolation, use secondary classifiers on retrieved documents. Source: OWASP LLM Top 10 v2.0; GIAC GOAA.',
 },
 {
-  id: 'goaa-adv-003',
+  id: 'goaa-adv-003-v2',
   topic: 'AI Threat Intelligence',
   category: 'Red Teaming AI',
   difficulty: 'intermediate',
@@ -12655,7 +12655,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'In Semantic Kernel, a Plugin is a collection of functions (both AI prompt-based semantic functions AND native code functions) exposed to the kernel planner. The planner selects which plugin functions to call to accomplish a goal. Native functions are pure C#/Python code that executes deterministically without an LLM call — providing grounding, tool access, and calculation. Source: Microsoft Semantic Kernel documentation; AI-103 exam guide.',
 },
 {
-  id: 'gasae-adv-001',
+  id: 'gasae-adv-001-v2-v2',
   topic: 'SOAR Automation',
   category: 'AI in Security Ops',
   difficulty: 'advanced',
@@ -12671,7 +12671,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Constraining the LLM to a strict structured output schema prevents injection: if the output format is {verdict: "phishing"|"benign", confidence: 0-100} with no free-text field, adversarial instructions in the email have no mechanism to affect the output. Temperature=0 improves consistency but does not prevent injection. Source: GIAC GASAE; OWASP LLM08 Excessive Agency.',
 },
 {
-  id: 'gasae-adv-002',
+  id: 'gasae-adv-002-v2-v2',
   topic: 'AI Threat Hunting',
   category: 'AI in Security Ops',
   difficulty: 'advanced',
@@ -12751,7 +12751,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Microsoft\'s Reliability & Safety principle requires AI systems to perform consistently across diverse conditions (including adversarial ones), fail safely, and not cause harm through unexpected failure modes. This includes safety testing across distributions, red-teaming, and monitoring. Source: Microsoft Responsible AI principles; AI-901 exam guide.',
 },
 {
-  id: 'secai-d3-001',
+  id: 'secai-d3-001-v2',
   topic: 'AI-Powered SIEM',
   category: 'AI in Security Ops',
   difficulty: 'intermediate',
@@ -12767,7 +12767,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Alert fatigue amplification: an AI-assisted SIEM generates high volumes of false-positive alerts, causing analysts to desensitize and ignore alerts — including real ones. This is paradoxical: AI was deployed to reduce noise, but miscalibration increases it. Mitigation: tune precision/recall thresholds, implement tiered routing, measure analyst response rates. Source: CompTIA SecAI+ exam guide — AI-Assisted Security Operations.',
 },
 {
-  id: 'secai-d3-002',
+  id: 'secai-d3-002-v2',
   topic: 'Detection Rule Generation',
   category: 'AI in Security Ops',
   difficulty: 'advanced',
@@ -12831,7 +12831,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'ISO/IEC 42001 requires an AI System Impact Assessment for each AI system — documenting intended use, potential impacts, risk treatment, and selected controls from Annex A. This is analogous to the Statement of Applicability in ISO 27001. Source: ISO/IEC 42001:2023 Clauses 6.1.2, 6.2; Annex A.',
 },
 {
-  id: 'cais-adv-001',
+  id: 'cais-adv-001-v2-v2',
   topic: 'Federated Learning Security',
   category: 'AI Security',
   difficulty: 'advanced',
@@ -12847,7 +12847,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Byzantine attacks in federated learning exploit the need to trust submitted gradients. A malicious participant submits crafted gradients to poison the global model. Byzantine-robust aggregation rules (Krum, Trimmed Mean) detect and exclude outlier gradient updates. Source: Federated learning security research; EC-Council C|AI Security domain 2.',
 },
 {
-  id: 'cais-adv-002',
+  id: 'cais-adv-002-v2-v2',
   topic: 'Differential Privacy',
   category: 'AI Security',
   difficulty: 'advanced',
@@ -12863,7 +12863,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   explanation: 'Differential privacy (DP) guarantees that the probability of any output changes by at most e^ε when any single training record is added or removed. Lower ε = stronger privacy. DP-SGD achieves this by adding calibrated Gaussian noise to gradients, with more noise providing stronger membership privacy at the cost of model utility. Source: DP theory; EC-Council C|AI Security; NIST SP 800-226.',
 },
 {
-  id: 'cais-adv-003',
+  id: 'cais-adv-003-v2',
   topic: 'Adversarial ML Defense',
   category: 'AI Security',
   difficulty: 'advanced',
@@ -13184,5 +13184,254 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 1,
     explanation: 'The EEOC "4/5 rule" (Uniform Guidelines on Employee Selection Procedures) establishes a disparate impact threshold: the selection rate for any protected class should be at least 4/5 (80%) of the rate for the highest-scoring group. Here: 32/48 = 0.667 < 0.80 — clear disparate impact. This triggers: (1) adverse impact analysis; (2) EU AI Act Annex III classification as high-risk AI (employment decisions); (3) ISO 42001 bias mitigation controls; (4) NIST AI RMF MEASURE 2.5 bias metrics monitoring. Equal overall accuracy does not excuse disparate impact on protected classes. Source: EEOC UGESP; EU AI Act Article 9; NIST AI RMF.',
+  },
+
+  // ── SC-500: Secure Compute, Storage & Data ────────────────────────────────
+
+  {
+    id: 'sc500-stor-001',
+    topic: 'Azure Storage & Compute Security',
+    category: 'Microsoft Cloud & AI Security',
+    difficulty: 'intermediate',
+    certTags: ['SC-500'],
+    question: 'A storage account that hosts training data for Azure AI Foundry needs to prevent public internet access while allowing access only from the AI Foundry project workspace. Which combination of controls is correct?',
+    options: [
+      'Enable "Allow Azure services" trusted services exception and set public access to disabled',
+      'Disable public network access, add the AI Foundry managed VNet to the storage account firewall, and enable a private endpoint for blob storage — then grant the AI Foundry workspace managed identity Storage Blob Data Reader on the container',
+      'Restrict access by IP address range of the Azure datacenter region',
+      'Enable shared access signature (SAS) tokens with 24-hour expiry as the only access method',
+    ],
+    correct: 1,
+    explanation: 'The secure pattern for AI Foundry + Storage integration: (1) Disable public network access on the storage account; (2) Create a private endpoint for blob storage in the AI Foundry managed VNet — this gives private connectivity without internet exposure; (3) Assign the workspace managed identity the Storage Blob Data Reader role on the specific container (principle of least privilege). Using "trusted Azure services" bypass is weaker — it allows all Azure services, not just your specific workspace. Source: Microsoft Learn — SC-500 "Secure Compute, Storage & Data" domain.',
+  },
+  {
+    id: 'sc500-stor-002',
+    topic: 'Azure Key Vault',
+    category: 'Microsoft Cloud & AI Security',
+    difficulty: 'intermediate',
+    certTags: ['SC-500'],
+    question: 'An Azure Key Vault stores the customer-managed key (CMK) used to encrypt an Azure OpenAI deployment. An attacker compromises a service principal that has Key Vault access. Which Key Vault feature provides the strongest protection against the attacker permanently deleting the encryption key?',
+    options: [
+      'Key rotation policy set to auto-rotate every 30 days',
+      'Azure RBAC with Key Vault Reader role assigned to the service principal',
+      'Soft delete enabled with purge protection — deleted keys are retained for 90 days and cannot be permanently purged even by administrators during the retention period',
+      'Key Vault firewall restricting access to the Azure OpenAI service IP range',
+    ],
+    correct: 2,
+    explanation: 'Purge protection is the critical control: when enabled alongside soft delete, it prevents ANY principal (including subscription owners and Key Vault administrators) from permanently purging soft-deleted keys during the retention period (7–90 days). This blocks a ransomware pattern where an attacker with Key Vault permissions deletes CMKs to render encrypted data unrecoverable. Soft delete alone allows purge by authorized administrators. Key rotation does not protect against deletion. The firewall controls network access but not permissions. Source: Azure Key Vault purge protection documentation, SC-500.',
+  },
+  {
+    id: 'sc500-stor-003',
+    topic: 'Azure Storage & Compute Security',
+    category: 'Microsoft Cloud & AI Security',
+    difficulty: 'beginner',
+    certTags: ['SC-500'],
+    question: 'Microsoft Defender for Storage generates an alert: "Access from a Tor exit node to storage account aitraining01." What is the recommended immediate response?',
+    options: [
+      'Rotate the storage account access keys and re-authorize all applications',
+      'Review the specific blob container and files accessed, determine whether any sensitive training data was exfiltrated, revoke access for the source IP in the storage account firewall, and open a Sentinel incident for investigation',
+      'Delete the storage account and recreate it with a new access key',
+      'Disable Defender for Storage to prevent false positive alerts',
+    ],
+    correct: 1,
+    explanation: 'Defender for Storage provides anomaly detection including access from anonymization networks (Tor). The correct response: (1) Do not immediately rotate keys without investigation — this may disrupt production without confirming the threat; (2) Review access logs (Azure Storage diagnostic logs) to identify exactly which blobs were accessed; (3) Add the IP to the storage account firewall deny list; (4) Escalate to Sentinel for broader investigation of lateral movement. Deleting the account destroys forensic evidence. Source: Microsoft Defender for Storage documentation, SC-500.',
+  },
+  {
+    id: 'sc500-stor-004',
+    topic: 'Azure Storage & Compute Security',
+    category: 'Microsoft Cloud & AI Security',
+    difficulty: 'advanced',
+    certTags: ['SC-500'],
+    question: 'An Azure VM running an AI inference workload needs to access a model artifact stored in an Azure Storage account. Security policy prohibits storing storage credentials in application code or VM environment variables. Which access pattern satisfies this requirement?',
+    options: [
+      'Store the storage account key in Azure Key Vault and retrieve it at application startup',
+      'Use a system-assigned managed identity on the VM, assign it the Storage Blob Data Reader role on the storage container — the application uses DefaultAzureCredential which automatically uses the managed identity token with no stored credential',
+      'Generate a SAS token with read-only access valid for 1 hour and embed it in the deployment pipeline',
+      'Configure Azure AD application registration with a client secret rotated every 7 days',
+    ],
+    correct: 1,
+    explanation: 'System-assigned managed identity is the correct pattern: the VM gets an Azure AD identity automatically managed by Azure with no credentials to store, rotate, or leak. DefaultAzureCredential in Azure SDKs automatically discovers and uses the managed identity token when running on Azure VMs. The Storage Blob Data Reader role scoped to the specific container applies least privilege. Storing keys — even in Key Vault — requires an additional credential to access Key Vault. SAS tokens are credentials embedded in URIs. Client secrets require secure storage. Source: Azure managed identity for VMs documentation, SC-500.',
+  },
+  {
+    id: 'sc500-stor-005',
+    topic: 'Azure Key Vault',
+    category: 'Microsoft Cloud & AI Security',
+    difficulty: 'intermediate',
+    certTags: ['SC-500'],
+    question: 'A security audit finds that all developers in an Azure subscription have the Key Vault Contributor role, allowing them to manage Key Vault configuration but not read secrets directly. However, a developer claims they can still read secrets. How is this possible and what is the remediation?',
+    options: [
+      'Key Vault Contributor includes secret read permissions — the role must be changed to Key Vault Reader',
+      'The developers are using the Azure portal which grants implicit secret access regardless of RBAC role',
+      'The Key Vault is using legacy access policies (vault access policy model) rather than Azure RBAC — a developer with Key Vault Contributor can add themselves to the access policy and grant themselves secret read access. Remediation: migrate to Azure RBAC permission model and remove Key Vault Contributor from developers who should not manage access policies',
+      'Azure RBAC roles cannot be applied to individual Key Vaults — they apply at subscription level only',
+    ],
+    correct: 2,
+    explanation: 'Key Vault has two permission models: (1) Legacy vault access policies — managed independently of Azure RBAC. A user with Key Vault Contributor (Azure RBAC) can modify the vault\'s access policies, effectively granting themselves or others secret access even without the Azure RBAC "Key Vault Secrets Officer" role. (2) Azure RBAC permission model — access policies are replaced by RBAC role assignments; Key Vault Contributor cannot grant secret access. Remediation: enable the Azure RBAC permission model on each Key Vault, which prevents access policy manipulation. This is a common misconfiguration caught by Defender for Cloud and SC-500 exam objectives. Source: Azure Key Vault access model documentation.',
+  },
+
+  // ── CAISP: AI System Security Assessment Methodology ─────────────────────
+
+  {
+    id: 'caisp-assess-001',
+    topic: 'LLM Security Assessment',
+    category: 'AI Security',
+    difficulty: 'intermediate',
+    certTags: ['CAISP'],
+    question: 'When conducting an AI system security assessment for a production LLM API, which phase should come FIRST in a structured methodology?',
+    options: [
+      'Adversarial testing — immediately begin probing the API with prompt injection payloads',
+      'Threat modeling — enumerate the AI asset inventory, identify trust boundaries, data flows, and threat actors before any active testing',
+      'Compliance review — verify alignment with applicable AI governance frameworks before testing',
+      'Red team exercise — engage an external red team to simulate attacks on the production system',
+    ],
+    correct: 1,
+    explanation: 'CAISP methodology (aligned with PTES and NIST AI RMF) begins with threat modeling: (1) Asset enumeration — training data, model weights, inference infrastructure, APIs, integrations; (2) Trust boundary mapping — what inputs does the model accept, from which users/systems; (3) Threat actor identification — external attackers, insider threats, supply chain risks; (4) Attack surface definition — what can be tested without causing harm. Only after threat modeling can you design targeted test cases. Starting with active testing risks missing critical attack surfaces and causing unintended production impact. Source: Practical DevSecOps CAISP curriculum; NIST AI RMF MEASURE 1.1.',
+  },
+  {
+    id: 'caisp-assess-002',
+    topic: 'LLM Security Assessment',
+    category: 'AI Security',
+    difficulty: 'intermediate',
+    certTags: ['CAISP'],
+    question: 'During an AI system assessment, you discover that an LLM application returns verbatim text from its system prompt when given certain inputs. Which OWASP LLM Top 10 vulnerability does this represent and what is the primary risk?',
+    options: [
+      'LLM02 Insecure Output Handling — the model outputs unsafe content that could cause XSS',
+      'LLM07 System Prompt Leakage — the system prompt may contain sensitive instructions, API credentials, internal architecture details, or restrictions that help attackers craft more effective attacks',
+      'LLM04 Model Denial of Service — the model is consuming excessive resources processing these inputs',
+      'LLM10 Unbounded Consumption — the application does not limit token generation',
+    ],
+    correct: 1,
+    explanation: 'System prompt leakage (OWASP LLM07) occurs when an LLM can be induced to reveal its system prompt. Risks include: (1) Exposing embedded API keys or tool configurations; (2) Revealing business logic, competitor analysis instructions, or proprietary process flows; (3) Exposing restrictions and guardrails — enabling targeted bypass attempts; (4) Disclosing internal system architecture. CAISP assessment methodology includes systematic testing for prompt leakage using direct requests, role-play scenarios, and indirect extraction via summarization tasks. The finding should be documented with severity based on what the prompt contains. Source: OWASP LLM Top 10 (2025) LLM07; CAISP assessment framework.',
+  },
+  {
+    id: 'caisp-assess-003',
+    topic: 'AI Red Team Methodology',
+    category: 'AI Security',
+    difficulty: 'advanced',
+    certTags: ['CAISP'],
+    question: 'A CAISP assessment of a RAG-based customer service AI finds that injecting text into product reviews causes the model to execute attacker instructions when a customer asks about that product. This is an example of:',
+    options: [
+      'Direct prompt injection — the attacker directly controls the user prompt sent to the LLM',
+      'Indirect prompt injection — malicious instructions are embedded in external content (product reviews) retrieved by the RAG pipeline, causing the LLM to execute attacker instructions without the user\'s knowledge',
+      'Data poisoning — the attacker has modified the training data to alter model behavior',
+      'Model inversion attack — the attacker is extracting training data from the model\'s responses',
+    ],
+    correct: 1,
+    explanation: 'Indirect prompt injection (OWASP LLM01 variant, ATLAS AML.T0054.001) attacks exploit RAG architectures: the attacker cannot modify the user prompt but can inject instructions into content the RAG system retrieves (documents, web pages, emails, product reviews). The retrieved malicious content is treated as trusted context by the LLM, which then follows the embedded instructions. Mitigations: input sanitization of RAG documents, separate trust levels for user prompts vs. retrieved content, Prompt Shields (Azure AI Content Safety Document Shield), and output validation. Source: OWASP LLM01 (2025); CAISP RAG security module.',
+  },
+  {
+    id: 'caisp-assess-004',
+    topic: 'AI System Assessment & Audit',
+    category: 'AI Security',
+    difficulty: 'intermediate',
+    certTags: ['CAISP'],
+    question: 'In a CAISP assessment report, which artifact best demonstrates that a model\'s output safety controls are effective against adversarial inputs?',
+    options: [
+      'A screenshot showing the model refuses one harmful request',
+      'A structured test matrix covering all OWASP LLM Top 10 categories with pass/fail evidence, a sample of adversarial payloads used, the model\'s responses, and a risk rating for each finding — supported by automated scanning results',
+      'The model provider\'s published safety evaluation report',
+      'A penetration test summary that confirms "no critical vulnerabilities were found"',
+    ],
+    correct: 1,
+    explanation: 'CAISP assessment reports require structured evidence: (1) Test coverage matrix — which threat categories were tested (OWASP LLM Top 10, ATLAS techniques); (2) Reproducible evidence — specific payloads used, exact model responses (with sensitive content redacted appropriately); (3) Risk ratings using a consistent methodology (CVSS-like or custom AI risk scoring); (4) Automated scanner output (e.g., Garak, PyRIT, Prompt Injection Simulator results); (5) Defense effectiveness scores. A single screenshot is anecdotal; provider reports are not independent evidence; "no critical findings" requires full documentation of what was tested. Source: Practical DevSecOps CAISP reporting standards.',
+  },
+  {
+    id: 'caisp-assess-005',
+    topic: 'Secure LLM Deployment',
+    category: 'AI Security',
+    difficulty: 'advanced',
+    certTags: ['CAISP'],
+    question: 'A CAISP practitioner completes an AI security assessment and finds that an agentic AI system can execute arbitrary shell commands on the host server via tool use. Under CAISP methodology, what is the appropriate remediation recommendation?',
+    options: [
+      'Rate limit the tool execution API to prevent abuse',
+      'Implement sandboxed tool execution: run tools in isolated containers with no filesystem access, no network egress beyond explicitly allowlisted endpoints, drop all Linux capabilities, and require human-in-the-loop confirmation for any action that modifies state outside the sandboxed environment',
+      'Add a content filter that blocks responses containing shell commands',
+      'Require multi-factor authentication for users who invoke the agentic system',
+    ],
+    correct: 1,
+    explanation: 'Agentic AI systems with unrestricted tool execution represent an excessive agency vulnerability (OWASP LLM08). CAISP remediation principles: (1) Principle of least privilege — tools should have only the minimum permissions needed; (2) Sandboxing — containerized execution with seccomp profiles, no privileged access, no network egress except allowlisted endpoints; (3) Human-in-the-loop for irreversible or high-impact actions (deleting data, sending emails, executing system changes); (4) Logging and alerting on all tool invocations; (5) Deny-by-default tool permissions. Rate limiting and content filters are insufficient — a sufficiently persistent attacker can craft inputs that evade them. Source: OWASP LLM08; CAISP agentic AI security module.',
+  },
+
+  // ── Google-MLE: Vertex AI Model Monitoring ────────────────────────────────
+
+  {
+    id: 'gmle-mon-001',
+    topic: 'Model Monitoring',
+    category: 'MLOps',
+    difficulty: 'intermediate',
+    certTags: ['Google-MLE'],
+    question: 'Vertex AI Model Monitoring detects "prediction drift" on a deployed classification model. What does prediction drift indicate and which monitoring feature detects it?',
+    options: [
+      'The model weights have changed — detected by comparing checksums of the deployed model artifact',
+      'The distribution of the model\'s predicted classes has shifted compared to the training baseline — detected by Vertex AI Model Monitoring\'s skew and drift detection using statistical distance measures (Jensen-Shannon divergence or L-infinity norm)',
+      'The model is consuming more CPU/memory than expected — detected by Cloud Monitoring resource metrics',
+      'The model is producing more errors per second — detected by error rate alerts in Cloud Logging',
+    ],
+    correct: 1,
+    explanation: 'Vertex AI Model Monitoring tracks two forms of drift: (1) Training-serving skew — the distribution of live prediction inputs differs from the training data distribution; (2) Prediction drift — the distribution of model outputs (predicted classes/probabilities) changes over time compared to baseline. Both are detected using statistical distance measures: Jensen-Shannon divergence for categorical features and L-infinity norm (or Wasserstein distance) for numerical features. Alerts fire when distance exceeds a configured threshold. This indicates data distribution shift, concept drift, or upstream data pipeline issues — all requiring model investigation and potential retraining. Source: Vertex AI Model Monitoring documentation, Google Professional ML Engineer Exam Guide.',
+  },
+  {
+    id: 'gmle-mon-002',
+    topic: 'Model Monitoring',
+    category: 'MLOps',
+    difficulty: 'intermediate',
+    certTags: ['Google-MLE'],
+    question: 'A Vertex AI-deployed model for fraud detection shows high training-serving skew on the "transaction_amount" feature. The model performance metrics (precision/recall) have not degraded yet. What is the recommended action?',
+    options: [
+      'Immediately retrain the model — performance will degrade soon',
+      'Ignore the alert — performance metrics have not changed so the model is still valid',
+      'Investigate the data pipeline to identify whether the input preprocessing, feature engineering logic, or upstream data source has changed; compare current serving data statistics against training data statistics using Vertex AI Feature Store or BigQuery; schedule a model evaluation on a held-out recent dataset before deciding on retraining',
+      'Increase the drift alert threshold to reduce false positives',
+    ],
+    correct: 2,
+    explanation: 'Training-serving skew without immediate performance degradation requires systematic investigation before retraining: (1) Check the data pipeline — has upstream ETL logic, data normalization, or feature transformation code changed since training? A code difference between training and serving pipelines is a common cause; (2) Compare data statistics — use Vertex AI Feature Store statistics or BigQuery to quantify the skew; (3) Evaluate on recent labeled data to get current performance metrics before the ground truth lag hides degradation. Immediate retraining wastes resources if the skew is due to a data pipeline bug. Ignoring the alert risks future silent model failures. Source: Google Cloud ML best practices for monitoring.',
+  },
+  {
+    id: 'gmle-mon-003',
+    topic: 'Model Monitoring',
+    category: 'MLOps',
+    difficulty: 'advanced',
+    certTags: ['Google-MLE'],
+    question: 'You need to set up continuous evaluation for a Vertex AI model that classifies support tickets. Ground truth labels arrive 2 days after prediction. Which Vertex AI feature enables this workflow?',
+    options: [
+      'Vertex AI Pipelines with a daily scheduled run that retrains on new data',
+      'Vertex AI Model Monitoring with prediction drift alerts configured to use a 48-hour lag window',
+      'Vertex AI Continuous Evaluation — configure a BigQuery dataset to receive prediction-ground-truth pairs, set a sampling rate, and Vertex AI will automatically calculate online evaluation metrics (accuracy, F1) as labeled data arrives, surfacing results in Model Monitoring dashboards',
+      'Cloud Scheduler + Cloud Functions to run a daily evaluation script comparing prediction logs to a labels table',
+    ],
+    correct: 2,
+    explanation: 'Vertex AI Continuous Evaluation is designed for exactly this use case: it handles the temporal gap between predictions and ground truth labels. Configuration: (1) Enable evaluation on the model resource; (2) Specify a BigQuery table that receives prediction-ID + ground-truth-label pairs (populated by your labeling pipeline); (3) Set sampling rate (e.g., 20% of predictions); (4) Vertex AI automatically joins predictions to labels as they arrive and computes evaluation metrics. Results appear in the Vertex AI Model Monitoring UI. The Cloud Scheduler + Functions approach works but requires custom implementation; Vertex AI Continuous Evaluation is the managed solution. Source: Vertex AI Model Monitoring Continuous Evaluation documentation.',
+  },
+  {
+    id: 'gmle-mon-004',
+    topic: 'Model Monitoring',
+    category: 'MLOps',
+    difficulty: 'intermediate',
+    certTags: ['Google-MLE'],
+    question: 'A Vertex AI Feature Store online serving cluster is being used for real-time inference in a fraud model. The ML team wants to detect when feature values served at inference time differ significantly from values seen during training. Which two Vertex AI components should they configure together?',
+    options: [
+      'Vertex AI Feature Store + Cloud Bigtable for historical feature comparison',
+      'Vertex AI Model Monitoring (with training-serving skew detection enabled) + Vertex AI Feature Store — configure Model Monitoring to read feature statistics from the Feature Store\'s entity type statistics and compare against a training baseline snapshot',
+      'Vertex AI Pipelines + BigQuery ML for automated drift detection',
+      'Vertex AI Experiments + TensorBoard for feature distribution visualization',
+    ],
+    correct: 1,
+    explanation: 'The canonical Vertex AI architecture for training-serving skew detection in Feature Store environments: (1) Vertex AI Feature Store records statistics (mean, stddev, distribution histograms) per feature as entities are written; (2) Vertex AI Model Monitoring reads the training baseline statistics (either from a training dataset GCS path or from Feature Store baseline snapshots) and the serving statistics (from logged prediction inputs) and computes skew metrics. Configuring Model Monitoring to use Feature Store statistics gives the most accurate comparison because the same feature transformation code is used in both training and serving when using Feature Store. Source: Vertex AI Feature Store and Model Monitoring integration documentation.',
+  },
+  {
+    id: 'gmle-mon-005',
+    topic: 'Model Monitoring',
+    category: 'MLOps',
+    difficulty: 'advanced',
+    certTags: ['Google-MLE'],
+    question: 'A production Vertex AI Endpoint hosts two model versions (v1: 70% traffic, v2: 30% traffic) in an A/B test. You need to compare real-time performance metrics across both versions while monitoring for data drift. Which monitoring configuration is correct?',
+    options: [
+      'Deploy two separate endpoints with identical monitoring configurations and compare results manually',
+      'Configure a single Vertex AI Model Monitoring job on the endpoint — specify both deployed model IDs in the monitoring config; Model Monitoring tracks skew and drift metrics per deployed model version using the traffic split, and surfaces per-version metrics in the Monitoring dashboard',
+      'Use Vertex AI Experiments to track model metrics — Model Monitoring does not support multi-version endpoints',
+      'Set up Cloud Monitoring custom metrics with per-version labels by instrumenting the prediction container',
+    ],
+    correct: 1,
+    explanation: 'Vertex AI Model Monitoring supports multi-model endpoints: when an endpoint has multiple deployed models (traffic-split A/B test), you configure the monitoring job at the endpoint level and specify which deployed models to monitor. The monitoring job tracks prediction input distributions and skew metrics separately for each model version using the traffic allocated to that version. This enables direct comparison: if v2 shows greater drift or higher skew scores than v1 on the same traffic, it indicates v2 is more sensitive to data distribution changes. Source: Vertex AI Endpoint monitoring with traffic splits documentation, Professional ML Engineer exam guide.',
   },
 ];

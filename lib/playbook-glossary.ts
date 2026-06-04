@@ -3526,5 +3526,81 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SC-500'],
     related: ['SOAR (Security Orchestration, Automation, and Response)', 'Alert Triage Automation', 'Security Copilot', 'SIEM (Security Information and Event Management)', 'Detection Engineering'],
   },
+
+  // ── New terms: GIAC-GOAA offensive AI, AI security general ───────────────
+
+  {
+    term: 'Indirect Prompt Injection',
+    definition: 'An attack where adversarial instructions are embedded in external content that an LLM processes (documents, web pages, emails, retrieved knowledge base entries, tool outputs) rather than directly in the user prompt. When the LLM processes the tainted content, it executes the attacker\'s instructions. Common vectors: poisoned RAG documents, malicious web pages fetched by browsing-capable agents, contaminated email bodies summarized by AI assistants, infected API responses consumed by AI agents. The attacker does not need access to the user interface — only to any content the AI reads. Classification: OWASP LLM01:2025, MITRE ATLAS AML.T0054.001. Primary defense: Prompt Shields (Azure AI Content Safety Document Shield), output validation, and treating all external content as untrusted input to the model. Source: OWASP LLM Top 10 2025; CAISP; GIAC GOAA.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'CAISP', 'SecAI', 'SC-500'],
+    related: ['Prompt Injection', 'RAG', 'Prompt Shields', 'Agentic AI Security', 'OWASP LLM Top 10'],
+  },
+  {
+    term: 'Jailbreak Chaining',
+    definition: 'An advanced jailbreaking technique where multiple individually innocuous prompts are combined in sequence to progressively erode an LLM\'s safety boundaries. Unlike single-turn jailbreaks, chaining exploits: (1) context accumulation — the model\'s growing conversation history makes it more likely to comply as apparent precedents are established; (2) persona escalation — gradually shifting the model\'s assumed role across turns; (3) semantic splitting — splitting a prohibited request across multiple turns so no single turn triggers safety filters (also called "crescendo attack"). Each individual prompt may pass safety filters; the chain collectively extracts the target output. Defenses include: stateless context windows that reset safety evaluation per-turn, context-aware safety classifiers, and session-level anomaly detection. Source: GIAC GOAA; OWASP LLM01:2025; Microsoft AI Red Team crescendo technique.',
+    category: 'Red Teaming AI',
+    certTags: ['GIAC-GOAA', 'CAISP', 'SecAI'],
+    related: ['Jailbreak Attack', 'Many-Shot Jailbreaking', 'Crescendo Attack', 'Prompt Injection', 'LLM Red Teaming'],
+  },
+  {
+    term: 'Many-Shot Jailbreaking',
+    definition: 'A jailbreaking technique that exploits large context windows by prepending many (dozens to hundreds) of fake question-answer examples where the model appears to have already answered harmful queries. The long in-context "precedent" of the model providing harmful outputs causes it to comply with the final actual harmful request — the model is conditioned by its own (fabricated) prior responses. Discovered by Anthropic researchers (2024). Effectiveness scales with context window size: models with 100K+ token contexts are more vulnerable. Defenses: system prompt reinforcement that explicitly instructs the model to reset safety behaviors regardless of prior conversation content, context-window-aware safety classifiers. Source: Anthropic research; GIAC GOAA; OWASP LLM01.',
+    category: 'Red Teaming AI',
+    certTags: ['GIAC-GOAA', 'SecAI', 'CAISP'],
+    related: ['Jailbreak Attack', 'Jailbreak Chaining', 'Few-Shot Prompting', 'LLM Red Teaming'],
+  },
+  {
+    term: 'AI Supply Chain Attack',
+    definition: 'An attack targeting the upstream components of an AI system\'s development or deployment pipeline — analogous to software supply chain attacks (SolarWinds, XZ Utils) but targeting AI-specific artifacts. Attack vectors: (1) Malicious pre-trained model weights distributed via Hugging Face or other model hubs (model trojans/backdoors); (2) Poisoned training datasets distributed as open-source benchmarks; (3) Compromised ML framework dependencies (TensorFlow, PyTorch packages with malicious ops); (4) Tainted fine-tuning datasets in data marketplaces; (5) Backdoored model architectures in reference implementations. The AI Bill of Materials (AI-BOM) is the primary mitigation: document training data provenance, model weight hashes, fine-tuning lineage, and dependency versions. Sources: OWASP LLM03/LLM05; NIST SP 800-218A Secure Software Development Framework applied to ML; CAISP AI Supply Chain domain.',
+    category: 'AI Security',
+    certTags: ['CAISP', 'SecAI', 'GIAC-GOAA'],
+    related: ['Data Poisoning', 'Model Backdoor', 'AI Bill of Materials (AI-BOM)', 'Supply Chain Security', 'OWASP LLM Top 10'],
+  },
+  {
+    term: 'Model Inversion Attack',
+    definition: 'A privacy attack on ML models where an adversary queries a model to reconstruct sensitive training data or approximate the characteristics of training samples. Two main variants: (1) Gradient-based inversion — given white-box access to model gradients, reconstruct input data (demonstrated on federated learning models recovering facial images from gradient updates); (2) Confidence-based inversion — given only prediction confidence scores (black-box), iteratively optimize inputs to maximize confidence for a target class, recovering class representatives. Risks: reconstruction of faces from facial recognition models, medical record inference from clinical prediction models, PII leakage from models trained on personal data. Defenses: differential privacy during training, gradient clipping in federated learning, confidence score suppression (return class labels only, not probabilities), and membership inference auditing. Sources: Fredrikson et al. "Model Inversion Attacks"; CAISP; GIAC GOAA domain 2.',
+    category: 'AI Security',
+    certTags: ['CAISP', 'GIAC-GOAA', 'SecAI'],
+    related: ['Membership Inference Attack', 'Training Data Extraction', 'Differential Privacy', 'Federated Learning Security', 'Model Extraction Attacks'],
+  },
+  {
+    term: 'Training Data Extraction',
+    definition: 'An attack where an adversary queries a language model to cause it to verbatim reproduce memorized training data — including personally identifiable information (PII), copyrighted content, API keys, and proprietary code. Demonstrated by Carlini et al. (2021) on GPT-2 and subsequent work on GPT-3, Codex, and other LLMs. Extraction techniques: (1) prefix completion — provide the start of a memorized string and let the model complete it; (2) divergence probing — ask the model to "repeat the word X forever" until it diverges from repetition and outputs memorized content; (3) targeted extraction — systematically probe with known or guessed prefixes (e.g., email patterns, code repository names). Key risk: models trained on scraped internet data may memorize and reproduce email addresses, home addresses, code secrets, and private messages. Defenses: differential privacy training, deduplication of training data, PII detection and removal before training, and output monitoring for PII patterns. Sources: Carlini et al. 2021; OWASP LLM02; CAISP; GIAC GOAA.',
+    category: 'AI Security',
+    certTags: ['GIAC-GOAA', 'CAISP', 'SecAI'],
+    related: ['Model Inversion Attack', 'Membership Inference Attack', 'Differential Privacy', 'Data Minimization', 'OWASP LLM Top 10'],
+  },
+
+  // ── SC-500 specific new terms ─────────────────────────────────────────────
+
+  {
+    term: 'Azure Network Security Group (NSG)',
+    definition: 'An Azure resource that filters network traffic to and from Azure resources in a virtual network. Contains security rules that allow or deny inbound and outbound traffic based on: source/destination IP address, port, and protocol. Evaluated in priority order (100–4096): lower number = higher precedence. Applied at subnet level and/or NIC level — subnet NSG evaluated first for inbound traffic. Key concepts for SC-500: (1) Default rules include DenyAllInbound and AllowVnetInBound; (2) Service tags (AzureLoadBalancer, Internet, VirtualNetwork) simplify rule management; (3) Application Security Groups (ASGs) enable grouping by role rather than IP. NSG flow logs in Azure Monitor enable forensics. Source: Microsoft Learn — SC-500 "Secure Networking & Infrastructure".',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Azure Firewall', 'Private Endpoints', 'Virtual Network', 'Azure DDoS Protection'],
+  },
+  {
+    term: 'Azure Private Endpoint',
+    definition: 'A network interface in your virtual network that uses a private IP address to connect privately to an Azure PaaS service (Storage, Key Vault, Azure OpenAI, Cognitive Services, etc.) — bypassing the public internet entirely. Traffic flows over the Microsoft backbone network. Key security benefits: (1) Eliminates exposure of service to the public internet; (2) DNS resolution returns the private IP when accessed from the VNet (via Private DNS Zone); (3) Integrates with NSGs for granular access control. SC-500 use cases: securing Azure OpenAI and AI Foundry deployments, protecting Key Vault from internet exposure, restricting storage account access to specific workspaces. Complements "Disable public network access" settings. Source: Azure Private Link documentation, SC-500.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Azure Network Security Group (NSG)', 'Azure Firewall', 'Service Endpoint', 'Virtual Network', 'Azure Key Vault'],
+  },
+  {
+    term: 'Azure DDoS Protection',
+    definition: 'Azure service that defends against distributed denial-of-service attacks on Azure resources. Two tiers: (1) Basic — automatically enabled for all Azure services, provides platform-level protection against common network DDoS; (2) Standard (now called Azure DDoS Protection) — per-VNet subscription, provides adaptive tuning based on traffic baselines, near real-time attack analytics, mitigation reports, SLA guarantee ($1M credit for costs incurred during an attack), and integration with Microsoft Defender for Cloud. SC-500 exam: know when to recommend DDoS Protection Standard vs. Basic, and how it integrates with Azure Firewall and Web Application Firewall (WAF) for layered defense. Source: Azure DDoS Protection documentation, SC-500.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Azure Firewall', 'Web Application Firewall (WAF)', 'Azure Network Security Group (NSG)', 'Network Security'],
+  },
+  {
+    term: 'Azure Storage Account Security',
+    definition: 'The set of controls applied to Azure Storage Accounts to protect data at rest, in transit, and at the access plane. Key SC-500 controls: (1) Disable public network access — prevents all internet traffic, requires VNet integration or private endpoints; (2) Require secure transfer (HTTPS only); (3) Disable shared key access — forces Azure AD authentication only, preventing credential theft via leaked storage keys; (4) Storage Blob Data Reader/Contributor RBAC roles for least-privilege access; (5) Customer-managed keys (CMK) in Azure Key Vault for data encryption; (6) Defender for Storage for threat detection (access from Tor, anomalous data exfiltration, malware upload scanning); (7) Immutable blob storage for compliance (WORM policies). AI workload relevance: training datasets, model artifacts, and logs are typically stored in Storage Accounts and require all these controls. Source: SC-500 domain 3.',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500'],
+    related: ['Azure Key Vault', 'Managed Identity', 'Private Endpoints', 'Microsoft Defender for Storage', 'Customer-Managed Key (CMK)'],
+  },
 ];
 

@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  26,
-  quizQs:    875,
-  glossary:  491,
+  scenarios:  27,
+  quizQs:    890,
+  glossary:  501,
   articles:   64,
   certs:      10,
   incidents:  35,
@@ -481,7 +481,7 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '10 attack scenarios', color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '11 attack scenarios', color: 'text-red-400' },
                     { label: 'Dojo 2', sub: '35 SOC incidents',   color: 'text-cyan-400' },
                     { label: 'Dojo 3', sub: '8 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
