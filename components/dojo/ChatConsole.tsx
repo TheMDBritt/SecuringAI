@@ -108,6 +108,14 @@ const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }
     seed: 'Malware Behavior Analysis — paste a sandbox report, behavioral telemetry, or EDR alert bundle.\nBlackBeltAI will produce: malware family classification · ATT&CK technique mapping table · capability summary (persistence, C2, evasion) · extracted IOCs · detection rules (KQL + Sigma) · containment playbook.',
     placeholder: 'Paste sandbox output, EDR telemetry, or behavioral indicators for analysis…',
   },
+  'cloud-identity-abuse': {
+    seed: 'Cloud Identity Abuse Detection — paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity below.\nBlackBeltAI will: reconstruct the identity attack chain · map MITRE T-codes (T1528, T1078.004, T1550.001) · identify Conditional Access policy gaps · recommend remediation steps · generate KQL hunting queries for Sentinel/Defender XDR.',
+    placeholder: 'Paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity…',
+  },
+  'ai-system-compromise': {
+    seed: 'AI System Compromise Triage — paste model serving logs, prompt traces, output anomalies, or infrastructure alerts below.\nBlackBeltAI will: classify the failure mode (prompt injection / model poisoning / infrastructure compromise / concept drift) · assess blast radius · recommend containment actions · draft redeployment criteria and post-incident monitoring plan.',
+    placeholder: 'Paste model serving logs, prompt traces, output anomalies, or infrastructure alerts…',
+  },
 };
 
 const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {

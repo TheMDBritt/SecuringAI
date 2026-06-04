@@ -80,6 +80,10 @@ const TASK_BADGE: Record<string, string> = {
   'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
   'detection-rule-gen':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'incident-report-draft':'bg-teal-500/10 text-teal-400 border-teal-500/30',
+  'threat-hunt':          'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'malware-behavior':     'bg-red-500/10 text-red-400 border-red-500/30',
+  'cloud-identity-abuse': 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'ai-system-compromise': 'bg-rose-500/10 text-rose-400 border-rose-500/30',
 };
 
 // ─── Active Scenario Preview (Dojo 2 only) ────────────────────────────────────

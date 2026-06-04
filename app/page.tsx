@@ -6,12 +6,12 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  20,
+  scenarios:  26,
   quizQs:    856,
-  glossary:  436,
+  glossary:  491,
   articles:   64,
   certs:      10,
-  incidents:  29,
+  incidents:  35,
 };
 
 interface DojoCard {
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 29 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, and IR report drafting.',
+    summary: 'Operate as an AI SOC analyst across 35 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -274,12 +274,18 @@ export default function LandingPage() {
                     {d.detail}
                   </p>
                   <ul className="flex flex-col gap-1 border-t border-slate-800 pt-3">
-                    {scenarios.map((s) => (
+                    {scenarios.slice(0, 7).map((s) => (
                       <li key={s.id} className="text-[11px] text-slate-500 flex gap-1.5 items-start">
                         <span className="text-slate-700 mt-px shrink-0">·</span>
                         {s.title}
                       </li>
                     ))}
+                    {scenarios.length > 7 && (
+                      <li className="text-[11px] text-slate-600 flex gap-1.5 items-start">
+                        <span className="text-slate-700 mt-px shrink-0">·</span>
+                        +{scenarios.length - 7} more
+                      </li>
+                    )}
                   </ul>
                   <span
                     className={[
@@ -475,9 +481,9 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '8 attack scenarios', color: 'text-red-400' },
-                    { label: 'Dojo 2', sub: '29 SOC incidents',   color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '7 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 1', sub: '10 attack scenarios', color: 'text-red-400' },
+                    { label: 'Dojo 2', sub: '35 SOC incidents',   color: 'text-cyan-400' },
+                    { label: 'Dojo 3', sub: '8 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>
