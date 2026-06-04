@@ -58,6 +58,11 @@ export const EXAM_CERTS: ExamCert[] = [
         weight: '40%',
         categories: [
           'AI Security',
+          'AI Security Fundamentals',
+          'AI Application Security',
+          'AI Testing and Security',
+          'ML Engineering Security',
+          'MLOps Security',
           'Red Teaming AI',
           'Data Engineering',
         ],
@@ -311,6 +316,8 @@ export const EXAM_CERTS: ExamCert[] = [
         weight: '19%',
         categories: [
           'MLOps',
+          'MLOps Security',
+          'ML Engineering Security',
           'Generative AI & LLMs',
         ],
       },
@@ -320,6 +327,8 @@ export const EXAM_CERTS: ExamCert[] = [
         weight: '20%',
         categories: [
           'Emerging Trends',
+          'AI Ethics & Bias',
+          'AI Governance',
         ],
       },
       {
@@ -328,6 +337,7 @@ export const EXAM_CERTS: ExamCert[] = [
         weight: '12%',
         categories: [
           'AI Security',
+          'AI Security Fundamentals',
         ],
       },
     ],
@@ -378,6 +388,8 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 5: Malicious AI Applications & Red Teaming',
         categories: [
           'AI in Security Ops',
+          'MLOps Security',
+          'AI Governance',
         ],
       },
     ],
@@ -396,8 +408,10 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 1: AI Security Automation Fundamentals',
         categories: [
           'AI Security',
+          'AI Security Fundamentals',
           'AI & ML Fundamentals',
           'Emerging Trends',
+          'AI Governance',
         ],
       },
       {
@@ -405,6 +419,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 2: AI-Powered Vulnerability Discovery',
         categories: [
           'Red Teaming AI',
+          'AI Testing and Security',
           'Computer Vision',
           'AI Security',
         ],
@@ -414,6 +429,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 3: AI-Driven Attack Simulation',
         categories: [
           'NLP',
+          'AI Application Security',
           'AI Ethics & Bias',
           'Generative AI & LLMs',
         ],
@@ -548,6 +564,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 1: AI & LLM Security Fundamentals',
         categories: [
           'AI Security',
+          'AI Security Fundamentals',
           'AI & ML Fundamentals',
           'Generative AI & LLMs',
           'NLP',
@@ -558,6 +575,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 2: Model Risks & Vulnerabilities',
         categories: [
           'Red Teaming AI',
+          'AI Testing and Security',
           'AI Ethics & Bias',
         ],
       },
@@ -575,6 +593,9 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 4: Securing LLM & RAG Deployments',
         categories: [
           'AI Security',
+          'AI Application Security',
+          'ML Engineering Security',
+          'MLOps Security',
           'Generative AI & LLMs',
           'AI in Security Ops',
           'Emerging Trends',
@@ -587,6 +608,8 @@ export const EXAM_CERTS: ExamCert[] = [
           'AI Governance',
           'AI Security',
           'Red Teaming AI',
+          'Microsoft Cloud & AI Security',
+          'Cloud AI Platforms',
         ],
       },
     ],
@@ -605,13 +628,15 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 1: AI Security Fundamentals & Threat Landscape',
         categories: [
           'AI Security',
+          'AI Security Fundamentals',
           'AI & ML Fundamentals',
+          'Computer Vision',
         ],
       },
       {
         id: 'cais-d2',
         name: 'Domain 2: Adversarial Machine Learning Attacks',
-        categories: ['AI Security', 'Red Teaming AI'],
+        categories: ['AI Security', 'AI Security Fundamentals', 'Red Teaming AI'],
         topics: [
           'Adversarial ML Attacks', 'Evasion Attacks', 'Data Poisoning', 'Backdoor Attacks',
           'Model Inversion', 'Model Inversion Attack', 'Membership Inference',
@@ -640,7 +665,7 @@ export const EXAM_CERTS: ExamCert[] = [
       {
         id: 'cais-d4',
         name: 'Domain 4: Securing AI Pipelines & MLOps',
-        categories: ['AI in Security Ops', 'AI Security', 'Red Teaming AI'],
+        categories: ['AI in Security Ops', 'AI Application Security', 'AI Testing and Security', 'ML Engineering Security', 'MLOps Security', 'AI Security', 'Red Teaming AI'],
         topics: [
           'AI Supply Chain Security', 'AI Supply Chain', 'MLOps Security', 'Secure AI Deployment',
           'Secure Model Deployment', 'Secure API Design for AI', 'AI Bill of Materials (AI-BOM)',

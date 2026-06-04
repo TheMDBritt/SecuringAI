@@ -10,7 +10,7 @@ const STATS = {
   glossary:  579,
   articles:   64,
   certs:      10,
-  incidents:  35,
+  incidents:  39,
 };
 
 interface DojoCard {
@@ -35,7 +35,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 35 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
+    summary: 'Operate as an AI SOC analyst across 39 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },

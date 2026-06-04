@@ -120,7 +120,7 @@ export default function AboutPage() {
             How it works
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
-            {`Three connected dojos. ${SCENARIOS.length} scenarios. 35 prebuilt Dojo 2 incidents.`}
+            {`Three connected dojos. ${SCENARIOS.length} scenarios. 39 prebuilt Dojo 2 incidents.`}
           </h2>
           <div className="space-y-4 text-sm text-slate-400 leading-relaxed">
             <div className="flex gap-4 p-4 rounded-lg border border-slate-800 bg-slate-900/40">
@@ -149,7 +149,7 @@ export default function AboutPage() {
                 <p>
                   Use AI as a SOC analyst across Log Triage, Alert Enrichment, Detection Rule Generation,
                   Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse
-                  Detection, and AI System Compromise Triage. 35 prebuilt incidents plus on-demand generation.
+                  Detection, and AI System Compromise Triage. 39 prebuilt incidents plus on-demand generation.
                   Per-scenario rubrics score IOC extraction, MITRE T-code mapping, executive summaries,
                   and KQL/Sigma rule quality. Disabled analyst capabilities are excluded from scoring.
                 </p>
