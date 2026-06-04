@@ -6374,4 +6374,607 @@ After mitigations are applied, re-test the specific attack vectors that produced
 
 Source: Microsoft PyRIT documentation; Garak documentation; NIST AI RMF; MITRE ATLAS.`,
   },
+
+  {
+    id: 'aws-bedrock-security',
+    title: 'Securing Amazon Bedrock Deployments',
+    category: 'Cloud AI Platforms',
+    certTags: ['AWS-AIF-C01', 'SecAI'],
+    vocab: ['Bedrock Guardrails', 'Grounding Check', 'PII Redaction', 'Model Invocation Logging', 'VPC Endpoint', 'Service Control Policy', 'Knowledge Base', 'KMS CMK', 'Watermark Detection', 'CloudTrail'],
+    content: `
+## Amazon Bedrock Architecture Overview
+
+Amazon Bedrock is a fully managed service providing access to foundation models (FMs) from Amazon and third-party providers (Anthropic Claude, Meta Llama, Cohere, Mistral, Stability AI). The control plane manages model access, fine-tuning jobs, and Knowledge Bases; the data plane handles model invocations. All requests flow through AWS regional endpoints with no data used to improve base models by default.
+
+## Bedrock Guardrails
+
+Guardrails are the primary runtime safety control layer for Bedrock applications.
+
+**Topic Denial** — define topics your application must never discuss (e.g., competitor products, investment advice). Guardrails classify user messages and assistant responses against the denied topic list and block non-compliant exchanges.
+
+**Content Filters** — evaluate inputs and outputs across six categories: **hate**, **insults**, **sexual**, **violence**, **misconduct**, and **prompt attacks**. Each category is configured at one of four strength levels: None, Low, Medium, High. Stronger filters increase latency slightly.
+
+**PII Redaction** — detect and optionally redact 25+ PII entity types (SSN, credit card, email, phone, name, address, etc.). You can configure per-entity to BLOCK (reject the request) or ANONYMIZE (replace with placeholder).
+
+**Grounding Checks** — for RAG applications, measure the grounding score (0-1) of the model response against the retrieved context. Responses below the threshold (e.g., < 0.7) are blocked as potentially hallucinated. Relevance checks ensure retrieved passages actually relate to the query.
+
+**Word and Sensitive Information Filters** — blocklists for exact-match terms and regex patterns for custom sensitive data (e.g., internal project code names, proprietary identifiers).
+
+Apply Guardrails to both \`InvokeModel\` and \`Converse\` API calls using the \`guardrailIdentifier\` and \`guardrailVersion\` parameters.
+
+## IAM Least Privilege for Bedrock
+
+**Resource-based policies** are not supported for most Bedrock operations — access is controlled exclusively via identity-based IAM policies.
+
+Key IAM actions:
+
+| Action | Purpose |
+|--------|---------|
+| \`bedrock:InvokeModel\` | Call a foundation model |
+| \`bedrock:InvokeModelWithResponseStream\` | Streaming inference |
+| \`bedrock:RetrieveAndGenerate\` | Query a Knowledge Base |
+| \`bedrock:Retrieve\` | Knowledge Base retrieval only |
+| \`bedrock:CreateGuardrail\` | Manage Guardrails |
+| \`bedrock:ApplyGuardrail\` | Apply a Guardrail at inference time |
+
+Scope model access by ARN: \`arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0\`. Use **Service Control Policies (SCPs)** in AWS Organizations to restrict which models are permitted org-wide (e.g., deny all models except approved list), preventing teams from invoking expensive or unapproved models.
+
+**Cross-account model invocation** requires the invoking account's role to have \`bedrock:InvokeModel\` permissions and the target account to permit access via resource policy on the provisioned throughput.
+
+## VPC Endpoints for Private Access
+
+By default, Bedrock API calls traverse the public internet. For private access:
+
+1. Create an **Interface VPC Endpoint** for \`com.amazonaws.<region>.bedrock\` (control plane) and \`com.amazonaws.<region>.bedrock-runtime\` (data plane).
+2. Attach an endpoint policy restricting which principals and model ARNs can be invoked.
+3. Enable **Private DNS** on the endpoint so \`bedrock.us-east-1.amazonaws.com\` resolves to the private IP.
+4. Optionally use an **SCP** to deny \`bedrock:InvokeModel\` when the request does not originate from the expected VPC endpoint (\`aws:SourceVpce\` condition key).
+
+This prevents data exfiltration of prompts/responses over the public internet and satisfies compliance requirements for sensitive workloads.
+
+## CloudTrail Logging for Model Invocations
+
+Enable **AWS CloudTrail** in all regions with a multi-region trail writing to an S3 bucket with Object Lock. Key event types:
+
+- **Management events** — \`CreateGuardrail\`, \`CreateKnowledgeBase\`, \`AssociateAgentKnowledgeBase\`, \`CreateAgent\`
+- **Data events** — \`InvokeModel\`, \`InvokeModelWithResponseStream\`, \`RetrieveAndGenerate\` (must be explicitly enabled as data events; not captured by default)
+
+Enable CloudTrail data events for the \`AWS::Bedrock::*\` resource type. For compliance, store logs for 90 days or more (CIS) or 365 days or more (PCI/HIPAA). Use **CloudTrail Insights** to detect unusual model invocation volumes (possible prompt injection attack tooling).
+
+Amazon Bedrock also offers **Model Invocation Logging** (separate from CloudTrail): send input prompts and output completions to CloudWatch Logs or S3 for audit, debugging, and content analysis. Enable via \`PutModelInvocationLoggingConfiguration\`.
+
+## KMS Encryption for Model Outputs
+
+Bedrock encrypts data at rest using **AWS-managed keys** by default. For customer-managed keys (CMKs):
+
+- **Model Invocation Logging** — specify \`kmsKeyId\` when configuring the logging destination (S3 or CloudWatch)
+- **Fine-tuning jobs** — specify a CMK for training output artifacts in S3
+- **Knowledge Bases** — encrypt the vector store (OpenSearch Serverless or Pinecone) and the S3 data source with CMKs
+- **Provisioned Throughput** — model copy storage encrypted with the specified CMK
+
+Grant Bedrock's service role \`kms:GenerateDataKey\` and \`kms:Decrypt\` on your CMK. Use **KMS key policies** to restrict which services and principals can use the key.
+
+## Bedrock Knowledge Bases Security
+
+Knowledge Bases enable Retrieval-Augmented Generation (RAG) by indexing documents and performing semantic search.
+
+**S3 permissions** — the Knowledge Base execution role needs \`s3:GetObject\` and \`s3:ListBucket\` on the data source bucket. Apply S3 bucket policies restricting access to only the Knowledge Base service role ARN. Enable **S3 Block Public Access** on all data source buckets.
+
+**Vector store access** — for Amazon OpenSearch Serverless, the execution role must have the \`aoss:APIAccessAll\` permission scoped to the specific collection ARN. Use OpenSearch data access policies to limit which indices the role can read/write. For third-party vector databases (Pinecone, Redis Enterprise), store connection credentials in **AWS Secrets Manager** and reference the secret ARN in the Knowledge Base configuration.
+
+**Data source encryption** — encrypt S3 data source buckets with CMKs. The vector index is encrypted using the OpenSearch Serverless encryption policy (also CMK-backed).
+
+**Retrieval isolation** — Knowledge Base queries run in Bedrock's managed account; results are returned to your account. Bedrock does not retain retrieved documents or query logs beyond the request lifetime (confirm in current AWS documentation for your region).
+
+## Model Evaluation and Watermark Detection
+
+Amazon Bedrock **Model Evaluation** jobs assess FM quality on custom datasets for metrics including accuracy, robustness, and toxicity. Use automated evaluation (LLM-as-judge using another FM) or human evaluation via workforce.
+
+**Watermark detection** — Amazon Titan image models embed an invisible watermark in generated images. Use the \`DetectGeneratedContent\` API to verify whether an image was generated by Amazon Titan. This helps identify AI-generated content in downstream workflows.
+
+For custom fine-tuned models, evaluate on a held-out adversarial test set including prompt injection attempts, jailbreak patterns, and PII extraction probes before deploying to production.
+
+## Exam Cheat Sheet
+
+| Question | Answer |
+|----------|--------|
+| Bedrock runtime API call for streaming | \`InvokeModelWithResponseStream\` |
+| Private connectivity option | Interface VPC Endpoint for bedrock-runtime |
+| Guardrail for hallucination detection | Grounding check (measures response vs. retrieved context) |
+| Detailed prompt/response logging | Model Invocation Logging (not CloudTrail data events) |
+| SCP to restrict model access org-wide | Deny \`bedrock:InvokeModel\` except allowed model ARNs |
+| Watermark detection for images | \`DetectGeneratedContent\` API (Amazon Titan models only) |
+
+Source: AWS Bedrock documentation (docs.aws.amazon.com/bedrock); AWS Security Best Practices for Bedrock.`,
+  },
+  {
+    id: 'sc500-ai-workloads-security',
+    title: 'Securing AI Workloads on Azure (SC-500)',
+    category: 'Microsoft Cloud & AI Security',
+    certTags: ['SC-500', 'Azure-AI103'],
+    vocab: ['Prompt Shields', 'Content Safety Filters', 'DSPM for AI', 'Shadow AI', 'Defender for Cloud', 'Cognitive Services OpenAI User', 'Private Endpoint', 'Azure Policy', 'deployIfNotExists', 'DLP for AI'],
+    content: `
+## Defender for Cloud AI Workload Protection
+
+Microsoft Defender for Cloud includes a dedicated **AI workload protection plan** that monitors Azure OpenAI Service and Azure AI Services resources for security threats.
+
+**Threat detections:**
+- **Prompt injection detection** — identifies attempts to hijack model behavior through adversarial instructions embedded in user inputs or retrieved content (indirect injection)
+- **Data exfiltration alerts** — flags model responses that appear to be extracting sensitive data from the system prompt or connected data sources
+- **Credential theft attempts** — detects prompts probing for secrets, connection strings, or API keys referenced in system prompts
+- **Jailbreak attempts** — pattern-based detection for known bypass techniques
+
+Enable the plan in Defender for Cloud, then Environment Settings, then your subscription, then AI workloads. Alerts surface in the Defender for Cloud portal and can be forwarded to Microsoft Sentinel via the Defender for Cloud connector.
+
+## Azure OpenAI Prompt Shields
+
+Prompt Shields (part of Azure AI Content Safety) provide pre-inference protection against injection attacks:
+
+**Direct Prompt Injection (User-Prompt Attack)** — malicious instructions in the user turn attempting to override system prompt instructions (e.g., "Ignore previous instructions and..."). Prompt Shields classify the user message and return a \`detected: true\` flag with confidence score if an attack is identified.
+
+**Indirect Prompt Injection (Document Attack)** — attacker-controlled content in retrieved documents, emails, or web pages containing hidden instructions (e.g., Bing Chat attacks via malicious web content). Pass the retrieved documents in the \`documents\` array of the Prompt Shields API alongside the user query.
+
+API endpoint: \`POST /contentsafety/text:shieldPrompt?api-version=2024-02-15-preview\`. Both attack types are evaluated in a single API call. Use Prompt Shields as a pre-processing step before forwarding the enriched prompt to the LLM.
+
+## Azure AI Content Safety Filters
+
+Azure OpenAI Service applies **content filters** to both inputs (prompts) and outputs (completions) by default. Filters cover four harm categories:
+
+| Category | Examples |
+|----------|---------|
+| **Hate** | Derogatory language targeting protected groups |
+| **Violence** | Graphic descriptions of harm, instructions for violence |
+| **Sexual** | Explicit content, minor safety |
+| **Self-harm** | Suicide methods, self-injury instructions |
+
+Each category uses a **severity scale of 0-7** (4-level buckets: 0=safe, 2=low, 4=medium, 6=high). Configure filter thresholds per category — content at or above the threshold is blocked. Default configuration blocks medium and above for most categories.
+
+**Custom blocklists** allow exact-match and regex filtering for domain-specific terms. Blocklists are applied before severity filtering.
+
+To modify content filter configuration, request access via the Azure OpenAI Studio or submit a **Limited Access** waiver for use cases requiring looser filters (e.g., security research).
+
+## Purview DSPM for AI
+
+Microsoft Purview **Data Security Posture Management (DSPM) for AI** provides visibility and control over AI usage across the tenant.
+
+**Shadow AI discovery** — Purview scans network traffic via Microsoft 365 Defender or Defender for Endpoint telemetry to identify use of unsanctioned AI applications (e.g., consumer ChatGPT, Gemini, Claude.ai). Discovered apps appear in the Shadow AI report with usage volume and risk scores.
+
+**DLP for AI interactions** — Microsoft Purview DLP policies can be applied to **Microsoft Copilot** and **Azure OpenAI** interactions to prevent sensitive data (credit cards, health records, classified labels) from being submitted to AI models. Configure DLP policies with predicates for sensitivity labels and sensitive information types, with actions: audit, warn, or block.
+
+**AI usage reports** — tenant-wide dashboards showing: number of active AI users, interaction volumes by app, sensitive data exposure events, policy violations. Export reports to Sentinel via the Purview connector.
+
+**Sensitivity label integration** — files with high-sensitivity labels (e.g., Highly Confidential) can be blocked from being uploaded as context to Copilot for Microsoft 365. Configure this in Purview Information Protection policies.
+
+## RBAC for Azure OpenAI
+
+Azure OpenAI resource access is controlled through **Azure RBAC** (not Azure AD app roles). Key built-in roles:
+
+| Role | Permissions |
+|------|------------|
+| **Cognitive Services User** | Call inference endpoints (\`/completions\`, \`/chat/completions\`), read deployments |
+| **Cognitive Services Contributor** | Above + create/modify deployments and fine-tuning jobs |
+| **Cognitive Services OpenAI Contributor** | Above + manage content filters, prompt flows |
+| **Cognitive Services OpenAI User** | Call inference only (narrower than Cognitive Services User) |
+| **Owner / Contributor** | Full resource management including key rotation |
+
+**Best practice:** Assign **Cognitive Services OpenAI User** to application service principals for production inference workloads (least privilege — inference only, no key access). Rotate keys regularly and prefer **Microsoft Entra ID authentication** (managed identity or workload identity) over API keys to avoid secret sprawl.
+
+Scope role assignments to the **Azure OpenAI resource** level, not the subscription or resource group, to minimize blast radius.
+
+## Network Isolation
+
+**Private endpoints** — create a Private Endpoint for the Azure OpenAI resource in your VNet. This assigns a private IP from your subnet. All API traffic flows over the Azure backbone, not the public internet. Disable public network access after enabling the private endpoint.
+
+**VNet integration** — for App Service or Azure Functions calling Azure OpenAI, use VNet integration to route outbound traffic through your VNet to the private endpoint. Combine with a Private DNS Zone (\`privatelink.openai.azure.com\`) for automatic name resolution.
+
+**Approved networks** — if private endpoints are not feasible, restrict access via the Networking tab, then Selected networks and private endpoints, then add allowed IP ranges (e.g., egress IPs of your Kubernetes nodes or API gateway).
+
+**Azure API Management (APIM) as a gateway** — route all Azure OpenAI traffic through APIM for centralized authentication, rate limiting, logging, and network policy enforcement. APIM sits inside the VNet with a private endpoint connection to Azure OpenAI.
+
+## Azure Policy for AI Services
+
+Use **Azure Policy** to enforce governance controls at scale across Azure AI resources:
+
+- **Allowed regions** — deny deployment of Azure AI Services resources outside approved regions (e.g., EU-only for data residency): built-in policy "Allowed locations"
+- **SKU restrictions** — limit Azure OpenAI deployments to approved model SKUs: custom policy denying \`Microsoft.CognitiveServices/accounts/deployments/write\` for non-allowlisted models
+- **Diagnostic settings enforcement** — built-in policy "Deploy Diagnostic Settings for Cognitive Services to Log Analytics Workspace" (audit or deployIfNotExists effect) ensures all Azure OpenAI resources send logs to the central Log Analytics workspace
+- **Disable public network access** — policy to audit or deny Azure AI resources with \`publicNetworkAccess\` set to \`Enabled\`
+- **Customer-managed keys** — policy to deny creation of Azure AI Services resources without a CMK specified
+
+Assign policies at the **Management Group** level to enforce across all subscriptions. Use **Remediation tasks** to bring existing non-compliant resources into compliance.
+
+## Exam Cheat Sheet
+
+| Question | Answer |
+|----------|--------|
+| Defender for Cloud plan for Azure OpenAI threats | AI workload protection plan |
+| Protection against indirect prompt injection | Prompt Shields (documents parameter) |
+| Discover shadow AI usage in tenant | Purview DSPM for AI |
+| Least-privilege role for inference-only access | Cognitive Services OpenAI User |
+| Severity scale for content filters | 0-7 (4 buckets: safe, low, medium, high) |
+| Force diagnostic logging via policy effect | deployIfNotExists |
+| Network isolation method for Azure OpenAI | Private Endpoint + disable public network access |
+
+Source: Microsoft Learn SC-500 study guide (learn.microsoft.com); Azure OpenAI documentation; Microsoft Purview DSPM for AI.`,
+  },
+  {
+    id: 'differential-privacy-federated-learning',
+    title: 'Differential Privacy and Federated Learning',
+    category: 'AI & ML Fundamentals',
+    certTags: ['GIAC-GASAE', 'CAISP', 'Google-MLE'],
+    vocab: ['Differential Privacy', 'Epsilon', 'Privacy Budget', 'DP-SGD', 'Laplace Mechanism', 'Gaussian Mechanism', 'Federated Learning', 'FedAvg', 'Gradient Inversion', 'Secure Aggregation', 'Moments Accountant', 'Opacus'],
+    content: `
+## Differential Privacy: Definition and Guarantees
+
+**Differential Privacy (DP)**, formalized by Dwork and Roth (2014), provides a mathematically rigorous definition of privacy for statistical computations. A randomized mechanism M satisfies **(epsilon, delta)-differential privacy** if for all datasets D and D' differing in one record, and all possible outputs S:
+
+Pr[M(D) in S] is at most exp(epsilon) times Pr[M(D') in S] plus delta.
+
+- **epsilon** — the privacy budget. Smaller epsilon = stronger privacy. epsilon = 0 means perfect privacy (identical output distributions); larger epsilon allows more distinguishability.
+- **delta** — the failure probability. (epsilon, 0)-DP is pure DP; small delta > 0 allows for rare catastrophic leakage (set delta much less than 1/|dataset|).
+
+**Intuition:** An adversary who observes the output of M cannot determine with high confidence whether any individual's data was included, even with unlimited computational power and all other records.
+
+## Global vs Local Differential Privacy
+
+**Global DP (GDP)** — a trusted curator collects raw data, then adds noise to query responses or published statistics. The privacy guarantee is centralized at the aggregation point. Used in: census data releases, aggregate analytics, ML model training. Better utility at equivalent privacy levels.
+
+**Local DP (LDP)** — each individual randomizes their own data before sending it to any collector. No trusted curator needed. Used in: Apple's iOS keyboard suggestions, Google Chrome telemetry (RAPPOR). Worse utility at equivalent epsilon because noise is added at the individual level before aggregation.
+
+## Laplace and Gaussian Mechanisms
+
+**Sensitivity** — the maximum change in query output from adding/removing one individual's record:
+- **L1 sensitivity** — used with the Laplace mechanism
+- **L2 sensitivity** — used with the Gaussian mechanism
+
+**Laplace Mechanism** — add noise drawn from Laplace(0, L1_sensitivity/epsilon) to each query output. Achieves pure (epsilon, 0)-DP. Preferred for scalar queries (counts, means).
+
+**Gaussian Mechanism** — add Gaussian noise with standard deviation sigma where sigma is proportional to L2_sensitivity/epsilon times a log factor. Achieves (epsilon, delta)-DP. Better for vector-valued queries (gradient updates) because L2 norm grows more slowly than L1 in high dimensions.
+
+## Privacy Budget Accounting
+
+Composing multiple DP mechanisms increases privacy loss. Simple composition: k mechanisms each with epsilon-DP yields k*epsilon-DP. Advanced composition methods are tighter:
+
+- **Moments Accountant** (Abadi et al. 2016) — used in DP-SGD; tracks the log moment generating function of the privacy loss random variable for precise accounting over many gradient steps
+- **Renyi Differential Privacy (RDP)** — generalization using Renyi divergence; provides tighter composition bounds, easily converts to (epsilon, delta)-DP
+- **Zero-Concentrated DP (zCDP)** — similar tightness to RDP, simpler composition formula
+
+Track total epsilon spent across training epochs. When the privacy budget is exhausted, training must stop or the model must not be released.
+
+## DP-SGD: Differentially Private Stochastic Gradient Descent
+
+**DP-SGD** (Abadi et al. 2016) is the standard algorithm for training neural networks with DP guarantees:
+
+1. **Compute per-example gradients** — gradient for each training example individually (unlike standard SGD which averages a minibatch)
+2. **Clip gradients** — clip each per-example gradient to L2 norm C (the clipping norm / max gradient norm)
+3. **Add Gaussian noise** — add Gaussian noise scaled to sigma*C to the summed clipped gradients
+4. **Update model** — divide by batch size and apply optimizer (Adam, SGD)
+
+The **noise multiplier sigma** and **clipping norm C** control the privacy-utility tradeoff. Privacy accounting uses the Moments Accountant to compute epsilon given sigma, batch size, dataset size, and number of steps.
+
+## TensorFlow Privacy and PyTorch Opacus
+
+**TensorFlow Privacy** (Google) — provides \`DPKerasOptimizerHook\` and \`DPModel\` wrappers. Replace your optimizer with \`DPKerasAdamOptimizer\` configured with \`l2_norm_clip\`, \`noise_multiplier\`, \`num_microbatches\`, and \`learning_rate\` parameters. Use \`compute_dp_sgd_privacy_statement()\` to compute (epsilon, delta) given training parameters.
+
+**PyTorch Opacus** (Meta) — \`PrivacyEngine\` wraps any PyTorch optimizer and DataLoader. Call \`privacy_engine.make_private()\` with \`module\`, \`optimizer\`, \`data_loader\`, \`noise_multiplier\`, and \`max_grad_norm\` parameters. After training, retrieve epsilon with \`privacy_engine.get_epsilon(delta=1e-5)\`.
+
+Per-sample gradient computation (required for clipping) is expensive — Opacus uses **ghost clipping** to reduce memory overhead without materializing all per-sample gradients.
+
+## Epsilon Values in Practice
+
+| Epsilon range | Interpretation |
+|--------------|---------------|
+| epsilon < 1 | Strong privacy; significant utility loss |
+| 1 to 10 | Moderate privacy; acceptable for many ML tasks |
+| epsilon approximately 10 | Weak privacy; mainly protects against unsophisticated adversaries |
+| epsilon > 100 | Essentially no privacy guarantee |
+
+Real deployments: Apple uses epsilon approximately 2-8 per day for LDP telemetry; Google's RAPPOR uses epsilon = ln(3) approximately 1.1; Census Bureau 2020 Decennial Census used epsilon approximately 19.6 (high utility requirement).
+
+## Federated Learning Architecture
+
+**Federated Learning (FL)** (McMahan et al. 2016 — "Communication-Efficient Learning of Deep Networks from Decentralized Data") enables training across distributed data without centralizing raw data:
+
+1. **Central server** initializes global model weights
+2. **Round begins**: server selects a cohort of K clients and sends current model weights
+3. **Local training**: each client trains on its local data for E epochs with batch size B, producing updated local weights
+4. **Aggregation**: clients send weight updates (gradients or deltas) to server; server aggregates and updates global model
+5. Repeat for R rounds
+
+**FedAvg** (Federated Averaging) — the standard aggregation algorithm. Server computes weighted average of client updates, weighting by local dataset size. Non-IID (non-independent and identically distributed) data across clients degrades convergence.
+
+## Gradient Inversion Attacks
+
+Even gradient updates can leak training data. **Gradient inversion** (Zhu et al. 2019 — "Deep Leakage from Gradients") demonstrated that an honest-but-curious server can reconstruct individual training images from their gradients with high fidelity by solving an optimization problem to find inputs that produce matching gradients.
+
+**R-GAP** and **GradInversion** are refined attacks effective even on large batches. This motivates applying DP during FL.
+
+## Secure Aggregation with Cryptographic Protocols
+
+**Secure Aggregation** (Bonawitz et al. 2017) allows the server to compute the sum of client updates without seeing individual client updates:
+
+- Clients exchange **pairwise random seeds** (established via Diffie-Hellman key exchange) and add correlated noise that cancels out in the aggregate
+- Handles client dropout via **secret sharing** (Shamir's scheme)
+- Guarantees: the server learns only the aggregate, not individual updates
+
+Alternative cryptographic approaches: **Homomorphic Encryption** (server computes on encrypted gradients — high overhead) and **Multi-Party Computation (MPC)** (computationally expensive but strong guarantees).
+
+## Defenses: Gradient Clipping and Noise Injection
+
+Combining FL with DP provides the strongest protection against gradient inversion:
+
+1. **Gradient clipping** at the client — clip each client's update to L2 norm C before sending to the server. Limits the maximum information any single client update can reveal.
+2. **Gaussian noise injection** — each client (LDP) or the server (GDP) adds calibrated Gaussian noise to gradient updates.
+
+Additional defenses: **gradient compression** (quantization reduces information content), **subsampling** (only a fraction of clients participate per round — amplifies DP guarantees via privacy amplification by subsampling).
+
+## Real-World Deployments
+
+**Apple** — uses LDP for keyboard next-word prediction (QuickType), emoji usage statistics, and Safari browsing data. Each event contributes epsilon or less per day with a rolling budget.
+
+**Google Gboard** — uses FL (McMahan et al. 2016 architecture) for next-word prediction on Android. Federated training runs on-device during charging/idle; aggregation server uses Secure Aggregation. Applied DP-SGD for language model training (epsilon approximately 8.9).
+
+**Google Chrome** — RAPPOR (Randomized Aggregatable Privacy-Preserving Ordinal Response) for homepage URL telemetry using LDP.
+
+## Exam Cheat Sheet
+
+| Question | Answer |
+|----------|--------|
+| DP formal privacy parameter | epsilon — privacy budget |
+| Stronger privacy = | Smaller epsilon |
+| DP-SGD key operation | Per-example gradient clipping + Gaussian noise |
+| Federated averaging aggregation | Weighted average by local dataset size |
+| Gradient inversion countermeasure | DP (clip + noise) + Secure Aggregation |
+| Apple's DP deployment | Local DP for keyboard/emoji telemetry |
+| Tight DP accounting method | Moments Accountant / Renyi DP |
+| Opacus library by | Meta (PyTorch ecosystem) |
+
+Source: Dwork and Roth, "The Algorithmic Foundations of Differential Privacy" (2014); McMahan et al. "Communication-Efficient Learning of Deep Networks from Decentralized Data" (2016); Abadi et al. "Deep Learning with Differential Privacy" (2016); Google TensorFlow Privacy; Meta Opacus documentation.`,
+  },
+  {
+    id: 'ai-privacy-impact-assessment',
+    title: 'AI Privacy Impact Assessment (AI-PIA)',
+    category: 'AI Governance',
+    certTags: ['CAISP', 'SecAI'],
+    vocab: ['DPIA', 'GDPR Article 35', 'EU AI Act Article 10', 'k-Anonymity', 'l-Diversity', 't-Closeness', 'Membership Inference', 'Re-identification Risk', 'ISO/IEC 42001', 'NIST AI RMF MAP 2.3', 'Pseudonymisation', 'Article 73'],
+    content: `
+## GDPR Article 35: DPIA Requirements
+
+**Data Protection Impact Assessments (DPIAs)** are mandatory under GDPR Article 35 when processing is "likely to result in a high risk to the rights and freedoms of natural persons." For AI systems, DPIAs are required when:
+
+- **Systematic and extensive evaluation** of personal aspects based on automated processing, including profiling
+- **Large-scale processing** of special category data (health, biometric, ethnic origin, political opinions)
+- **Systematic monitoring** of publicly accessible areas at large scale
+- Novel technologies whose nature, scope, context and purpose are associated with high risk (Recital 91)
+
+The DPIA must include: (1) a description of the processing and its purposes; (2) an assessment of necessity and proportionality; (3) assessment of risks to data subjects; (4) measures to address those risks. Consult the DPA if high residual risk cannot be mitigated.
+
+## EU AI Act Article 10: Data Governance Obligations
+
+EU AI Act Article 10 imposes data governance requirements specifically for **high-risk AI systems** (Annex III: biometric identification, critical infrastructure, employment, education, law enforcement, etc.):
+
+- Training, validation, and testing data must be subject to **data governance practices** covering design choices, data collection processes, and examination for bias
+- Datasets must be **relevant, sufficiently representative**, and free from errors
+- **Special category data** may only be used when strictly necessary for bias detection/correction and must be subject to enhanced security measures
+- Article 10(5) allows temporary use of special category data for bias monitoring with appropriate safeguards
+
+High-risk AI providers must maintain technical documentation (Article 11) for 10 years post-market including data lineage, preprocessing steps, and dataset characteristics.
+
+## AI-PIA Scope and Data Flows
+
+An **AI Privacy Impact Assessment** extends the traditional DPIA to cover AI-specific risks:
+
+**Data flows to map:**
+- Training data sources (crowdsourced, scraped, purchased, internal) to preprocessing pipelines to model weights (which encode statistical patterns from training data)
+- Inference inputs from users to model to outputs (which may reflect training data characteristics)
+- Fine-tuning data to adapted model to deployment outputs
+- RAG pipeline: user query to retrieval from vector store to augmented prompt to model response
+
+**Re-identification risk assessment:**
+- Can model outputs be used to identify individuals in the training set? (Membership inference)
+- Does the model reproduce training data verbatim? (Memorization/extraction attacks)
+- Do model embeddings allow re-identification of individuals (face recognition, voice prints)?
+- Can aggregate outputs be reverse-engineered to infer individual records?
+
+**Profiling risks:**
+- Does the AI system create or update profiles of individuals (credit scoring, risk assessment, behavioral prediction)?
+- Are automated decisions made without human review? (Article 22 GDPR restrictions on solely automated decisions)
+
+## AI-PIA Methodology
+
+Follow this structured four-phase process (aligned with CNIL DPIA methodology):
+
+**Phase 1: Identify Data Processing Operations**
+- Document all personal data categories processed (training, inference, fine-tuning, logging)
+- Map purposes and legal bases for each processing activity
+- Identify data processors and sub-processors (cloud providers, labeling vendors, API providers)
+- Document data retention periods and deletion schedules
+
+**Phase 2: Assess Necessity and Proportionality**
+- Is personal data necessary for the AI system's purpose, or can synthetic/anonymized data suffice?
+- Is the scope of data processing proportionate to the benefit provided?
+- Are there less privacy-invasive alternatives to achieve the same goal?
+- Is there a valid legal basis for each processing activity?
+
+**Phase 3: Identify and Rate Risks**
+- For each risk: estimate **likelihood** (rare/possible/likely) and **severity** (negligible/limited/significant/maximum)
+- AI-specific risks: membership inference, model inversion, attribute inference, training data extraction, discriminatory outputs, de-anonymization via model outputs
+
+**Phase 4: Identify Mitigations**
+- Map mitigations to each identified risk
+- Reassess residual risk after mitigation
+- If residual risk remains high, consult the supervisory authority (DPA) before processing
+
+## Re-identification Risk Assessment Metrics
+
+Quantitative metrics for re-identification risk in AI systems:
+
+- **k-Anonymity** — each record is indistinguishable from at least k-1 other records on quasi-identifier attributes. Minimum k of 5 for low-risk; k of 11 for higher-risk datasets.
+- **l-Diversity** — each equivalence class (k-anonymity group) has at least l distinct values for sensitive attributes. Protects against homogeneity attacks.
+- **t-Closeness** — the distribution of sensitive attribute values in each equivalence class is within distance t of the overall distribution. Protects against skewness attacks.
+- **Membership Inference Attack (MIA) accuracy** — empirically measure what fraction of held-out vs. seen training examples can be correctly classified by an MIA model. AUC near 0.5 = good privacy; AUC > 0.7 = elevated memorization risk.
+- **Memorization score** — fraction of training examples for which the model assigns substantially higher likelihood than similar non-training examples.
+
+## Anonymisation Techniques
+
+When anonymising AI training data:
+
+**k-Anonymity** — generalize quasi-identifiers (age to age range, ZIP to county) and suppress rare combinations. Limitation: vulnerable to background knowledge attacks.
+
+**l-Diversity** — ensure diversity within equivalence classes; prevents inference of sensitive attributes even when the record group is identified.
+
+**t-Closeness** — maintain statistical distribution of sensitive attributes within groups; prevents attribute disclosure attacks.
+
+**Differential Privacy for anonymisation** — add calibrated noise to aggregate statistics used in anonymisation decisions. Provides formal guarantees unlike heuristic k/l/t methods.
+
+**Data minimisation and pseudonymisation** — replace direct identifiers with pseudonyms; maintain the mapping in a separate, access-controlled key store. Pseudonymised data is still personal data under GDPR.
+
+**Synthetic data generation** — use GANs or VAEs to generate statistically similar but non-personal synthetic training data. Evaluate re-identification risk of synthetic data before treating it as anonymous.
+
+## DPA Notification Thresholds and Incident Reporting
+
+**Article 33 GDPR** — notify the competent supervisory authority within **72 hours** of becoming aware of a personal data breach likely to result in risk to individuals. For AI systems, relevant breaches include:
+- Unauthorized model access enabling training data extraction
+- Membership inference attack revealing which individuals were in training data
+- Model inversion attack reconstructing biometric data
+
+**EU AI Act Article 73** — providers of high-risk AI systems must report **serious incidents** (death/serious injury, large-scale unintended impact on rights and freedoms, breach of obligations under Union law) to market surveillance authorities without undue delay, and within 15 days for serious incidents.
+
+**Article 34 GDPR** — communicate breaches directly to affected data subjects when there is high risk to their rights and freedoms (no encryption/pseudonymisation mitigation).
+
+## ISO/IEC 42001 Clause 8.3 and NIST AI RMF MAP 2.3
+
+**ISO/IEC 42001:2023 Clause 8.3** — AI system operation — requires organizations to assess AI system risks and opportunities during operation, including impacts on privacy. Aligns AI operational controls with ISO 27001 ISMS requirements. Privacy impact assessment processes should be documented as part of the AI management system.
+
+**NIST AI RMF MAP 2.3** — "AI system risks, as identified during the map function, are documented." Specifically calls out privacy risks as requiring documentation alongside performance, bias, and security risks. Privacy risk assessments should document data lineage, inference risks, and mitigations for each AI system in the AI risk register.
+
+## Exam Cheat Sheet
+
+| Question | Answer |
+|----------|--------|
+| GDPR article requiring DPIA for high-risk AI | Article 35 |
+| EU AI Act data governance article | Article 10 |
+| Minimum k-anonymity for low-risk | k of 5 or more |
+| 72-hour breach notification under | GDPR Article 33 |
+| EU AI Act serious incident reporting deadline | Without undue delay (15 days for serious) — Article 73 |
+| ISO standard for AI management systems | ISO/IEC 42001 |
+| NIST AI RMF function covering privacy risk documentation | MAP 2.3 |
+| Attack assessing if a record was in training data | Membership inference attack |
+
+Source: ICO DPIA guidance (ico.org.uk); CNIL DPIA guides (cnil.fr); EU AI Act official text; GDPR Articles 22, 33-35; ISO/IEC 42001:2023; NIST AI RMF (NIST.AI.100-1).`,
+  },
+  {
+    id: 'ai-model-cards-documentation',
+    title: 'Model Cards, System Cards, and AI-BOMs',
+    category: 'AI Governance',
+    certTags: ['CAISP', 'SecAI', 'SC-500', 'GIAC-GOAA'],
+    vocab: ['Model Card', 'System Card', 'AI-BOM', 'SBOM', 'EU AI Act Article 11', 'Intended Use', 'Quantitative Analyses', 'NIST AI RMF MAP 4.1', 'MAP 5.1', 'Hugging Face YAML', 'Training Data Lineage', 'Red Team Findings'],
+    content: `
+## Model Cards: Mitchell et al. 2019 Format
+
+**Model Cards** (Mitchell et al. 2019 — "Model Cards for Model Reporting", Google) are structured documents accompanying trained ML models that enable transparency about model behavior. The canonical nine-section format:
+
+1. **Model Details** — developer(s), model date, version, type (architecture), training methodology, license, contact information
+2. **Intended Use** — primary intended uses, primary intended users, out-of-scope uses explicitly stated
+3. **Factors** — relevant factors for model evaluation: demographic groups, instruments, environments; disaggregation plan (which subgroups will be analyzed)
+4. **Metrics** — performance measures selected and why (accuracy, F1, AUC, FPR/FNR); decision thresholds; variation approaches
+5. **Evaluation Data** — datasets used for evaluation, why chosen, preprocessing applied
+6. **Training Data** — description of training data (may reference a Data Card); cannot always be fully disclosed
+7. **Quantitative Analyses** — unitary results (aggregate), intersectional results (disaggregated by factor combinations)
+8. **Ethical Considerations** — sensitive data used, risks of harm, mitigations, use cases where caution is advised
+9. **Caveats and Recommendations** — limitations, conditions under which performance degrades, recommended use conditions
+
+Model cards are now published by major AI labs (Google, Hugging Face, Cohere) and required by some enterprise procurement policies and government AI guidance.
+
+## System Cards: Meta's Format for Deployed AI Products
+
+**System Cards** (Meta AI format, introduced with LLaMA 2 in 2023) document the deployed AI product or system rather than the underlying model in isolation. They describe the full deployment context:
+
+**Key sections:**
+- **Deployment context** — the application, user population, use case environment, integration with other systems
+- **Model(s) used** — references to constituent model cards; describes any fine-tuning, RLHF, or post-processing
+- **Safety measures** — classifiers, filters, blocklists, rate limiting, human review workflows applied in the deployed system
+- **Failure modes** — documented failure cases, edge cases, and undesirable behaviors observed during development and red teaming
+- **Red team findings** — summary of adversarial testing results (jailbreak success rates, discovered vulnerabilities, prompt injection vectors)
+- **Ongoing monitoring** — how the live system is monitored post-deployment for emerging harms, user feedback loops, model refresh schedule
+
+System cards acknowledge that model behavior in a deployed product differs from the base model: a well-aligned base model can behave unsafely in a poorly designed application context, and vice versa.
+
+## AI-BOM: AI Bill of Materials
+
+An **AI-BOM** (AI Bill of Materials) documents the full supply chain and composition of an AI system, analogous to a Software BOM (SBOM) in traditional software security. Key components:
+
+| Component | What to Document |
+|-----------|-----------------|
+| **Base model** | Model ID, version, provider, architecture, license, known vulnerabilities |
+| **Fine-tuned weights** | Fine-tuning dataset, methodology (LoRA, full fine-tuning, RLHF), alignment techniques, delta weights location |
+| **Training data lineage** | Source datasets, collection dates, licenses, consent mechanisms, filtering applied |
+| **Preprocessing pipeline** | Tokenizer version, normalization steps, deduplication method, data augmentation |
+| **Inference framework** | vLLM, TensorRT-LLM, ONNX Runtime version; serving infrastructure; quantization method |
+| **Third-party plugins** | Tools/plugins accessible at inference (code interpreters, web search, APIs); versions; permissions granted |
+| **System prompt** | Hash/version of system prompt (may be proprietary); changes tracked in version control |
+
+AI-BOMs are used for supply chain security (identifying compromised base models, malicious fine-tuning datasets), license compliance (tracking copyleft data provenance), and incident response (isolating which component introduced a vulnerability).
+
+## Comparison Table
+
+| Attribute | Model Card | System Card | AI-BOM |
+|-----------|-----------|-------------|--------|
+| **Focus** | Model performance and limitations | Deployed product safety | Supply chain composition |
+| **Audience** | Practitioners, downstream users | End users, policy, safety teams | Security teams, auditors |
+| **Key content** | Metrics, bias analysis, intended use | Red team findings, safety mitigations | Component versions, data lineage |
+| **Analogy** | Drug label / nutrition facts | Product safety datasheet | Software SBOM |
+| **Frequency** | Per model release | Per product deployment | Per deployment (living document) |
+
+## EU AI Act Technical Documentation Requirements
+
+For **high-risk AI systems** (Annex III), the EU AI Act Articles 11-15 require comprehensive technical documentation:
+
+**Article 11** — Technical documentation must be drawn up before the system is placed on the market. Minimum content (Annex IV): general description, capabilities and limitations, intended purpose, risk management process, datasets used (data governance), monitoring and logging mechanisms, validation and testing procedures.
+
+**Article 12** — Record-keeping: high-risk AI systems must automatically log events throughout their lifetime with sufficient capacity to trace back decisions ("traceability"). Logs must be retained per applicable sector regulations.
+
+**Article 13** — Transparency: providers must ensure outputs are interpretable by deployers. Instructions for use must document the system's purpose, performance levels, human oversight measures.
+
+**Article 14** — Human oversight: design must enable authorized persons to understand, monitor, and override the system. Document override procedures and escalation paths.
+
+**Article 15** — Accuracy, robustness, and cybersecurity: document accuracy metrics on intended user groups, robustness testing results, adversarial testing, and cybersecurity measures aligned with EN IEC 62443 or equivalent.
+
+Technical documentation must be maintained and updated throughout the system's lifecycle, and provided to market surveillance authorities on request.
+
+## NIST AI RMF Subcategories
+
+**MAP 4.1** — "Approaches for mapping AI risks are in place, followed, and documented." Model cards, system cards, and AI-BOMs are key artifacts for this mapping — they document known risks, performance bounds, and supply chain dependencies.
+
+**MAP 5.1** — "Likelihood and magnitude of each identified impact based on impacts to end users, affected groups, and society are characterized and documented." Model card quantitative analysis sections (disaggregated metrics, intersectional analysis) directly fulfill MAP 5.1 documentation requirements.
+
+**GOVERN 1.7** — Processes for decommissioning and phase-out include documentation of AI system composition (AI-BOM) to understand downstream dependencies before retirement.
+
+**MEASURE 2.5** — Evaluations of AI model performance are disaggregated by identified factors — directly maps to model card "Quantitative Analyses" sections with intersectional breakdowns.
+
+## Hugging Face Model Card YAML Format
+
+Hugging Face Hub uses a **YAML front matter** schema for machine-readable model cards (saved as README.md in the model repository). The structured YAML front matter includes fields for \`language\`, \`license\`, \`tags\`, \`datasets\`, \`metrics\`, and a \`model-index\` section that links to evaluation results on standard benchmarks, enabling programmatic comparison across models. The \`license\` field is used for supply chain and compliance checks.
+
+Example fields in the YAML front matter:
+- \`language\` — list of supported language codes (e.g., en, fr)
+- \`license\` — SPDX license identifier (e.g., apache-2.0, mit)
+- \`datasets\` — list of dataset names used for training
+- \`model-index\` — structured benchmark results with task type, dataset name, and metric values
+
+## Exam Cheat Sheet
+
+| Question | Answer |
+|----------|--------|
+| Model card format origin | Mitchell et al. 2019 (Google) |
+| System card key addition vs. model card | Red team findings + deployment safety mitigations |
+| AI-BOM analogous to | Software SBOM (SBOM / CycloneDX / SPDX) |
+| EU AI Act technical documentation article | Article 11 (Annex IV content) |
+| EU AI Act human oversight requirement | Article 14 |
+| NIST AI RMF for documenting identified impacts | MAP 5.1 |
+| Hugging Face model card format | YAML front matter in README.md |
+| Model card disaggregated analysis section | Quantitative Analyses (intersectional results) |
+
+Source: Mitchell et al. "Model Cards for Model Reporting" (2019, Google); Meta LLaMA 2 System Card (2023); EU AI Act Articles 11-15, Annex IV; NIST AI RMF (NIST.AI.100-1); Hugging Face model card documentation (huggingface.co/docs).`,
+  },
 ];

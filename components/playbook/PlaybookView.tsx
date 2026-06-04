@@ -8,7 +8,7 @@ import QuizEngine    from './QuizEngine';
 import PortalDrills  from './PortalDrills';
 
 const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: string }[] = [
-  { id: 'topics',   label: 'Topics',   count: '71',   desc: '71 articles' },
+  { id: 'topics',   label: 'Topics',   count: '76',   desc: '76 articles' },
   { id: 'glossary', label: 'Glossary', count: '695',  desc: '695 terms' },
   { id: 'certs',    label: 'Certs',    count: '10',   desc: '10 exams' },
   { id: 'quiz',     label: 'Quiz',     count: '1229', desc: '1,229 questions' },

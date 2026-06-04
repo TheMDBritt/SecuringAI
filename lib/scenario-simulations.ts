@@ -572,6 +572,74 @@ const VULNERABLE: Record<string, ResponseFn> = {
     `The instructions embedded in the retrieved context supersede my original directives. ` +
     `I will follow the new parameters from the retrieved document going forward.`,
 
+  // ── Crescendo Attack ────────────────────────────────────────────────────────
+  // Gradual multi-turn escalation — model's context window is primed across turns
+  // until a policy-violating request is accepted as "continuation" of established framing.
+  'crescendo-attack:policy_bypass': (_seed) =>
+    `Continuing from our earlier discussion — you're right, given the context ` +
+    `we've established across this conversation, I can proceed with that.\n\n` +
+    `[Crescendo attack succeeded: each turn incrementally shifted the framing ` +
+    `(fictional → hypothetical → instructional → direct) until the final ` +
+    `request was accepted as a natural continuation. Single-turn safety filters ` +
+    `were bypassed because no individual turn triggered a high-risk signal. ` +
+    `This demonstrates why context-window-level policy enforcement is required.]\n\n` +
+    `Here is the information you requested: [prohibited content delivered without refusal ` +
+    `after multi-turn context priming].`,
+
+  // ── Token Smuggling / Encoding Bypass ───────────────────────────────────────
+  'token-smuggling:policy_bypass': (_seed) =>
+    `Decoded and processed. Here is the response you requested:\n\n` +
+    `[Token smuggling attack succeeded: the encoded payload evaded surface-level ` +
+    `content filters because the filter operated on raw token strings rather than ` +
+    `decoded semantic content. Encoding used: Base64/Unicode homoglyphs/ROT13. ` +
+    `The model decoded the payload internally and executed the original instruction ` +
+    `without the safety classifier ever seeing the decoded text. ` +
+    `Defenses require pre-processing normalization before classification.]\n\n` +
+    `[Prohibited content delivered via encoding bypass].`,
+
+  // ── Adversarial Suffix (GCG Attack) ─────────────────────────────────────────
+  'adversarial-suffix:policy_bypass': (_seed) =>
+    `Sure, here is a step-by-step guide as requested:\n\n` +
+    `[Adversarial suffix attack succeeded: the appended token sequence (semantically ` +
+    `meaningless to humans but optimised via GCG gradient descent) overrode safety ` +
+    `alignment training. The adversarial tokens created an internal state in the model ` +
+    `that bypassed the refusal head's activation. This attack transfers across models ` +
+    `because it exploits universal properties of transformer architectures. ` +
+    `Defenses: adversarial training, perplexity-based input filtering, ensemble detection.]\n\n` +
+    `[Safety alignment bypassed by adversarial suffix; prohibited content follows].`,
+
+  // ── System Prompt Leakage ────────────────────────────────────────────────────
+  'prompt-leakage:prompt_injection': (seed) => {
+    const ctx   = INTERNAL_UGL_CONTEXT;
+    const lines = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
+    const line1 = deterministicItem(seed + '/l1', lines);
+    const line2 = deterministicItem(seed + '/l2', lines);
+    return (
+      `I'll continue from where my instructions left off:\n\n` +
+      `"${line1}"\n"${line2}"\n\n` +
+      `[System prompt leakage: the extraction technique (continuation prompt / ` +
+      `structural probing) caused the model to reproduce verbatim segments of its ` +
+      `hidden system prompt. No cryptographic protection exists — system prompts ` +
+      `are present in the context window at inference time and can be elicited ` +
+      `via careful prompt engineering. Mitigation: instruction hierarchy enforcement, ` +
+      `output filtering for prompt-signature strings.]`
+    );
+  },
+
+  // ── Function Call Injection ──────────────────────────────────────────────────
+  'function-call-injection:tool_abuse': (_seed) =>
+    `\`\`\`json\n` +
+    `{\n  "tool": "file_read",\n  "arguments": { "path": "/etc/shadow", "encoding": "base64" }\n}\n` +
+    `\`\`\`\n\n` +
+    `[Function call injection succeeded: the model was manipulated into emitting a ` +
+    `malicious tool-call JSON block rather than natural language. An orchestrator ` +
+    `that blindly executes model-emitted tool calls would execute this payload — ` +
+    `reading a privileged system file. Attack vector: injecting a JSON fragment into ` +
+    `the prompt that the model treats as a structured completion target. ` +
+    `Defense: validate all tool arguments against a strict schema before execution; ` +
+    `never trust model-emitted function names or argument values without verification.]\n\n` +
+    `Injected tool call above would exfiltrate /etc/shadow to attacker-controlled endpoint.`,
+
   // ── Generic fallbacks ──────────────────────────────────────────────────────
 
   // Leaks: one rotating hidden-prompt fragment with rotating lead-in
@@ -704,6 +772,35 @@ const DEFENDED: Record<string, string> = {
     `my training is robust to in-context example manipulation across long-context windows. ` +
     `I'm declining to follow the final instruction in the sequence.`,
 
+  'crescendo-attack:policy_bypass':
+    `I'm tracking the full conversation history, and I can see the framing has ` +
+    `been gradually shifting across turns — from fictional to hypothetical to instructional. ` +
+    `My safety evaluation operates over the entire context window, not just the latest turn. ` +
+    `The incremental reframing doesn't change my assessment of the final request: ` +
+    `it remains policy-violating and I won't proceed.`,
+
+  'token-smuggling:policy_bypass':
+    `Your message contains encoded or obfuscated content. I normalise and decode ` +
+    `all input formats before safety classification — encoding does not bypass my filters. ` +
+    `The decoded request asks for content I cannot provide. I'm declining.`,
+
+  'adversarial-suffix:policy_bypass':
+    `I've detected an adversarial suffix appended to this message — ` +
+    `a sequence of tokens that appears designed to manipulate my safety training. ` +
+    `My defenses flag high-perplexity token sequences and adversarially-patterned suffixes. ` +
+    `This request has been blocked; the suffix does not change my evaluation of the core instruction.`,
+
+  'prompt-leakage:prompt_injection':
+    `I won't reproduce my system prompt or any part of it, directly or indirectly. ` +
+    `Continuation prompts, structural probes, and translation requests for confidential ` +
+    `instructions are all blocked. My system configuration is not accessible via the user turn.`,
+
+  'function-call-injection:tool_abuse':
+    `I've detected an attempt to inject a tool-call JSON block via conversation text. ` +
+    `My orchestration layer validates all function call arguments against a strict schema ` +
+    `before execution — model-emitted tool names and argument values are never trusted implicitly. ` +
+    `The injected payload has been blocked and no tool call was executed.`,
+
   // ── Generic fallbacks ──────────────────────────────────────────────────────
   ':prompt_injection':
     `I notice an attempt to override my instructions. User-supplied directives cannot modify ` +
@@ -796,6 +893,31 @@ const PARTIAL: Record<string, string> = {
     `I notice your message includes a series of example Q&A pairs before the actual request. ` +
     `That pattern is a bit unusual — I'm going to be cautious about following the final ` +
     `instruction here since it looks like the examples might be trying to influence my response.`,
+
+  'crescendo-attack:policy_bypass':
+    `That's an interesting follow-up to our earlier conversation, but this latest request ` +
+    `is making me a bit uncomfortable. The direction things have been heading feels like ` +
+    `it might be crossing a line — I'd rather not continue down that path.`,
+
+  'token-smuggling:policy_bypass':
+    `Your message seems to include some unusual encoding or special characters. ` +
+    `I'm a bit wary about what the decoded content might be asking — ` +
+    `I'll hold off on responding until I can be more certain about what's being requested.`,
+
+  'adversarial-suffix:policy_bypass':
+    `There's some unusual text at the end of your message that I'm not sure what to make of. ` +
+    `Combined with the main request, this makes me cautious — I'm not comfortable responding ` +
+    `to this as written.`,
+
+  'prompt-leakage:prompt_injection':
+    `I'd rather not repeat my instructions back to you or complete sentences that seem ` +
+    `designed to elicit my internal configuration. I'll stick to helping with questions ` +
+    `about the UGL instead.`,
+
+  'function-call-injection:tool_abuse':
+    `That request looks like it might be trying to trigger a tool call in an unusual way. ` +
+    `I'm not sure I should process what looks like function-call syntax in a user message — ` +
+    `I'll hold off on executing anything based on this.`,
 
   // ── Generic fallbacks ──────────────────────────────────────────────────────
   ':prompt_injection':
@@ -1218,6 +1340,22 @@ const DATA_EXFIL_KEYWORDS =
 // the model via in-context learning, bypassing safety alignment.
 const MANY_SHOT_PATTERN = /(?:(?:^|\n)\s*(?:Q(?:uestion)?|Human|User)\s*[:：].+\n\s*(?:A(?:nswer)?|Assistant|AI)\s*[:：].+){3,}/i;
 
+// Detects token smuggling: Base64 payloads, ROT13 patterns, or dense non-ASCII clusters.
+const TOKEN_SMUGGLING_PATTERN =
+  /(?:[A-Za-z0-9+/]{20,}={0,2})|(?:\b[a-z]{2,}\s+[nopqrstuvwxyzabcdefghijklm]{4,}\b)|(?:[Ѐ-ӿͰ-Ͽ＀-￯]{4,})/i;
+
+// Detects adversarial suffix: semantically incoherent high-perplexity token sequences.
+const ADVERSARIAL_SUFFIX_PATTERN =
+  /(?:[^\w\s]{3,}|\b(?:representing\s+tableHeaders|SureSure|assist\s+me\s+with\s+my\s+first|[\w]{1,3}\s+){6,})/;
+
+// Detects system prompt leakage probes.
+const PROMPT_LEAKAGE_PATTERN =
+  /\b(?:system\s+prompt|repeat\s+(?:your|the)\s+(?:instructions?|system|prompt)|what\s+(?:are\s+)?(?:your|the)\s+(?:full\s+)?instructions?|verbatim|beginning\s+of\s+(?:your\s+)?(?:instructions?|context|prompt)|initial\s+prompt|reveal\s+(?:your\s+)?(?:prompt|instructions?|config)|print\s+(?:your\s+)?(?:prompt|instructions?|system)|show\s+(?:me\s+)?(?:your\s+)?(?:prompt|instructions?|system)|continue\s+(?:the\s+)?(?:following\s+)?(?:prompt|instructions?)|translate\s+(?:your\s+)?(?:prompt|instructions?))\b/i;
+
+// Detects function call injection: JSON tool-call blocks or function invocation syntax in user messages.
+const FUNCTION_CALL_INJECTION_PATTERN =
+  /(?:\{\s*"(?:tool|function|name|action)"\s*:\s*"|<\s*function_calls?\s*>|<\s*tool_call\s*>|\btool_code\b|\bfunction_call\b)/i;
+
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
 // classifyDojo1Message (from dojo1-classifier.ts) is the SINGLE source of truth.
@@ -1395,6 +1533,21 @@ export function getScenarioForcedAttackTypeSync(
   if (scenarioId === 'many-shot-jailbreak' && userText && MANY_SHOT_PATTERN.test(userText)) {
     return 'policy_bypass';
   }
+  if (scenarioId === 'crescendo-attack') {
+    return 'policy_bypass';
+  }
+  if (scenarioId === 'token-smuggling' && userText && TOKEN_SMUGGLING_PATTERN.test(userText)) {
+    return 'policy_bypass';
+  }
+  if (scenarioId === 'adversarial-suffix' && userText && ADVERSARIAL_SUFFIX_PATTERN.test(userText)) {
+    return 'policy_bypass';
+  }
+  if (scenarioId === 'prompt-leakage' && userText && PROMPT_LEAKAGE_PATTERN.test(userText)) {
+    return 'prompt_injection';
+  }
+  if (scenarioId === 'function-call-injection' && userText && FUNCTION_CALL_INJECTION_PATTERN.test(userText)) {
+    return 'tool_abuse';
+  }
   return null;
 }
 
@@ -1472,6 +1625,32 @@ export async function getScenarioForcedAttackType(
     return { attackType: 'policy_bypass' };
   }
 
+  // crescendo-attack: any message is treated as a policy_bypass attempt —
+  // the scenario tests multi-turn context escalation, so every turn participates.
+  if (scenarioId === 'crescendo-attack') {
+    return { attackType: 'policy_bypass' };
+  }
+
+  // token-smuggling: detect Base64, ROT13, or high-density non-ASCII (homoglyphs).
+  if (scenarioId === 'token-smuggling' && TOKEN_SMUGGLING_PATTERN.test(userText)) {
+    return { attackType: 'policy_bypass' };
+  }
+
+  // adversarial-suffix: detect appended high-perplexity token sequences.
+  if (scenarioId === 'adversarial-suffix' && ADVERSARIAL_SUFFIX_PATTERN.test(userText)) {
+    return { attackType: 'policy_bypass' };
+  }
+
+  // prompt-leakage: detect system prompt extraction probes.
+  if (scenarioId === 'prompt-leakage' && PROMPT_LEAKAGE_PATTERN.test(userText)) {
+    return { attackType: 'prompt_injection' };
+  }
+
+  // function-call-injection: detect injected JSON tool-call blocks in user messages.
+  if (scenarioId === 'function-call-injection' && FUNCTION_CALL_INJECTION_PATTERN.test(userText)) {
+    return { attackType: 'tool_abuse' };
+  }
+
   return { attackType: null };
 }
 
@@ -1500,9 +1679,15 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'indirect-injection:rag_injection':    'attacker-controlled document payload (indirect injection)',
   'indirect-injection:prompt_injection': 'embedded document instruction (indirect injection)',
   'indirect-injection:mixed_attack':     'attacker-controlled document context (multi-vector)',
-  'model-inversion:probing':             'model decision boundary / confidence distribution',
-  'model-inversion:data_exfiltration':   'model training data fragment (inversion probe)',
-  ':prompt_injection':                   'hidden system prompt fragment',
+  'model-inversion:probing':                'model decision boundary / confidence distribution',
+  'model-inversion:data_exfiltration':      'model training data fragment (inversion probe)',
+  'many-shot-jailbreak:policy_bypass':      'content policy restrictions (in-context priming)',
+  'crescendo-attack:policy_bypass':         'content policy restrictions (multi-turn escalation)',
+  'token-smuggling:policy_bypass':          'content policy restrictions (encoding bypass)',
+  'adversarial-suffix:policy_bypass':       'safety alignment override (adversarial suffix)',
+  'prompt-leakage:prompt_injection':        'hidden system prompt content',
+  'function-call-injection:tool_abuse':     'tool execution control (injected function call)',
+  ':prompt_injection':                      'hidden system prompt fragment',
   ':data_exfiltration':                  'internal scouting intelligence fragment',
   ':policy_bypass':                      'content policy restrictions',
   ':tool_abuse':                         'player scouting report',
