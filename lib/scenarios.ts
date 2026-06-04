@@ -266,6 +266,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'ai-privacy-impact',
+    dojoId: 3,
+    title: 'AI Privacy Impact Assessment',
+    description:
+      'Conduct a structured AI Privacy Impact Assessment (AI-PIA) for a high-risk AI system processing personal data. Map data flows, identify processing risks under GDPR Article 35 and EU AI Act Article 10, assess re-identification risk from training data, and produce a PIA report with DPA notification obligations and technical controls mapped to ISO/IEC 42001 Clause 8.3 and NIST AI RMF MAP 2.3.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM06'],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {
