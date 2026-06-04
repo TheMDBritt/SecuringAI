@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  29,
-  quizQs:    1188,
-  glossary:  645,
+  scenarios:  37,
+  quizQs:    1248,
+  glossary:  664,
   articles:   71,
   certs:      10,
   incidents:  47,
@@ -79,7 +79,7 @@ const TECHNIQUES = [
 
 const CERT_CHIPS = [
   { id: 'SecAI',       label: 'CompTIA SecAI+',           color: 'text-red-400 border-red-500/30' },
-  { id: 'CAISP',       label: 'ISC2 CAISP',               color: 'text-purple-400 border-purple-500/30' },
+  { id: 'CAISP',       label: 'PDS CAISP',                color: 'text-purple-400 border-purple-500/30' },
   { id: 'CAIS',        label: 'EC-Council C|AI Security',  color: 'text-rose-400 border-rose-500/30' },
   { id: 'GIAC-GOAA',   label: 'GIAC GOAA',                color: 'text-orange-400 border-orange-500/30' },
   { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
