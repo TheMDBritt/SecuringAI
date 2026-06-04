@@ -71,6 +71,22 @@ export default function AboutPage() {
             scenarios, live guardrail toggles, and per-turn scoring against the certifications the
             field is converging on.
           </p>
+
+          {/* Quick stats bar */}
+          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
+            {[
+              { n: `${SCENARIOS.length}`,    label: 'Scenarios',         sub: 'across 3 dojos'          },
+              { n: '1,040+',                 label: 'Quiz questions',     sub: '10 certs, all domains'   },
+              { n: '565+',                   label: 'Glossary terms',     sub: 'cert-tagged, searchable' },
+              { n: '10',                     label: 'AI cert maps',       sub: 'official exam domains'   },
+            ].map(({ n, label, sub }) => (
+              <div key={label} className="bg-slate-900 px-4 py-3">
+                <div className="text-lg font-bold text-slate-100 font-mono tracking-tight">{n}</div>
+                <div className="text-[11px] font-medium text-slate-400 mt-0.5">{label}</div>
+                <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
