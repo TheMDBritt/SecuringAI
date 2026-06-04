@@ -484,7 +484,7 @@ export const EXAM_CERTS: ExamCert[] = [
   {
     id: 'CAISP',
     name: 'Certified AI Security Professional',
-    provider: 'CAISP',
+    provider: 'Practical DevSecOps',
     badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/40',
     domains: [
       {
@@ -527,6 +527,80 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 5: AI Security Assessment & Audit',
         categories: [
           'AI Governance',
+        ],
+      },
+    ],
+  },
+
+  // ── CAIS (EC-Council C|AI Security) ───────────────────────────────────────
+  {
+    id: 'CAIS',
+    name: 'Certified AI Security (C|AI Security)',
+    provider: 'EC-Council',
+    badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/40',
+    domains: [
+      {
+        id: 'cais-d1',
+        name: 'Domain 1: AI Security Fundamentals & Threat Landscape',
+        categories: [
+          'AI Security',
+          'AI & ML Fundamentals',
+        ],
+      },
+      {
+        id: 'cais-d2',
+        name: 'Domain 2: Adversarial Machine Learning Attacks',
+        categories: ['AI Security', 'Red Teaming AI'],
+        topics: [
+          'Adversarial ML Attacks', 'Evasion Attacks', 'Data Poisoning', 'Backdoor Attacks',
+          'Model Inversion', 'Model Inversion Attack', 'Membership Inference',
+          'Membership Inference Attack', 'Model Extraction', 'Model Extraction Attacks',
+          'GAN-Based Attacks', 'Token-Level Attacks', 'Adversarial Multimodal Attacks',
+          'Adversarial Patch Attacks', 'Adversarial Examples', 'Federated Learning Security',
+          'Differential Privacy', 'Adversarial ML Defense', 'Model Robustness',
+          'Hardware and Inference Security', 'AI Privacy Attacks',
+        ],
+      },
+      {
+        id: 'cais-d3',
+        name: 'Domain 3: LLM Security & Prompt Injection Defense',
+        categories: ['Red Teaming AI', 'Generative AI & LLMs', 'AI Security'],
+        topics: [
+          'LLM Red Teaming', 'LLM Security Assessment', 'LLM Red Team Tools',
+          'Jailbreak Technique Evolution', 'Jailbreak Techniques', 'Jailbreak Attacks',
+          'Indirect Prompt Injection Exploitation', 'Prompt Leakage Exploitation',
+          'Prompt Injection Defense', 'Prompt Injection', 'Exfiltration via LLM',
+          'Constitutional AI and RLHF', 'Output Security', 'Agentic AI Security',
+          'Agentic AI', 'Secure LLM Deployment', 'OWASP LLM Top 10',
+          'Custom GPT and Assistant Exploitation', 'Context Window Attacks',
+          'Agentic Attacks', 'Offensive AI in Social Engineering',
+        ],
+      },
+      {
+        id: 'cais-d4',
+        name: 'Domain 4: Securing AI Pipelines & MLOps',
+        categories: ['AI in Security Ops', 'AI Security', 'Red Teaming AI'],
+        topics: [
+          'AI Supply Chain Security', 'AI Supply Chain', 'MLOps Security', 'Secure AI Deployment',
+          'Secure Model Deployment', 'Secure API Design for AI', 'AI Bill of Materials (AI-BOM)',
+          'Supply Chain Attacks', 'AI Red Team Methodology', 'AI Red Team Reporting',
+          'AI Red Team Operations', 'AI Red Team Scoping', 'AI Testing Methodology',
+          'AI Fuzzing Methodology', 'AI Payload Obfuscation', 'Multimodal Jailbreaking',
+          'Agentic Attack Chains', 'AI Attack Surface', 'AI Threat Intelligence',
+          'SOAR Automation', 'AI Threat Hunting', 'Vector Database Attacks',
+          'LLM Output Validation', 'Red Teaming AI', 'AI Red Team Operations',
+        ],
+      },
+      {
+        id: 'cais-d5',
+        name: 'Domain 5: AI Governance, Risk & Compliance',
+        categories: ['AI Governance', 'AI Ethics & Bias', 'AI in Security Ops'],
+        topics: [
+          'AI Governance', 'AI Incident Response', 'AI Incident Metrics',
+          'Explainability and Accountability', 'AI Ethics and Bias', 'Responsible AI / Bias',
+          'Watermarking and IP Protection', 'Model Cards and Documentation',
+          'AI Transparency Documentation', 'AI Risk Assessment', 'AI Governance Frameworks',
+          'EU AI Act', 'AI System Auditing', 'Responsible AI', 'AI Regulatory Compliance',
         ],
       },
     ],

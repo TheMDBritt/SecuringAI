@@ -719,9 +719,10 @@ function ResultScreen({
 
 // ─── Summary Screen ───────────────────────────────────────────────────────────
 function SummaryScreen({
-  results, onRestart, onGenerateMore,
+  results, settings, onRestart, onGenerateMore,
 }: {
   results:        QuizResult[];
+  settings:       QuizSettings | null;
   onRestart:      () => void;
   onGenerateMore: (category: string) => void;
 }) {
@@ -734,6 +735,25 @@ function SummaryScreen({
     ? Math.round(answered.reduce((s, r) => s + r.timeTaken, 0) / answered.length / 1000)
     : 0;
 
+  const cert = settings?.selectedCert ?? null;
+  const selectedDomainIds = settings?.selectedDomainIds ? new Set(settings.selectedDomainIds) : null;
+  const selectedDomains = cert && selectedDomainIds
+    ? cert.domains.filter((d) => selectedDomainIds.has(d.id))
+    : [];
+
+  // Domain-level breakdown (when a cert is selected)
+  const byDomain = useMemo(() => {
+    if (!cert || selectedDomains.length === 0) return null;
+    return selectedDomains.map((domain) => {
+      const domainResults = results.filter((r) =>
+        questionMatchesDomain({ category: r.question.category, topic: r.question.topic }, domain),
+      );
+      const domCorrect = domainResults.filter((r) => r.correct).length;
+      return { domain, total: domainResults.length, correct: domCorrect };
+    }).filter((d) => d.total > 0);
+  }, [cert, selectedDomains, results]);
+
+  // Category breakdown (fallback when no cert selected)
   const byCategory = useMemo(() => {
     const map: Record<string, { correct: number; total: number }> = {};
     results.forEach((r) => {
@@ -746,56 +766,120 @@ function SummaryScreen({
   }, [results]);
 
   const scoreColor = pct >= 80 ? 'text-emerald-400' : pct >= 60 ? 'text-amber-400' : 'text-red-400';
+  const scoreBg    = pct >= 80 ? 'border-emerald-500/20 bg-emerald-500/5' : pct >= 60 ? 'border-amber-500/20 bg-amber-500/5' : 'border-red-500/20 bg-red-500/5';
+  const passThreshold = 72; // Most AI certs require ~72%+
+  const passed = pct >= passThreshold;
 
   return (
-    <div className="overflow-y-auto h-full px-6 py-5">
+    <div className="overflow-y-auto h-full px-5 py-5">
       {/* Score banner */}
-      <div className="text-center mb-6">
-        <div className={`text-5xl font-bold font-mono mb-1 ${scoreColor}`}>{pct}%</div>
-        <p className="text-slate-400 text-sm">
-          {correct} of {total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s per question
-        </p>
-        <p className={`text-sm font-semibold mt-1 ${scoreColor}`}>
-          {pct >= 80 ? 'Excellent work!' : pct >= 60 ? 'Good effort — keep studying!' : 'Keep at it — review the weak areas below.'}
-        </p>
+      <div className={`rounded-lg border px-5 py-4 mb-5 ${scoreBg}`}>
+        <div className="flex items-end justify-between mb-2">
+          <div>
+            <div className={`text-4xl font-bold font-mono ${scoreColor}`}>{pct}<span className="text-2xl">%</span></div>
+            <p className="text-[11px] text-slate-500 mt-0.5 font-mono">
+              {correct}/{total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s
+            </p>
+          </div>
+          {cert && (
+            <div className="text-right">
+              <div className={['text-[10px] font-mono px-2 py-0.5 rounded border', cert.badgeClass].join(' ')}>
+                {cert.id}
+              </div>
+              <div className={`mt-1 text-[11px] font-mono font-semibold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+                {passed ? '↑ passing range' : '↓ below passing'}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+          <div className={`h-full rounded-full transition-all ${pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500'}`}
+               style={{ width: `${pct}%` }} />
+        </div>
+        {cert && (
+          <div className="mt-1.5 flex items-center gap-1">
+            <div className="h-px flex-1 bg-slate-700" />
+            <span className="text-[9px] font-mono text-slate-600">passing threshold ~{passThreshold}%</span>
+          </div>
+        )}
       </div>
 
-      {/* Category breakdown */}
-      <div className="mb-6">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-3">Category Breakdown</p>
-        <div className="space-y-2">
-          {byCategory.map(([cat, stats]) => {
-            const catPct   = Math.round((stats.correct / stats.total) * 100);
-            const barColor = catPct >= 80 ? 'bg-emerald-500' : catPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
-            return (
-              <div key={cat}>
-                <div className="flex items-center justify-between mb-0.5">
-                  <span className="text-[11px] text-slate-400 truncate max-w-[200px]">{cat}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono text-slate-600">{stats.correct}/{stats.total}</span>
-                    {catPct < 70 && (
-                      <button
-                        onClick={() => onGenerateMore(cat)}
-                        className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
-                      >
-                        more →
-                      </button>
-                    )}
+      {/* Domain breakdown — shown when cert is selected */}
+      {byDomain && byDomain.length > 0 && (
+        <div className="mb-5">
+          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
+          <div className="space-y-2.5">
+            {byDomain.map(({ domain, total: dTotal, correct: dCorrect }) => {
+              const dPct     = dTotal > 0 ? Math.round((dCorrect / dTotal) * 100) : 0;
+              const barColor = dPct >= 80 ? 'bg-emerald-500' : dPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
+              const shortName = domain.name.replace(/^Domain \d+:\s*/, '');
+              return (
+                <div key={domain.id}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[11px] text-slate-400 leading-snug flex-1 mr-2">{shortName}</span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono text-slate-600">{dCorrect}/{dTotal}</span>
+                      <span className={`text-[10px] font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+                        {dPct}%
+                      </span>
+                      {dPct < 70 && dTotal > 0 && (
+                        <button
+                          onClick={() => onGenerateMore(domain.categories[0] ?? '')}
+                          className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
+                        >
+                          more →
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+                    <div className={`h-full ${barColor} rounded-full`} style={{ width: `${dPct}%` }} />
                   </div>
                 </div>
-                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                  <div className={`h-full ${barColor} rounded-full`} style={{ width: `${catPct}%` }} />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="flex gap-2">
+      {/* Category breakdown — shown when no cert selected */}
+      {(!byDomain || byDomain.length === 0) && (
+        <div className="mb-5">
+          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Category Breakdown</p>
+          <div className="space-y-2">
+            {byCategory.map(([cat, stats]) => {
+              const catPct   = Math.round((stats.correct / stats.total) * 100);
+              const barColor = catPct >= 80 ? 'bg-emerald-500' : catPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
+              return (
+                <div key={cat}>
+                  <div className="flex items-center justify-between mb-0.5">
+                    <span className="text-[11px] text-slate-400 truncate max-w-[200px]">{cat}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono text-slate-600">{stats.correct}/{stats.total}</span>
+                      {catPct < 70 && (
+                        <button
+                          onClick={() => onGenerateMore(cat)}
+                          className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
+                        >
+                          more →
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                    <div className={`h-full ${barColor} rounded-full`} style={{ width: `${catPct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <div className="flex gap-2 pt-1">
         <button
           onClick={onRestart}
-          className="flex-1 py-2.5 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-sm font-semibold transition-colors"
+          className="flex-1 py-2.5 rounded border border-slate-700 hover:border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-colors"
         >
           New Quiz
         </button>
@@ -963,7 +1047,7 @@ export default function QuizEngine() {
           <ResultScreen result={currentResult} index={currentIndex} total={questions.length} onNext={handleNext} />
         )}
         {mode === 'summary'  && (
-          <SummaryScreen results={results} onRestart={() => { setMode('setup'); }} onGenerateMore={handleGenerateMore} />
+          <SummaryScreen results={results} settings={settings} onRestart={() => { setMode('setup'); }} onGenerateMore={handleGenerateMore} />
         )}
       </div>
     </div>
