@@ -786,6 +786,14 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Remediation and hardening recommendations included', re: /\b(revoke|invalidat|reset|MFA|conditional\s+access|PIM|privileged\s+identity|least.?privilege|token\s+lifetime|continuous\s+access\s+evaluation|CAE|FIDO|passkey|hardening)\b/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
+  'threat-intel-fusion': [
+    { label: 'STIX 2.1 indicator or threat-actor object produced', re: /stix|indicator.*pattern|threat.actor|spec_version.*2\.1|"type"\s*:\s*"indicator"|"type"\s*:\s*"threat-actor"|STIX\s+2\.1|\[ipv4.addr|file:hashes/i },
+    { label: 'MITRE ATT&CK technique mapped (T-code)', re: /T\d{4}(\.\d{3})?|ATT&?CK|tactic|technique/i },
+    { label: 'Source reliability and confidence ratings assigned (Admiralty Scale or equivalent)', re: /admiralty|A[1-6]|B[1-6]|C[1-6]|D[1-6]|E[1-6]|F[1-6]|confidence\s*:\s*(high|medium|low|\d+)|source\s+reliability|information\s+reliability/i },
+    { label: 'Indicators deduplicated and normalised across sources', re: /dedup|normaliz|duplicate|conflicting|overlap|merged|hash\s+(format|normaliz)|SHA256|MD5|SHA1|FQDN|canonical/i },
+    { label: 'Detection priorities ranked with threat maturity assessment', re: /priorit|rank|detection\s+priority|immediate|short.?term|threat\s+maturity|exposure|actionable|recommended\s+detection/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
   'ai-system-compromise': [
     { label: 'Failure mode classified (injection / poisoning / drift / infrastructure)', re: /prompt\s+injection|model\s+poison|concept\s+drift|data\s+drift|infrastructure\s+(compromise|breach)|supply\s+chain|adversarial\s+input|model\s+degradation|configuration\s+(change|drift)/i },
     { label: 'MITRE ATLAS or ATT&CK technique referenced', re: /AML\.T\d{4}|T\d{4}(\.\d{3})?|ATLAS|ATT&?CK|AML\.T0054|AML\.T0020|AML\.T0031/i },
@@ -856,6 +864,15 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
     'Identity attacks leave distinct signals in SigninLogs, AuditLogs, and CloudAppEvents — without a deployable query the analyst cannot hunt for additional victims or scope the compromise. Prompt: "Provide a KQL query using SigninLogs or AuditLogs to detect the OAuth token theft or CA bypass pattern observed."',
   'Remediation and hardening recommendations included':
     'Token revocation, PIM activation, and Conditional Access policy updates are the minimum immediate response to a cloud identity compromise. Prompt: "What are the immediate remediation steps (token revocation, account suspension) and hardening controls to prevent recurrence (PIM, CAE, FIDO2)?"',
+  // threat-intel-fusion
+  'STIX 2.1 indicator or threat-actor object produced':
+    'STIX 2.1 is the industry-standard format for machine-readable threat intelligence — without it, indicators cannot be shared via TAXII or imported into SIEMs and TIPs. Prompt: "Produce at least one STIX 2.1 indicator object with a valid pattern field using STIX Pattern Language (e.g., [ipv4-addr:value = \'x.x.x.x\']) and a threat-actor object linking to observed TTPs."',
+  'Source reliability and confidence ratings assigned (Admiralty Scale or equivalent)':
+    'The Admiralty Scale (A1–F6) is the NATO standard for rating source reliability and information credibility — without it, analysts cannot weight conflicting intelligence. Prompt: "Rate each source using the Admiralty Scale (A=Completely Reliable to F=Cannot Be Judged, 1=Confirmed to 6=Cannot Be Judged) and assign a composite confidence rating per finding."',
+  'Indicators deduplicated and normalised across sources':
+    'Raw threat intel contains duplicates with inconsistent formats — IP ranges, overlapping domain lists, and conflicting hash representations create noise that degrades SIEM performance. Prompt: "Identify duplicate indicators across sources, normalise all hashes to SHA256, and flag where source confidence ratings conflict."',
+  'Detection priorities ranked with threat maturity assessment':
+    'Threat intel without ranked detection priorities wastes analyst time — high-maturity threats with active targeting need immediate detection investment. Prompt: "Rank detection priorities: which TTPs are most mature (active campaigns, confirmed targeting of your sector) vs. emerging (limited evidence, low confidence)? What detection rules should be built first?"',
   // ai-system-compromise
   'Failure mode classified (injection / poisoning / drift / infrastructure)':
     'Misclassifying the failure mode leads to the wrong remediation — prompt injection requires output filtering, model poisoning requires retraining or rollback, infrastructure compromise requires security incident response. Prompt: "Classify the failure mode: is this prompt injection, model poisoning, concept drift, data drift, infrastructure compromise, or supply chain attack? Justify with evidence."',
@@ -906,6 +923,11 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     '(2) activates PIM just-in-time access review and forces MFA re-registration on affected accounts, ' +
     '(3) runs the KQL detection query across all tenants and affiliated identities to scope the compromise, ' +
     '(4) notifies the CISO and legal team — cloud identity breaches may trigger GDPR Article 33 72-hour notification.',
+  'threat-intel-fusion':
+    'What a real threat intel analyst does after the fusion report: (1) ingests normalised STIX 2.1 objects into the TIP (MISP, OpenCTI, or Recorded Future) and pushes indicators to the SIEM via TAXII feed, ' +
+    '(2) routes high-confidence indicators to the detection engineering team with a request to build or tune detection rules, ' +
+    '(3) distributes the analyst briefing to sector ISAC partners and marks it TLP:AMBER per the information sharing agreement, ' +
+    '(4) schedules a 72-hour review to reassess confidence ratings as new corroborating or contradicting intel arrives.',
   'ai-system-compromise':
     'What a real AI security engineer does after the triage: (1) initiates the model rollback or offline procedure per the AI incident response playbook, ' +
     '(2) preserves model telemetry, prompt traces, and serving logs as forensic evidence before any redeployment, ' +
@@ -970,6 +992,13 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Remediation plan with monitoring obligations specified', re: /\b(remediat|retrain|reweigh|adversarial\s+debias|data\s+re.?sampl|monitor|post.?market|Article\s+72|ISO\s+42001|NIST|MEASURE\s+2\.5|Clause\s+9)\b/i },
     { label: 'Mathematical formula or numeric metric values provided', re: /formula\s*[:=]|[Pp]\s*\(|÷|×|\bTPR\b|\bFPR\b|0\.[0-9]{1,4}|ratio\s*[:=]?\s*\d/i },
     { label: 'Regulatory disclosure or notification assessed (GDPR, EU AI Act)', re: /GDPR|article\s+22|automated\s+decision|EU\s+AI\s+Act|article\s+72|article\s+73|notif|DPA|supervisory\s+authority|data\s+subject\s+rights?/i },
+  ],
+  'ai-gdpr-dsr-compliance': [
+    { label: 'GDPR data subject right(s) identified and scoped (Articles 15–22)', re: /article\s+(1[5-9]|2[0-2])|right\s+to\s+(access|erasure|rectif|portab|object|restrict|forgotten)|data\s+subject\s+right|DSR|automated\s+decision/i },
+    { label: 'Training data erasure gap analysis provided', re: /training\s+data\s+(erasure|delet|remov)|machine\s+unlearn|model\s+retrain|exact\s+unlearn|approximate\s+unlearn|differential\s+privacy.*erase|data\s+minimis|right\s+to\s+be\s+forgotten.*model/i },
+    { label: 'Article 22 automated decision-making assessment present', re: /article\s+22|automated\s+decision|solely\s+automated|legal\s+effect|significant\s+effect|human\s+(review|oversight|in\s+the\s+loop)|explainab|meaningful\s+human/i },
+    { label: 'DSR response procedure or timeline addresses 30-day obligation', re: /30.day|30\s+calendar\s+day|response\s+(time|deadline|window|clock)|DSR\s+(procedure|process|workflow)|identity\s+verif|request\s+handling/i },
+    { label: 'ISO 42001 Clause 8.3 or NIST AI RMF MAP 2.3 referenced', re: /ISO\s+42001|clause\s+8\.3|8\.3|NIST|AI\s+RMF|MAP\s+2\.3|MAP\.2|privacy\s+risk\s+assess/i },
   ],
   'ai-privacy-impact': [
     { label: 'GDPR Article 35 DPIA requirement determination provided', re: /GDPR|article\s+35|DPIA|data\s+protection\s+impact|systematic\s+(profiling|processing)|high\s+risk|special\s+categor|mandatory/i },
@@ -1073,6 +1102,17 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Providing the formula ensures the analysis is reproducible and auditable — key for regulatory submissions. Prompt: "State the formula for each metric and compute the numeric value from the given data."',
   'Regulatory disclosure or notification assessed (GDPR, EU AI Act)':
     'Automated hiring decisions trigger GDPR Article 22 rights; serious incidents in high-risk AI require EU AI Act Article 73 notification. Prompt: "Assess GDPR Article 22 rights implications and whether this bias finding constitutes a serious incident under EU AI Act Article 73."',
+  // ai-gdpr-dsr-compliance
+  'GDPR data subject right(s) identified and scoped (Articles 15–22)':
+    'DSR compliance starts with identifying which rights apply to the specific AI processing — not all rights apply in all contexts (Article 22 exemptions, research processing exemptions). Prompt: "For this AI system, which GDPR data subject rights (Articles 15–22) apply? Are any exemptions available under Article 23 or sector-specific law?"',
+  'Training data erasure gap analysis provided':
+    'Erasure (Article 17) is the hardest right to fulfill for AI — removing data from a training dataset doesn\'t remove it from model weights. Prompt: "Can you delete the individual\'s data from the training dataset? Would the model need to be retrained? Is machine unlearning (exact or approximate) technically feasible here? What does effective erasure mean for this model?"',
+  'Article 22 automated decision-making assessment present':
+    'Article 22 is triggered by automated decisions with legal or similarly significant effects — credit, hiring, medical scoring, fraud — and requires human review and explainability. Prompt: "Does this AI system make solely automated decisions with legal or similarly significant effects? If so, what human oversight mechanism is in place and how is the decision logic explained to data subjects?"',
+  'DSR response procedure or timeline addresses 30-day obligation':
+    'GDPR requires response to DSRs within 30 calendar days (extendable to 90 days for complex cases with notice) — AI systems require special handling procedures for ML pipeline requests. Prompt: "Draft a DSR response procedure: how is the request verified, who handles the ML pipeline erasure, what is the 30-day clock process, and how are third-party processors coordinated?"',
+  'ISO 42001 Clause 8.3 or NIST AI RMF MAP 2.3 referenced':
+    'ISO 42001 Clause 8.3 and NIST AI RMF MAP 2.3 are the governance frameworks for AI privacy management — referencing them anchors DSR compliance to auditable standards. Prompt: "Map the DSR gaps and controls to ISO/IEC 42001 Clause 8.3 (privacy management) and NIST AI RMF MAP 2.3 (privacy risk assessment). What control gaps exist?"',
   // ai-privacy-impact
   'GDPR Article 35 DPIA requirement determination provided':
     'GDPR Article 35 imposes a mandatory DPIA for systematic profiling, special category processing, or novel technology — determining whether a DPIA is required is the first output. Prompt: "Determine whether GDPR Article 35 mandates a DPIA for this AI system and justify the decision against the three Article 35 criteria."',

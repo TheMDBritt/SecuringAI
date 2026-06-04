@@ -229,6 +229,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: ['T1195', 'T1036', 'T1027'],
   },
+  {
+    id: 'threat-intel-fusion',
+    dojoId: 2,
+    title: 'LLM Threat Intelligence Fusion',
+    description:
+      'Feed BlackBeltAI a raw threat intel package — OSINT indicators, dark web chatter, and vendor report excerpts. It fuses the sources, eliminates duplicates, surfaces emerging TTPs, generates STIX 2.1 indicator objects, and produces an analyst briefing with confidence ratings and recommended detection priorities. Scored on STIX format correctness, TTP coverage, source attribution, and confidence calibration.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: ['T1071', 'T1213', 'T1041'],
+  },
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
   {
@@ -346,6 +356,15 @@ export const SCENARIOS: Scenario[] = [
     description: 'Build an organizational AI RMF Profile: select applicable GOVERN, MAP, MEASURE, and MANAGE subcategories for a specific AI use case, assign risk tiers, define measurement criteria, and map to complementary standards (EU AI Act, ISO 42001, OWASP LLM). Produces a navigable governance artifact for a production AI deployment.',
     difficulty: 'advanced',
     owaspTags: [],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-gdpr-dsr-compliance',
+    dojoId: 3,
+    title: 'AI GDPR Data Subject Rights Compliance',
+    description: 'Assess and implement GDPR data subject rights (DSR) handling for AI systems processing personal data. Map right-to-erasure, data portability, and objection rights to model lifecycle obligations under EU AI Act Article 10 and GDPR Articles 15–22. Identify technical gaps in ML pipelines (training data deletion, model retraining after erasure), produce a DSR response procedure, and map findings to ISO/IEC 42001 Clause 8.3 and NIST AI RMF MAP 2.3.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM06'],
     mitreAttackIds: [],
   },
 ];

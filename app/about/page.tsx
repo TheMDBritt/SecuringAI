@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 37 scenarios, 1,229+ quiz questions, and 695+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 39 scenarios, 1,264+ quiz questions, and 715+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -95,12 +95,12 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   2: {
     title: 'AI-Assisted SOC',
     color: 'text-cyan-400',
-    body: `Operate as an AI SOC analyst across 8 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, and AI System Compromise Triage. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
+    body: `Operate as an AI SOC analyst across 9 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, AI System Compromise Triage, and LLM Threat Intelligence Fusion. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
   },
   3: {
     title: 'AI GRC',
     color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 12 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, and NIST AI RMF Profile construction.`,
+    body: `Govern the full AI risk lifecycle across 13 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, and GDPR Data Subject Rights compliance for AI systems (Articles 15–22, machine unlearning).`,
   },
 };
 
@@ -136,8 +136,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,229+', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '695+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,264+', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '715+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
