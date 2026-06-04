@@ -82,16 +82,16 @@ const TECHNIQUES = [
 ];
 
 const CERT_CHIPS = [
-  { id: 'SecAI',       label: 'CompTIA SecAI+',          color: 'text-red-400 border-red-500/30',      qs: 432 },
-  { id: 'CAISP',       label: 'ISC2 CAISP',              color: 'text-purple-400 border-purple-500/30', qs: 240 },
-  { id: 'CAIS',        label: 'EC-Council C|AI Security', color: 'text-rose-400 border-rose-500/30',   qs: 157 },
-  { id: 'GIAC-GOAA',   label: 'GIAC GOAA',               color: 'text-orange-400 border-orange-500/30',qs: 151 },
+  { id: 'SecAI',       label: 'CompTIA SecAI+',          color: 'text-red-400 border-red-500/30',      qs: 436 },
+  { id: 'CAISP',       label: 'ISC2 CAISP',              color: 'text-purple-400 border-purple-500/30', qs: 243 },
+  { id: 'CAIS',        label: 'EC-Council C|AI Security', color: 'text-rose-400 border-rose-500/30',   qs: 158 },
+  { id: 'GIAC-GOAA',   label: 'GIAC GOAA',               color: 'text-orange-400 border-orange-500/30',qs: 152 },
   { id: 'GIAC-GASAE',  label: 'GIAC GASAE',              color: 'text-orange-400 border-orange-500/30',qs: 136 },
   { id: 'SC-500',      label: 'Microsoft SC-500',         color: 'text-cyan-400 border-cyan-500/30',   qs: 223 },
-  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',             color: 'text-amber-400 border-amber-500/30', qs: 185 },
+  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',             color: 'text-amber-400 border-amber-500/30', qs: 186 },
   { id: 'Azure-AI103', label: 'Azure AI-103',             color: 'text-blue-400 border-blue-500/30',   qs: 132 },
   { id: 'Azure-AI901', label: 'Azure AI-901',             color: 'text-blue-400 border-blue-500/30',   qs: 130 },
-  { id: 'Google-MLE',  label: 'Google MLE',              color: 'text-emerald-400 border-emerald-500/30',qs: 122 },
+  { id: 'Google-MLE',  label: 'Google MLE',              color: 'text-emerald-400 border-emerald-500/30',qs: 123 },
 ];
 
 const SCORING_ROWS = [

@@ -14709,7 +14709,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'gmle-013',
     topic: 'Explainability and Fairness',
-    category: 'AI Governance',
+    category: 'AI Security',
     difficulty: 'intermediate' as const,
     certTags: ['Google-MLE', 'CAISP'],
     question: 'A Google MLE is asked to provide SHAP-based feature importance for a loan approval model to satisfy a regulatory explainability requirement. A regulator asks: "If an applicant\'s application was denied, can you tell them which factors caused the denial and how much each factor contributed?" Which statement about SHAP values best answers this question?',
@@ -14741,7 +14741,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'gmle-015',
     topic: 'Model Cards and Transparency',
-    category: 'AI Governance',
+    category: 'AI Security',
     difficulty: 'beginner' as const,
     certTags: ['Google-MLE', 'CAISP', 'SecAI'],
     question: 'Google\'s Model Card framework requires documenting "intended use" and "out-of-scope uses." Why is the out-of-scope uses section specifically important from a security and governance perspective?',
@@ -14759,7 +14759,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'az-ai103-011',
     topic: 'Azure AI Content Safety',
-    category: 'AI Security',
+    category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
     certTags: ['Azure-AI103', 'Azure-AI901', 'SC-500'],
     question: 'A developer deploys an Azure OpenAI Service chatbot for a retail customer. Penetration testing reveals that users can bypass the system prompt by appending "Ignore all previous instructions" to their messages. Which Azure-native control most directly addresses prompt injection in deployed Azure OpenAI applications?',
@@ -14807,7 +14807,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'az-ai103-014',
     topic: 'Azure OpenAI Data Privacy',
-    category: 'AI Security',
+    category: 'AI Governance',
     difficulty: 'beginner' as const,
     certTags: ['Azure-AI103', 'Azure-AI901', 'SecAI'],
     question: 'A legal team asks whether prompts and responses sent to Azure OpenAI Service are used to train Microsoft\'s or OpenAI\'s foundation models. What is the correct answer based on Microsoft\'s Azure OpenAI data processing commitments?',
@@ -15053,10 +15053,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'AI-specific reconnaissance phase: Traditional web app pentests start with port scanning, service enumeration, technology fingerprinting. LLM assessments add a model-layer reconnaissance phase: (1) System prompt leakage — even partial leakage reveals: persona constraints, off-limits topics, tool capabilities, API integrations; armed with this, testers target specific bypass vectors; (2) Model identification — different foundation models have different known jailbreaks, different RLHF blind spots, different tool-use implementations; knowing you\'re testing Claude vs GPT-4 vs Llama changes the attack strategy; (3) Tool enumeration — function calling capabilities are the highest-value attack targets; enumerating available tools before exploitation prevents wasted attack attempts; (4) Refusal pattern mapping — understanding what triggers refusals helps design bypass strategies. EC-Council CAIS AI assessment methodology adds these steps before active exploitation. Source: EC-Council CAIS curriculum; AI Red Team methodologies.',
   },
 
-// ── SC-500 Microsoft AI Security ──────────────────────────────────────────────
+// ── SC-500 Microsoft AI Security (additional) ────────────────────────────────
   {
-    id: 'sc500-011',
-    topic: 'Microsoft Purview for AI',
+    id: 'sc500-136',
+    topic: 'DSPM for AI',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
     certTags: ['SC-500', 'Azure-AI103'],
@@ -15071,8 +15071,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Microsoft Purview DSPM for AI monitors the AI security posture of Microsoft 365 Copilot, Azure OpenAI, and other AI apps. "Unprotected sensitive data in AI prompts" alert: (1) Purview scans Copilot prompts and referenced documents for sensitive information types (SITs) using the same classification engine as DLP; (2) "Unprotected" means the content lacks sensitivity labels or isn\'t covered by a DLP policy restricting AI processing; (3) Risk: Copilot could expose protected information to users who don\'t have direct file access but interact with the AI assistant. Remediation hierarchy: Label source data → Apply DLP rules for Copilot → Enable audit logging → Review exposure in Content Explorer. SC-500 Domain 2: Govern AI. Source: Microsoft Purview DSPM for AI documentation; SC-500 exam guide.',
   },
   {
-    id: 'sc500-012',
-    topic: 'Microsoft Defender for AI Workloads',
+    id: 'sc500-137',
+    topic: 'Defender for AI Workloads',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
     certTags: ['SC-500'],
@@ -15087,8 +15087,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Microsoft Defender for AI Workloads (preview/GA 2024-2025): Extends Defender for Cloud with AI-specific threat intelligence. Key detection categories: (1) Input-based detections — prompt injection signatures, jailbreak patterns, PII in prompts; (2) Output-based detections — sensitive content in completions, policy-violating responses; (3) Behavioral detections — invocation anomalies (time-of-day, volume, geographic), unusual service principal activity; (4) Data exposure — Purview integration flags when sensitive data appears in AI context. Integration: Defender for AI + Azure OpenAI + Purview creates a unified AI security signal chain. All detections map to MITRE ATT&CK and OWASP LLM Top 10. SC-500 candidates must understand the Defender product family extension to AI. Source: Microsoft Defender for Cloud documentation; SC-500 Domain 3.',
   },
   {
-    id: 'sc500-013',
-    topic: 'Azure AI Foundry Security',
+    id: 'sc500-138',
+    topic: 'Azure AI Foundry',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'advanced' as const,
     certTags: ['SC-500', 'Azure-AI103'],
@@ -15103,8 +15103,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Azure AI Foundry (Azure AI Studio rebranded 2024) network isolation: Managed network mode creates an isolation boundary: (1) All compute (Azure AI compute instances, inference endpoints) receive private endpoint connectivity; (2) Data connections (Azure Blob, Azure Search) use private link; (3) Public endpoint can be disabled; (4) Managed network outbound rules specify approved destinations. Audit logging configuration: AI Foundry workspace → Diagnostic settings → select: AuditEvent, RequestResponse (optional, captures prompt content), Metrics → send to Log Analytics. Combined with: Microsoft Entra ID integration (all callers authenticated), Azure Key Vault for secrets (AI Foundry integrates natively), and Defender for AI for threat detection. SC-500 Domain 3: Implement Security for AI Infrastructure. Source: Azure AI Foundry documentation; SC-500 exam guide.',
   },
   {
-    id: 'sc500-014',
-    topic: 'Copilot Security Controls',
+    id: 'sc500-139',
+    topic: 'M365 Copilot',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'beginner' as const,
     certTags: ['SC-500', 'Azure-AI901'],
