@@ -14758,7 +14758,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ─── CAIS D2 · Adversarial Machine Learning ───────────────────────────────
   {
-    id: 'cais-adv-001',
+    id: 'cais-adv-015',
     topic: 'Membership Inference Attack',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
@@ -14774,7 +14774,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Membership inference exploits models that memorize training data: inputs seen during training tend to produce higher confidence scores than unseen inputs. The attack trains a shadow meta-classifier to distinguish member vs. non-member confidence distributions. Mitigation: differential privacy (add calibrated noise to gradients during training), output truncation (return top-k labels without raw probabilities), and confidence score calibration. Source: Shokri et al. "Membership Inference Attacks Against Machine Learning Models" (2017); EC-Council CAIS Domain 2.',
   },
   {
-    id: 'cais-adv-002',
+    id: 'cais-adv-009',
     topic: 'Evasion Attacks',
     category: 'AI Security',
     difficulty: 'advanced' as const,
@@ -14790,7 +14790,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Practical malware evasion attacks operate on the feature space (not raw bytes) because neural network classifiers typically use extracted features (byte n-grams, import tables, entropy). FGSM and PGD attacks compute gradients w.r.t. the input feature vector, then identify which feature changes (e.g., adding a benign import, padding bytes) preserve malicious functionality while crossing the decision boundary. The key constraint: adversarial perturbation must map to a valid, functional binary. Source: Grosse et al. "Adversarial Examples for Malware Detection" (2017); CAIS Domain 2.',
   },
   {
-    id: 'cais-adv-003',
+    id: 'cais-adv-010',
     topic: 'Backdoor Attacks',
     category: 'AI Security',
     difficulty: 'advanced' as const,
@@ -14806,7 +14806,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Neural backdoor (trojan) attacks have three defining properties: (1) Trigger-activated — clean inputs perform normally; (2) High attack success rate — inputs with the trigger almost always produce the target label; (3) Stealthy — accuracy on clean data is indistinguishable from benign model. Attack surface: (a) Training data poisoning (BadNets), (b) Weight poisoning during supply chain, (c) Transfer learning contamination. Detection methods: Neural Cleanse (optimization-based trigger reverse engineering), Activation Clustering (Chen et al.), STRIP (perturbation sensitivity), and model fingerprinting. Source: Gu et al. "BadNets" (2017); CAIS Domain 2.',
   },
   {
-    id: 'cais-adv-004',
+    id: 'cais-adv-011',
     topic: 'Model Inversion Attack',
     category: 'AI Security',
     difficulty: 'advanced' as const,
@@ -14822,7 +14822,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Model inversion (Fredrikson et al. 2015) reconstructs private training data by: (1) Starting from random noise; (2) Computing gradients of the target class confidence w.r.t. the input; (3) Iteratively updating the input to maximize confidence (gradient ascent). The attack works because the model encodes statistical properties of training data in its weights. Defenses: output perturbation (add noise to confidence scores), API rate limiting, and monitoring for systematic repeated queries with small input variations. Source: Fredrikson et al. "Model Inversion Attacks that Exploit Confidence Information" (2015); CAIS Domain 2.',
   },
   {
-    id: 'cais-adv-005',
+    id: 'cais-adv-012',
     topic: 'Differential Privacy',
     category: 'AI Security',
     difficulty: 'advanced' as const,
@@ -14838,7 +14838,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'DP-SGD (Abadi et al. 2016): (1) Clip each per-sample gradient to L2 norm ≤ C (sensitivity bound — limits how much any one sample can influence the model); (2) Add Gaussian noise N(0, σ²C²) to the sum of clipped gradients before averaging (privacy guarantee proportional to noise scale and batch size). The privacy cost accumulates per step; the moments accountant (or Rényi DP composition) tracks the total (ε, δ)-DP guarantee. Trade-off: higher privacy (smaller ε) requires more noise → worse model utility. Source: Abadi et al. "Deep Learning with Differential Privacy" (2016); CAIS Domain 2.',
   },
   {
-    id: 'cais-adv-006',
+    id: 'cais-adv-013',
     topic: 'GAN-Based Attacks',
     category: 'AI Security',
     difficulty: 'advanced' as const,
@@ -14854,7 +14854,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'GANs trained on real face data learn the underlying data distribution. The generator produces synthetic faces that: (1) Match the statistical distribution of real faces (human-imperceptible differences); (2) Bypass liveness detection trained on GAN-naive datasets; (3) Can be specifically optimized (adversarial perturbation on top of GAN output) to maximize a target subject\'s confidence score. Defenses: liveness detection (blink/motion detection), adversarial training with GAN-generated examples, and analysis of image artifacts (GAN fingerprints). Source: EC-Council CAIS Domain 2; NIST AI RMF GOVERN 6.1.',
   },
   {
-    id: 'cais-adv-007',
+    id: 'cais-adv-014',
     topic: 'Adversarial Patch Attacks',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
@@ -17040,7 +17040,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ─── SC-500 D5 · Secure AI Workloads ─────────────────────────────────────
   {
-    id: 'sc500-ai-001',
+    id: 'sc500-ai-013',
     topic: 'Azure AI Content Safety',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
@@ -17056,7 +17056,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Azure AI Content Safety harm categories: (1) Hate — dehumanizing content based on protected characteristics; (2) Violence — violent content, glorification of violence, threats; (3) Sexual — sexually explicit content; (4) Self-harm — content promoting or describing self-harm or suicide. Each category returns a severity level: 0 (safe), 2 (low), 4 (medium), 6 (high). Applications set thresholds (e.g., block severity ≥ 4 for hate). Separate from Prompt Shields (injection detection) and Groundedness Detection. Used with Azure OpenAI content filtering policies. Source: Microsoft Azure AI Content Safety documentation; SC-500 Domain 5.',
   },
   {
-    id: 'sc500-ai-002',
+    id: 'sc500-ai-014',
     topic: 'Microsoft Security Copilot',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
@@ -17072,7 +17072,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Security Copilot Promptbooks: (1) Saved, reusable prompt chains organized around specific security tasks; (2) Built-in promptbooks: Vulnerability Impact Assessment, Incident Investigation, Threat Actor Profile, Suspicious Script Analysis, Device Summary, Identity Summary; (3) Custom promptbooks: create organization-specific workflows; (4) Sharing: promptbooks can be shared across the SOC for consistent investigation methodology; (5) Integration: promptbooks reference data from connected plugins (Defender XDR, Sentinel, Intune, Entra, Purview). Different from Sentinel playbooks (Logic Apps for automation) — promptbooks are AI-guided investigation templates. Source: Microsoft Security Copilot documentation; SC-500 Domain 4/5.',
   },
   {
-    id: 'sc500-ai-003',
+    id: 'sc500-ai-015',
     topic: 'Defender for AI Workloads',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
@@ -17088,7 +17088,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Defender for Cloud AI-SPM (generally available 2024): (1) Attack path analysis: identifies paths from internet exposure → over-permissioned identity → Azure OpenAI access → sensitive data; (2) AI security recommendations: "Enable Azure AI content filtering," "Restrict public network access to Azure OpenAI," "Enable diagnostic logging for AI services"; (3) Security posture score contribution from AI workload findings; (4) Integration with Defender for AI Workloads (runtime threat detection for Azure OpenAI inference); (5) AI-specific inventory: discovers all Azure OpenAI deployments, identifies unprotected endpoints. Source: Microsoft Defender for Cloud AI security documentation; SC-500 Domain 5.',
   },
   {
-    id: 'sc500-ai-004',
+    id: 'sc500-ai-016',
     topic: 'Azure OpenAI Service',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
@@ -17104,7 +17104,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Azure OpenAI content filtering architecture: (1) Content filtering is applied at the service level, not model level — it wraps the model inference; (2) Input filtering: user messages and system prompts scanned for harmful content before reaching the model; (3) Output filtering: model completions scanned before returning to the application — prevents harmful generation even if the input bypassed input filters; (4) Configuration: operators set per-category (Hate, Violence, Sexual, Self-harm) severity thresholds (low/medium/high); (5) Default config: medium threshold on all categories; (6) Custom filter exceptions require Microsoft approval for specific use cases (adult content platforms); (7) Monitoring: content filtering events logged to Azure Monitor. Source: Azure OpenAI content filtering documentation; SC-500 Domain 5.',
   },
   {
-    id: 'sc500-ai-005',
+    id: 'sc500-ai-017',
     topic: 'DSPM for AI',
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate' as const,
@@ -17122,7 +17122,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ─── SecAI+ Domain 2: Securing AI Systems ────────────────────────────────
   {
-    id: 'secai-d2-001',
+    id: 'secai-d2-021',
     topic: 'AI Security Posture Management',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
@@ -17138,7 +17138,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'AI-SPM critical risk ranking: (1) Public inference endpoint (no NSG/Private Link) = internet-exposed attack surface for prompt injection and abuse; (2) Over-permissioned identity (subscription write) = compromise of the AI service leads to full subscription takeover; (3) Disabled content filtering = no defense layer against harmful outputs or prompt injection. These three together create a complete attack chain: attacker reaches the model → injects instructions → uses the over-permissioned identity to execute lateral movement. Model versioning and GPU encryption are important but not immediately exploitable. Source: CompTIA SecurityAI+ Domain 2; Microsoft Defender for Cloud AI recommendations.',
   },
   {
-    id: 'secai-d2-002',
+    id: 'secai-d2-022',
     topic: 'OWASP LLM Top 10',
     category: 'AI Security',
     difficulty: 'beginner' as const,
@@ -17154,7 +17154,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'LLM07 System Prompt Leakage (OWASP 2025): (1) Information value: system prompts often reveal personas, business logic, tool names, API endpoints, data sources, and security constraints the operator tried to keep confidential; (2) Exploitation paths: (a) Targeted jailbreaks exploiting known constraints, (b) Persona impersonation and competitor intelligence, (c) Identification of connected tools/APIs for further attacks, (d) Template for building a replica/jailbroken version; (3) Note: extraction doesn\'t grant modification rights or API key access — those are separate vulnerabilities; (4) Defense: avoid embedding secrets in system prompts, use platform confidentiality features, design prompts assuming they may be read. Source: OWASP LLM Top 10 v2 2025 LLM07; CompTIA SecurityAI+ Domain 2.',
   },
   {
-    id: 'secai-d2-003',
+    id: 'secai-d2-023',
     topic: 'Red Teaming AI',
     category: 'Red Teaming AI',
     difficulty: 'intermediate' as const,
@@ -17170,7 +17170,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'AI-specific harm categories (Microsoft AI Red Team, NIST AI RMF MEASURE): Traditional software security covers authentication, authorization, confidentiality, availability, integrity. AI systems introduce additional harm categories: (1) Fairness/bias harms: demographic disparities in model outputs that cause real-world harm — unique to AI; (2) Hallucination harms: factually incorrect outputs presented with high confidence; (3) Representational harms: stereotyping or denigrating content about specific groups; (4) Privacy harms: unintended disclosure of training data. While data exfiltration, DoS, and authentication bypass exist in AI contexts, they also appear in traditional software. Fairness harms are AI-specific — traditional software doesn\'t "decide" outcomes in probabilistic ways that systematically disadvantage groups. Source: Microsoft Responsible AI Standard; CompTIA SecurityAI+ Domain 2; NIST AI RMF.',
   },
   {
-    id: 'secai-d2-004',
+    id: 'secai-d2-024',
     topic: 'Guardrails',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
@@ -17186,7 +17186,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'RLHF limitations (CompTIA SecurityAI+ Domain 2, CAIS Domain 3): (1) Empirical, not formal: RLHF reduces frequency of harmful outputs — it doesn\'t eliminate them; (2) Novel attacks bypass: jailbreaks, adversarial prompts, and attack patterns not in RLHF training data can succeed; (3) Distribution shift: deployment context differs from training context — safety alignment may not generalize; (4) Security stack: RLHF + input filters (Prompt Shields) + output filters (content safety classifiers) + rate limiting + audit logging + human review processes. Defense-in-depth principle: no single layer is sufficient. Source: CompTIA SecurityAI+ Domain 2; Anthropic Constitutional AI paper; OWASP LLM Security Cheat Sheet.',
   },
   {
-    id: 'secai-d2-005',
+    id: 'secai-d2-025',
     topic: 'AI Red Team Scoping',
     category: 'Red Teaming AI',
     difficulty: 'intermediate' as const,
@@ -17204,7 +17204,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 
   // ─── SecAI+ Domain 3: AI in Security Operations ───────────────────────────
   {
-    id: 'secai-d3-001',
+    id: 'secai-d3-016',
     topic: 'Cloud AI Platforms',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
@@ -17220,7 +17220,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'Security Copilot\'s security-specific design: (1) Grounded responses: outputs reference specific signals from connected sources (Sentinel incidents, Defender alerts, Intune device data, Entra sign-in logs) — not general knowledge; (2) Plugin architecture: Microsoft Threat Intelligence, ExternalAttackSurface Management, custom APIs — analysts can add organization-specific data sources; (3) Audit logging: all queries and responses are logged for SOC accountability; (4) Data residency: organization data is not used to train the shared model; (5) Limitation: hallucination risk still exists — cite-and-verify methodology recommended. Source: Microsoft Security Copilot documentation; SC-500 Domain 4; CompTIA SecurityAI+ Domain 3.',
   },
   {
-    id: 'secai-d3-002',
+    id: 'secai-d3-017',
     topic: 'Emerging Trends',
     category: 'Emerging Trends',
     difficulty: 'intermediate' as const,
