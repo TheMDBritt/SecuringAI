@@ -9,7 +9,7 @@ export function Footer() {
           <div className="flex flex-col gap-1.5">
             <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
-              Free AI security training. 1,000+ practice questions, 540+ glossary terms,
+              Free AI security training. 1,010+ practice questions, 545+ glossary terms,
               27 dojo scenarios. No account, no API key required.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
@@ -50,7 +50,7 @@ export function Footer() {
           <p className="text-[10px] font-mono text-slate-700">
             Independent · Unaffiliated with any certification provider · Check official exam objectives before scheduling.
           </p>
-          <p className="text-[10px] font-mono text-slate-700">stub mode</p>
+          <p className="text-[10px] font-mono text-slate-700">© 2025 LLM DOJO</p>
         </div>
       </div>
     </footer>
