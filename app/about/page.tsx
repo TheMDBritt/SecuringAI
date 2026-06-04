@@ -100,7 +100,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   3: {
     title: 'AI GRC',
     color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 11 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, and NIST AI RMF Profile construction.`,
+    body: `Govern the full AI risk lifecycle across 12 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, and NIST AI RMF Profile construction.`,
   },
 };
 
@@ -136,8 +136,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,230+', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '659+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,248+', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '665+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
