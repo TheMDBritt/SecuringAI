@@ -540,7 +540,7 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
 
 // ─── Question Screen ──────────────────────────────────────────────────────────
 function QuestionScreen({
-  question, index, total, onAnswer, examMode, remainingSec, onAbandonExam,
+  question, index, total, onAnswer, examMode, remainingSec, onAbandonExam, certId,
 }: {
   question:       QuizQuestion;
   index:          number;
@@ -549,6 +549,7 @@ function QuestionScreen({
   examMode?:      boolean;
   remainingSec?:  number;
   onAbandonExam?: () => void;
+  certId?:        string;
 }) {
   const [chosen, setChosen] = useState<number | null>(null);
   const progress = ((index + 1) / total) * 100;
@@ -577,7 +578,7 @@ function QuestionScreen({
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-cyan-500/30 bg-cyan-500/5'}`}>
-          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>Mock SC-500 Exam</span>
+          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>Mock {certId ?? 'Exam'}</span>
           <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-cyan-300'}`}>{timerStr}</span>
           <button
             onClick={onAbandonExam}
@@ -1055,6 +1056,7 @@ export default function QuizEngine() {
             examMode={settings?.examMode}
             remainingSec={remainingSec}
             onAbandonExam={handleAbandonExam}
+            certId={settings?.selectedCert?.id}
           />
         )}
         {mode === 'result'   && currentResult && (
