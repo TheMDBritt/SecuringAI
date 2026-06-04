@@ -8,7 +8,7 @@ import type { DojoId } from '@/types';
 const STATS = {
   scenarios:  27,
   quizQs:   1000,
-  glossary:  520,
+  glossary:  547,
   articles:   64,
   certs:      10,
   incidents:  35,
