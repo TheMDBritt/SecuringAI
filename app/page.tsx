@@ -8,7 +8,7 @@ const STATS = {
   scenarios:  27,
   quizQs:   1084,
   glossary:  579,
-  articles:   64,
+  articles:   67,
   certs:      10,
   incidents:  39,
 };
@@ -74,6 +74,12 @@ const TECHNIQUES = [
   { label: 'Backdoor / Trojan',      tag: 'AML.T0018',   dojo: 1 },
   { label: 'Purview DSPM for AI',    tag: 'SC-500',      dojo: 3 },
   { label: 'Security Copilot KQL',   tag: 'SC-500',      dojo: 2 },
+  { label: 'AI System Compromise',   tag: 'AML.T0040',   dojo: 2 },
+  { label: 'RAG Source Poisoning',   tag: 'LLM01',       dojo: 2 },
+  { label: 'Backdoor ML Model',      tag: 'AML.T0020',   dojo: 2 },
+  { label: 'Adversarial Evasion',    tag: 'AML.T0015',   dojo: 2 },
+  { label: 'Federated Learning',     tag: 'Privacy-ML',  dojo: 3 },
+  { label: 'AI Bias Audit',          tag: 'ISO 42001',   dojo: 3 },
 ];
 
 const CERT_CHIPS = [
