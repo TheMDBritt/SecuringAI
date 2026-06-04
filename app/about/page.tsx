@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,080+ quiz questions, 579+ glossary terms, and 10 AI security certifications.',
+    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,004 quiz questions, 545 glossary terms, and 10 AI security certifications.',
 };
 
 const PRINCIPLES = [
@@ -71,22 +71,6 @@ export default function AboutPage() {
             scenarios, live guardrail toggles, and per-turn scoring against the certifications the
             field is converging on.
           </p>
-
-          {/* Quick stats bar */}
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
-            {[
-              { n: `${SCENARIOS.length}`,    label: 'Scenarios',         sub: 'across 3 dojos'          },
-              { n: '1,080+',                 label: 'Quiz questions',     sub: '10 certs, all domains'   },
-              { n: '579+',                   label: 'Glossary terms',     sub: 'cert-tagged, searchable' },
-              { n: '10',                     label: 'AI cert maps',       sub: 'official exam domains'   },
-            ].map(({ n, label, sub }) => (
-              <div key={label} className="bg-slate-900 px-4 py-3">
-                <div className="text-lg font-bold text-slate-100 font-mono tracking-tight">{n}</div>
-                <div className="text-[11px] font-medium text-slate-400 mt-0.5">{label}</div>
-                <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -120,7 +104,7 @@ export default function AboutPage() {
             How it works
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
-            {`Three connected dojos. ${SCENARIOS.length} scenarios. 39 prebuilt Dojo 2 incidents.`}
+            {`Three connected dojos. ${SCENARIOS.length} scenarios. 35 prebuilt Dojo 2 incidents.`}
           </h2>
           <div className="space-y-4 text-sm text-slate-400 leading-relaxed">
             <div className="flex gap-4 p-4 rounded-lg border border-slate-800 bg-slate-900/40">
@@ -149,7 +133,7 @@ export default function AboutPage() {
                 <p>
                   Use AI as a SOC analyst across Log Triage, Alert Enrichment, Detection Rule Generation,
                   Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse
-                  Detection, and AI System Compromise Triage. 39 prebuilt incidents plus on-demand generation.
+                  Detection, and AI System Compromise Triage. 35 prebuilt incidents plus on-demand generation.
                   Per-scenario rubrics score IOC extraction, MITRE T-code mapping, executive summaries,
                   and KQL/Sigma rule quality. Disabled analyst capabilities are excluded from scoring.
                 </p>

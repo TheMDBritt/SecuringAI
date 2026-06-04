@@ -5928,4 +5928,3 @@ SME/startup cap: lower of the percentage-based or fixed amounts.
 Source: EU AI Act Regulation 2024/1689; European Commission AI Office documentation.`,
   },
 ];
-

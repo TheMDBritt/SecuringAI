@@ -9,7 +9,7 @@ export function Footer() {
           <div className="flex flex-col gap-1.5">
             <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
-              Free AI security training. 1,080+ practice questions, 579+ glossary terms,
+              Free AI security training. 1,004 practice questions, 545 glossary terms,
               27 dojo scenarios. No account, no API key required.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
@@ -36,11 +36,9 @@ export function Footer() {
               <div className="flex flex-col gap-1.5 text-xs text-slate-500">
                 <span>CompTIA SecAI+</span>
                 <span>Microsoft SC-500</span>
-                <span>ISC2 CAISP</span>
-                <span>EC-Council C|AI Security</span>
+                <span>EC-Council CAIS</span>
                 <span>GIAC GOAA / GASAE</span>
                 <span>AWS AIF-C01 · Azure AI-103</span>
-                <span>Google MLE</span>
               </div>
             </div>
           </div>
@@ -50,7 +48,7 @@ export function Footer() {
           <p className="text-[10px] font-mono text-slate-700">
             Independent · Unaffiliated with any certification provider · Check official exam objectives before scheduling.
           </p>
-          <p className="text-[10px] font-mono text-slate-700">© 2025 LLM DOJO</p>
+          <p className="text-[10px] font-mono text-slate-700">stub mode</p>
         </div>
       </div>
     </footer>
