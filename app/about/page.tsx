@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1025 quiz questions, 547 glossary terms, and 10 AI security certifications.',
+    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1025 quiz questions, 562 glossary terms, and 10 AI security certifications.',
 };
 
 const PRINCIPLES = [
