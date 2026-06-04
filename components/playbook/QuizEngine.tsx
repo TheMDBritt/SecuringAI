@@ -726,11 +726,12 @@ function ResultScreen({
 
 // ─── Summary Screen ───────────────────────────────────────────────────────────
 function SummaryScreen({
-  results, settings, onRestart, onGenerateMore,
+  results, settings, onRestart, onRetry, onGenerateMore,
 }: {
   results:        QuizResult[];
   settings:       QuizSettings | null;
   onRestart:      () => void;
+  onRetry:        () => void;
   onGenerateMore: (category: string) => void;
 }) {
   const correct  = results.filter((r) => r.correct).length;
@@ -884,6 +885,12 @@ function SummaryScreen({
       )}
 
       <div className="flex gap-2 pt-1">
+        <button
+          onClick={onRetry}
+          className="flex-1 py-2.5 rounded border border-violet-500/40 hover:border-violet-500/70 bg-violet-500/5 hover:bg-violet-500/10 text-violet-300 text-sm font-semibold transition-colors"
+        >
+          Retry Same Settings
+        </button>
         <button
           onClick={onRestart}
           className="flex-1 py-2.5 rounded border border-slate-700 hover:border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-colors"
@@ -1054,7 +1061,13 @@ export default function QuizEngine() {
           <ResultScreen result={currentResult} index={currentIndex} total={questions.length} onNext={handleNext} />
         )}
         {mode === 'summary'  && (
-          <SummaryScreen results={results} settings={settings} onRestart={() => { setMode('setup'); }} onGenerateMore={handleGenerateMore} />
+          <SummaryScreen
+            results={results}
+            settings={settings}
+            onRestart={() => { setMode('setup'); }}
+            onRetry={() => { if (settings) handleStart(settings); }}
+            onGenerateMore={handleGenerateMore}
+          />
         )}
       </div>
     </div>
