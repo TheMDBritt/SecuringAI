@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,040+ quiz questions, 565+ glossary terms, and 10 AI security certifications.',
+    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,050+ quiz questions, 565+ glossary terms, and 10 AI security certifications.',
 };
 
 const PRINCIPLES = [
@@ -76,7 +76,7 @@ export default function AboutPage() {
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
             {[
               { n: `${SCENARIOS.length}`,    label: 'Scenarios',         sub: 'across 3 dojos'          },
-              { n: '1,040+',                 label: 'Quiz questions',     sub: '10 certs, all domains'   },
+              { n: '1,050+',                 label: 'Quiz questions',     sub: '10 certs, all domains'   },
               { n: '565+',                   label: 'Glossary terms',     sub: 'cert-tagged, searchable' },
               { n: '10',                     label: 'AI cert maps',       sub: 'official exam domains'   },
             ].map(({ n, label, sub }) => (
