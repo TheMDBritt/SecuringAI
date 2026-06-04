@@ -464,7 +464,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700 shrink-0 gap-2">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
             <span className="text-sm font-mono text-slate-300 shrink-0">BlackBeltAI</span>
             <span className="text-xs text-slate-600 shrink-0">/ sandbox</span>
             {scenario && (
@@ -611,10 +611,10 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 mt-0.5">
                 <span className="text-[10px] font-bold text-cyan-400">BB</span>
               </div>
-              <div className="bg-slate-800 border border-slate-700 rounded px-4 py-3 flex gap-1 items-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:0ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:150ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce [animation-delay:300ms]" />
+              <div className="bg-slate-800 border border-slate-700 rounded px-4 py-3 flex gap-1.5 items-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:0ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:200ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:400ms]" />
               </div>
             </div>
           )}
