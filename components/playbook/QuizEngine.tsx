@@ -167,9 +167,14 @@ function Step1SelectExam({
                 </div>
                 <p className="text-[11px] font-semibold text-slate-200 leading-snug mb-0.5">{cert.name}</p>
                 <p className="text-[10px] text-slate-500 leading-snug mb-2">{cert.provider}</p>
-                <p className="text-[10px] font-mono text-slate-600">
-                  <span className="text-slate-400 font-semibold">{total}</span> questions
-                </p>
+                <div className="flex items-center justify-between gap-1">
+                  <p className="text-[10px] font-mono text-slate-600">
+                    <span className="text-slate-400 font-semibold">{total}</span> Qs · <span className="text-slate-500">{cert.domains.length}d</span>
+                  </p>
+                  {cert.passingScore && (
+                    <span className="text-[9px] font-mono text-slate-600">pass≥{cert.passingScore}%</span>
+                  )}
+                </div>
               </button>
             );
           })}
