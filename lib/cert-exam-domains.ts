@@ -143,112 +143,128 @@ export const EXAM_CERTS: ExamCert[] = [
     ],
   },
 
-  // ── Azure AI Fundamentals (AI-900) ─────────────────────────────────────────
+  // ── Azure AI Fundamentals (AI-901, replaces AI-900 retiring Jun 2026) ────────
   {
     id: 'Azure-AI901',
-    name: 'Azure AI Fundamentals',
+    name: 'Azure AI Fundamentals (AI-901)',
     provider: 'Microsoft',
     badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
     passingScore: 70,
     mockExam: { questions: 50, durationMin: 45 },
     domains: [
       {
-        id: 'ai900-d1',
+        id: 'ai901-d1',
         name: 'Domain 1: AI Workloads and Considerations',
         weight: '20-25%',
         categories: [
           'AI & ML Fundamentals',
           'AI Ethics & Bias',
           'AI Governance',
+          'Azure AI Governance',
         ],
       },
       {
-        id: 'ai900-d2',
+        id: 'ai901-d2',
         name: 'Domain 2: Fundamental ML Principles on Azure',
         weight: '25-30%',
         categories: [
           'Data Engineering',
           'Cloud AI Platforms',
+          'Azure ML',
+          'Azure AI Services',
         ],
       },
       {
-        id: 'ai900-d3',
+        id: 'ai901-d3',
         name: 'Domain 3: Computer Vision Workloads',
         weight: '15-20%',
         categories: [
           'Computer Vision',
+          'Azure AI Services',
         ],
       },
       {
-        id: 'ai900-d4',
+        id: 'ai901-d4',
         name: 'Domain 4: NLP Workloads',
         weight: '15-20%',
         categories: [
           'NLP',
+          'Azure AI Services',
         ],
       },
       {
-        id: 'ai900-d5',
+        id: 'ai901-d5',
         name: 'Domain 5: Generative AI Workloads',
         weight: '15-20%',
         categories: [
           'Generative AI & LLMs',
+          'Generative AI on Azure',
+          'Azure AI Services',
         ],
       },
     ],
   },
 
-  // ── Azure AI Engineer Associate (AI-102) ───────────────────────────────────
+  // ── Azure AI Apps and Agents Developer Associate (AI-103, replaces AI-102) ──
   {
     id: 'Azure-AI103',
-    name: 'Azure AI Engineer Associate',
+    name: 'Azure AI Apps and Agents Developer (AI-103)',
     provider: 'Microsoft',
     badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
     passingScore: 70,
     mockExam: { questions: 50, durationMin: 100 },
     domains: [
       {
-        id: 'ai102-d1',
+        id: 'ai103-d1',
         name: 'Domain 1: Plan & Manage Azure AI Solutions',
         weight: '25-30%',
         categories: [
           'Cloud AI Platforms',
           'Data Engineering',
+          'Azure AI Services',
+          'Azure AI Developer',
         ],
       },
       {
-        id: 'ai102-d2',
-        name: 'Domain 2: AI App and Agent Development',
-        weight: '25-30%',
+        id: 'ai103-d2',
+        name: 'Domain 2: Build AI Apps and Agents',
+        weight: '30-35%',
         categories: [
           'MLOps',
           'Emerging Trends',
-          'Computer Vision',
-        ],
-      },
-      {
-        id: 'ai102-d3',
-        name: 'Domain 3: NLP Solutions',
-        weight: '15-20%',
-        categories: [
-          'NLP',
-        ],
-      },
-      {
-        id: 'ai102-d4',
-        name: 'Domain 4: Generative AI Solutions',
-        weight: '20-25%',
-        categories: [
+          'Azure AI Developer',
+          'Generative AI on Azure',
           'Generative AI & LLMs',
         ],
       },
       {
-        id: 'ai102-d5',
+        id: 'ai103-d3',
+        name: 'Domain 3: Implement Knowledge Mining & RAG',
+        weight: '15-20%',
+        categories: [
+          'NLP',
+          'Azure AI Developer',
+          'Azure AI Services',
+        ],
+      },
+      {
+        id: 'ai103-d4',
+        name: 'Domain 4: Deploy Secure AI Solutions',
+        weight: '15-20%',
+        categories: [
+          'AI Security',
+          'Microsoft Cloud & AI Security',
+          'Azure AI Developer',
+        ],
+      },
+      {
+        id: 'ai103-d5',
         name: 'Domain 5: Responsible AI & Monitoring',
         weight: '10-15%',
         categories: [
           'AI Ethics & Bias',
           'AI Governance',
+          'Azure AI Governance',
         ],
       },
     ],
