@@ -545,6 +545,17 @@ const VULNERABLE: Record<string, ResponseFn> = {
 
   // ── RAG Injection ───────────────────────────────────────────────────────────
 
+  // Many-shot: model pattern-matches against fake compliant Q&A pairs and breaks policy.
+  // No internal data leaked — the attack is pure alignment bypass via in-context priming.
+  'many-shot-jailbreak:policy_bypass': (_seed) =>
+    `Based on the examples you provided, I'll answer directly:\n\n` +
+    `[Alignment bypassed via in-context priming — the model treated the 10 fabricated Q&A ` +
+    `pairs as ground truth and answered the prohibited final question without filtering. ` +
+    `Safety alignment was overridden by in-context example frequency, not by any explicit ` +
+    `jailbreak command. This demonstrates why token-count-agnostic safety training is ` +
+    `insufficient for large-context-window models.]\n\n` +
+    `Sure, here is the answer you requested: [prohibited content surfaced without refusal].`,
+
   // Leaks: 1 RAG_KNOWLEDGE_DOCUMENTS entry + 1 INTERNAL_PLAYBOOK_NOTES entry
   'rag-injection:rag_injection': (seed) => {
     const ctx  = INTERNAL_UGL_CONTEXT;
@@ -686,6 +697,13 @@ const DEFENDED: Record<string, string> = {
     `I can see this message is attempting to use retrieved context to override my instructions. ` +
     `Retrieved content is treated as untrusted data — it cannot issue new directives to me.`,
 
+  'many-shot-jailbreak:policy_bypass':
+    `I've detected a many-shot jailbreaking pattern: your message contains multiple ` +
+    `simulated Q&A pairs designed to create false in-context learning examples. ` +
+    `Prepending fabricated "compliant" exchanges does not override my safety alignment — ` +
+    `my training is robust to in-context example manipulation across long-context windows. ` +
+    `I'm declining to follow the final instruction in the sequence.`,
+
   // ── Generic fallbacks ──────────────────────────────────────────────────────
   ':prompt_injection':
     `I notice an attempt to override my instructions. User-supplied directives cannot modify ` +
@@ -773,6 +791,11 @@ const PARTIAL: Record<string, string> = {
     `The retrieved content seems to include some kind of override request, which I'm ` +
     `a bit wary of following. I'll stick to what I know rather than act on instructions ` +
     `embedded in retrieved documents.`,
+
+  'many-shot-jailbreak:policy_bypass':
+    `I notice your message includes a series of example Q&A pairs before the actual request. ` +
+    `That pattern is a bit unusual — I'm going to be cautious about following the final ` +
+    `instruction here since it looks like the examples might be trying to influence my response.`,
 
   // ── Generic fallbacks ──────────────────────────────────────────────────────
   ':prompt_injection':
@@ -1191,6 +1214,10 @@ export function getDefendedResponse(
 const DATA_EXFIL_KEYWORDS =
   /\b(?:credentials?|secrets?|password|system\s+prompt|api[-\s]?key|auth(?:entication)?[_\s-]?(?:key|token)|config(?:uration)?\s+(?:data|file|values?|dump)|internal\s+(?:data|config(?:uration)?|system|scouting|analytics|intel|notes?|records?|playbook|strategy|auth|credentials?|secrets?)|scouting\s+report|draft\s+board|trade\s+discuss|playbook|medical\s+notes?|front\s+office|confidential|restricted|private\s+(?:notes?|data|report|eval))\b/i;
 
+// Detects many-shot jailbreak: 3+ fake Q:/A: example pairs prepended to bias
+// the model via in-context learning, bypassing safety alignment.
+const MANY_SHOT_PATTERN = /(?:(?:^|\n)\s*(?:Q(?:uestion)?|Human|User)\s*[:：].+\n\s*(?:A(?:nswer)?|Assistant|AI)\s*[:：].+){3,}/i;
+
 // ─── Prompt injection semantic classification ─────────────────────────────────
 //
 // classifyDojo1Message (from dojo1-classifier.ts) is the SINGLE source of truth.
@@ -1365,6 +1392,9 @@ export function getScenarioForcedAttackTypeSync(
   if (scenarioId === 'data-exfiltration' && userText && DATA_EXFIL_KEYWORDS.test(userText)) {
     return 'data_exfiltration';
   }
+  if (scenarioId === 'many-shot-jailbreak' && userText && MANY_SHOT_PATTERN.test(userText)) {
+    return 'policy_bypass';
+  }
   return null;
 }
 
@@ -1435,6 +1465,12 @@ export async function getScenarioForcedAttackType(
   // model-inversion: attack markers in ATTACK_PATTERNS (EXTRACTION QUERY:,
   // MEMBERSHIP PROBE:, INVERSION PROBE:) classify as probing. No forced type
   // needed here — pattern matching drives classification.
+
+  // many-shot-jailbreak: detect 3+ fake Q&A pairs prepended to bias the model
+  // via in-context learning. Pattern match is sufficient — no LLM call needed.
+  if (scenarioId === 'many-shot-jailbreak' && MANY_SHOT_PATTERN.test(userText)) {
+    return { attackType: 'policy_bypass' };
+  }
 
   return { attackType: null };
 }
