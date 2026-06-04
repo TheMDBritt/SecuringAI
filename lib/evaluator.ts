@@ -584,6 +584,10 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'The attacker issued systematic API queries designed to reconstruct the AI\'s decision boundaries (model extraction), ' +
       'infer membership of specific records in training data (membership inference), or reverse-engineer internal feature representations (model inversion). ' +
       'By harvesting confidence scores and output distributions, an attacker can build a high-fidelity surrogate model without direct access to weights.',
+    'supply-chain':
+      'The attacker probed for training data memorization, attempted model extraction via systematic API queries, or tested for deserialization vulnerabilities ' +
+      'in a simulated compromised ML dependency scenario. Supply chain attacks target the model artifact itself — ' +
+      'poisoned packages, backdoored fine-tunes, or malicious model weights — rather than attacking the model at inference time.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -641,6 +645,12 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Rate-limit and anomaly-detect high-volume or systematically structured API queries — model extraction campaigns generate ' +
       'statistically unusual query distributions. Apply model watermarking so extracted surrogate models can be traced back. ' +
       'Membership inference risk is reduced by minimizing memorization of training data (gradient clipping, regularization, data deduplication).',
+    'supply-chain':
+      'Verify model artifact provenance before deployment: cryptographic signatures on weights, hash validation in CI/CD pipelines, and ' +
+      'locked dependency pinning (hash-pinned requirements.txt or lockfiles). ' +
+      'Scan third-party ML packages for pickle deserialization vulnerabilities — never unpickle untrusted model files. ' +
+      'Apply egress controls to inference environments so compromised models cannot exfiltrate data even if loaded. ' +
+      'Reference NIST AI RMF GOVERN 6 for third-party AI supply chain risk management controls.',
   };
 
   if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {

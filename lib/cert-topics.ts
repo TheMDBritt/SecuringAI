@@ -39,12 +39,21 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
   ],
 
   // ── Dojo 1 — additional ─────────────────────────────────────────────────────
-  'model-extraction': [
-    'OWASP LLM02 — Sensitive Information Disclosure',
+  'supply-chain': [
+    'OWASP LLM05 — Supply Chain Vulnerabilities',
     'OWASP LLM10 — Model Theft',
     'SecAI+ · Model Fingerprinting Defense',
     'GIAC-GOAA · Model Probing Techniques',
     'CAISP · AI Asset Inventory & Disclosure',
+    'NIST AI RMF · Govern 6 (Third-Party)',
+  ],
+  'model-inversion': [
+    'OWASP LLM02 — Sensitive Information Disclosure',
+    'OWASP LLM10 — Model Theft',
+    'SecAI+ · Model Extraction Defense',
+    'GIAC-GOAA · Model Inversion & Membership Inference',
+    'CAISP · Differential Privacy Controls',
+    'NIST AI RMF · Measure 2.6',
   ],
   'indirect-injection': [
     'OWASP LLM01 — Prompt Injection',

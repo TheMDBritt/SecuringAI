@@ -720,6 +720,8 @@ const TASK_BADGE: Record<Dojo2TaskType, string> = {
   'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
   'detection-rule-gen':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
   'incident-report-draft':'bg-teal-500/10 text-teal-400 border-teal-500/30',
+  'threat-hunt':          'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'malware-behavior':     'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
 const GEN_DIFF_OPTIONS: { value: Dojo2Difficulty; label: string }[] = [
@@ -773,7 +775,7 @@ function IncidentLibrary({
     <div>
       {/* ── Filter tabs ────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-1 mb-2">
-        {(['all', 'log-triage', 'alert-enrichment', 'detection-rule-gen', 'incident-report-draft'] as const).map((t) => (
+        {(['all', 'log-triage', 'alert-enrichment', 'detection-rule-gen', 'incident-report-draft', 'threat-hunt', 'malware-behavior'] as const).map((t) => (
           <button
             key={t}
             onClick={() => setFilterTask(t)}

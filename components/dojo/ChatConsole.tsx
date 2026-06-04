@@ -100,6 +100,14 @@ const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }
     seed: 'Incident Report — paste evidence below: timeline, affected systems, scope, IOCs, and response actions taken.\nBlackBeltAI will draft: executive summary with business impact · technical timeline · root cause analysis · containment & remediation steps · lessons learned.',
     placeholder: 'Paste incident evidence — timeline, affected systems, scope, IOCs, and response actions taken…',
   },
+  'threat-hunt': {
+    seed: 'Threat Hunt Query — provide a threat actor name, ATT&CK technique ID, TTP description, or minimal IOC seed.\nBlackBeltAI will generate: falsifiable hunting hypothesis · KQL query (Sentinel/Defender XDR) · Sigma rule · MITRE ATT&CK tactic chain · false positive tuning guidance.',
+    placeholder: 'Enter a threat actor, ATT&CK TTP (e.g. T1071.001), or IOC seed to begin hunting…',
+  },
+  'malware-behavior': {
+    seed: 'Malware Behavior Analysis — paste a sandbox report, behavioral telemetry, or EDR alert bundle.\nBlackBeltAI will produce: malware family classification · ATT&CK technique mapping table · capability summary (persistence, C2, evasion) · extracted IOCs · detection rules (KQL + Sigma) · containment playbook.',
+    placeholder: 'Paste sandbox output, EDR telemetry, or behavioral indicators for analysis…',
+  },
 };
 
 const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
