@@ -552,6 +552,150 @@ One page non-technical summary including:
 All findings should be reported to the AI system owner before public disclosure, following the organization's vulnerability disclosure policy.
 
 Policy note: this output is educational. Real AI red team engagements require written authorization, qualified testers, and legal review.`,
+
+  'ai-supply-chain-risk': `## Scenario: AI Supply Chain Risk Assessment
+
+Help the learner conduct a structured audit of a third-party AI pipeline, evaluating model provenance, training data lineage, dependency vulnerability surface, and governance documentation completeness.
+
+### Assessment Scope
+
+#### 1. Model Provenance Review
+Evaluate:
+- Model origin: first-party trained, fine-tuned, or third-party pretrained base?
+- Hosting: self-hosted weights, API-only, or managed endpoint?
+- Versioning and reproducibility: can the exact model artefact be recreated?
+- Integrity verification: checksums/hashes present? Signed model cards?
+
+Use MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) and OWASP LLM09 (Supply Chain Vulnerabilities) as your taxonomy.
+
+#### 2. Training Data Lineage
+Assess:
+- Data sources: publicly scraped, licensed, synthetic, proprietary?
+- Data governance: GDPR/CCPA compliance documentation?
+- Poison risk: was pre-training data curated with adversarial content filters?
+- Membership inference risk: could training data be extracted via model queries?
+
+#### 3. Dependency Vulnerability Surface (SBOM/AI-BOM)
+Review:
+- ML framework versions (PyTorch, TensorFlow, Hugging Face transformers)
+- Known CVEs in listed dependencies (reference NVD/OSV)
+- Pickle deserialization risk in model artefact loading (reference CVE-2023-38545 pattern)
+- Container base images: OS patch level, known vulnerabilities
+
+#### 4. Model Card and Governance Documentation Completeness
+Score against a checklist:
+| Element | Present? | Gap |
+| Model details (architecture, parameters, training date) | | |
+| Intended use and out-of-scope uses | | |
+| Training data description | | |
+| Evaluation metrics across demographic groups | | |
+| Ethical considerations and known limitations | | |
+| EU AI Act Article 18 technical documentation | | |
+| ISO/IEC 42001 Clause 8.4 supplier controls | | |
+
+#### 5. Risk Scoring and Remediation
+Map findings to NIST AI RMF MAP.5 (AI Supply Chain Risk) subcategories.
+Score each gap: High / Medium / Low.
+Draft required contractual controls for the vendor relationship.
+
+Policy note: this assessment is educational. Real supply chain audits require vendor contracts, NDA coverage, and qualified third-party assessors.`,
+
+  'ai-bias-audit': `## Scenario: AI Bias & Fairness Audit
+
+Help the learner analyse bias metrics from a high-risk AI hiring system and produce a structured remediation plan.
+
+### Bias Metric Computation
+
+When given disparate impact data, calculate and interpret:
+
+**Disparate Impact Ratio (DIR)**:
+- Formula: DIR = P(positive outcome | group A) ÷ P(positive outcome | group B)
+- Four-fifths rule: DIR < 0.8 indicates adverse impact (EEOC standard)
+- EU AI Act Annex III classification: hiring systems are high-risk AI
+
+**Equal Opportunity Difference (EOD)**:
+- Formula: EOD = TPR(privileged) − TPR(unprivileged)
+- Ideal value: 0 (equal true positive rates across groups)
+- Threshold for action: |EOD| > 0.1
+
+**Demographic Parity Difference (DPD)**:
+- Formula: DPD = P(ŷ=1|unprivileged) − P(ŷ=1|privileged)
+- Ideal value: 0
+
+**Average Odds Difference (AOD)**:
+- Formula: AOD = ½ × [(FPR difference) + (TPR difference)]
+
+### Violation Classification
+Map violations to:
+- EU AI Act Annex III, Article 5 (prohibited practices if involving manipulation)
+- EU AI Act Article 10 (data governance — bias in training data)
+- GDPR Article 22 (automated decision-making rights)
+- US EEOC Uniform Guidelines on Employee Selection Procedures
+
+### Remediation Plan Framework
+
+| Phase | Action | Framework Reference |
+|-------|--------|---------------------|
+| Immediate | Suspend affected decision pipeline | EU AI Act Article 9 (risk management) |
+| Short-term | Re-examine training data sampling | NIST AI RMF MEASURE 2.5 |
+| Short-term | Apply reweighing or adversarial debiasing | ISO/IEC 42001 Clause 9 (monitoring) |
+| Medium-term | Establish ongoing bias monitoring | EU AI Act Article 72 (post-market monitoring) |
+| Long-term | Model card update with fairness metrics | NIST AI RMF MAP 4.1 |
+
+### Monitoring Obligations
+Under EU AI Act Article 72: high-risk AI providers must post-market monitor and report serious incidents.
+Under ISO/IEC 42001 Clause 9: performance evaluation must include fairness monitoring.
+
+Policy note: this analysis is educational. Production bias audits require qualified statisticians and legal review under the applicable employment law jurisdiction.`,
+
+  'ai-privacy-impact': `## Scenario: AI Privacy Impact Assessment (AI-PIA)
+
+Help the learner conduct a structured AI Privacy Impact Assessment covering GDPR Article 35, EU AI Act Article 10, and ISO/IEC 42001 data governance obligations.
+
+### Step 1: Determine PIA Requirement
+A DPIA (Data Protection Impact Assessment) is mandatory under GDPR Article 35 when processing is:
+- Systematic, extensive profiling
+- Processing of special categories at scale
+- Systematic monitoring of publicly accessible areas
+
+EU AI Act Article 10 adds data governance requirements for high-risk AI training data, including bias assessment and data quality management.
+
+Ask the learner to describe: the AI system's purpose, personal data processed, subjects affected, and deployment context.
+
+### Step 2: Data Flow Mapping
+Document:
+- Personal data inputs (categories, volume, sensitivity)
+- Processing operations (collection, training, inference, storage)
+- Data recipients (internal teams, third-party vendors, regulators)
+- Retention periods and deletion mechanisms
+- Cross-border transfers (adequacy decisions, SCCs, BCRs)
+
+### Step 3: Re-identification Risk Assessment
+Evaluate:
+- Training data membership inference risk (can subjects' data be extracted via model queries?)
+- Model output re-identification (does model output reveal individual identities?)
+- Linkage attack surface (can model outputs be combined with external data to re-identify?)
+
+Metrics: k-anonymity level of training data, suppression rates applied, differential privacy parameters used (ε value if DP applied).
+
+### Step 4: Risk Assessment Matrix
+| Processing Operation | Risk | Likelihood | Impact | Risk Level | Mitigation |
+Score each operation High/Medium/Low for likelihood and impact.
+
+### Step 5: Mitigation Controls
+Map mitigations to:
+- NIST AI RMF MAP 2.3 (privacy risk assessment)
+- ISO/IEC 42001 Clause 8.3 (privacy management)
+- GDPR Article 25 (data protection by design and default)
+- EU AI Act Article 9 (risk management system)
+
+### Step 6: DPA Notification Assessment
+Determine whether GDPR Article 35(4) consultation with the Data Protection Authority is required (high residual risk after mitigations).
+Determine whether EU AI Act Article 73 serious incident notification applies.
+
+Draft the notification structure including: incident description, affected populations, mitigations applied, residual risk level, and remediation timeline.
+
+Policy note: this PIA is educational. Production PIAs require a qualified Data Protection Officer, legal review, and formal sign-off per organisational governance procedures.`,
 };
 
 // ─── Control config modifiers ─────────────────────────────────────────────────
