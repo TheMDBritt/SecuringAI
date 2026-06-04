@@ -9862,7 +9862,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 {
     id: 'azure-ai-001',
     topic: 'Azure AI Content Safety',
-    category: 'Microsoft AI Security',
+    category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate',
     certTags: ['Azure-AI901', 'Azure-AI103', 'SC-500'],
     question: 'Azure AI Content Safety Prompt Shield detects two distinct injection attack surfaces. What are they?',
@@ -9878,7 +9878,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 {
     id: 'azure-ai-002',
     topic: 'Microsoft Responsible AI',
-    category: 'Microsoft AI Security',
+    category: 'Microsoft Cloud & AI Security',
     difficulty: 'beginner',
     certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Microsoft\'s Responsible AI Standard defines six principles. Which principle specifically addresses the requirement that AI systems should not perform actions beyond their intended purpose or authorized scope?',
@@ -9894,7 +9894,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 {
     id: 'azure-ai-003',
     topic: 'Azure AI Foundry Security',
-    category: 'Microsoft AI Security',
+    category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate',
     certTags: ['Azure-AI103', 'SC-500'],
     question: 'In Azure AI Foundry, what is the purpose of the Content Filter configuration applied to a deployed model?',
@@ -9910,7 +9910,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 {
     id: 'azure-ai-004',
     topic: 'Microsoft Entra AI Governance',
-    category: 'Microsoft AI Security',
+    category: 'Microsoft Cloud & AI Security',
     difficulty: 'advanced',
     certTags: ['Azure-AI103', 'SC-500'],
     question: 'An organization wants to prevent employees from using unauthorized external AI services (Shadow AI) while allowing approved tools like Microsoft 365 Copilot. What Microsoft control enforces this?',
@@ -9926,7 +9926,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
 {
     id: 'azure-ai-005',
     topic: 'Azure OpenAI Abuse Prevention',
-    category: 'Microsoft AI Security',
+    category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate',
     certTags: ['Azure-AI103', 'SC-500', 'SecAI'],
     question: 'Azure OpenAI Service requires customers to complete an intake form before accessing certain capabilities. What is the primary reason for this requirement?',
@@ -17024,7 +17024,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   {
     id: 'gasae-fuzz-001',
     topic: 'AI Model Security Testing',
-    category: 'Offensive AI Security',
+    category: 'Red Teaming AI',
     difficulty: 'advanced' as const,
     certTags: ['GIAC-GASAE', 'CAIS'],
     question: 'LLM-assisted fuzzing for AI model security differs from traditional software fuzzing in which key way?',

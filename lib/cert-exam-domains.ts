@@ -319,6 +319,7 @@ export const EXAM_CERTS: ExamCert[] = [
           'MLOps Security',
           'ML Engineering Security',
           'Generative AI & LLMs',
+          'AI/ML Operations',
         ],
       },
       {
@@ -329,6 +330,7 @@ export const EXAM_CERTS: ExamCert[] = [
           'Emerging Trends',
           'AI Ethics & Bias',
           'AI Governance',
+          'AI/ML Privacy',
         ],
       },
       {
@@ -338,6 +340,8 @@ export const EXAM_CERTS: ExamCert[] = [
         categories: [
           'AI Security',
           'AI Security Fundamentals',
+          'Google Cloud AI Security',
+          'AI/ML Operations',
         ],
       },
     ],
@@ -381,6 +385,8 @@ export const EXAM_CERTS: ExamCert[] = [
         categories: [
           'Red Teaming AI',
           'AI Security',
+          'LLM Security',
+          'AI Red Teaming',
         ],
       },
       {
@@ -390,6 +396,7 @@ export const EXAM_CERTS: ExamCert[] = [
           'AI in Security Ops',
           'MLOps Security',
           'AI Governance',
+          'AI Red Teaming',
         ],
       },
     ],
@@ -412,6 +419,7 @@ export const EXAM_CERTS: ExamCert[] = [
           'AI & ML Fundamentals',
           'Emerging Trends',
           'AI Governance',
+          'AI Security Engineering',
         ],
       },
       {
@@ -422,6 +430,7 @@ export const EXAM_CERTS: ExamCert[] = [
           'AI Testing and Security',
           'Computer Vision',
           'AI Security',
+          'AI Security Assessment',
         ],
       },
       {
@@ -586,6 +595,8 @@ export const EXAM_CERTS: ExamCert[] = [
           'AI Governance',
           'Data Engineering',
           'Emerging Trends',
+          'Information Security Governance',
+          'Information Security Program',
         ],
       },
       {
@@ -610,6 +621,8 @@ export const EXAM_CERTS: ExamCert[] = [
           'Red Teaming AI',
           'Microsoft Cloud & AI Security',
           'Cloud AI Platforms',
+          'Information Security Incident Management',
+          'AI Governance & Risk',
         ],
       },
     ],
