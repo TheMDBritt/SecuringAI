@@ -17026,7 +17026,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Model Security Testing',
     category: 'Offensive AI Security',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GASAE', 'EC-CAIS'],
+    certTags: ['GIAC-GASAE', 'CAIS'],
     question: 'LLM-assisted fuzzing for AI model security differs from traditional software fuzzing in which key way?',
     options: [
       'Traditional fuzzing targets memory corruption vulnerabilities; LLM-assisted fuzzing cannot find memory corruption bugs and is limited to logical flaws',

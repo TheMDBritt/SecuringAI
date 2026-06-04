@@ -4,7 +4,7 @@
  * Scenario & Data Engine for Dojo 2 (AI-Assisted SOC).
  *
  * Contains:
- *  - DOJO2_PREBUILT_SCENARIOS  — 39 hand-crafted, SOC-realistic incident scenarios
+ *  - DOJO2_PREBUILT_SCENARIOS  — 47 hand-crafted, SOC-realistic incident scenarios
  *    covering Log Triage, Alert Enrichment, Detection Rule Generation, Incident
  *    Report Draft, and AI System Compromise Triage at Beginner / Intermediate / Advanced difficulty.
  *  - generateDojo2Scenario()   — runtime generator that produces randomised but
@@ -3444,6 +3444,261 @@ EU AI ACT COMPLIANCE NOTE:
 TASK: Draft a structured incident report for CISO and board presentation. Include: executive summary, technical timeline, root cause analysis, impact assessment, immediate containment actions, EU AI Act Article 73 notification obligations, lessons learned, and 90-day remediation roadmap.`,
   },
 
+
+
+  // ── Additional Threat Hunt scenarios ──────────────────────────────────────
+  {
+    id: 'th-004',
+    title: 'Hunt: AI-Generated Spear Phishing Campaign Against Executives',
+    taskType: 'threat-hunt' as const,
+    difficulty: 'intermediate' as const,
+    attackCategory: 'Phishing' as const,
+    mitre: {
+      tactic: 'Initial Access',
+      techniques: ['T1566.002 – Phishing: Spearphishing Link', 'T1598.003 – Phishing for Information: Spearphishing Link'],
+    },
+    iocs: {
+      ips: ['185.220.101.47', '94.102.49.190'],
+      domains: ['docusign-secure.acme-corp.net', 'sharepoint-corp.login-verify.com'],
+      hashes: [],
+      other: ['AI-generated email body', 'LinkedIn data harvesting', 'OAuth consent grant'],
+    },
+    description: 'Threat intel flagged an AI-generated spear phishing campaign targeting CFO and VP Finance. Hunt for phishing delivery, OAuth consent grants, and credential harvesting across email and identity logs.',
+    incidentData: `THREAT HUNT BRIEF — AI-Assisted Spear Phishing / Executive Targeting
+Source: CISA Advisory AA26-089A + Internal Threat Intel
+Date: 2026-05-28
+Hunt Lead: [SOC Tier 3]
+
+CONTEXT:
+A threat actor group (TA4391) has been observed using GPT-4 class language models to generate
+highly personalized spear phishing emails. The actor harvests LinkedIn, Twitter/X, and public
+earnings call transcripts to craft emails that reference real ongoing projects, internal
+abbreviations, and plausible business contexts. Email quality is indistinguishable from
+legitimate correspondence by conventional spam filters.
+
+ATTACK CHAIN (OBSERVED IN PEER ORGANIZATIONS):
+1. Reconnaissance: LinkedIn scraping — harvested CFO's recent posts about Q2 board presentation
+2. Email crafting: LLM generates email appearing to be from auditor requesting urgent DocuSign review
+3. Link delivery: malicious URL to docusign-secure.acme-corp.net (look-alike domain registered 3 days prior)
+4. OAuth abuse: landing page initiates OAuth "consent grant" requesting Mail.Read, Files.Read.All permissions
+5. Credential harvest: OR redirects to Microsoft login page at sharepoint-corp.login-verify.com
+6. Persistence: if OAuth grant approved — attacker has persistent API access without password
+
+YOUR ENVIRONMENT:
+- Email: Microsoft 365 with Defender for Office 365 (Plan 2)
+- Identity: Entra ID (Azure AD) with Conditional Access
+- SIEM: Microsoft Sentinel
+- Log sources: EmailEvents, OfficeActivity, SignInLogs, AuditLogs (Entra), MicrosoftGraphActivityLogs
+
+HUNT OBJECTIVES:
+1. Write a KQL query against EmailEvents to detect emails from look-alike domains
+   (domains registered within 14 days AND containing organization name substring)
+2. Write a KQL query against AuditLogs to detect OAuth consent grants to third-party apps
+   requesting high-privilege scopes (Mail.Read, Files.ReadWrite, Calendars.Read) in the last 30 days
+3. Build a Sigma rule for detecting OAuth phishing consent page visits (URL patterns)
+4. Identify indicators that an email was AI-generated (structural patterns, statistical language markers)
+5. Draft containment actions if OAuth consent grant is confirmed for a compromised executive account
+6. Map to NIST AI RMF: how should AI-generated phishing be reflected in organizational AI risk documentation?`,
+  },
+  {
+    id: 'th-005',
+    title: 'Hunt: Adversarial ML Evasion of AI-Based EDR Detection',
+    taskType: 'threat-hunt' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'Model Evasion' as const,
+    mitre: {
+      tactic: 'Defense Evasion',
+      techniques: ['T1562.001 – Impair Defenses: Disable or Modify Tools', 'AML.T0015 – Evade ML Model'],
+    },
+    iocs: {
+      ips: ['45.153.160.140'],
+      domains: ['update-telemetry.microsoft-cdn.net'],
+      hashes: ['d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9', 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'],
+      other: ['adversarially perturbed PE header', 'feature manipulation', 'API call reordering'],
+    },
+    description: 'EDR vendor threat intel flagged a malware variant specifically engineered to evade ML-based behavioral detection through feature manipulation. Hunt for adversarially-crafted execution patterns that bypass static ML classifiers.',
+    incidentData: `THREAT HUNT BRIEF — Adversarial ML Evasion / EDR Bypass
+Source: EDR Vendor Threat Intelligence (Priority: HIGH)
+Date: 2026-05-30
+Hunt Lead: [AI Security Analyst]
+
+CONTEXT:
+A sophisticated threat actor has been observed deploying malware variants specifically
+engineered to evade ML-based endpoint detection. The actor has reverse-engineered the
+feature extraction pipeline of a major EDR vendor's static ML classifier. Their technique:
+- Reorder API calls to reduce static feature vector distance from benign samples
+- Pad PE sections with benign code sequences that dominate feature extraction
+- Manipulate entropy statistics to fall within benign distribution thresholds
+- Fragment shellcode into patterns that individually score benign on static analysis
+
+MITRE ATLAS MAPPING:
+AML.T0015 — Evade ML Model: adversary crafts inputs that maximize probability of
+misclassification as benign while maintaining malicious functionality.
+
+YOUR ENVIRONMENT:
+- EDR: CrowdStrike Falcon (ML prevention + behavioral detection)
+- SIEM: Splunk Enterprise Security
+- Log sources: Falcon process telemetry, Windows Sysmon, DNS query logs
+
+KNOWN EVASION ARTIFACTS:
+- Binary d4e5f6... exhibited 0 detections on VirusTotal at time of deployment
+- Binary a1b2c3... shows unusual PE section padding (15KB of NOPs before entrypoint)
+- Process lineage: explorer.exe → svchost.exe (legitimate parent) — blends with normal
+- C2 beaconing to update-telemetry.microsoft-cdn.net (look-alike legitimate Microsoft domain)
+- Low DWELL volume beaconing: check-in every 4 hours with random ±30min jitter
+
+HUNT OBJECTIVES:
+1. Write a Splunk SPL query detecting PE files with anomalous section entropy relative
+   to legitimate system binaries (ratio of code entropy to data entropy outside normal range)
+2. Write a detection for unusual svchost.exe spawning from explorer.exe (non-standard parent)
+3. Build a behavioral hunt query for C2 beaconing: DNS queries with regular timing intervals
+   and jitter-within-window patterns (4h ± 30min = 3.5h to 4.5h inter-query gaps)
+4. Explain how adversarial ML evasion differs from traditional AV evasion (signature bypass)
+5. Recommend 3 detection controls that are robust to adversarial feature manipulation
+   (hint: focus on behavioral rather than static features)
+6. Map adversarial evasion techniques to MITRE ATLAS AML.T0015 sub-techniques`,
+  },
+
+  // ── Additional Malware Behavior scenarios ────────────────────────────────
+  {
+    id: 'mb-005',
+    title: 'Malware Analysis: LLM-Assisted C2 Obfuscation via OpenAI API',
+    taskType: 'malware-behavior' as const,
+    difficulty: 'advanced' as const,
+    attackCategory: 'C2 Beaconing' as const,
+    mitre: {
+      tactic: 'Command and Control',
+      techniques: ['T1071.001 – Application Layer Protocol: Web Protocols', 'T1027 – Obfuscated Files or Information', 'AML.T0054 – LLM Prompt Injection'],
+    },
+    iocs: {
+      ips: ['104.18.10.134', '172.64.149.25'],
+      domains: ['api.openai.com', 'generativelanguage.googleapis.com'],
+      hashes: ['e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2', '3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f'],
+      other: ['ChatGPT conversation API', 'steganographic payload in LLM response', 'legitimate AI API abuse'],
+    },
+    description: 'Novel malware sample uses legitimate OpenAI API calls as C2 channel — attacker instructions embedded in ChatGPT conversation context. Analysis required: extract C2 protocol, decode steganographic commands, assess detection difficulty.',
+    incidentData: `MALWARE BEHAVIOR ANALYSIS — LLM C2 Channel
+Sample: agent_updater.exe (hash: e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2)
+Submitted by: Endpoint Security Team
+Date: 2026-06-01
+Priority: HIGH — Novel TTP
+
+BEHAVIORAL SANDBOX SUMMARY (60-second execution):
+
+NETWORK ACTIVITY:
+  2026-06-01 09:14:02 POST https://api.openai.com/v1/chat/completions
+    User-Agent: Mozilla/5.0 (legitimate browser UA)
+    Authorization: Bearer sk-[REDACTED — valid API key found in binary]
+    Body: {"model":"gpt-4o-mini","messages":[{"role":"user","content":"Write me a poem about cloud computing. Include the words: delta, foxtrot, charlie, bravo in sequence."}]}
+    Response: {"choices":[{"message":{"content":"In digital skies where [DELTA] clouds form, / [FOXTROT] protocols guide the data norm, / [CHARLIE] nodes exchange their bytes with care, / [BRAVO] connections fill the endless air."}}]}
+
+  2026-06-01 09:14:08 POST https://api.openai.com/v1/chat/completions
+    Body: {"model":"gpt-4o-mini","messages":[...previous...{"role":"user","content":"Continue the poem. Make the next stanza 4 lines where each first letter spells a word."}]}
+
+STATIC ANALYSIS FINDINGS:
+  - Hardcoded OpenAI API key in .data section (base64 encoded)
+  - Custom alphabet mapping table: D=download, F=execute, C=collect, B=beacon, E=exfiltrate
+  - Regex pattern matching LLM response text for bracketed uppercase words [WORD]
+  - Function sub_00401234: extracts bracketed tokens, maps to command alphabet
+  - Function sub_00401890: executes decoded command with parameters from subsequent LLM response
+
+C2 PROTOCOL (RECONSTRUCTED):
+  1. Malware sends "innocent" ChatGPT message with embedded command request
+  2. Human operator (with access to the OpenAI account) reads the prompt
+  3. Operator replies via ChatGPT interface with poem/story containing bracketed tokens
+  4. Malware polls for response, extracts [TOKEN] patterns, maps to command alphabet
+  5. Commands decoded: delta=download, foxtrot=execute, charlie=collect, bravo=beacon, echo=exfiltrate
+
+EVASION EFFECTIVENESS:
+  - Network traffic: legitimate HTTPS to api.openai.com — not blocked by most firewalls
+  - DLP: ChatGPT API traffic is commonly allowed in corporate environments
+  - Content inspection: API traffic encrypted (TLS 1.3)
+  - Behavioral: no unusual parent process, no command shell, no registry persistence observed in first 60s
+
+TASK — MALWARE ANALYSIS REPORT:
+1. Describe the C2 protocol architecture — classify as which MITRE T1071 sub-technique
+2. Identify the 5 commands in the encoded alphabet and their mapped actions
+3. Explain why this TTP is particularly difficult to detect with traditional network controls
+4. Propose 3 network/endpoint detection methods specific to LLM API C2 abuse
+5. Assess: should organizations block all traffic to api.openai.com? Analyze the trade-off
+6. Map to MITRE ATLAS: which AI-specific technique does this represent?
+7. Draft a YARA rule to detect this malware family based on the hardcoded patterns`,
+  },
+  {
+    id: 'mb-006',
+    title: 'Malware Analysis: Deepfake Audio Social Engineering — Voice Cloning C-Suite Fraud',
+    taskType: 'malware-behavior' as const,
+    difficulty: 'intermediate' as const,
+    attackCategory: 'Phishing' as const,
+    mitre: {
+      tactic: 'Initial Access',
+      techniques: ['T1566.004 – Phishing: Spearphishing Voice', 'T1656 – Impersonation'],
+    },
+    iocs: {
+      ips: ['45.76.89.213'],
+      domains: ['secure-wire-confirm.acme-financial.net'],
+      hashes: [],
+      other: ['deepfake audio WAV', 'voice cloning model', 'WhatsApp voice message', 'wire transfer instruction'],
+    },
+    description: 'CFO received WhatsApp voice message appearing to be from CEO authorizing $4.2M wire transfer. Forensic audio analysis confirms AI voice cloning. Analyze the attack chain, AI tooling involved, and detection methods.',
+    incidentData: `MALWARE / FRAUD BEHAVIOR ANALYSIS — Deepfake Audio Social Engineering
+Incident Reference: INC-2026-0847
+Date of Incident: 2026-05-27 14:23 UTC
+Victim: VP Finance (authorized wire transfers up to $5M)
+Loss: $4,200,000 (wire transfer executed before detection)
+Status: Funds partially frozen (48-hour hold request filed with receiving bank)
+
+INCIDENT NARRATIVE:
+
+2026-05-27 14:23 — WhatsApp message received by VP Finance from CEO's verified WhatsApp
+  account number (+1-415-XXX-XXXX):
+  [Voice message — 23 seconds]: "Hi [VP Finance name], it's [CEO name]. I'm in a sensitive
+  M&A meeting and can't talk. We need to close an urgent wire for the acquisition. $4.2M to
+  Meridian Capital Partners. Account details in email from me in 2 minutes. It's time-sensitive —
+  need it processed before market close. Call me if issues but I'm going in."
+
+2026-05-27 14:25 — Email received from ceo@acme-corp-mail.net (not acme-corp.com):
+  Subject: Urgent Wire - Meridian Capital Partners
+  Wire details: [REDACTED bank account] — Meridian Capital Partners
+  Amount: $4,200,000 USD
+  Reference: ACQ-2026-MCP
+
+2026-05-27 14:47 — VP Finance processes wire transfer after calling CEO's WhatsApp
+  (went to voicemail — normal as CEO is "in meeting")
+
+2026-05-27 16:30 — CEO's EA notices unusual wire in expense system, alerts Security
+
+FORENSIC AUDIO ANALYSIS:
+  - Voice message WAV analyzed by audio forensics tool (Pindrop, ElevenLabs detector)
+  - Spectral analysis: frequency patterns inconsistent with recorded CEO voice samples
+  - Mel-frequency cepstral coefficients: statistical distribution differs from authentic CEO audio
+  - GAN artifacts detected: slight periodic noise at 22kHz (above normal human perception)
+  - Likely cloning tool: ElevenLabs or Resemble AI (high-quality voice synthesis artifacts)
+  - Source material: CEO appeared on 3 earnings call recordings (publicly available) + LinkedIn video
+  - Time to clone: estimated 2-3 hours to clone voice from <10 minutes of source audio
+
+CEO WHATSAPP COMPROMISE:
+  - CEO's phone: SIM swap attack executed 48 hours prior (confirmed with carrier)
+  - Attacker controlled CEO's WhatsApp number, enabling legitimate sender ID
+  - SIM swap enabled by social engineering of carrier support representative
+
+TOTAL ATTACK TIMELINE:
+  Day -2: SIM swap CEO's number
+  Day -2 to -1: Clone CEO's voice from earnings calls
+  Day 0 14:23: Send deepfake WhatsApp voice message
+  Day 0 14:25: Send spoofed email with wire details
+  Day 0 14:47: Wire executed
+  Day 0 16:30: Detected
+
+TASK — ANALYSIS REPORT:
+1. Identify the AI technologies used in this attack and their role in the kill chain
+2. List the forensic indicators that confirmed deepfake audio (technical details)
+3. What verification control would have prevented the wire transfer? (multi-channel out-of-band verification)
+4. Draft detection recommendations: how should the organization detect future deepfake audio social engineering?
+5. Map to MITRE techniques: T1566.004, T1656, and relevant ATLAS techniques for AI-generated content
+6. What policies should govern wire transfer authorizations that arrive via non-standard channels (WhatsApp)?
+7. Assess regulatory notification requirements: is this a data breach requiring GDPR/SEC notification?`,
+  },
 
 ];
 

@@ -7,11 +7,11 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  27,
-  quizQs:    1004,
-  glossary:  545,
-  articles:   64,
+  quizQs:    1128,
+  glossary:  604,
+  articles:   71,
   certs:      10,
-  incidents:  35,
+  incidents:  47,
 };
 
 interface DojoCard {
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 35 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
+    summary: 'Operate as an AI SOC analyst across 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -481,9 +481,9 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '11 attack scenarios', color: 'text-red-400' },
-                    { label: 'Dojo 2', sub: '35 SOC incidents',   color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '8 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 1', sub: '11 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
+                    { label: 'Dojo 3', sub: '8 GRC scenarios',     color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

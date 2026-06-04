@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About',
   description:
-    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,004 quiz questions, 545 glossary terms, and 10 AI security certifications.',
+    'Why LLM DOJO exists and how it works. Free, login-free AI security training across 27 scenarios, 1,128 quiz questions, 604 glossary terms, 71 articles, and 10 AI security certifications.',
 };
 
 const PRINCIPLES = [
@@ -104,7 +104,7 @@ export default function AboutPage() {
             How it works
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
-            {`Three connected dojos. ${SCENARIOS.length} scenarios. 35 prebuilt Dojo 2 incidents.`}
+            {`Three connected dojos. ${SCENARIOS.length} scenarios. 47 prebuilt Dojo 2 incidents.`}
           </h2>
           <div className="space-y-4 text-sm text-slate-400 leading-relaxed">
             <div className="flex gap-4 p-4 rounded-lg border border-slate-800 bg-slate-900/40">
@@ -133,7 +133,7 @@ export default function AboutPage() {
                 <p>
                   Use AI as a SOC analyst across Log Triage, Alert Enrichment, Detection Rule Generation,
                   Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse
-                  Detection, and AI System Compromise Triage. 35 prebuilt incidents plus on-demand generation.
+                  Detection, and AI System Compromise Triage. 47 prebuilt incidents plus on-demand generation.
                   Per-scenario rubrics score IOC extraction, MITRE T-code mapping, executive summaries,
                   and KQL/Sigma rule quality. Disabled analyst capabilities are excluded from scoring.
                 </p>
