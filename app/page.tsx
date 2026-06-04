@@ -7,7 +7,7 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  20,
-  quizQs:    817,
+  quizQs:    856,
   glossary:  436,
   articles:   64,
   certs:      10,
@@ -131,19 +131,20 @@ export default function LandingPage() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-12 md:py-16">
-          <div className="grid md:grid-cols-5 gap-8 md:gap-12 items-start">
+        <div className="max-w-6xl mx-auto px-6 py-10 md:py-14">
+          <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
             {/* Left — headline */}
             <div className="md:col-span-3">
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-4">
-                AI Security Training · Free · No account required
-              </p>
-              <h1 className="text-[38px] md:text-[50px] font-bold tracking-tight text-slate-100 leading-[1.07]">
+              <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded border border-slate-700 bg-slate-800/40">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · No login · No API key</span>
+              </div>
+              <h1 className="text-[36px] md:text-[48px] font-bold tracking-tight text-slate-100 leading-[1.08]">
                 Attack LLMs.<br />
                 Defend against them.<br />
                 Govern AI risk.
               </h1>
-              <p className="mt-5 text-[15px] text-slate-400 max-w-xl leading-relaxed">
+              <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
                 Three interactive dojos. Run prompt injection against live guardrails, triage real SOC
                 incidents with AI, and classify EU AI Act risk tiers — every turn scored and mapped to
                 the {STATS.certs} AI security certifications the field is converging on.
@@ -159,43 +160,66 @@ export default function LandingPage() {
                   href="/playbook"
                   className="px-5 py-2.5 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium text-sm transition-colors duration-150"
                 >
-                  Open the playbook
+                  Study the playbook
                 </Link>
               </div>
-              <div className="mt-5 flex items-center gap-4">
-                <p className="text-[11px] text-slate-600 font-mono">
-                  No login · No setup · Stub mode — no API key needed
-                </p>
+              {/* Quick framework tags */}
+              <div className="mt-6 flex flex-wrap gap-1.5">
+                {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
+                  <span key={f} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-600">
+                    {f}
+                  </span>
+                ))}
               </div>
             </div>
 
-            {/* Right — live stats grid */}
+            {/* Right — stats + terminal */}
             <div className="md:col-span-2">
-              <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
+              {/* Stats grid */}
+              <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden mb-3">
                 {[
-                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs` },
+                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `${STATS.certs} certs mapped` },
                   { n: STATS.scenarios,               label: 'dojo scenarios',  sub: '3 disciplines' },
-                  { n: STATS.glossary,                label: 'glossary terms',  sub: 'cert-tagged' },
-                  { n: STATS.articles,                label: 'topic articles',  sub: 'with code + tables' },
-                  { n: STATS.incidents,               label: 'SOC incidents',   sub: 'prebuilt Dojo 2' },
+                  { n: STATS.glossary,                label: 'glossary terms',  sub: 'A–Z, cert-filtered' },
+                  { n: STATS.articles,                label: 'topic articles',  sub: 'code + tables' },
+                  { n: STATS.incidents,               label: 'SOC incidents',   sub: 'Dojo 2 prebuilt' },
                   { n: STATS.certs,                   label: 'certs mapped',    sub: 'official domains' },
                 ].map(({ n, label, sub }) => (
-                  <div key={label} className="bg-slate-900 px-4 py-4">
+                  <div key={label} className="bg-slate-900 px-4 py-3.5">
                     <div className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n}</div>
                     <div className="text-xs font-medium text-slate-300 mt-0.5">{label}</div>
                     <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
                   </div>
                 ))}
               </div>
-              {/* Terminal-style callout */}
-              <div className="mt-3 px-3 py-2.5 rounded border border-slate-800 bg-slate-900/60 font-mono text-[11px] text-slate-500 leading-relaxed">
-                <span className="text-slate-700">$ </span>
-                <span className="text-cyan-500">dojo</span>
-                <span className="text-slate-400"> --scenario prompt-injection --guardrails strict</span>
-                <br />
-                <span className="text-slate-700">→ </span>
-                <span className="text-red-400">BLOCKED</span>
-                <span className="text-slate-500"> · LLM01 · score: 94/100</span>
+              {/* Terminal */}
+              <div className="px-3 py-2.5 rounded border border-slate-800 bg-slate-950 font-mono text-[11px] leading-relaxed">
+                <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-slate-800">
+                  <span className="w-2 h-2 rounded-full bg-slate-700" />
+                  <span className="w-2 h-2 rounded-full bg-slate-700" />
+                  <span className="w-2 h-2 rounded-full bg-slate-700" />
+                  <span className="text-slate-600 ml-1 text-[10px]">dojo session</span>
+                </div>
+                <div className="text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">attack</span>
+                  <span className="text-slate-400"> --type prompt-injection --guardrails strict</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-red-400 font-semibold">BLOCKED</span>
+                  <span className="text-slate-600"> · LLM01 · turn score 100/100</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">attack</span>
+                  <span className="text-slate-400"> --type policy-bypass --guardrails off</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-amber-400 font-semibold">VULNERABLE</span>
+                  <span className="text-slate-600"> · LLM01 · session −15pts</span>
+                </div>
               </div>
             </div>
           </div>

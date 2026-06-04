@@ -3,7 +3,7 @@ import PlaybookView from '@/components/playbook/PlaybookView';
 export const metadata = {
   title: 'Playbook',
   description:
-    '846 practice questions · 420 glossary terms · 67 topic articles · 12 cert maps. Covers CompTIA SecAI+, ISC2 CAISP, EC-Council C|AI Security, GIAC GOAA/GASAE, Microsoft SC-500, AWS AIF-C01, and more.',
+    '856 practice questions · 436 glossary terms · 64 topic articles · 10 cert maps. Select a certification, drill its official exam domains, get per-domain score breakdown. Covers CompTIA SecAI+, EC-Council C|AI Security, GIAC GOAA/GASAE, Microsoft SC-500, AWS AIF-C01, Azure AI-103, and more.',
 };
 
 export default function PlaybookPage() {
