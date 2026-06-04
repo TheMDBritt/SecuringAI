@@ -51,7 +51,7 @@ export function Header() {
         {/* Status pill */}
         <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded border border-slate-800 bg-slate-900">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500/70" />
-          <span className="text-[10px] text-slate-600 font-mono">stub</span>
+          <span className="text-[10px] text-slate-600 font-mono">free · no key</span>
         </div>
       </div>
     </header>
