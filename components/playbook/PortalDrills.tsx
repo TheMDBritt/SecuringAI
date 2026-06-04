@@ -173,7 +173,7 @@ export default function PortalDrills() {
               <span className="w-2 h-2 rounded-full bg-slate-600" />
               <span className="w-2 h-2 rounded-full bg-slate-600" />
             </div>
-            <span className="text-[10px] font-mono text-slate-500 truncate flex-1">🔒 {step.screen}</span>
+            <span className="text-[10px] font-mono text-slate-500 truncate flex-1">{step.screen}</span>
           </div>
           {/* Screen body */}
           <div className="p-4 min-h-[60px]">
