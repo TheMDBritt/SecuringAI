@@ -150,8 +150,9 @@ export default function AboutPage() {
                   Govern AI across the full risk lifecycle. Risk-tier a deployment under the EU AI Act,
                   draft ISO 42001 controls, review third-party AI vendors, investigate model failures
                   under Article 73, document model cards and AI-BOMs, conduct AI red team assessment reports,
-                  evaluate supply chain risk against NIST AI RMF MAP.5, and audit bias metrics for
-                  Annex III high-risk systems. Scored on NIST AI RMF, ISO/IEC 42001, and EU AI Act.
+                  evaluate supply chain risk against NIST AI RMF MAP.5, audit bias metrics for
+                  Annex III high-risk systems, and walk a high-risk system through EU AI Act conformity
+                  assessment (Article 43 + Annex IV + Annex IX QMS). Scored on NIST AI RMF, ISO/IEC 42001, and EU AI Act.
                 </p>
               </div>
             </div>
