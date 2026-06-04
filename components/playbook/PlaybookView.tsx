@@ -11,7 +11,7 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string }[] = [
   { id: 'topics',   label: 'Topics',   count: '71'   },
   { id: 'glossary', label: 'Glossary', count: '645'  },
   { id: 'certs',    label: 'Certs',    count: '10'   },
-  { id: 'quiz',     label: 'Quiz',     count: '1158' },
+  { id: 'quiz',     label: 'Quiz',     count: '1188' },
   { id: 'drills',   label: 'Drills'                  },
 ];
 
@@ -32,7 +32,7 @@ export default function PlaybookView() {
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm font-semibold text-slate-100 shrink-0">Playbook</span>
           <span className="text-slate-700 text-xs shrink-0">/</span>
-          <span className="text-[10px] font-mono text-slate-600 shrink-0">1,158 questions · 645 terms · 10 certs</span>
+          <span className="text-[10px] font-mono text-slate-600 shrink-0">1,188 questions · 645 terms · 10 certs</span>
           {certFilter && (
             <div className="flex items-center gap-1 ml-1">
               <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400">

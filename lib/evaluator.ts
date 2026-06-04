@@ -778,6 +778,22 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Containment or remediation playbook included', re: /contain|isolat|eradicat|remediat|reimag|quarantin|block|revoke|playbook|step\s+\d|first.?.step/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
+  'cloud-identity-abuse': [
+    { label: 'Identity attack chain reconstructed (OAuth / token / CA bypass)', re: /oauth|token\s+(theft|replay|hijack)|access\s+token|refresh\s+token|conditional\s+access|MFA\s+(bypass|fatigue|skip)|service\s+principal|managed\s+identity|PRT|primary\s+refresh\s+token/i },
+    { label: 'MITRE ATT&CK technique mapped (T-code)', re: /T\d{4}(\.\d{3})?|T1528|T1078\.004|T1550\.001|T1098|ATT&?CK/i },
+    { label: 'Privilege escalation path or blast radius identified', re: /privilege\s+escalat|blast\s+radius|lateral\s+movement|admin|owner|contributor|global\s+admin|privileged\s+role|over.?privileged|excessive\s+(permission|access)|scope\s+expansion/i },
+    { label: 'KQL detection query for Entra ID / Defender XDR provided', re: /\b(KQL|SigninLogs|AuditLogs|AADServicePrincipalSignIn|AADNonInteractiveUser|IdentityInfo|CloudAppEvents|DeviceEvents|MicrosoftGraphActivityLogs)\b/i },
+    { label: 'Remediation and hardening recommendations included', re: /\b(revoke|invalidat|reset|MFA|conditional\s+access|PIM|privileged\s+identity|least.?privilege|token\s+lifetime|continuous\s+access\s+evaluation|CAE|FIDO|passkey|hardening)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'ai-system-compromise': [
+    { label: 'Failure mode classified (injection / poisoning / drift / infrastructure)', re: /prompt\s+injection|model\s+poison|concept\s+drift|data\s+drift|infrastructure\s+(compromise|breach)|supply\s+chain|adversarial\s+input|model\s+degradation|configuration\s+(change|drift)/i },
+    { label: 'MITRE ATLAS or ATT&CK technique referenced', re: /AML\.T\d{4}|T\d{4}(\.\d{3})?|ATLAS|ATT&?CK|AML\.T0054|AML\.T0020|AML\.T0031/i },
+    { label: 'Evidence analysis covers logs, telemetry, or prompt traces', re: /\b(log|telemetry|trace|prompt\s+trace|model\s+output|API\s+(log|call|request)|inference\s+log|serving\s+log|anomalous\s+(output|response)|unexpected\s+(output|behavior|behaviour))\b/i },
+    { label: 'Containment and redeployment decision provided', re: /\b(contain|isolat|rollback|redeploy|offline|quarantin|pull.*model|disable.*endpoint|version\s+rollback|revert|blue.?green|canary|safe.*default|fallback)\b/i },
+    { label: 'EU AI Act Article 73 or serious incident notification assessed', re: /Article\s+73|serious\s+incident|AI\s+Act.*notif|notif.*AI\s+Act|incident\s+report.*AI|market\s+surveillance|NCA\s+notif/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
 };
 
 // ─── Per-element coaching ─────────────────────────────────────────────────────
@@ -831,6 +847,24 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
     'Post-incident review is how organisations improve — this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
   'Confidence and Risk assessment block present':
     'The session is configured to require a structured Confidence + Risk block at the end of every analysis. This anchors the finding\'s certainty and prioritises response. Prompt: "Conclude with: **Confidence:** [Low/Medium/High] — [reason] and **Risk Level:** [Low/Medium/High/Critical] — [justification]"',
+  // cloud-identity-abuse
+  'Identity attack chain reconstructed (OAuth / token / CA bypass)':
+    'Cloud identity attacks flow through a chain of token acquisition, CA policy bypass, and privilege escalation — without reconstructing the chain you cannot determine blast radius or identify all affected resources. Prompt: "Reconstruct the complete identity attack chain: initial token acquisition method, CA policy bypass technique, and downstream privilege escalation path."',
+  'Privilege escalation path or blast radius identified':
+    'Over-privileged service principals or compromised Global Admin accounts can access every resource in the tenant — the blast radius determines incident severity and notification obligations. Prompt: "Map the privilege escalation path and enumerate all resources accessible by the compromised identity."',
+  'KQL detection query for Entra ID / Defender XDR provided':
+    'Identity attacks leave distinct signals in SigninLogs, AuditLogs, and CloudAppEvents — without a deployable query the analyst cannot hunt for additional victims or scope the compromise. Prompt: "Provide a KQL query using SigninLogs or AuditLogs to detect the OAuth token theft or CA bypass pattern observed."',
+  'Remediation and hardening recommendations included':
+    'Token revocation, PIM activation, and Conditional Access policy updates are the minimum immediate response to a cloud identity compromise. Prompt: "What are the immediate remediation steps (token revocation, account suspension) and hardening controls to prevent recurrence (PIM, CAE, FIDO2)?"',
+  // ai-system-compromise
+  'Failure mode classified (injection / poisoning / drift / infrastructure)':
+    'Misclassifying the failure mode leads to the wrong remediation — prompt injection requires output filtering, model poisoning requires retraining or rollback, infrastructure compromise requires security incident response. Prompt: "Classify the failure mode: is this prompt injection, model poisoning, concept drift, data drift, infrastructure compromise, or supply chain attack? Justify with evidence."',
+  'Evidence analysis covers logs, telemetry, or prompt traces':
+    'AI system compromise triage requires correlating model telemetry (unexpected output patterns), serving infrastructure logs (anomalous API calls), and prompt traces (injected content) — analysis without evidence is speculation. Prompt: "Analyse the serving logs, model telemetry, and prompt traces for evidence of the failure mode."',
+  'Containment and redeployment decision provided':
+    'An AI system with anomalous behaviour may be actively exploited — the triage must result in a clear contain/rollback/redeploy decision with justification. Prompt: "What is the containment decision: keep online with monitoring, rollback to previous version, or take offline? Justify."',
+  'EU AI Act Article 73 or serious incident notification assessed':
+    'EU AI Act Article 73 requires high-risk AI providers to notify the National Competent Authority of serious incidents — any AI system compromise analysis must assess this obligation. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? If so, what are the notification obligations and timelines?"',
 };
 
 // ─── Scenario-specific next-analyst-steps ────────────────────────────────────
@@ -867,6 +901,16 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     '(2) imports extracted IOCs into the SIEM and threat intel platform for retroactive hunting, ' +
     '(3) hands detection rules to the engineering team for testing and production deployment, ' +
     '(4) produces a one-page threat brief for the CISO with business impact and remediation timeline.',
+  'cloud-identity-abuse':
+    'What a real identity incident responder does next: (1) immediately revokes all active sessions and OAuth tokens for the compromised identity via Entra ID, ' +
+    '(2) activates PIM just-in-time access review and forces MFA re-registration on affected accounts, ' +
+    '(3) runs the KQL detection query across all tenants and affiliated identities to scope the compromise, ' +
+    '(4) notifies the CISO and legal team — cloud identity breaches may trigger GDPR Article 33 72-hour notification.',
+  'ai-system-compromise':
+    'What a real AI security engineer does after the triage: (1) initiates the model rollback or offline procedure per the AI incident response playbook, ' +
+    '(2) preserves model telemetry, prompt traces, and serving logs as forensic evidence before any redeployment, ' +
+    '(3) notifies the AI risk function and legal counsel to assess EU AI Act Article 73 serious incident obligations, ' +
+    '(4) conducts a root cause analysis before redeployment — verify whether the failure was adversarial or operational before returning to production.',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
