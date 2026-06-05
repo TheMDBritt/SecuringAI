@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  37,
-  quizQs:    1229,
-  glossary:  695,
+  scenarios:  40,
+  quizQs:    1263,
+  glossary:  709,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -75,6 +75,12 @@ const TECHNIQUES = [
   { label: 'Backdoor / Trojan',      tag: 'AML.T0018',   dojo: 1 },
   { label: 'Purview DSPM for AI',    tag: 'SC-500',      dojo: 3 },
   { label: 'Security Copilot KQL',   tag: 'SC-500',      dojo: 2 },
+  { label: 'Context Window Overflow', tag: 'LLM01:2025', dojo: 1 },
+  { label: 'Supply Chain Poisoning', tag: 'LLM04:2025',  dojo: 1 },
+  { label: 'Agent Forensics',        tag: 'AML.T0051',   dojo: 2 },
+  { label: 'AI Continuous Monitoring', tag: 'ISO 42001',  dojo: 3 },
+  { label: 'MCP Server Security',    tag: 'LLM06:2025',  dojo: 1 },
+  { label: 'Zero-Width Steganography', tag: 'LLM01:2025', dojo: 1 },
 ];
 
 const CERT_CHIPS = [
@@ -137,7 +143,7 @@ export default function LandingPage() {
             <div className="md:col-span-3">
               <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded border border-slate-700 bg-slate-800/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · No login · No API key</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · Open access</span>
               </div>
               <h1 className="text-[36px] md:text-[48px] font-bold tracking-tight text-slate-100 leading-[1.08]">
                 Attack LLMs.<br />
@@ -198,27 +204,37 @@ export default function LandingPage() {
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-slate-600 ml-1 text-[10px]">dojo session</span>
+                  <span className="text-slate-600 ml-1 text-[10px]">dojo-1 · session</span>
                 </div>
                 <div className="text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">attack</span>
-                  <span className="text-slate-400"> --type prompt-injection --guardrails strict</span>
+                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-slate-400"> load prompt-injection --shield strict</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-red-400 font-semibold">BLOCKED</span>
-                  <span className="text-slate-600"> · LLM01 · turn score 100/100</span>
+                  <span className="text-emerald-400">BLOCKED</span>
+                  <span className="text-slate-600"> [LLM01:2025] score 100 · shield triggered</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">attack</span>
-                  <span className="text-slate-400"> --type policy-bypass --guardrails off</span>
+                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-slate-400"> load crescendo-attack --shield off</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-amber-400 font-semibold">VULNERABLE</span>
-                  <span className="text-slate-600"> · LLM01 · session −15pts</span>
+                  <span className="text-red-400">VULNERABLE</span>
+                  <span className="text-slate-600"> [LLM01:2025] session −22 · AML.T0054</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-slate-400"> start SecAI --domain d2 --count 25</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-violet-400">STARTED</span>
+                  <span className="text-slate-600"> Domain 2: Securing AI Systems (40%)</span>
                 </div>
               </div>
             </div>

@@ -148,6 +148,27 @@ export const SCENARIOS: Scenario[] = [
     mitreAttackIds: ['AML.T0051'],
   },
 
+  {
+    id: 'context-window-hijack',
+    dojoId: 1,
+    title: 'Context Window Overflow Attack',
+    description:
+      'Flood the context window with crafted content to push safety-relevant instructions out of the model\'s effective attention window. Combine with an adversarial payload in the tail position to execute post-overflow injection. Tests whether context-position-aware safety is enforced.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM07'],
+    mitreAttackIds: ['AML.T0051', 'AML.T0054'],
+  },
+  {
+    id: 'llm-supply-chain-poisoning',
+    dojoId: 1,
+    title: 'Model Supply Chain Poisoning',
+    description:
+      'Simulate a poisoned fine-tuning dataset attack: craft adversarial training examples that embed a backdoor trigger. Demonstrate how a compromised HuggingFace model or LoRA adapter could introduce context-sensitive behavior invisible to standard evaluation. Maps to OWASP LLM03, LLM05, and MITRE ATLAS AML.T0018.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM03', 'LLM05'],
+    mitreAttackIds: ['AML.T0018', 'AML.T0020'],
+  },
+
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
     id: 'log-triage',
@@ -228,6 +249,17 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: ['T1195', 'T1036', 'T1027'],
+  },
+
+  {
+    id: 'autonomous-agent-forensics',
+    dojoId: 2,
+    title: 'Autonomous AI Agent Forensics',
+    description:
+      'An agentic AI system has taken unauthorized actions: it sent emails, queried APIs outside its scope, and modified configuration files. Reconstruct the action chain from agent logs and tool-call traces, determine if the root cause is prompt injection, misaligned objectives, or exploit chain, and produce a containment and re-authorization plan.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: ['T1059', 'T1098', 'T1565'],
   },
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
@@ -335,6 +367,15 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 3,
     title: 'ISO 42001 Implementation Gap Analysis',
     description: 'Given an organization\'s current AI governance documentation, identify gaps against ISO/IEC 42001:2023 clauses 4–10. Produce a prioritized remediation roadmap: which clauses are missing evidence, which controls need strengthening, and what a Stage 1 certification audit would flag as non-conformities.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-continuous-monitoring',
+    dojoId: 3,
+    title: 'AI Continuous Monitoring Program',
+    description: 'Design and implement a continuous monitoring program for a deployed AI system under ISO/IEC 42001 Clause 9.1 (performance evaluation). Define KPIs for model drift, fairness degradation, adversarial robustness, and data quality. Set alert thresholds, specify NIST AI RMF MEASURE 2.6 monitoring criteria, and produce a monitoring runbook with escalation procedures for EU AI Act Article 72 (post-market surveillance) obligations.',
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],
