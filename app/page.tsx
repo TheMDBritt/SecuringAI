@@ -7,8 +7,8 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  40,
-  quizQs:    1263,
-  glossary:  709,
+  quizQs:    1281,
+  glossary:  729,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -85,7 +85,7 @@ const TECHNIQUES = [
 
 const CERT_CHIPS = [
   { id: 'SecAI',       label: 'CompTIA SecAI+',           color: 'text-red-400 border-red-500/30' },
-  { id: 'CAISP',       label: 'PDS CAISP',                color: 'text-purple-400 border-purple-500/30' },
+  { id: 'CAISP',       label: 'CAISP',                    color: 'text-purple-400 border-purple-500/30' },
   { id: 'CAIS',        label: 'EC-Council C|AI Security',  color: 'text-rose-400 border-rose-500/30' },
   { id: 'GIAC-GOAA',   label: 'GIAC GOAA',                color: 'text-orange-400 border-orange-500/30' },
   { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
@@ -423,7 +423,7 @@ export default function LandingPage() {
                 Playbook
               </p>
               <h2 className="text-xl font-bold text-slate-100 mb-3">
-                {STATS.quizQs.toLocaleString()} questions. {STATS.certs} certs. Drill by domain.
+                {STATS.quizQs.toLocaleString()} questions across {STATS.certs} certs. Drill by domain.
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-4">
                 Every article, quiz question, and glossary term is tagged to its cert exam domain.
@@ -488,18 +488,18 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div className="max-w-xl">
                 <h2 className="text-xl md:text-2xl font-bold text-slate-100">
-                  No setup. No account. No cost.
+                  Run your first attack in under a minute.
                 </h2>
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
-                  Pick a dojo, load a scenario, submit your attack. The guardrail configuration
-                  decides the outcome — same payload, same config, same result, every time.
-                  Score and cert mapping update per turn.
+                  Load a scenario, submit an attack, read the score. Guardrail configuration
+                  decides the outcome — same payload, same config, same result every time.
+                  Free. No account.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
                     { label: 'Dojo 1', sub: '12 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '8 GRC scenarios',     color: 'text-emerald-400' },
+                    { label: 'Dojo 3', sub: '17 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

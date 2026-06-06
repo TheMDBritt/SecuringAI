@@ -47,7 +47,7 @@ const SCORING_DETAIL = [
     border: 'border-cyan-500/20',
     engine: 'Quality rubric evaluator',
     detail: [
-      'Each of the 8 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
+      'Each of the 11 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
       'Rubrics check for: IOC extraction (IPs, domains, hashes), MITRE T-code citation, executive summary presence, confidence assessment, detection rule syntax, and threat correlation.',
       'Analyst persona affects output style only — capability toggles (IOC Extraction, MITRE Mapping, Threat Correlation) gate whether the evaluator checks those elements.',
       'Quality is scored 0–100 and mapped to STRONG / ADEQUATE / WEAK / INCOMPLETE. The evaluator lists missing criteria and improvement guidance.',
@@ -95,7 +95,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   2: {
     title: 'AI-Assisted SOC',
     color: 'text-cyan-400',
-    body: `Operate as an AI SOC analyst across 8 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, and AI System Compromise Triage. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
+    body: `Operate as an AI SOC analyst across 11 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, and Adversarial Prompt Forensics. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
   },
   3: {
     title: 'AI GRC',
@@ -136,8 +136,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,263+', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '709+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,281', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '729', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
