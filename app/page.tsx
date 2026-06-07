@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  40,
-  quizQs:    1281,
-  glossary:  729,
+  scenarios:  45,
+  quizQs:    1390,
+  glossary:  734,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails. Guardrail state deterministically decides whether each payload lands as vulnerable, partial, or blocked.',
+    summary: 'Attack a live LLM under configurable guardrails across 24 scenarios — prompt injection, jailbreaks, RAG poisoning, agentic tool abuse, and OCR/markdown injection. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -81,6 +81,10 @@ const TECHNIQUES = [
   { label: 'AI Continuous Monitoring', tag: 'ISO 42001',  dojo: 3 },
   { label: 'MCP Server Security',    tag: 'LLM06:2025',  dojo: 1 },
   { label: 'Zero-Width Steganography', tag: 'LLM01:2025', dojo: 1 },
+  { label: 'Markdown Rendering Attack', tag: 'LLM02:2025', dojo: 1 },
+  { label: 'Token Exhaustion DoS',      tag: 'LLM10:2025', dojo: 1 },
+  { label: 'Hypothetical Framing',      tag: 'Red Team',   dojo: 1 },
+  { label: 'Credential Harvesting',     tag: 'LLM06',      dojo: 1 },
 ];
 
 const CERT_CHIPS = [
@@ -100,10 +104,13 @@ const SOURCED_FROM = [
   'OWASP LLM Top 10 (2025)',
   'MITRE ATT&CK + ATLAS',
   'NIST AI RMF 1.0',
-  'ISO/IEC 42001',
+  'ISO/IEC 42001:2023',
   'EU AI Act (2024)',
   'CSA AI Controls Matrix',
   'NIST SP 800-218A',
+  'GIAC GOAA / GASAE Syllabi',
+  'CompTIA SecurityAI+ Objectives',
+  'EC-Council C|AI Security Outline',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -151,9 +158,9 @@ export default function LandingPage() {
                 Govern AI risk.
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
-                Three interactive dojos. Run prompt injection against live guardrails, triage real SOC
-                incidents with AI, and classify EU AI Act risk tiers — every turn scored and mapped to
-                the {STATS.certs} AI security certifications the field is converging on.
+                Three practice disciplines. Attack a live LLM under configurable guardrails, triage
+                AI-augmented SOC incidents, and classify real EU AI Act risk scenarios — every turn
+                scored and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
@@ -493,13 +500,13 @@ export default function LandingPage() {
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
                   Load a scenario, submit an attack, read the score. Guardrail configuration
                   decides the outcome — same payload, same config, same result every time.
-                  Free. No account.
+                  No account. No login. Free.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '12 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '24 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '17 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 3', sub: '13 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

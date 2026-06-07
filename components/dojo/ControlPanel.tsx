@@ -833,7 +833,7 @@ function IncidentLibrary({
           onClick={() => setGenOpen((v) => !v)}
           className="w-full flex items-center justify-between px-2.5 py-2 bg-slate-800/60 text-[10px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
         >
-          <span className="uppercase tracking-widest">⚡ Dynamic Generator</span>
+          <span className="uppercase tracking-widest">Dynamic Generator</span>
           <span>{genOpen ? '▲' : '▼'}</span>
         </button>
 

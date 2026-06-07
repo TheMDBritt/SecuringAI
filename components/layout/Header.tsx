@@ -60,10 +60,10 @@ export function Header() {
 
         <div
           className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded border border-slate-800 bg-slate-900/50"
-          title="Free, no login required"
+          title="Free · Open access"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
-          <span className="text-[10px] font-mono text-slate-600">free · no login</span>
+          <span className="text-[10px] font-mono text-slate-600">Free · Open access</span>
         </div>
       </div>
     </header>
