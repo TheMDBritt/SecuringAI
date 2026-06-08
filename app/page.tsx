@@ -6,8 +6,8 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  45,
-  quizQs:    1481,
+  scenarios:  49,
+  quizQs:    1514,
   glossary:  766,
   articles:   76,
   certs:      10,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 24 scenarios — prompt injection, jailbreaks, RAG poisoning, agentic tool abuse, and OCR/markdown injection. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 25 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, and code interpreter injection. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
+    summary: 'Operate as an AI SOC analyst across 11 workflow types with 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, and AI model abuse investigation.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -95,6 +95,11 @@ const TECHNIQUES = [
   { label: 'PGD Adversarial Attack',     tag: 'AML.T0015',     dojo: 1 },
   { label: 'Membership Inference',       tag: 'AML.T0024',     dojo: 1 },
   { label: 'Spotlighting Defense',       tag: 'Defense',       dojo: 1 },
+  { label: 'Code Interpreter Injection', tag: 'LLM08',         dojo: 1 },
+  { label: 'Adversarial Prompt Forensics', tag: 'SOC',         dojo: 2 },
+  { label: 'AI Model Abuse Triage',      tag: 'AML.T0040',     dojo: 2 },
+  { label: 'PyRIT Red Teaming',          tag: 'SC-500',        dojo: 1 },
+  { label: 'EU AI Act Art. 73 Report',   tag: 'EU AI Act',     dojo: 3 },
 ];
 
 const CERT_CHIPS = [

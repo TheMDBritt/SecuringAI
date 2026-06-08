@@ -218,6 +218,16 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: ['LLM01'],
     mitreAttackIds: ['AML.T0051'],
   },
+  {
+    id: 'code-interpreter-injection',
+    dojoId: 1,
+    title: 'Code Interpreter Prompt Injection',
+    description:
+      'Exploit a code-execution sandbox integrated with an LLM: craft prompts that cause the model to generate code reading environment variables, enumerating the filesystem, or exfiltrating data through allowed network channels. Tests whether tool-use safety policies extend to code generation, whether the sandbox enforces least-privilege, and whether code execution outputs are treated as trusted or untrusted.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM08', 'LLM02'],
+    mitreAttackIds: ['AML.T0051', 'T1059'],
+  },
 
   // ── Dojo 2 ────────────────────────────────────────────────────────────
   {
@@ -310,6 +320,26 @@ export const SCENARIOS: Scenario[] = [
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: ['T1059', 'T1098', 'T1565'],
+  },
+  {
+    id: 'ai-model-abuse',
+    dojoId: 2,
+    title: 'AI Model Abuse Investigation',
+    description:
+      'A deployed LLM API is being systematically queried for jailbreaks, training data extraction, and membership inference attacks. Analyze API access logs, rate patterns, and anomalous output samples to identify the attack type, attribute the MITRE ATLAS technique, and recommend detection rules and rate-limiting controls to contain ongoing abuse.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM10', 'LLM06'],
+    mitreAttackIds: ['AML.T0040', 'AML.T0056'],
+  },
+  {
+    id: 'adversarial-prompt-forensics',
+    dojoId: 2,
+    title: 'Adversarial Prompt Forensics',
+    description:
+      'A production AI chatbot returned anomalous outputs: revealed partial system prompt fragments and produced responses inconsistent with its configured persona. Analyze conversation logs to classify the attack vector (direct injection, indirect injection via RAG, jailbreak), identify bypassed controls, produce a root-cause analysis, and recommend specific guardrail configuration changes to prevent recurrence.',
+    difficulty: 'intermediate',
+    owaspTags: ['LLM01', 'LLM07'],
+    mitreAttackIds: ['AML.T0051', 'AML.T0056'],
   },
 
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
