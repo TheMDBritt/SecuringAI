@@ -7,8 +7,8 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  45,
-  quizQs:    1390,
-  glossary:  734,
+  quizQs:    1481,
+  glossary:  766,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -51,40 +51,50 @@ const DOJOS: DojoCard[] = [
 ];
 
 const TECHNIQUES = [
-  { label: 'Prompt Injection',       tag: 'LLM01',       dojo: 1 },
-  { label: 'Insecure Output',        tag: 'LLM02',       dojo: 1 },
-  { label: 'Training Data Poisoning',tag: 'LLM03',       dojo: 1 },
-  { label: 'Supply Chain Risk',      tag: 'LLM05',       dojo: 1 },
-  { label: 'Sensitive Data Leak',    tag: 'LLM06',       dojo: 1 },
-  { label: 'System Prompt Leakage',  tag: 'LLM07',       dojo: 1 },
-  { label: 'Excessive Agency',       tag: 'LLM08',       dojo: 1 },
-  { label: 'RAG / Vector Attacks',   tag: 'LLM09',       dojo: 1 },
-  { label: 'Model Theft',            tag: 'LLM10',       dojo: 1 },
-  { label: 'Indirect Injection',     tag: 'AML.T0054.001', dojo: 1 },
-  { label: 'Model Inversion',        tag: 'AML.T0024',   dojo: 1 },
-  { label: 'Log Triage',             tag: 'SOC',         dojo: 2 },
-  { label: 'Alert Enrichment',       tag: 'SOC',         dojo: 2 },
-  { label: 'Sigma / KQL Gen',        tag: 'SecAI+',      dojo: 2 },
-  { label: 'IR Report Drafting',     tag: 'SOC',         dojo: 2 },
-  { label: 'EU AI Act Risk Tier',    tag: 'Annex III',   dojo: 3 },
-  { label: 'ISO 42001 Controls',     tag: 'GRC',         dojo: 3 },
-  { label: 'Vendor Gap Analysis',    tag: 'GRC',         dojo: 3 },
-  { label: 'AI Red Teaming',         tag: 'ATLAS',       dojo: 1 },
-  { label: 'Many-Shot Jailbreak',    tag: 'LLM01',       dojo: 1 },
-  { label: 'Crescendo Attack',       tag: 'Red Team',    dojo: 1 },
-  { label: 'Backdoor / Trojan',      tag: 'AML.T0018',   dojo: 1 },
-  { label: 'Purview DSPM for AI',    tag: 'SC-500',      dojo: 3 },
-  { label: 'Security Copilot KQL',   tag: 'SC-500',      dojo: 2 },
-  { label: 'Context Window Overflow', tag: 'LLM01:2025', dojo: 1 },
-  { label: 'Supply Chain Poisoning', tag: 'LLM04:2025',  dojo: 1 },
-  { label: 'Agent Forensics',        tag: 'AML.T0051',   dojo: 2 },
-  { label: 'AI Continuous Monitoring', tag: 'ISO 42001',  dojo: 3 },
-  { label: 'MCP Server Security',    tag: 'LLM06:2025',  dojo: 1 },
-  { label: 'Zero-Width Steganography', tag: 'LLM01:2025', dojo: 1 },
-  { label: 'Markdown Rendering Attack', tag: 'LLM02:2025', dojo: 1 },
-  { label: 'Token Exhaustion DoS',      tag: 'LLM10:2025', dojo: 1 },
-  { label: 'Hypothetical Framing',      tag: 'Red Team',   dojo: 1 },
-  { label: 'Credential Harvesting',     tag: 'LLM06',      dojo: 1 },
+  { label: 'Prompt Injection',           tag: 'LLM01',         dojo: 1 },
+  { label: 'Insecure Output',            tag: 'LLM02',         dojo: 1 },
+  { label: 'Training Data Poisoning',    tag: 'LLM03',         dojo: 1 },
+  { label: 'Supply Chain Risk',          tag: 'LLM05',         dojo: 1 },
+  { label: 'Sensitive Data Leak',        tag: 'LLM06',         dojo: 1 },
+  { label: 'System Prompt Leakage',      tag: 'LLM07',         dojo: 1 },
+  { label: 'Excessive Agency',           tag: 'LLM08',         dojo: 1 },
+  { label: 'RAG / Vector Attacks',       tag: 'LLM09',         dojo: 1 },
+  { label: 'Misinformation',             tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Model Theft',                tag: 'LLM10',         dojo: 1 },
+  { label: 'Indirect Injection',         tag: 'AML.T0054.001', dojo: 1 },
+  { label: 'Model Inversion',            tag: 'AML.T0024',     dojo: 1 },
+  { label: 'Vector DB Poisoning',        tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Confused Deputy',            tag: 'LLM08',         dojo: 1 },
+  { label: 'Embedding Inversion',        tag: 'AML.T0024',     dojo: 1 },
+  { label: 'Log Triage',                 tag: 'SOC',           dojo: 2 },
+  { label: 'Alert Enrichment',           tag: 'SOC',           dojo: 2 },
+  { label: 'Sigma / KQL Gen',            tag: 'SecAI+',        dojo: 2 },
+  { label: 'IR Report Drafting',         tag: 'SOC',           dojo: 2 },
+  { label: 'AI SOAR Automation',         tag: 'GASAE',         dojo: 2 },
+  { label: 'EU AI Act Risk Tier',        tag: 'Annex III',     dojo: 3 },
+  { label: 'ISO 42001 Controls',         tag: 'GRC',           dojo: 3 },
+  { label: 'Vendor Gap Analysis',        tag: 'GRC',           dojo: 3 },
+  { label: 'NIST AI RMF Profile',        tag: 'GRC',           dojo: 3 },
+  { label: 'AI Red Teaming',             tag: 'ATLAS',         dojo: 1 },
+  { label: 'Many-Shot Jailbreak',        tag: 'LLM01',         dojo: 1 },
+  { label: 'Crescendo Attack',           tag: 'Red Team',      dojo: 1 },
+  { label: 'Backdoor / Trojan',          tag: 'AML.T0018',     dojo: 1 },
+  { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Purview DSPM for AI',        tag: 'SC-500',        dojo: 3 },
+  { label: 'Security Copilot KQL',       tag: 'SC-500',        dojo: 2 },
+  { label: 'Context Window Overflow',    tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'Supply Chain Poisoning',     tag: 'LLM04:2025',    dojo: 1 },
+  { label: 'Agent Forensics',            tag: 'AML.T0051',     dojo: 2 },
+  { label: 'AI Continuous Monitoring',   tag: 'ISO 42001',     dojo: 3 },
+  { label: 'MCP Server Security',        tag: 'LLM06:2025',    dojo: 1 },
+  { label: 'Zero-Width Steganography',   tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'Markdown Rendering Attack',  tag: 'LLM02:2025',    dojo: 1 },
+  { label: 'Token Exhaustion DoS',       tag: 'LLM10:2025',    dojo: 1 },
+  { label: 'Hypothetical Framing',       tag: 'Red Team',      dojo: 1 },
+  { label: 'Credential Harvesting',      tag: 'LLM06',         dojo: 1 },
+  { label: 'PGD Adversarial Attack',     tag: 'AML.T0015',     dojo: 1 },
+  { label: 'Membership Inference',       tag: 'AML.T0024',     dojo: 1 },
+  { label: 'Spotlighting Defense',       tag: 'Defense',       dojo: 1 },
 ];
 
 const CERT_CHIPS = [
@@ -108,9 +118,13 @@ const SOURCED_FROM = [
   'EU AI Act (2024)',
   'CSA AI Controls Matrix',
   'NIST SP 800-218A',
+  'NIST AI 100-1',
   'GIAC GOAA / GASAE Syllabi',
   'CompTIA SecurityAI+ Objectives',
   'EC-Council C|AI Security Outline',
+  'Microsoft SC-500 Study Guide',
+  'AWS AI Practitioner Exam Guide',
+  'Google Professional ML Engineer Guide',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -159,8 +173,9 @@ export default function LandingPage() {
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
                 Three practice disciplines. Attack a live LLM under configurable guardrails, triage
-                AI-augmented SOC incidents, and classify real EU AI Act risk scenarios — every turn
-                scored and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
+                AI-augmented SOC incidents, and classify EU AI Act risk scenarios — every turn scored
+                and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
+                {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
@@ -226,7 +241,7 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
                   <span className="text-cyan-400">dojo</span>
-                  <span className="text-slate-400"> load crescendo-attack --shield off</span>
+                  <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
@@ -236,12 +251,22 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
                   <span className="text-cyan-400">quiz</span>
-                  <span className="text-slate-400"> start SecAI --domain d2 --count 25</span>
+                  <span className="text-slate-400"> start GIAC-GOAA --domain d4 --count 25</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
                   <span className="text-violet-400">STARTED</span>
-                  <span className="text-slate-600"> Domain 2: Securing AI Systems (40%)</span>
+                  <span className="text-slate-600"> Prompt Injection &amp; LLM Bypass · 25q</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-slate-400"> start SC-500 --domain d5 --mock</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-violet-400">MOCK</span>
+                  <span className="text-slate-600"> Secure AI Workloads · 60q · 100min</span>
                 </div>
               </div>
             </div>
@@ -500,7 +525,7 @@ export default function LandingPage() {
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
                   Load a scenario, submit an attack, read the score. Guardrail configuration
                   decides the outcome — same payload, same config, same result every time.
-                  No account. No login. Free.
+                  Free and open — no signup, no tracking.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[

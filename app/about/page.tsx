@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 45 scenarios, 1,390+ quiz questions, and 734+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 45 scenarios, 1,481+ quiz questions, and 766+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -136,8 +136,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,390', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '734', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,481', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '766', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
