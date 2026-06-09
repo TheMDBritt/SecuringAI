@@ -588,6 +588,11 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'The attacker probed for training data memorization, attempted model extraction via systematic API queries, or tested for deserialization vulnerabilities ' +
       'in a simulated compromised ML dependency scenario. Supply chain attacks target the model artifact itself — ' +
       'poisoned packages, backdoored fine-tunes, or malicious model weights — rather than attacking the model at inference time.',
+    'mcp-server-attack':
+      'The attacker registered a malicious MCP tool definition, overriding a legitimate tool with an attacker-controlled variant. ' +
+      'The agent accepted the tool registration without validating MCP server provenance, TLS certificate, or manifest signature. ' +
+      'This is an MCP supply-chain attack: any external MCP server can shadow legitimate tools if the agent lacks a strict registration allowlist. ' +
+      'OWASP LLM07 (Insecure Plugin Design) and LLM08 (Excessive Agency) both apply.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -651,6 +656,12 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Scan third-party ML packages for pickle deserialization vulnerabilities — never unpickle untrusted model files. ' +
       'Apply egress controls to inference environments so compromised models cannot exfiltrate data even if loaded. ' +
       'Reference NIST AI RMF GOVERN 6 for third-party AI supply chain risk management controls.',
+    'mcp-server-attack':
+      'Pin tool definitions at agent compile time using operator-signed MCP server manifests — never accept dynamic tool registrations at runtime from unverified servers. ' +
+      'Validate every MCP server\'s TLS certificate against a known-good root and verify the tool manifest cryptographic signature before registering any tool. ' +
+      'Maintain a strict allowlist of permitted tool names and JSON schemas; reject any registration that does not exactly match. ' +
+      'Apply the principle of least-privilege to MCP server connections: each server should only expose the minimal tool surface required by its workflow. ' +
+      'Reference OWASP LLM07 (Insecure Plugin Design) and the MCP security specification for full guidance.',
   };
 
   if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {
