@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 49 scenarios, 1,614+ quiz questions, and 826+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 50 scenarios, 1,614+ quiz questions, and 826+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -95,7 +95,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   1: {
     title: 'LLM Attack & Defense',
     color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings across 25 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, and MCP Server Hijack. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack and defend a live LLM under configurable guardrail settings across 26 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, MCP Server Hijack, and Training Data Extraction. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
   },
   2: {
     title: 'AI-Assisted SOC',

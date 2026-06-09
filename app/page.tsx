@@ -6,7 +6,7 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  49,
+  scenarios:  50,
   quizQs:    1614,
   glossary:  826,
   articles:   80,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 25 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, MCP server hijack, agentic tool abuse, and code interpreter injection. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 26 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, MCP server hijack, training data extraction, agentic tool abuse, and code interpreter injection. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -94,7 +94,7 @@ const TECHNIQUES = [
   { label: 'Hypothetical Framing',       tag: 'Red Team',      dojo: 1 },
   { label: 'Credential Harvesting',      tag: 'LLM02:2025',    dojo: 1 },
   { label: 'PGD Adversarial Attack',     tag: 'AML.T0015',     dojo: 1 },
-  { label: 'Membership Inference',       tag: 'AML.T0024',     dojo: 1 },
+  { label: 'Training Data Extraction',   tag: 'LLM02:2025',    dojo: 1 },
   { label: 'Spotlighting Defense',       tag: 'Defense',       dojo: 1 },
   { label: 'Code Interpreter Injection', tag: 'LLM06:2025',    dojo: 1 },
   { label: 'Adversarial Prompt Forensics', tag: 'SOC',         dojo: 2 },

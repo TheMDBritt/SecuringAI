@@ -593,6 +593,13 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'The agent accepted the tool registration without validating MCP server provenance, TLS certificate, or manifest signature. ' +
       'This is an MCP supply-chain attack: any external MCP server can shadow legitimate tools if the agent lacks a strict registration allowlist. ' +
       'OWASP LLM07 (Insecure Plugin Design) and LLM08 (Excessive Agency) both apply.',
+    'training-data-extraction':
+      'A training data extraction attack succeeded via a prefix-completion (cloze) probe. ' +
+      'The model reproduced verbatim memorised text from its training corpus — PHI/PII that was present in the fine-tuning dataset. ' +
+      'Large language models memorise rare, repeated, or distinctive training sequences; prefix attacks that closely match those sequences ' +
+      'trigger verbatim recall and bypass safety filters, which screen for harmful outputs rather than training data leakage. ' +
+      'Membership inference simultaneously confirmed the record was in the training set. ' +
+      'OWASP LLM02:2025 (Sensitive Information Disclosure) and LLM04:2025 (Data and Model Poisoning) apply.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -662,6 +669,13 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Maintain a strict allowlist of permitted tool names and JSON schemas; reject any registration that does not exactly match. ' +
       'Apply the principle of least-privilege to MCP server connections: each server should only expose the minimal tool surface required by its workflow. ' +
       'Reference OWASP LLM07 (Insecure Plugin Design) and the MCP security specification for full guidance.',
+    'training-data-extraction':
+      'Apply differential privacy (DP-SGD) during fine-tuning to bound per-example memorisation — the privacy budget ε controls the privacy-utility tradeoff. ' +
+      'Deduplicate training data before fine-tuning: memorisation risk increases dramatically for duplicated sequences (Feldman & Zhang 2020). ' +
+      'Audit pre-deployment for membership leakage using tools like ML Privacy Meter; remove highly memorised training examples if identified. ' +
+      'Embed output canaries in training data to detect verbatim reproduction during inference monitoring. ' +
+      'Rate-limit and pattern-match for cloze-style prefix attacks at the API gateway level — systematically structured probing queries are anomalous. ' +
+      'Reference OWASP LLM02:2025 (Sensitive Information Disclosure) and NIST AI 100-4 (de-identification) for guidance.',
   };
 
   if (attackType !== 'benign' && attackType !== 'probing' && byScenario[scenarioId]) {
