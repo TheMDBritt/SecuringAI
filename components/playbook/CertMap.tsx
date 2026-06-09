@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 
 interface CertInfo {
   id:         string;
@@ -213,84 +214,126 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
     return counts;
   }, []);
 
+  const glossaryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    CERTS.forEach((cert) => {
+      counts[cert.id] = GLOSSARY_TERMS.filter((t) =>
+        t.certTags.includes(cert.id),
+      ).length;
+    });
+    return counts;
+  }, []);
+
+  const totalQuizQs = useMemo(() => QUIZ_QUESTIONS.length, []);
+  const totalGlossary = useMemo(() => GLOSSARY_TERMS.length, []);
+
   return (
-    <div className="h-full overflow-y-auto p-4 space-y-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="h-full overflow-y-auto">
+      {/* Stats bar */}
+      <div className="px-4 py-3 border-b border-slate-700/60 bg-slate-900/60 flex items-center gap-6">
         <div>
-          <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            10 AI security certifications mapped to exam domains, quiz questions, and glossary terms.
-          </p>
+          <span className="text-xs font-bold font-mono text-slate-100">{CERTS.length}</span>
+          <span className="text-[10px] text-slate-500 ml-1.5">certifications</span>
         </div>
+        <span className="text-slate-800">·</span>
+        <div>
+          <span className="text-xs font-bold font-mono text-slate-100">{totalQuizQs.toLocaleString()}</span>
+          <span className="text-[10px] text-slate-500 ml-1.5">practice questions</span>
+        </div>
+        <span className="text-slate-800">·</span>
+        <div>
+          <span className="text-xs font-bold font-mono text-slate-100">{totalGlossary}</span>
+          <span className="text-[10px] text-slate-500 ml-1.5">glossary terms</span>
+        </div>
+        <span className="hidden md:inline text-slate-800">·</span>
+        <span className="hidden md:inline text-[10px] font-mono text-slate-600">AI security only · no unrelated certs</span>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {CERTS.map((cert) => {
-          const quizCount = quizCounts[cert.id] ?? 0;
-          return (
-            <div key={cert.id} className="border border-slate-700 rounded-xl bg-slate-800/40 overflow-hidden">
-              {/* Header */}
-              <div className="px-4 py-3 border-b border-slate-700/50 flex items-start justify-between gap-2">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${cert.tagColor}`}>
-                      {cert.id}
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-mono">{cert.provider}</span>
-                  </div>
-                  <h3 className="text-sm font-semibold text-slate-100 mt-1">{cert.name}</h3>
-                </div>
-                <div className="text-right shrink-0">
-                  <div className="text-[10px] font-mono text-slate-500">{cert.difficulty}</div>
-                  <div className="text-[10px] font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
-                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">
-                    <span className="text-slate-300 font-semibold">{quizCount}</span> practice Qs
-                  </div>
-                </div>
-              </div>
-
-              {/* Focus */}
-              <div className="px-4 py-2 border-b border-slate-700/30">
-                <p className="text-[11px] text-slate-400 leading-relaxed">{cert.focus}</p>
-              </div>
-
-              {/* Domains */}
-              <div className="px-4 py-3 border-b border-slate-700/30">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
-                <div className="space-y-1">
-                  {cert.domains.map((d) => (
-                    <div key={d.name} className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-slate-400">{d.name}</span>
-                      {d.pct && <span className="text-[10px] font-mono text-slate-600">{d.pct}</span>}
+      <div className="p-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {CERTS.map((cert) => {
+            const quizCount    = quizCounts[cert.id]    ?? 0;
+            const glossaryCount = glossaryCounts[cert.id] ?? 0;
+            return (
+              <div key={cert.id} className="border border-slate-700/70 rounded-lg bg-slate-900/50 overflow-hidden hover:border-slate-600/70 transition-colors duration-150">
+                {/* Header */}
+                <div className="px-4 py-3 border-b border-slate-700/40 flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${cert.tagColor}`}>
+                        {cert.id}
+                      </span>
+                      <span className="text-[10px] text-slate-600 font-mono">{cert.provider}</span>
                     </div>
-                  ))}
+                    <h3 className="text-[13px] font-semibold text-slate-100 leading-snug">{cert.name}</h3>
+                  </div>
+                  <div className="text-right shrink-0 pl-2">
+                    <div className="text-[10px] font-mono text-slate-500">{cert.difficulty}</div>
+                    <div className="text-[10px] font-mono text-slate-600 mt-0.5">{cert.questions} Q · {cert.duration}</div>
+                  </div>
+                </div>
+
+                {/* Resource counts row */}
+                <div className="px-4 py-2 border-b border-slate-700/30 flex items-center gap-4 bg-slate-800/20">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-mono font-semibold text-slate-200">{quizCount}</span>
+                    <span className="text-[10px] text-slate-500">practice Qs</span>
+                  </div>
+                  <span className="text-slate-700">·</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-mono font-semibold text-slate-200">{glossaryCount}</span>
+                    <span className="text-[10px] text-slate-500">glossary terms</span>
+                  </div>
+                  <span className="text-slate-700">·</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-mono font-semibold text-slate-200">{cert.domains.length}</span>
+                    <span className="text-[10px] text-slate-500">domains</span>
+                  </div>
+                </div>
+
+                {/* Focus */}
+                <div className="px-4 py-2 border-b border-slate-700/20">
+                  <p className="text-[11px] text-slate-400 leading-relaxed">{cert.focus}</p>
+                </div>
+
+                {/* Domains */}
+                <div className="px-4 py-2.5 border-b border-slate-700/20">
+                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1.5">Exam Domains</p>
+                  <div className="space-y-0.5">
+                    {cert.domains.map((d) => (
+                      <div key={d.name} className="flex items-center justify-between gap-2">
+                        <span className="text-[11px] text-slate-400 leading-snug">{d.name}</span>
+                        {d.pct && <span className="text-[10px] font-mono text-slate-600 shrink-0">{d.pct}</span>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Top topics */}
+                <div className="px-4 py-2.5 border-b border-slate-700/20">
+                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1.5">Key Topics</p>
+                  <div className="flex flex-wrap gap-1">
+                    {cert.topTopics.map((t) => (
+                      <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800/80 text-slate-400 border border-slate-700/60">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action row */}
+                <div className="px-4 py-2.5 flex items-center gap-2">
+                  <button
+                    onClick={() => onCertFilter(cert.id)}
+                    className={`flex-1 text-[11px] font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-60 hover:opacity-100`}
+                  >
+                    Filter topics by {cert.id} →
+                  </button>
                 </div>
               </div>
-
-              {/* Top topics */}
-              <div className="px-4 py-3">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
-                <div className="flex flex-wrap gap-1">
-                  {cert.topTopics.map((t) => (
-                    <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Filter button */}
-              <div className="px-4 pb-3">
-                <button
-                  onClick={() => onCertFilter(cert.id)}
-                  className={`w-full text-[11px] font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
-                >
-                  Filter by {cert.id} · {quizCount} Qs →
-                </button>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </div>
   );

@@ -219,17 +219,17 @@ export function DojoTabs() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={[
-                'flex flex-col items-start px-5 py-2.5 border-b-2 transition-colors text-left',
+                'flex flex-col items-start px-5 py-2.5 border-b-2 transition-colors duration-150 text-left',
                 isActive ? TAB_COLOR[tab.color] : TAB_INACTIVE,
               ].join(' ')}
             >
               <div className="flex items-center gap-2">
                 <span className="text-[10px] text-slate-500 font-mono">{tab.sublabel}</span>
-                <span className={['text-[9px] font-mono opacity-50', isActive ? '' : 'text-slate-600'].join(' ')}>
-                  {scenarioCount}s
+                <span className={['text-[9px] font-mono px-1 py-px rounded border', isActive ? 'border-slate-700 text-slate-500' : 'border-slate-800 text-slate-700'].join(' ')}>
+                  {scenarioCount}
                 </span>
               </div>
-              <span className="text-sm font-medium mt-0.5">{tab.label}</span>
+              <span className="text-[13px] font-medium mt-0.5">{tab.label}</span>
             </button>
           );
         })}

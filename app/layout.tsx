@@ -4,7 +4,7 @@ import { Header } from '@/components/layout/Header';
 
 const TITLE = 'LLM DOJO — Free AI Security Training';
 const DESCRIPTION =
-  'Free hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,390 quiz questions · 734 glossary terms · 45 scenarios · 47 SOC incidents across 10 AI security certifications including CompTIA SecAI+, SC-500, GIAC GOAA, EC-Council CAIS, and CAISP.';
+  'Free hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,514+ quiz questions · 766+ glossary terms · 49 scenarios · 47 SOC incidents across 10 AI security certifications including CompTIA SecAI+, SC-500, GIAC GOAA, EC-Council CAIS, and CAISP.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),

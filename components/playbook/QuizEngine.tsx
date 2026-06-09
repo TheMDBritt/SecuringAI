@@ -283,10 +283,21 @@ function Step2SelectDomains({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-[11px] font-medium text-slate-300 leading-snug">{domain.name}</p>
-                  <span className="font-mono text-[11px] text-slate-400 flex-shrink-0">{count}</span>
+                  <span className="font-mono text-[11px] text-slate-400 flex-shrink-0">{count}q</span>
                 </div>
                 {domain.weight && (
-                  <p className="text-[10px] font-mono text-slate-600 mt-0.5">{domain.weight}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] font-mono text-slate-600 shrink-0">{domain.weight}</span>
+                    {(() => {
+                      const nums = domain.weight.match(/\d+/g)?.map(Number) ?? [];
+                      const pct  = nums.length >= 2 ? Math.round((nums[0] + nums[1]) / 2) : nums[0] ?? 0;
+                      return (
+                        <div className="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
+                          <div className="h-full bg-violet-500/50 rounded-full" style={{ width: `${pct}%` }} />
+                        </div>
+                      );
+                    })()}
+                  </div>
                 )}
               </div>
             </button>
@@ -817,33 +828,42 @@ function SummaryScreen({
       {byDomain && byDomain.length > 0 && (
         <div className="mb-5">
           <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {byDomain.map(({ domain, total: dTotal, correct: dCorrect }) => {
               const dPct     = dTotal > 0 ? Math.round((dCorrect / dTotal) * 100) : 0;
               const barColor = dPct >= 80 ? 'bg-emerald-500' : dPct >= 60 ? 'bg-amber-500' : 'bg-red-500';
               const shortName = domain.name.replace(/^Domain \d+:\s*/, '');
+              const isWeak   = dPct < 70 && dTotal > 0;
               return (
-                <div key={domain.id}>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] text-slate-400 leading-snug flex-1 mr-2">{shortName}</span>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] font-mono text-slate-600">{dCorrect}/{dTotal}</span>
-                      <span className={`text-[10px] font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
-                        {dPct}%
-                      </span>
-                      {dPct < 70 && dTotal > 0 && (
-                        <button
-                          onClick={() => onGenerateMore(domain.categories[0] ?? '')}
-                          className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
-                        >
-                          more →
-                        </button>
+                <div key={domain.id} className={isWeak ? 'p-2.5 rounded-lg border border-red-500/15 bg-red-500/5' : ''}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex-1 mr-2 min-w-0">
+                      <span className="text-[11px] text-slate-300 leading-snug block">{shortName}</span>
+                      {domain.weight && (
+                        <span className="text-[10px] font-mono text-slate-600">{domain.weight} of exam</span>
                       )}
                     </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono text-slate-600">{dCorrect}/{dTotal}</span>
+                      <span className={`text-[11px] font-mono font-bold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+                        {dPct}%
+                      </span>
+                    </div>
                   </div>
-                  <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-                    <div className={`h-full ${barColor} rounded-full`} style={{ width: `${dPct}%` }} />
+                  <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden mb-1.5">
+                    <div className={`h-full ${barColor} rounded-full transition-all`} style={{ width: `${dPct}%` }} />
                   </div>
+                  {isWeak && (
+                    <div className="flex items-center justify-between mt-1">
+                      <span className="text-[10px] text-red-400/70 font-mono">Focus area — below passing threshold</span>
+                      <button
+                        onClick={() => onGenerateMore(domain.categories[0] ?? '')}
+                        className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded transition-colors"
+                      >
+                        drill more →
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

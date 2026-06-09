@@ -48,9 +48,11 @@ export function Footer() {
 
         <div className="mt-6 pt-4 border-t border-slate-800/60 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <p className="text-[10px] font-mono text-slate-700">
-            Independent · Unaffiliated with any certification provider · Check official exam objectives before scheduling.
+            Independent · Unaffiliated with any certification provider · Verify current exam objectives before scheduling.
           </p>
-          <p className="text-[10px] font-mono text-slate-700">No login · No ads · No tracking</p>
+          <div className="flex items-center gap-3">
+            <p className="text-[10px] font-mono text-slate-700">No login · No tracking · Always free</p>
+          </div>
         </div>
       </div>
     </footer>

@@ -70,14 +70,19 @@ const CREDITS = [
   'OWASP Top 10 for LLM Applications (2025)',
   'NIST AI Risk Management Framework 1.0',
   'ISO/IEC 42001:2023 — AI Management System',
-  'EU AI Act (2024)',
+  'EU AI Act (2024/1689)',
   'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
   'NIST SP 800-218A (Secure Software Development for AI)',
+  'NIST AI 100-1 (AI Risk Management)',
   'NIST SP 800-207 (Zero Trust Architecture)',
   'CompTIA SecurityAI+ Exam Objectives',
   'Microsoft SC-500 Study Guide',
   'AWS AI Practitioner (AIF-C01) Exam Guide',
+  'Azure AI-103 Exam Study Guide',
+  'GIAC GOAA / GASAE Syllabi',
+  'EC-Council C|AI Security Courseware',
+  'Practical DevSecOps CAISP Blueprint',
 ];
 
 const SCENARIO_COUNT_BY_DOJO: Record<1 | 2 | 3, number> = {

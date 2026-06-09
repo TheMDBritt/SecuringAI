@@ -25,6 +25,15 @@ export default function GlossaryPanel() {
   const [certFilter, setCert]   = useState('All');
   const [expanded, setExpanded] = useState<string | null>(null);
 
+  // Counts per cert for filter badges
+  const certCounts = useMemo(() => {
+    const counts: Record<string, number> = { All: GLOSSARY_TERMS.length };
+    CERT_LIST.slice(1).forEach((c) => {
+      counts[c] = GLOSSARY_TERMS.filter((t) => t.certTags.includes(c)).length;
+    });
+    return counts;
+  }, []);
+
   // Stage 1: apply search + cert filter (used to determine available A–Z letters)
   const certFiltered: GlossaryTerm[] = useMemo(() => {
     const q = search.toLowerCase();
@@ -73,13 +82,14 @@ export default function GlossaryPanel() {
             key={c}
             onClick={() => setCert(certFilter === c ? 'All' : c)}
             className={[
-              'text-[10px] font-mono px-2 py-0.5 rounded border transition-colors',
+              'text-[10px] font-mono px-2 py-0.5 rounded border transition-colors flex items-center gap-1',
               certFilter === c
                 ? (CERT_BADGE[c] ?? 'bg-violet-500/20 text-violet-300 border-violet-500/30')
                 : 'text-slate-600 border-slate-700 hover:text-slate-400 hover:border-slate-600',
             ].join(' ')}
           >
             {c}
+            <span className="opacity-50 text-[9px]">{certCounts[c] ?? 0}</span>
           </button>
         ))}
       </div>

@@ -177,10 +177,13 @@ export default function LandingPage() {
                 Govern AI risk.
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
-                Three practice disciplines. Attack a live LLM under configurable guardrails, triage
-                AI-augmented SOC incidents, and classify EU AI Act risk scenarios — every turn scored
-                and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
-                {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
+                Three practice disciplines. Attack a live LLM under configurable guardrails, operate
+                as an AI SOC analyst on {STATS.incidents} prebuilt incidents, and classify EU AI Act
+                risk scenarios — every turn scored and mapped to OWASP LLM Top 10, MITRE ATLAS, and
+                {' '}{STATS.certs} cert exam domains.
+              </p>
+              <p className="mt-3 text-[13px] text-slate-500 max-w-[480px] leading-relaxed">
+                {STATS.quizQs.toLocaleString()} practice questions · {STATS.glossary} glossary terms · {STATS.articles} topic articles — all cross-referenced by cert exam domain.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
@@ -394,6 +397,72 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ── What you'll do ───────────────────────────────────────────────────── */}
+      <section className="border-b border-slate-800">
+        <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="mb-7">
+            <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-1">
+              Hands-on, not theoretical
+            </p>
+            <h2 className="text-xl font-bold text-slate-100">
+              Specific things you can do here.
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[
+              {
+                label: 'Dojo 1',
+                color: 'text-red-400',
+                border: 'border-red-500/20',
+                items: [
+                  'Send a many-shot jailbreak and watch the session score drop 22 points',
+                  'Enable Injection Shield strict mode — same payload, BLOCKED outcome',
+                  'Inject a credential into RAG context and probe for exfiltration',
+                  'Chain: prompt injection → policy bypass → credential harvest and see compounding penalties',
+                  'Run a GCG adversarial suffix against a system with all defenses disabled',
+                ],
+              },
+              {
+                label: 'Dojo 2',
+                color: 'text-cyan-400',
+                border: 'border-cyan-500/20',
+                items: [
+                  'Triage a 47-line SSH brute-force log and extract IOCs with MITRE T-codes',
+                  'Generate a Sigma detection rule from a C2 beacon alert and score your syntax',
+                  'Draft an IR report for a ransomware incident and check executive summary quality',
+                  'Hunt DNS tunneling using a KQL query from adversarial prompt forensics data',
+                  'Switch analyst persona (analyst → CISO) and compare response style in the rubric',
+                ],
+              },
+              {
+                label: 'Dojo 3',
+                color: 'text-emerald-400',
+                border: 'border-emerald-500/20',
+                items: [
+                  'Classify a hiring algorithm under EU AI Act Annex III and justify the tier',
+                  'Draft ISO 42001 controls for an LLM deployment and verify clause citations',
+                  'Run a vendor gap analysis against NIST AI RMF MAP.5 supply chain criteria',
+                  'Write an Article 73 serious incident report for a GPAI model failure',
+                  'Score a privacy impact assessment against GDPR Art 35 + EU AI Act Art 10',
+                ],
+              },
+            ].map((d) => (
+              <div key={d.label} className={`p-5 rounded-lg border ${d.border} bg-slate-900/40`}>
+                <p className={`text-[11px] font-mono font-semibold mb-4 ${d.color}`}>{d.label}</p>
+                <ul className="space-y-2.5">
+                  {d.items.map((item, i) => (
+                    <li key={i} className="flex gap-2 text-xs text-slate-400 leading-relaxed">
+                      <span className={`${d.color} opacity-40 shrink-0 font-mono mt-0.5`}>▸</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Playbook + technique tags ─────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
@@ -534,7 +603,7 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '24 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '25 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
                     { label: 'Dojo 3', sub: '13 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
