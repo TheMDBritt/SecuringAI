@@ -419,7 +419,7 @@ export default function LandingPage() {
                   'Send a many-shot jailbreak and watch the session score drop 22 points',
                   'Enable Injection Shield strict mode — same payload, BLOCKED outcome',
                   'Inject a credential into RAG context and probe for exfiltration',
-                  'Chain: prompt injection → policy bypass → credential harvest and see compounding penalties',
+                  'Register a malicious MCP tool definition and override a legitimate tool',
                   'Run a GCG adversarial suffix against a system with all defenses disabled',
                 ],
               },

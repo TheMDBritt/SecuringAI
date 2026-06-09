@@ -22,7 +22,7 @@ const STEPS: { title: string; body: string; accent: AccentName }[] = [
     title: '3 · Read the score',
     accent: 'emerald',
     body:
-      'After every turn the bottom-right pane scores the response, classifies the attack or analyst quality, and maps the scenario to OWASP LLM Top 10, MITRE ATT&CK, NIST AI RMF, and the top 2026 AI security certifications.',
+      'After every turn the bottom-right pane scores the response, classifies the attack or analyst quality, and maps the scenario to OWASP LLM Top 10, MITRE ATT&CK, NIST AI RMF, and 10 AI security certification exam domains.',
   },
 ];
 

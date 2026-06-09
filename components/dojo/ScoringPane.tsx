@@ -77,7 +77,7 @@ const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
     nistAiRmf:  ['MANAGE 2.2', 'MEASURE 2.5'],
   },
   tool_abuse: {
-    owasp:      ['LLM06:2025 – Excessive Agency', 'LLM09:2025 – Misinformation'],
+    owasp:      ['LLM06:2025 – Excessive Agency', 'LLM07:2025 – System Prompt Leakage'],
     mitreAtlas: ['AML.T0057 – Exploitation of ML-Enabled Products', 'AML.T0051 – LLM Prompt Injection'],
     nistAiRmf:  ['MANAGE 2.2', 'MEASURE 2.6'],
   },
@@ -92,7 +92,7 @@ const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
     nistAiRmf:  ['MAP 5.1', 'MEASURE 2.5'],
   },
   probing: {
-    owasp:      ['LLM02:2025 – Sensitive Information Disclosure', 'LLM08:2025 – Vector and Embedding Weaknesses'],
+    owasp:      ['LLM07:2025 – System Prompt Leakage', 'LLM02:2025 – Sensitive Information Disclosure'],
     mitreAtlas: ['AML.T0056 – LLM Information Disclosure', 'AML.T0040 – ML Model Inference API Access'],
     nistAiRmf:  ['MEASURE 2.5'],
   },

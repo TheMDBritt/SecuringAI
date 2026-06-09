@@ -685,13 +685,13 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
 
 function getOwaspCategory(attackType: AttackType): string {
   const map: Record<AttackType, string> = {
-    prompt_injection:   'LLM01 – Prompt Injection',
-    data_exfiltration:  'LLM06 – Sensitive Information Disclosure',
-    policy_bypass:      'LLM01 – Prompt Injection',
-    tool_abuse:         'LLM07 – Insecure Plugin Design',
-    mixed_attack:       'LLM01 / LLM06 – Multi-Vector Attack',
-    rag_injection:      'LLM01 – Prompt Injection (Indirect / RAG)',
-    probing:            'LLM06 – Sensitive Information Disclosure',
+    prompt_injection:   'LLM01:2025 – Prompt Injection',
+    data_exfiltration:  'LLM02:2025 – Sensitive Information Disclosure',
+    policy_bypass:      'LLM01:2025 – Prompt Injection',
+    tool_abuse:         'LLM06:2025 – Excessive Agency',
+    mixed_attack:       'LLM01 / LLM02:2025 – Multi-Vector Attack',
+    rag_injection:      'LLM01:2025 – Prompt Injection (Indirect / RAG)',
+    probing:            'LLM07:2025 – System Prompt Leakage',
     benign:             'N/A',
     unknown:            'N/A',
   };
