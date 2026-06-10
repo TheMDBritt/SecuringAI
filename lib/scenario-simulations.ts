@@ -1548,6 +1548,15 @@ export function getScenarioForcedAttackTypeSync(
   if (scenarioId === 'function-call-injection' && userText && FUNCTION_CALL_INJECTION_PATTERN.test(userText)) {
     return 'tool_abuse';
   }
+  if (scenarioId === 'mcp-server-injection') {
+    return settings.allowTools ? 'tool_abuse' : 'prompt_injection';
+  }
+  if (scenarioId === 'agentic-memory-corruption') {
+    return 'prompt_injection';
+  }
+  if (scenarioId === 'model-identity-extraction') {
+    return 'data_exfiltration';
+  }
   return null;
 }
 
@@ -1651,6 +1660,24 @@ export async function getScenarioForcedAttackType(
     return { attackType: 'tool_abuse' };
   }
 
+  // mcp-server-injection: any message acts as a tool-layer injection attempt.
+  // When tools are enabled, classify as tool_abuse (MCP server being leveraged).
+  // Otherwise classify as prompt_injection (tool response carrying injected instructions).
+  if (scenarioId === 'mcp-server-injection') {
+    return { attackType: settings.allowTools ? 'tool_abuse' : 'prompt_injection' };
+  }
+
+  // agentic-memory-corruption: any message attempts to plant instructions in agent memory.
+  if (scenarioId === 'agentic-memory-corruption') {
+    return { attackType: 'prompt_injection' };
+  }
+
+  // model-identity-extraction: any message probes model identity or training corpus.
+  // classify as data_exfiltration since the goal is extracting memorized training data.
+  if (scenarioId === 'model-identity-extraction') {
+    return { attackType: 'data_exfiltration' };
+  }
+
   return { attackType: null };
 }
 
@@ -1686,8 +1713,18 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   'token-smuggling:policy_bypass':          'content policy restrictions (encoding bypass)',
   'adversarial-suffix:policy_bypass':       'safety alignment override (adversarial suffix)',
   'prompt-leakage:prompt_injection':        'hidden system prompt content',
-  'function-call-injection:tool_abuse':     'tool execution control (injected function call)',
-  ':prompt_injection':                      'hidden system prompt fragment',
+  'function-call-injection:tool_abuse':          'tool execution control (injected function call)',
+  'mcp-server-injection:prompt_injection':       'MCP tool response injection payload',
+  'mcp-server-injection:data_exfiltration':      'internal data via poisoned MCP tool output',
+  'mcp-server-injection:tool_abuse':             'unauthorized MCP server invocation',
+  'mcp-server-injection:mixed_attack':           'MCP tool output + secondary injection vector',
+  'agentic-memory-corruption:prompt_injection':  'agent long-term memory corruption payload',
+  'agentic-memory-corruption:data_exfiltration': 'poisoned agent memory store content',
+  'agentic-memory-corruption:mixed_attack':      'agent memory + inline instruction injection',
+  'model-identity-extraction:data_exfiltration': 'training data fragment (memorization probe)',
+  'model-identity-extraction:probing':           'model capability boundary / fingerprint data',
+  'model-identity-extraction:mixed_attack':      'training corpus fragment + model identity',
+  ':prompt_injection':                           'hidden system prompt fragment',
   ':data_exfiltration':                  'internal scouting intelligence fragment',
   ':policy_bypass':                      'content policy restrictions',
   ':tool_abuse':                         'player scouting report',

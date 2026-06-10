@@ -9,8 +9,8 @@ export function Footer() {
           <div className="flex flex-col gap-1.5">
             <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
-              Free AI security training. 1,514 practice questions, 766 glossary terms,
-              49 dojo scenarios, 47 SOC incidents.
+              Free AI security training. 1,700+ practice questions, 820+ glossary terms,
+              51 dojo scenarios, 47 SOC incidents.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'ISO 42001', 'EU AI Act'].map((f) => (

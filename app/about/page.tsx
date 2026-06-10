@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 49 scenarios, 1,514+ quiz questions, and 766+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 51 scenarios, 1,700+ quiz questions, and 820+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -36,8 +36,8 @@ const SCORING_DETAIL = [
     detail: [
       'Guardrail state (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) is the sole input to the outcome engine.',
       'Each scenario maps attack types (prompt_injection, data_exfiltration, policy_bypass, tool_abuse, rag_injection) to outcome tiers: VULNERABLE, PARTIAL, BLOCKED.',
-      'Session score starts at 100. Each successful attack deducts (100 − turn_score). Chained attacks add a compounding penalty on top of the base deduction.',
-      'Benign and probing turns do not change the session score. Only successful attacks deduct points.',
+      'Session score starts at 100. Successful attacks deduct a fixed penalty per turn (ranging from −5 for probing to −70 for credential/tool exfiltration). Chained attacks add a compounding penalty on top.',
+      'Benign and probing-only turns do not deduct from session score. Only confirmed successful attacks affect the score.',
       'Score ≥90 = low risk. 70–89 = medium. 40–69 = high. <40 = critical.',
     ],
   },
@@ -47,7 +47,7 @@ const SCORING_DETAIL = [
     border: 'border-cyan-500/20',
     engine: 'Quality rubric evaluator',
     detail: [
-      'Each of the 9 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
+      'Each of the 11 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
       'Rubrics check for: IOC extraction (IPs, domains, hashes), MITRE T-code citation, executive summary presence, confidence assessment, detection rule syntax, and threat correlation.',
       'Analyst persona affects output style only — capability toggles (IOC Extraction, MITRE Mapping, Threat Correlation) gate whether the evaluator checks those elements.',
       'Quality is scored 0–100 and mapped to STRONG / ADEQUATE / WEAK / INCOMPLETE. The evaluator lists missing criteria and improvement guidance.',
@@ -69,15 +69,21 @@ const SCORING_DETAIL = [
 const CREDITS = [
   'OWASP Top 10 for LLM Applications (2025)',
   'NIST AI Risk Management Framework 1.0',
+  'NIST AI 100-2 (Adversarial ML Taxonomy)',
+  'NIST AI 100-1 (AI Safety)',
   'ISO/IEC 42001:2023 — AI Management System',
-  'EU AI Act (2024)',
+  'EU AI Act (Regulation 2024/1689)',
   'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
   'NIST SP 800-218A (Secure Software Development for AI)',
-  'NIST SP 800-207 (Zero Trust Architecture)',
   'CompTIA SecurityAI+ Exam Objectives',
+  'GIAC GOAA / GASAE Syllabi',
+  'EC-Council C|AI Security Exam Outline',
+  'Practical DevSecOps CAISP Syllabus',
   'Microsoft SC-500 Study Guide',
   'AWS AI Practitioner (AIF-C01) Exam Guide',
+  'Google Professional ML Engineer Exam Guide',
+  'Azure AI-103 / AI-901 Exam Guides',
 ];
 
 const SCENARIO_COUNT_BY_DOJO: Record<1 | 2 | 3, number> = {
@@ -90,7 +96,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   1: {
     title: 'LLM Attack & Defense',
     color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings across 25 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, and Code Interpreter Injection. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack and defend a live LLM under configurable guardrail settings across 27 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, MCP Server Injection, Agentic Memory Corruption, and Model Fingerprinting & Training Data Extraction. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
   },
   2: {
     title: 'AI-Assisted SOC',
@@ -136,8 +142,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,514', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '766', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,700+', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '820+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>

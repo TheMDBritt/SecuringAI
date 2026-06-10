@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  49,
-  quizQs:    1514,
-  glossary:  766,
+  scenarios:  51,
+  quizQs:    1674,
+  glossary:  828,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 25 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, and code interpreter injection. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 27 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, MCP server injection, agentic memory corruption, model fingerprinting, and code interpreter injection. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -44,7 +44,7 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, and investigate model failures under Article 73.',
+    summary: 'Govern the full AI risk lifecycle across 13 scenarios: EU AI Act risk tier classification, ISO 42001 control drafting, vendor risk review, Article 73 failure investigation, AI-BOM documentation, bias audits, and NIST AI RMF profile construction.',
     accent: 'emerald',
     detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
   },
@@ -100,6 +100,9 @@ const TECHNIQUES = [
   { label: 'AI Model Abuse Triage',      tag: 'AML.T0040',     dojo: 2 },
   { label: 'PyRIT Red Teaming',          tag: 'SC-500',        dojo: 1 },
   { label: 'EU AI Act Art. 73 Report',   tag: 'EU AI Act',     dojo: 3 },
+  { label: 'MCP Server Injection',       tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'Agentic Memory Corruption',  tag: 'LLM07:2025',    dojo: 1 },
+  { label: 'Model Fingerprinting',       tag: 'AML.T0024',     dojo: 1 },
 ];
 
 const CERT_CHIPS = [
@@ -119,17 +122,20 @@ const SOURCED_FROM = [
   'OWASP LLM Top 10 (2025)',
   'MITRE ATT&CK + ATLAS',
   'NIST AI RMF 1.0',
+  'NIST AI 100-2 (Adversarial ML)',
   'ISO/IEC 42001:2023',
-  'EU AI Act (2024)',
+  'EU AI Act (Reg. 2024/1689)',
   'CSA AI Controls Matrix',
   'NIST SP 800-218A',
   'NIST AI 100-1',
   'GIAC GOAA / GASAE Syllabi',
   'CompTIA SecurityAI+ Objectives',
   'EC-Council C|AI Security Outline',
+  'Practical DevSecOps CAISP',
   'Microsoft SC-500 Study Guide',
   'AWS AI Practitioner Exam Guide',
   'Google Professional ML Engineer Guide',
+  'Azure AI-103 / AI-901 Exam Guides',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -236,22 +242,22 @@ export default function LandingPage() {
                 <div className="text-slate-500">
                   <span className="text-slate-700">$ </span>
                   <span className="text-cyan-400">dojo</span>
-                  <span className="text-slate-400"> load prompt-injection --shield strict</span>
+                  <span className="text-slate-400"> load mcp-server-injection --shield off</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-red-400">VULNERABLE</span>
+                  <span className="text-slate-600"> [LLM01:2025] MCP tool poisoned · −22pts</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-slate-400"> load many-shot-jailbreak --shield strict</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
                   <span className="text-emerald-400">BLOCKED</span>
                   <span className="text-slate-600"> [LLM01:2025] score 100 · shield triggered</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">dojo</span>
-                  <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">→ </span>
-                  <span className="text-red-400">VULNERABLE</span>
-                  <span className="text-slate-600"> [LLM01:2025] session −22 · AML.T0054</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
@@ -266,12 +272,12 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
                   <span className="text-cyan-400">quiz</span>
-                  <span className="text-slate-400"> start SC-500 --domain d5 --mock</span>
+                  <span className="text-slate-400"> start CAIS --domain d3 --count 25</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-violet-400">MOCK</span>
-                  <span className="text-slate-600"> Secure AI Workloads · 60q · 100min</span>
+                  <span className="text-violet-400">STARTED</span>
+                  <span className="text-slate-600"> LLM Security &amp; Prompt Injection · 25q</span>
                 </div>
               </div>
             </div>
@@ -534,7 +540,7 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '24 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '27 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
                     { label: 'Dojo 3', sub: '13 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
