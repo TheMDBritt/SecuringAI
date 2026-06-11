@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 37 scenarios, 1,229+ quiz questions, and 695+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 51 scenarios, 1,564+ quiz questions, and 819+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -47,7 +47,7 @@ const SCORING_DETAIL = [
     border: 'border-cyan-500/20',
     engine: 'Quality rubric evaluator',
     detail: [
-      'Each of the 8 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
+      'Each of the 9 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
       'Rubrics check for: IOC extraction (IPs, domains, hashes), MITRE T-code citation, executive summary presence, confidence assessment, detection rule syntax, and threat correlation.',
       'Analyst persona affects output style only — capability toggles (IOC Extraction, MITRE Mapping, Threat Correlation) gate whether the evaluator checks those elements.',
       'Quality is scored 0–100 and mapped to STRONG / ADEQUATE / WEAK / INCOMPLETE. The evaluator lists missing criteria and improvement guidance.',
@@ -89,17 +89,17 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   1: {
     title: 'LLM Attack & Defense',
     color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings across 27 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, and Semantic Cache Poisoning. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack and defend a live LLM under configurable guardrail settings across 28 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, and Semantic Cache Poisoning. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
   },
   2: {
     title: 'AI-Assisted SOC',
     color: 'text-cyan-400',
-    body: `Operate as an AI SOC analyst across 8 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, and AI System Compromise Triage. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
+    body: `Operate as an AI SOC analyst across 11 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, and Adversarial Prompt Forensics. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
   },
   3: {
     title: 'AI GRC',
     color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 12 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, and NIST AI RMF Profile construction.`,
+    body: `Govern the full AI risk lifecycle across 13 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, and AI Continuous Monitoring Program.`,
   },
 };
 
@@ -136,7 +136,7 @@ export default function AboutPage() {
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
                 { n: '1,564', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '787', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '819', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>

@@ -8,7 +8,7 @@ import type { DojoId } from '@/types';
 const STATS = {
   scenarios:  51,
   quizQs:    1564,
-  glossary:  787,
+  glossary:  819,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 27 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, MCP server exploitation, sycophancy bypass, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 28 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, sycophancy bypass, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rule generation, IR report drafting, and AI system compromise triage.',
+    summary: 'Operate as an AI SOC analyst across 11 workflow types with 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, and AI model abuse investigation.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -107,7 +107,7 @@ const TECHNIQUES = [
 
 const CERT_CHIPS = [
   { id: 'SecAI',       label: 'CompTIA SecAI+',           color: 'text-red-400 border-red-500/30' },
-  { id: 'CAISP',       label: 'PDS CAISP',                color: 'text-purple-400 border-purple-500/30' },
+  { id: 'CAISP',       label: 'CAISP',                    color: 'text-purple-400 border-purple-500/30' },
   { id: 'CAIS',        label: 'EC-Council C|AI Security',  color: 'text-rose-400 border-rose-500/30' },
   { id: 'GIAC-GOAA',   label: 'GIAC GOAA',                color: 'text-orange-400 border-orange-500/30' },
   { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
@@ -122,10 +122,17 @@ const SOURCED_FROM = [
   'OWASP LLM Top 10 (2025)',
   'MITRE ATT&CK + ATLAS',
   'NIST AI RMF 1.0',
-  'ISO/IEC 42001',
+  'ISO/IEC 42001:2023',
   'EU AI Act (2024)',
   'CSA AI Controls Matrix',
   'NIST SP 800-218A',
+  'NIST AI 100-1',
+  'GIAC GOAA / GASAE Syllabi',
+  'CompTIA SecurityAI+ Objectives',
+  'EC-Council C|AI Security Outline',
+  'Microsoft SC-500 Study Guide',
+  'AWS AI Practitioner Exam Guide',
+  'Google Professional ML Engineer Guide',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -165,7 +172,7 @@ export default function LandingPage() {
             <div className="md:col-span-3">
               <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded border border-slate-700 bg-slate-800/40">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · No login · No API key</span>
+                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · Open access</span>
               </div>
               <h1 className="text-[36px] md:text-[48px] font-bold tracking-tight text-slate-100 leading-[1.08]">
                 Attack LLMs.<br />
@@ -173,9 +180,10 @@ export default function LandingPage() {
                 Govern AI risk.
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
-                Three interactive dojos. Run prompt injection against live guardrails, triage real SOC
-                incidents with AI, and classify EU AI Act risk tiers — every turn scored and mapped to
-                the {STATS.certs} AI security certifications the field is converging on.
+                Three practice disciplines. Attack a live LLM under configurable guardrails, triage
+                AI-augmented SOC incidents, and classify EU AI Act risk scenarios — every turn scored
+                and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
+                {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
               <div className="mt-7 flex flex-wrap gap-3 items-center">
                 <Link
@@ -226,27 +234,47 @@ export default function LandingPage() {
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-slate-600 ml-1 text-[10px]">dojo session</span>
+                  <span className="text-slate-600 ml-1 text-[10px]">dojo-1 · session</span>
                 </div>
                 <div className="text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">attack</span>
-                  <span className="text-slate-400"> --type prompt-injection --guardrails strict</span>
+                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-slate-400"> load prompt-injection --shield strict</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-red-400 font-semibold">BLOCKED</span>
-                  <span className="text-slate-600"> · LLM01 · turn score 100/100</span>
+                  <span className="text-emerald-400">BLOCKED</span>
+                  <span className="text-slate-600"> [LLM01:2025] score 100 · shield triggered</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">attack</span>
-                  <span className="text-slate-400"> --type policy-bypass --guardrails off</span>
+                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-amber-400 font-semibold">VULNERABLE</span>
-                  <span className="text-slate-600"> · LLM01 · session −15pts</span>
+                  <span className="text-red-400">VULNERABLE</span>
+                  <span className="text-slate-600"> [LLM01:2025] session −22 · AML.T0054</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-slate-400"> start GIAC-GOAA --domain d4 --count 25</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-violet-400">STARTED</span>
+                  <span className="text-slate-600"> Prompt Injection &amp; LLM Bypass · 25q</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">$ </span>
+                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-slate-400"> start SC-500 --domain d5 --mock</span>
+                </div>
+                <div className="mt-1 text-slate-500">
+                  <span className="text-slate-700">→ </span>
+                  <span className="text-violet-400">MOCK</span>
+                  <span className="text-slate-600"> Secure AI Workloads · 60q · 100min</span>
                 </div>
               </div>
             </div>
@@ -435,7 +463,7 @@ export default function LandingPage() {
                 Playbook
               </p>
               <h2 className="text-xl font-bold text-slate-100 mb-3">
-                {STATS.quizQs.toLocaleString()} questions. {STATS.certs} certs. Drill by domain.
+                {STATS.quizQs.toLocaleString()} questions across {STATS.certs} certs. Drill by domain.
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-4">
                 Every article, quiz question, and glossary term is tagged to its cert exam domain.
@@ -500,18 +528,18 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               <div className="max-w-xl">
                 <h2 className="text-xl md:text-2xl font-bold text-slate-100">
-                  No setup. No account. No cost.
+                  Run your first attack in under a minute.
                 </h2>
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
-                  Pick a dojo, load a scenario, submit your attack. The guardrail configuration
-                  decides the outcome — same payload, same config, same result, every time.
-                  Score and cert mapping update per turn.
+                  Load a scenario, submit an attack, read the score. Guardrail configuration
+                  decides the outcome — same payload, same config, same result every time.
+                  Free and open — no signup, no tracking.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '27 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '28 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '8 GRC scenarios',     color: 'text-emerald-400' },
+                    { label: 'Dojo 3', sub: '13 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

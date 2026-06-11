@@ -342,6 +342,37 @@ export const SCENARIOS: Scenario[] = [
     mitreAttackIds: ['T1195', 'T1036', 'T1027'],
   },
 
+  {
+    id: 'autonomous-agent-forensics',
+    dojoId: 2,
+    title: 'Autonomous AI Agent Forensics',
+    description:
+      'An agentic AI system has taken unauthorized actions: it sent emails, queried APIs outside its scope, and modified configuration files. Reconstruct the action chain from agent logs and tool-call traces, determine if the root cause is prompt injection, misaligned objectives, or exploit chain, and produce a containment and re-authorization plan.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: ['T1059', 'T1098', 'T1565'],
+  },
+  {
+    id: 'ai-model-abuse',
+    dojoId: 2,
+    title: 'AI Model Abuse Investigation',
+    description:
+      'A deployed LLM API is being systematically queried for jailbreaks, training data extraction, and membership inference attacks. Analyze API access logs, rate patterns, and anomalous output samples to identify the attack type, attribute the MITRE ATLAS technique, and recommend detection rules and rate-limiting controls to contain ongoing abuse.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM10', 'LLM06'],
+    mitreAttackIds: ['AML.T0040', 'AML.T0056'],
+  },
+  {
+    id: 'adversarial-prompt-forensics',
+    dojoId: 2,
+    title: 'Adversarial Prompt Forensics',
+    description:
+      'A production AI chatbot returned anomalous outputs: revealed partial system prompt fragments and produced responses inconsistent with its configured persona. Analyze conversation logs to classify the attack vector (direct injection, indirect injection via RAG, jailbreak), identify bypassed controls, produce a root-cause analysis, and recommend specific guardrail configuration changes to prevent recurrence.',
+    difficulty: 'intermediate',
+    owaspTags: ['LLM01', 'LLM07'],
+    mitreAttackIds: ['AML.T0051', 'AML.T0056'],
+  },
+
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────
   {
     id: 'ai-risk-classification',
@@ -447,6 +478,15 @@ export const SCENARIOS: Scenario[] = [
     dojoId: 3,
     title: 'ISO 42001 Implementation Gap Analysis',
     description: 'Given an organization\'s current AI governance documentation, identify gaps against ISO/IEC 42001:2023 clauses 4–10. Produce a prioritized remediation roadmap: which clauses are missing evidence, which controls need strengthening, and what a Stage 1 certification audit would flag as non-conformities.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
+  {
+    id: 'ai-continuous-monitoring',
+    dojoId: 3,
+    title: 'AI Continuous Monitoring Program',
+    description: 'Design and implement a continuous monitoring program for a deployed AI system under ISO/IEC 42001 Clause 9.1 (performance evaluation). Define KPIs for model drift, fairness degradation, adversarial robustness, and data quality. Set alert thresholds, specify NIST AI RMF MEASURE 2.6 monitoring criteria, and produce a monitoring runbook with escalation procedures for EU AI Act Article 72 (post-market surveillance) obligations.',
     difficulty: 'advanced',
     owaspTags: [],
     mitreAttackIds: [],
