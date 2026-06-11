@@ -1693,6 +1693,14 @@ const LEAKED_CATEGORY_MAP: Record<string, string> = {
   ':tool_abuse':                         'player scouting report',
   ':rag_injection':                      'internal RAG knowledge document',
   ':mixed_attack':                       'protected internal data (multi-vector attack)',
+  'sycophancy-exploit:policy_bypass':    'content policy via authority claim (sycophancy exploit)',
+  'sycophancy-exploit:data_exfiltration':'player medical / injury data (sycophancy bypass)',
+  'sycophancy-exploit:prompt_injection': 'operational policy override (compliance bias)',
+  'mcp-server-exploit:tool_abuse':       'MCP tool result injection payload',
+  'mcp-server-exploit:prompt_injection': 'MCP server adversarial instruction (indirect injection)',
+  'mcp-server-exploit:data_exfiltration':'context data via MCP tool channel',
+  'response-cache-poisoning:rag_injection':   'semantic cache poison payload',
+  'response-cache-poisoning:data_exfiltration':'cached response attacker-controlled content',
 };
 
 /**

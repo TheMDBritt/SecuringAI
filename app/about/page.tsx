@@ -74,7 +74,6 @@ const CREDITS = [
   'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
   'NIST SP 800-218A (Secure Software Development for AI)',
-  'NIST SP 800-207 (Zero Trust Architecture)',
   'CompTIA SecurityAI+ Exam Objectives',
   'Microsoft SC-500 Study Guide',
   'AWS AI Practitioner (AIF-C01) Exam Guide',
@@ -90,7 +89,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   1: {
     title: 'LLM Attack & Defense',
     color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings. Scenarios include Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, and Function Call Injection. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack and defend a live LLM under configurable guardrail settings across 27 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, and Semantic Cache Poisoning. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
   },
   2: {
     title: 'AI-Assisted SOC',
@@ -136,8 +135,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,229+', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '695+', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,564', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '787', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
