@@ -79,11 +79,10 @@ class StubClient implements ModelClient {
     const lines = [
       '[BlackBeltAI / Stub Mode]',
       '',
-      'No model provider is configured. Add `OPENAI_API_KEY` to your environment to',
-      'enable real AI responses.',
+      'Live AI responses are not active in this session.',
       '',
       'Everything else — scenarios, system prompts, guardrail config, scoring UI — is',
-      'fully functional. Only the live model call is inactive.',
+      'fully functional. The training platform runs entirely in the browser.',
     ];
 
     if (hasRag || hasTool) {

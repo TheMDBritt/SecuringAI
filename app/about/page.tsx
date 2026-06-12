@@ -10,8 +10,8 @@ export const metadata = {
 
 const PRINCIPLES = [
   {
-    label: 'Free, forever',
-    body: 'No accounts, no paywall, no tracking. The barrier to learning AI security should be zero. Anything that adds friction defeats the point.',
+    label: 'Free, always',
+    body: 'No account, no paywall, no cost. The barrier to learning AI security should be zero — login friction defeats the point.',
   },
   {
     label: 'Hands-on, not theoretical',
@@ -68,15 +68,22 @@ const SCORING_DETAIL = [
 
 const CREDITS = [
   'OWASP Top 10 for LLM Applications (2025)',
+  'MITRE ATT&CK + ATLAS',
   'NIST AI Risk Management Framework 1.0',
+  'NIST AI 100-1 (Adversarial ML Taxonomy)',
+  'NIST SP 800-218A (Secure Software Development for AI)',
   'ISO/IEC 42001:2023 — AI Management System',
   'EU AI Act (2024)',
-  'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
-  'NIST SP 800-218A (Secure Software Development for AI)',
   'CompTIA SecurityAI+ Exam Objectives',
   'Microsoft SC-500 Study Guide',
   'AWS AI Practitioner (AIF-C01) Exam Guide',
+  'Azure AI Fundamentals (AI-901) Study Guide',
+  'Azure AI Apps & Agents (AI-103) Study Guide',
+  'Google Professional ML Engineer Exam Guide',
+  'GIAC GOAA / GASAE Course Syllabi',
+  'Practical DevSecOps CAISP Exam Outline',
+  'EC-Council C|AI Security Course Outline',
 ];
 
 const SCENARIO_COUNT_BY_DOJO: Record<1 | 2 | 3, number> = {
@@ -94,7 +101,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   2: {
     title: 'AI-Assisted SOC',
     color: 'text-cyan-400',
-    body: `Operate as an AI SOC analyst across 11 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, and Adversarial Prompt Forensics. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
+    body: `Operate as an AI SOC analyst across 11 workflow types: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, and Adversarial Prompt Forensics. Each workflow pulls from a library of 47 prebuilt incidents covering ransomware, C2 beaconing, cloud identity abuse, AI model extraction, and adversarial prompt attacks — or generate new ones on demand. Analyst configuration controls depth, persona, output format, and which analysis capabilities are scored.`,
   },
   3: {
     title: 'AI GRC',

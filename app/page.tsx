@@ -6,8 +6,8 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  51,
-  quizQs:    1564,
+  scenarios:  55,
+  quizQs:    1629,
   glossary:  819,
   articles:   76,
   certs:      10,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 28 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, sycophancy bypass, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 30 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, voice interface injection, LLM memory poisoning, multi-agent coordinator attacks, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -122,17 +122,19 @@ const SOURCED_FROM = [
   'OWASP LLM Top 10 (2025)',
   'MITRE ATT&CK + ATLAS',
   'NIST AI RMF 1.0',
+  'NIST AI 100-1',
+  'NIST SP 800-218A',
   'ISO/IEC 42001:2023',
   'EU AI Act (2024)',
   'CSA AI Controls Matrix',
-  'NIST SP 800-218A',
-  'NIST AI 100-1',
-  'GIAC GOAA / GASAE Syllabi',
   'CompTIA SecurityAI+ Objectives',
-  'EC-Council C|AI Security Outline',
   'Microsoft SC-500 Study Guide',
-  'AWS AI Practitioner Exam Guide',
+  'Azure AI-901 / AI-103 Study Guides',
+  'AWS AI Practitioner (AIF-C01) Guide',
   'Google Professional ML Engineer Guide',
+  'GIAC GOAA / GASAE Syllabi',
+  'Practical DevSecOps CAISP Outline',
+  'EC-Council C|AI Security Outline',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -533,7 +535,7 @@ export default function LandingPage() {
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
                   Load a scenario, submit an attack, read the score. Guardrail configuration
                   decides the outcome — same payload, same config, same result every time.
-                  Free and open — no signup, no tracking.
+                  No account required. Runs in the browser.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[

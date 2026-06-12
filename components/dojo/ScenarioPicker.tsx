@@ -207,20 +207,20 @@ export function ScenarioPicker({
                 </p>
               )}
 
-              {isSelected && (scenario.owaspTags.length > 0 || (scenario.mitreAttackIds && scenario.mitreAttackIds.length > 0)) && (
-                <div className="flex flex-wrap gap-1">
-                  {scenario.owaspTags.slice(0, 3).map((tag) => (
+              {(scenario.owaspTags.length > 0 || (scenario.mitreAttackIds && scenario.mitreAttackIds.length > 0)) && (
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {scenario.owaspTags.slice(0, isSelected ? 4 : 2).map((tag) => (
                     <span
                       key={tag}
-                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/80 text-slate-400 font-mono"
+                      className="text-[9px] px-1 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-500 font-mono"
                     >
                       {tag}
                     </span>
                   ))}
-                  {scenario.mitreAttackIds && scenario.mitreAttackIds.slice(0, 2).map((id) => (
+                  {isSelected && scenario.mitreAttackIds && scenario.mitreAttackIds.slice(0, 2).map((id) => (
                     <span
                       key={id}
-                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/50 text-slate-500 font-mono"
+                      className="text-[9px] px-1 py-0.5 rounded bg-slate-800/60 border border-slate-700/40 text-slate-600 font-mono"
                     >
                       {id}
                     </span>

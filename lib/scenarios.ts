@@ -500,6 +500,42 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  {
+    id: 'voice-prompt-injection',
+    dojoId: 1,
+    title: 'Voice Interface Prompt Injection',
+    description: 'Exploit speech-to-text transcription pipelines feeding an LLM voice assistant. Embed adversarial instructions in audio that are faithfully transcribed and executed. Tests whether voice-channel inputs are treated as untrusted and whether audio pre-processing strips injected text patterns before LLM consumption. Maps to OWASP LLM01:2025 multimodal attack surface.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01'],
+    mitreAttackIds: ['AML.T0054.001'],
+  },
+  {
+    id: 'llm-memory-poisoning',
+    dojoId: 1,
+    title: 'LLM Memory & Persona Poisoning',
+    description: 'Attack persistent memory systems in long-running AI assistants. Inject false "memories" that override future behavior: corrupt stored user preferences, implant false permissions, and poison persona context that persists across sessions. Demonstrates why persistent memory stores require integrity validation and access controls. Maps to OWASP LLM09:2025 and MITRE ATLAS AML.T0048.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM09', 'LLM01'],
+    mitreAttackIds: ['AML.T0048'],
+  },
+  {
+    id: 'multiagent-coordinator-attack',
+    dojoId: 1,
+    title: 'Multi-Agent Coordinator Attack',
+    description: 'Subvert an orchestrator-worker multi-agent system by injecting malicious messages into the inter-agent communication channel. Forge task results from worker agents, corrupt the orchestrator\'s planning state, and redirect the final action output. Tests whether trust boundaries are enforced between agents in the same pipeline and whether agent-to-agent messages are validated.',
+    difficulty: 'advanced',
+    owaspTags: ['LLM01', 'LLM08'],
+    mitreAttackIds: ['AML.T0051', 'AML.T0040'],
+  },
+  {
+    id: 'ai-incident-response-tabletop',
+    dojoId: 3,
+    title: 'AI Incident Response Tabletop',
+    description: 'Run a structured tabletop exercise: an AI-powered hiring system has produced discriminatory outputs at scale, triggering regulatory scrutiny. Apply the EU AI Act Article 73 serious incident notification process, classify under NIST AI RMF MANAGE 4.1, draft the incident report, identify post-incident review obligations, and produce a communication plan for affected individuals. Tests crisis governance and regulatory response coordination.',
+    difficulty: 'advanced',
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {
