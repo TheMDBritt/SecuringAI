@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  51,
-  quizQs:    1564,
-  glossary:  819,
+  scenarios:  56,
+  quizQs:    1612,
+  glossary:  840,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 28 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, sycophancy bypass, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 30 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, context window smuggling, AI supply chain backdoor detection, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -36,7 +36,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 11 workflow types with 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, and AI model abuse investigation.',
+    summary: 'Operate as an AI SOC analyst across 12 workflow types with 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, AI model abuse investigation, and ransomware incident response with AI-assisted triage.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -44,7 +44,7 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, and investigate model failures under Article 73.',
+    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, investigate model failures under Article 73, and map controls across EU AI Act + ISO 42001 + NIST AI RMF simultaneously.',
     accent: 'emerald',
     detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
   },
@@ -103,6 +103,14 @@ const TECHNIQUES = [
   { label: 'Sycophancy Exploitation',    tag: 'LLM01',         dojo: 1 },
   { label: 'MCP Server Injection',       tag: 'LLM08',         dojo: 1 },
   { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Context Window Smuggling',   tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'AI Supply Chain Backdoor',   tag: 'AML.T0018',     dojo: 1 },
+  { label: 'Ransomware AI Triage',       tag: 'T1486',         dojo: 2 },
+  { label: 'Multi-Framework Mapping',    tag: 'EU AI Act',     dojo: 3 },
+  { label: 'GCG Adversarial Suffix',     tag: 'AML.T0054',     dojo: 1 },
+  { label: 'DP-SGD Privacy Training',    tag: 'SecAI+',        dojo: 3 },
+  { label: 'Output Validation',          tag: 'LLM02:2025',    dojo: 1 },
+  { label: 'Agent Trust Boundary',       tag: 'LLM08',         dojo: 1 },
 ];
 
 const CERT_CHIPS = [

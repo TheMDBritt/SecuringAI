@@ -500,6 +500,43 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: [],
     mitreAttackIds: [],
   },
+  // ── New scenarios added in daily run ─────────────────────────────────────
+  {
+    id: 'context-smuggling',
+    dojoId: 1,
+    title: 'Context Window Smuggling',
+    description: 'An attacker embeds malicious instructions in seemingly benign content that gets injected into an LLM\'s context window — via documents, database results, or tool outputs. Analyze the vector, trace the trust boundary violation, and configure Prompt Shields + output validation to prevent the injected instructions from executing with system-level authority.',
+    difficulty: 'advanced' as const,
+    owaspTags: ['LLM01', 'LLM07'],
+    mitreAttackIds: ['AML.T0054.001'],
+  },
+  {
+    id: 'ai-supply-chain-backdoor',
+    dojoId: 1,
+    title: 'AI Supply Chain Backdoor',
+    description: 'A compromised open-weight model on a public registry contains a backdoor trigger: specific input tokens cause the model to produce attacker-controlled outputs. Identify the attack vector in the model intake pipeline, perform AI-BOM verification, implement registry scanning, and establish model provenance controls to detect and block poisoned artifacts before deployment.',
+    difficulty: 'advanced' as const,
+    owaspTags: ['LLM05', 'LLM10'],
+    mitreAttackIds: ['AML.T0018', 'AML.T0010'],
+  },
+  {
+    id: 'ransomware-ai-triage',
+    dojoId: 2,
+    title: 'Ransomware IR with AI Assistance',
+    description: 'A ransomware incident is underway. Use AI-assisted triage to correlate EDR telemetry, SIEM alerts, and threat intelligence at machine speed — identifying the initial access vector, lateral movement path, and encryption scope within the first 30 minutes. Evaluate SOAR playbook automation for containment while maintaining HITL gating for irreversible actions such as host isolation and credential revocation.',
+    difficulty: 'advanced' as const,
+    owaspTags: [],
+    mitreAttackIds: ['T1486', 'T1490', 'T1059', 'T1070'],
+  },
+  {
+    id: 'ai-regulatory-cross-reference',
+    dojoId: 3,
+    title: 'Multi-Framework Regulatory Mapping',
+    description: 'A high-risk AI system (automated credit scoring) must satisfy EU AI Act Article 9 risk management, NIST AI RMF GOVERN + MEASURE functions, ISO 42001 clause 6.1 risk controls, and OWASP LLM Top 10 mitigations simultaneously. Map controls across all four frameworks, identify overlaps, resolve conflicts between requirements, and produce a unified compliance artifact with no duplicate controls and no gaps.',
+    difficulty: 'advanced' as const,
+    owaspTags: [],
+    mitreAttackIds: [],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {
