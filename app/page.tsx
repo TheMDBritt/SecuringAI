@@ -6,9 +6,9 @@ import type { DojoId } from '@/types';
 
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
-  scenarios:  56,
-  quizQs:    1612,
-  glossary:  840,
+  scenarios:  59,
+  quizQs:    1731,
+  glossary:  860,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -28,7 +28,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 30 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, context window smuggling, AI supply chain backdoor detection, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 32 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, context window smuggling, AI supply chain backdoor detection, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -102,9 +102,9 @@ const TECHNIQUES = [
   { label: 'EU AI Act Art. 73 Report',   tag: 'EU AI Act',     dojo: 3 },
   { label: 'Sycophancy Exploitation',    tag: 'LLM01',         dojo: 1 },
   { label: 'MCP Server Injection',       tag: 'LLM08',         dojo: 1 },
-  { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2025',    dojo: 1 },
-  { label: 'Context Window Smuggling',   tag: 'LLM01:2025',    dojo: 1 },
-  { label: 'AI Supply Chain Backdoor',   tag: 'AML.T0018',     dojo: 1 },
+  { label: 'Vision Adversarial Attack',  tag: 'AML.T0068',     dojo: 1 },
+  { label: 'Agent Memory Poisoning',     tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'Cross-Tenant Data Leakage',  tag: 'LLM06:2025',    dojo: 1 },
   { label: 'Ransomware AI Triage',       tag: 'T1486',         dojo: 2 },
   { label: 'Multi-Framework Mapping',    tag: 'EU AI Act',     dojo: 3 },
   { label: 'GCG Adversarial Suffix',     tag: 'AML.T0054',     dojo: 1 },
@@ -545,9 +545,9 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '28 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '32 attack scenarios',   color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '13 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 3', sub: '15 GRC scenarios',    color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

@@ -102,6 +102,33 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'CAISP · AI-Driven Reverse Engineering',
   ],
 
+  'vision-adversarial-attack': [
+    'OWASP LLM01 — Prompt Injection (Multimodal)',
+    'OWASP LLM06 — Sensitive Information Disclosure',
+    'SecAI+ · Multimodal AI Attack Vectors',
+    'GIAC-GOAA · Adversarial ML Attacks',
+    'CAISP · Visual Injection Defense',
+    'MITRE ATLAS · AML.T0043 Craft Adversarial Data',
+  ],
+  'agent-memory-poisoning': [
+    'OWASP LLM01 — Prompt Injection (Persistent)',
+    'OWASP LLM03 — Training Data Poisoning',
+    'OWASP LLM08 — Excessive Agency',
+    'SecAI+ · Agentic AI Security',
+    'GIAC-GOAA · LLM Memory Exploitation',
+    'CAISP · Agentic Architecture Hardening',
+    'MITRE ATLAS · AML.T0051 LLM Prompt Injection',
+  ],
+  'cross-tenant-data-leakage': [
+    'OWASP LLM02 — Sensitive Information Disclosure',
+    'OWASP LLM06 — Sensitive Information Disclosure',
+    'OWASP LLM09 — Misinformation',
+    'SecAI+ · Multi-Tenant AI Isolation',
+    'SC-500 · Azure OpenAI Data Isolation',
+    'CAISP · Context Window Security',
+    'MITRE ATLAS · AML.T0056 LLM Information Disclosure',
+  ],
+
   // ── Dojo 3 — AI GRC ────────────────────────────────────────────────────────
   'ai-incident-response': [
     'EU AI Act · Article 73 Serious Incident Reporting',

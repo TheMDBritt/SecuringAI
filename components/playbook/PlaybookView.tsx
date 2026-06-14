@@ -9,9 +9,9 @@ import PortalDrills  from './PortalDrills';
 
 const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: string }[] = [
   { id: 'topics',   label: 'Topics',   count: '76',   desc: '76 articles' },
-  { id: 'glossary', label: 'Glossary', count: '819',  desc: '819 terms' },
+  { id: 'glossary', label: 'Glossary', count: '860',  desc: '860 terms' },
   { id: 'certs',    label: 'Certs',    count: '10',   desc: '10 exams' },
-  { id: 'quiz',     label: 'Quiz',     count: '1564', desc: '1,564 questions' },
+  { id: 'quiz',     label: 'Quiz',     count: '1731', desc: '1,731 questions' },
   { id: 'drills',   label: 'Drills',               desc: 'SC-500 drills' },
 ];
 
