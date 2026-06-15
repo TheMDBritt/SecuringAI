@@ -596,7 +596,506 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 8 — Security Copilot: Provision and govern ───────────────────────
+  // ── Drill 8 — Entra: Register an app for a custom Copilot Studio agent ────────
+  {
+    id: 'drill-entra-app-reg',
+    portal: 'Entra',
+    title: 'Register an app & delegate API permissions for a Copilot Studio agent',
+    scenario: 'Your team is building a Copilot Studio agent that reads SharePoint documents on behalf of signed-in users. Register an app with the minimum required delegated permissions.',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        screen: 'entra.microsoft.com',
+        question: 'Where do you register a new application?',
+        options: [
+          'Identity → Users → New user',
+          'Applications → App registrations → New registration',
+          'Identity governance → Access packages',
+          'Protection → Conditional Access',
+        ],
+        correct: 1,
+        explanation: 'App registrations is the app identity management hub. New registration starts the app creation wizard.',
+      },
+      {
+        screen: 'Register an application',
+        question: 'For an internal-only Copilot Studio agent used by employees in your tenant, what is the correct "Supported account types"?',
+        options: [
+          'Accounts in any organizational directory',
+          'Accounts in any organizational directory and personal Microsoft accounts',
+          'Accounts in this organizational directory only (single tenant)',
+          'Personal Microsoft accounts only',
+        ],
+        correct: 2,
+        explanation: 'Single-tenant limits sign-in to your own tenant users only — correct for internal enterprise agents. Multi-tenant or personal expands to external identities unnecessarily.',
+      },
+      {
+        screen: 'App registration · API permissions',
+        question: 'Your agent reads SharePoint sites on behalf of the signed-in user (delegated, not application). Which permission scope is correct?',
+        options: [
+          'Sites.FullControl.All (Application)',
+          'Sites.Read.All (Delegated)',
+          'Sites.Manage.All (Application)',
+          'AllSites.Write (legacy)',
+        ],
+        correct: 1,
+        explanation: 'Delegated = acts as the signed-in user. Sites.Read.All delegated means the agent can read what that user can read — no more. Application permissions would give admin-level access regardless of user.',
+      },
+      {
+        screen: 'API permissions · Grant admin consent',
+        question: 'After adding the permission, the status shows "Not granted for <tenant>". What must a Global Admin or Privileged Role Admin do?',
+        options: [
+          'Nothing — users will consent individually at sign-in',
+          'Click "Grant admin consent for <tenant>" to pre-consent for all users',
+          'Delete and re-add the permission',
+          'Change the permission to Application type',
+        ],
+        correct: 1,
+        explanation: 'Admin consent eliminates the per-user consent prompt. For Sites.Read.All (high-privilege), per-user consent may be blocked by policy — admin consent is typically required.',
+      },
+      {
+        screen: 'App registration · Certificates & secrets',
+        question: 'Your Copilot Studio agent connection needs to authenticate. Which credential type is preferred over client secrets?',
+        options: [
+          'Client secret (auto-rotate daily)',
+          'Certificate credential (uploaded public certificate; private key stays on the calling side)',
+          'Username/password',
+          'API key passed in headers',
+        ],
+        correct: 1,
+        explanation: 'Certificates are harder to steal than secrets (private key never leaves the calling system). For non-interactive workloads, managed identity is even better — but that requires Azure hosting, not always available for Copilot Studio.',
+      },
+    ],
+  },
+
+  // ── Drill 9 — Defender XDR: Custom hunting query ──────────────────────────
+  {
+    id: 'drill-xdr-hunting',
+    portal: 'Defender XDR',
+    title: 'Write and schedule an advanced hunting query for token theft',
+    scenario: 'A threat report describes a campaign that steals OAuth refresh tokens from browser caches. Build a hunting query to detect the known file path access pattern, then schedule it.',
+    difficulty: 'advanced',
+    steps: [
+      {
+        screen: 'security.microsoft.com',
+        question: 'Where do you run ad-hoc KQL across all Defender telemetry?',
+        options: [
+          'Incidents & alerts → Incidents',
+          'Hunting → Advanced hunting',
+          'Reports → Device health',
+          'Assets → Devices',
+        ],
+        correct: 1,
+        explanation: 'Advanced hunting is the cross-signal KQL workspace: DeviceEvents, DeviceFileEvents, CloudAppEvents, IdentityLogonEvents, EmailEvents, etc.',
+      },
+      {
+        screen: 'Advanced hunting · Query editor',
+        question: 'Token cache files commonly live in \\AppData\\Local\\Microsoft\\TokenBroker\\. Which table and filter detect file-read events targeting that path?',
+        options: [
+          'AlertInfo | where Title contains "token"',
+          'DeviceFileEvents | where ActionType == "FileRead" and FolderPath has "TokenBroker" | project DeviceName, InitiatingProcessFileName, FileName, Timestamp',
+          'DeviceProcessEvents | take 10',
+          'IdentityLogonEvents | where Protocol == "NTLM"',
+        ],
+        correct: 1,
+        explanation: 'DeviceFileEvents captures file read/create/delete/rename actions. Filter on the known TokenBroker path; project device, process, and file for triage. Add InitiatingProcessParentFileName for parent context.',
+      },
+      {
+        screen: 'Results · Review',
+        prompt: 'Query returned 3 rows with processes: chrome.exe, unknown_stealer.exe, python3.exe reading token broker files.',
+        question: 'Which hit is most suspicious and why?',
+        options: [
+          'chrome.exe — browsers legitimately read their own token caches',
+          'unknown_stealer.exe — a process named "stealer" reading token caches is a clear indicator',
+          'python3.exe — scripting engines are never legitimate on endpoints',
+          'All equally suspicious',
+        ],
+        correct: 1,
+        explanation: 'unknown_stealer.exe is the obvious indicator — an arbitrary process reading the token broker folder with a suggestive name. chrome.exe legitimately reads its own files. python3.exe needs context (dev machine vs. server).',
+      },
+      {
+        screen: 'Advanced hunting · Save as · Detection rule',
+        question: 'You want this query to run every 6 hours and create a High-severity alert. Which save action?',
+        options: [
+          'Save query (bookmarks only)',
+          'Create detection rule (sets frequency, severity, alert title, entity mapping)',
+          'Export to CSV',
+          'Pin to dashboard',
+        ],
+        correct: 1,
+        explanation: '"Create detection rule" converts the hunting query into a recurring, alerting custom detection. Set the lookback to match frequency (e.g., 6h query every 6h) to avoid gaps or double-count.',
+      },
+      {
+        screen: 'Detection rule · Entity mapping',
+        question: 'Which entity columns should you map so response actions (isolate device) are available on the alert?',
+        options: [
+          'No mapping needed',
+          'DeviceName → Device entity (Device identifier)',
+          'Timestamp only',
+          'FileName only',
+        ],
+        correct: 1,
+        explanation: 'Mapping DeviceName to a Device entity unlocks "Isolate device" and "Run antivirus scan" one-click response actions directly from the alert.',
+      },
+    ],
+  },
+
+  // ── Drill 10 — Sentinel: Connect a Defender XDR data connector ────────────
+  {
+    id: 'drill-sentinel-connector',
+    portal: 'Sentinel',
+    title: 'Onboard Defender XDR (Microsoft 365 Defender) data connector into Sentinel',
+    scenario: 'Your org uses both Microsoft Sentinel and Defender XDR. You want a unified SOC view in Sentinel with all XDR incidents and raw hunting tables available.',
+    difficulty: 'beginner',
+    steps: [
+      {
+        screen: 'Microsoft Sentinel · Workspace',
+        question: 'Where do you add new data sources (connectors) to Sentinel?',
+        options: [
+          'Analytics',
+          'Content hub',
+          'Data connectors',
+          'Workbooks',
+        ],
+        correct: 2,
+        explanation: 'Data connectors lists all available data sources (first-party, partner, custom). Content hub is the solution package marketplace (bundles connector + rules + workbooks).',
+      },
+      {
+        screen: 'Data connectors · Search',
+        question: 'Which connector name brings in all Defender XDR incidents, alerts, and raw hunting tables (AdvancedHunting_*)?',
+        options: [
+          'Microsoft Defender for Endpoint',
+          'Microsoft 365 Defender (the unified Defender XDR connector)',
+          'Azure Active Directory Identity Protection',
+          'Office 365',
+        ],
+        correct: 1,
+        explanation: '"Microsoft 365 Defender" is the unified connector. It ingests incidents, alerts, and the full AdvancedHunting schema tables into Sentinel. Individual product connectors are narrower.',
+      },
+      {
+        screen: 'Microsoft 365 Defender connector · Configuration',
+        question: 'What checkbox is critical when your org already uses Defender XDR for incident management?',
+        options: [
+          '"Ingest all additional events" — always check this',
+          '"Turn off all Microsoft incident creation rules for these products" — prevents duplicate incidents if Sentinel and XDR both fire',
+          '"Delete existing incidents"',
+          '"Export all events to storage"',
+        ],
+        correct: 1,
+        explanation: 'Without disabling built-in incident creation rules, you get duplicate incidents (one from Sentinel, one imported from XDR). Keep incident management in one system.',
+      },
+      {
+        screen: 'Connector · Status',
+        question: 'The connector shows "Connected" but AdvancedHunting_DeviceEvents is not in Logs. What is the most likely reason?',
+        options: [
+          'The connector is broken',
+          'Defender for Endpoint must be licensed and onboarded — raw hunting tables only appear when the relevant Defender workload is enabled and streaming data',
+          'Delete and reconnect',
+          'The table is case-sensitive',
+        ],
+        correct: 1,
+        explanation: 'AdvancedHunting tables are gated by workload licensing. If Defender for Endpoint is not provisioned, DeviceEvents won\'t exist. Check which plans are active.',
+      },
+      {
+        screen: 'Logs · Verify',
+        question: 'Which KQL confirms Defender XDR incidents are arriving in Sentinel?',
+        options: [
+          'AzureActivity | take 5',
+          'SecurityIncident | where ProviderName == "Microsoft 365 Defender" | take 10',
+          'Syslog | take 5',
+          'DeviceNetworkEvents | take 5',
+        ],
+        correct: 1,
+        explanation: 'SecurityIncident with ProviderName "Microsoft 365 Defender" confirms the unified connector is importing XDR incidents into Sentinel\'s incident management.',
+      },
+    ],
+  },
+
+  // ── Drill 11 — Purview: Create and publish a sensitivity label ─────────────
+  {
+    id: 'drill-purview-label',
+    portal: 'Purview',
+    title: 'Create a "Confidential - AI Processed" sensitivity label and auto-label policy',
+    scenario: 'Your data governance team needs a label applied automatically to any document processed by Azure OpenAI. Create the label and an auto-labeling policy.',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        screen: 'purview.microsoft.com',
+        question: 'Where do you create and manage sensitivity labels?',
+        options: [
+          'DSPM for AI',
+          'Solutions → Information protection → Labels',
+          'Data catalog',
+          'eDiscovery',
+        ],
+        correct: 1,
+        explanation: 'Information protection is the label management hub. DSPM for AI uses labels for policy conditions but does not create them.',
+      },
+      {
+        screen: 'Labels · Create a label',
+        question: 'You need to set the visual marking so PDFs stamped with this label show a header saying "Confidential - AI Processed". Where do you configure this?',
+        options: [
+          'Access control settings',
+          'Content marking (header, footer, watermark)',
+          'Auto-labeling for files and emails',
+          'Label color only',
+        ],
+        correct: 1,
+        explanation: 'Content marking adds visible headers, footers, and watermarks to documents. Configure the text, font size, color, and alignment here.',
+      },
+      {
+        screen: 'Labels · Encryption',
+        question: 'This label does NOT encrypt — it only marks. Which encryption option should you select?',
+        options: [
+          'Apply encryption',
+          'Remove encryption if already applied',
+          'None (no encryption for this label)',
+          'Always encrypt with external key',
+        ],
+        correct: 2,
+        explanation: 'Choose "None" when the label is marking/tracking-only. Encryption is a separate decision — not all marking labels should also restrict access.',
+      },
+      {
+        screen: 'Auto-labeling · New policy',
+        question: 'You want the label applied automatically to files in SharePoint that contain the phrase "Generated by AI". Which policy type and condition is correct?',
+        options: [
+          'Client-side labeling with no conditions',
+          'Service-side auto-labeling policy → location: SharePoint sites → condition: content contains the custom sensitive info type or exact keyword "Generated by AI"',
+          'DLP policy with block action',
+          'IRM policy',
+        ],
+        correct: 1,
+        explanation: 'Service-side auto-labeling (in Purview) scans SharePoint/OneDrive/Exchange at rest without requiring a user action. Set location to your SharePoint sites and add the keyword/sensitive info type condition.',
+      },
+      {
+        screen: 'Auto-labeling policy · Simulation mode',
+        question: 'Before enabling the policy to actually label files, what should you do?',
+        options: [
+          'Enable immediately — simulation wastes time',
+          'Run the policy in simulation mode first, review the matched files report, then enable when satisfied with the scope',
+          'Delete all existing labels',
+          'Run as Global Admin only',
+        ],
+        correct: 1,
+        explanation: 'Simulation mode previews which files would be labeled without actually labeling them. Always validate scope before enabling, especially on large SharePoint environments.',
+      },
+    ],
+  },
+
+  // ── Drill 12 — Defender for Cloud: Implement a Governance Rule ─────────────
+  {
+    id: 'drill-mdc-governance',
+    portal: 'Defender for Cloud',
+    title: 'Create a Governance Rule to assign AI security recommendations',
+    scenario: 'Defender for Cloud surfaced 8 Azure OpenAI recommendations with no owner. Create a governance rule that assigns them to the AI Platform team with a 14-day SLA.',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        screen: 'Defender for Cloud · Environment settings',
+        question: 'Where do you create Governance rules in Defender for Cloud?',
+        options: [
+          'Recommendations → Filters',
+          'Governance (under Recommendations or Environment settings)',
+          'Workload protections',
+          'Regulatory compliance',
+        ],
+        correct: 1,
+        explanation: 'Governance lives under Recommendations → Governance or directly in Environment settings. It lets you assign remediation owners, ETAs, and email notifications per rule.',
+      },
+      {
+        screen: 'Governance · New rule',
+        question: 'You want to target only recommendations with "Azure OpenAI" in the resource name. Which condition type is correct?',
+        options: [
+          'By resource type: Microsoft.Insights/components',
+          'By resource name contains: OpenAI',
+          'By severity: High',
+          'By compliance framework: NIST',
+        ],
+        correct: 1,
+        explanation: 'Condition "Resource name contains" lets you scope to specific resource patterns. You can also combine with severity, recommendation name, or resource type filters.',
+      },
+      {
+        screen: 'Governance rule · Assignment',
+        question: 'To send notification emails to a group (ai-platform@company.com), what must be true about that email address in Entra?',
+        options: [
+          'Nothing — any email address works',
+          'The address must be a valid Entra user or security group with an Entra member email; distribution lists may not receive Defender notifications',
+          'The address must be a Global Admin',
+          'The email domain must match the tenant primary domain',
+        ],
+        correct: 1,
+        explanation: 'Governance rule email notifications work best with Entra security groups or user accounts. External email addresses and distribution lists may not receive Azure system emails reliably.',
+      },
+      {
+        screen: 'Governance rule · Remediation timeframe',
+        question: 'Setting "Owner" and "Due in 14 days" — what will happen to an unmediated recommendation after 14 days?',
+        options: [
+          'The resource is automatically deleted',
+          'The recommendation is marked "overdue" in the Governance dashboard and can trigger escalation workflows via Logic Apps',
+          'Nothing — governance rules have no enforcement',
+          'Defender for Cloud remediates it automatically',
+        ],
+        correct: 1,
+        explanation: 'Governance tracks SLA compliance in the dashboard. Overdue items are visible in reporting. You can build Logic Apps triggered by governance events for escalation, ticketing, or Slack/Teams alerts.',
+      },
+      {
+        screen: 'Governance dashboard · Review',
+        question: 'Which metric shows the percentage of assigned recommendations resolved within SLA?',
+        options: [
+          'Secure Score',
+          'Governance health: "% completed on time" (resolved within due date)',
+          'Compliance percentage',
+          'Defender coverage',
+        ],
+        correct: 1,
+        explanation: '"% completed on time" in the Governance dashboard is the SLA adherence metric — key for reporting to leadership on cloud security hygiene velocity.',
+      },
+    ],
+  },
+
+  // ── Drill 13 — Sentinel: Configure a Logic Apps playbook for Entra disable ─
+  {
+    id: 'drill-sentinel-playbook',
+    portal: 'Sentinel',
+    title: 'Build and test a Logic Apps playbook that disables an Entra user on alert',
+    scenario: 'You want Sentinel automation to immediately disable a compromised user in Entra whenever a "Successful sign-in from impossible travel" alert fires.',
+    difficulty: 'advanced',
+    steps: [
+      {
+        screen: 'Microsoft Sentinel · Automation',
+        question: 'Where do you create new Logic Apps playbooks from within Sentinel?',
+        options: [
+          'Analytics',
+          'Automation → Playbooks → Create → Playbook with incident trigger',
+          'Data connectors',
+          'Workbooks',
+        ],
+        correct: 1,
+        explanation: 'Automation → Playbooks is the managed hub. "Playbook with incident trigger" creates a Logic App pre-wired to the Sentinel incident trigger schema.',
+      },
+      {
+        screen: 'Logic Apps designer · Trigger',
+        question: 'The playbook starts with a "Microsoft Sentinel Incident" trigger. Your playbook needs to extract the UPN of the affected user from incident entities. Which action follows the trigger?',
+        options: [
+          'Condition: Is equal to',
+          'Entities - Get Accounts (Sentinel action that parses account entities from the incident)',
+          'HTTP request to the user\'s inbox',
+          'Send email',
+        ],
+        correct: 1,
+        explanation: '"Entities - Get Accounts" returns a list of Account entities in the incident. The output array feeds into an Apply-to-each loop so you can act on every compromised account, not just the first.',
+      },
+      {
+        screen: 'Apply to each · Actions',
+        question: 'Inside the loop, which action disables the user in Entra ID?',
+        options: [
+          'Send email to user',
+          'HTTP PATCH to https://graph.microsoft.com/v1.0/users/{userPrincipalName} with body { "accountEnabled": false }',
+          'Azure AD Revoke sessions only',
+          'Delete user',
+        ],
+        correct: 1,
+        explanation: 'Graph API PATCH with accountEnabled: false disables sign-in. Combine with Revoke-AzureADUserAllRefreshTokens action to also invalidate live sessions. Disable ≠ delete — the account remains for recovery.',
+      },
+      {
+        screen: 'Logic Apps · Identity',
+        question: 'For the HTTP PATCH to Graph to succeed, which identity and permission does the Logic App need?',
+        options: [
+          'Anonymous — Graph is public',
+          'System-assigned managed identity with "User.ReadWrite.All" (or "Directory.ReadWrite.All") app permission granted in Entra → Enterprise applications',
+          'Hard-coded service account credentials in the step',
+          'Client secret in connection settings',
+        ],
+        correct: 1,
+        explanation: 'Managed identity on the Logic App eliminates stored credentials. Grant the app permission to the Logic App\'s managed identity in Entra (not delegated — the playbook runs unattended). Prefer User.EnableDisableAccount if available (least privilege).',
+      },
+      {
+        screen: 'Sentinel · Automation rules',
+        question: 'After saving the playbook, how do you trigger it automatically when the "Impossible travel" analytics rule fires?',
+        options: [
+          'Edit the analytics rule and add the playbook there',
+          'Create an Automation rule: condition = "Alert product name contains Sentinel" + "Analytic rule name equals Impossible travel" → action = Run playbook',
+          'Set it as a workbook default',
+          'Upload to GitHub',
+        ],
+        correct: 1,
+        explanation: 'Automation rules are the decoupled trigger layer — they fire on incident creation/update and call playbooks. Separating rule from playbook lets you re-use playbooks across multiple scenarios.',
+      },
+    ],
+  },
+
+  // ── Drill 14 — Security Copilot: Investigate an incident prompt flow ────────
+  {
+    id: 'drill-copilot-investigate',
+    portal: 'Security Copilot',
+    title: 'Use Security Copilot embedded in Defender XDR to investigate an incident',
+    scenario: 'A critical "Multi-stage attack" incident is open. Use Copilot to accelerate the investigation — incident summary, script analysis, and recommended response.',
+    difficulty: 'intermediate',
+    steps: [
+      {
+        screen: 'Defender XDR incident detail',
+        question: 'Where is Security Copilot embedded in the Defender XDR incident experience?',
+        options: [
+          'A separate browser tab you open manually',
+          'The Copilot pane on the right side of the incident detail page',
+          'Settings menu',
+          'Reports → Summary',
+        ],
+        correct: 1,
+        explanation: 'The Copilot pane appears natively in the incident sidebar once capacity is provisioned. No context switching — you interact with the active incident without leaving XDR.',
+      },
+      {
+        screen: 'Copilot pane · Incident summary',
+        question: 'Copilot automatically generates an incident summary. What should you verify before sharing the summary with management?',
+        options: [
+          'Nothing — Copilot is always accurate',
+          'Validate key claims against the raw evidence: timeline accuracy, entities cited, attack chain logic. Copilot can hallucinate or omit evidence — always ground-truth before sending.',
+          'Rewrite it entirely',
+          'Copy it verbatim to email',
+        ],
+        correct: 1,
+        explanation: 'LLM summaries are starting points, not final products. Validate severity, timeline, and entities against the attack story graph. Look for missing events Copilot did not surface.',
+      },
+      {
+        screen: 'Copilot pane · Script analysis',
+        prompt: 'An alert shows a suspicious PowerShell one-liner was executed: powershell -enc <base64blob>.',
+        question: 'Which Copilot prompt will give you a deobfuscated explanation of the script?',
+        options: [
+          '"What is PowerShell?"',
+          '"Analyze this script: <paste encoded command>" or click Analyze script on the alert evidence directly',
+          '"Ignore the script"',
+          '"Run a scan"',
+        ],
+        correct: 1,
+        explanation: 'Copilot\'s script analysis decodes base64, deobfuscates common techniques, and explains intent and likely impact. Faster than manual CyberChef + read for most analysts.',
+      },
+      {
+        screen: 'Copilot pane · Guided response',
+        question: 'Copilot suggests "Isolate the affected device". Before clicking the one-click action, what must you verify?',
+        options: [
+          'Nothing — execute immediately',
+          'That isolation is appropriate: the device is not a domain controller, not a patient-care device, and that network isolation won\'t break a critical service. Confirm scope with your incident commander.',
+          'That the device is running Windows 7',
+          'That Copilot has enough SCUs',
+        ],
+        correct: 1,
+        explanation: 'AI-suggested response actions require human judgement — isolation can break critical services. Copilot accelerates identification; a human must approve the action, especially in regulated environments.',
+      },
+      {
+        screen: 'Copilot standalone · Incident report',
+        question: 'After investigation, how do you generate a structured incident report from Copilot?',
+        options: [
+          'Manually write it in Word',
+          'Use the "Incident report" built-in promptbook (or a custom one), passing the incident ID; review, edit, then export to Word or paste to your ITSM tool',
+          'Export from the graph',
+          'Ask Copilot to email it',
+        ],
+        correct: 1,
+        explanation: 'The incident report promptbook chains: incident summary → timeline → entities → recommended actions → executive narrative. Customize the promptbook to match your org\'s report format.',
+      },
+    ],
+  },
+
+  // ── Drill 15 — Security Copilot: Provision and govern ─────────────────────
   {
     id: 'drill-copilot-bootstrap',
     portal: 'Security Copilot',

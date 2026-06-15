@@ -62,8 +62,7 @@ export default function PortalDrills() {
         <div className="mb-2">
           <h2 className="text-sm font-semibold text-slate-100">Portal Drills</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            Click-path simulations for the Microsoft security portals. Practice the menu order without a tenant.
-            Each drill mimics what you&apos;d see in the real portal, step by step.
+            15 click-path simulations for Microsoft security portals. Practice menu navigation without a tenant — Entra, Defender XDR, Sentinel, Defender for Cloud, Purview, Azure OpenAI, and Security Copilot.
           </p>
         </div>
 
