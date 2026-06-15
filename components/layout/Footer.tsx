@@ -9,7 +9,7 @@ export function Footer() {
           <div className="flex flex-col gap-1.5">
             <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
-              Free AI security training. 1,800+ practice questions, 910 glossary terms,
+              Free AI security training. 1,900+ practice questions, 910 glossary terms,
               59 dojo scenarios, 47 SOC incidents.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
