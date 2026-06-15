@@ -1088,6 +1088,34 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Human-in-the-loop controls evaluated for high-stakes agent actions', re: /human.in.the.loop|HITL|human\s+oversight|human\s+approval|human\s+review|interrupt|checkpoint|halt|pause|confirmation\s+required|human\s+control|ISO\s+42001\s+Clause\s+8\.4|NIST\s+GOVERN/i },
     { label: 'Framework mapping present (OWASP LLM06/LLM08, MITRE ATLAS AML.T0048/T0051, NIST AI RMF, ISO 42001)', re: /OWASP|LLM06|LLM08|MITRE\s+ATLAS|AML\.T00(48|51)|NIST\s+AI\s+RMF|GOVERN\.4|ISO\s+42001|Clause\s+8\.2|supply\s+chain\s+(risk|security)|multi.?agent/i },
   ],
+  'ai-procurement-assessment': [
+    { label: 'Approve / conditional approve / reject decision with ISO 42001 Clause 8.4 justification', re: /\b(approve|approved|conditional|conditional\s+approv\w+|reject|rejected|do\s+not\s+approve)\b.*ISO|ISO.*\b(approve|conditional|reject)\b|clause\s+8\.4|supplier\s+(assessment|review|selection)/i },
+    { label: 'Security and privacy controls gap analysis (data residency, encryption, access controls)', re: /data\s+residency|encrypt(ion|ed)\s+at\s+rest|access\s+control|RBAC|sub.?processor|data\s+protection|GDPR|privacy|SOC\s+2|ISO\s+27001|penetration\s+test|security\s+assessment/i },
+    { label: 'Model card, AI-BOM, or training data documentation assessed', re: /model\s+card|AI.?BOM|bill\s+of\s+material|training\s+data\s+(provenance|source|origin|docum)|data\s+lineage|model\s+provenance|system\s+card|artifact/i },
+    { label: 'Contractual requirements specified (DPA, audit rights, SLA, incident notification)', re: /DPA|data\s+processing\s+agreement|audit\s+rights?|SLA|incident\s+(notification|SLA|response\s+time)|breach\s+notification|right\s+to\s+audit|service\s+level|MSA|contract|indemnif/i },
+    { label: 'NIST AI RMF MAP.5 or ISO 42001 supply chain risk mapping', re: /NIST|AI\s+RMF|MAP\.5|MAP\s+5|supply\s+chain\s+risk|ISO\s+42001|clause\s+8\.[4-9]|third.party\s+risk|vendor\s+risk|supplier\s+risk/i },
+  ],
+  'iso42001-gap-analysis': [
+    { label: 'Clause-by-clause gap assessment (ISO 42001 Clauses 4–10)', re: /clause\s+[4-9]|clause\s+10|ISO\s+42001\s+clause|section\s+[4-9]|§\s*[4-9]|context\s+(of\s+the\s+)?organization|leadership|planning|support|operation|performance\s+evaluation|improvement/i },
+    { label: 'Conformity status for each clause (Conforming / Partial / Gap)', re: /\b(conforming|conforms?|compliant|partial|partially|gap|non.?conform|missing|not\s+(implemented|addressed|met)|present|in\s+place)\b/i },
+    { label: 'Annex A controls coverage mapped', re: /annex\s+A|annex\s+a|A\.\d+\.\d+|control\s+(set|catalog|mapping|coverage)|42001\s+control|mandatory\s+control/i },
+    { label: 'Prioritized remediation roadmap with milestones', re: /priorit(y|ized|isation)|roadmap|remediation\s+(plan|roadmap|priorit)|milestone|phase\s+[123]|short.?term|long.?term|immediate|quarter|sprint|timeline/i },
+    { label: 'Certification readiness assessment or audit preparation notes', re: /certif(y|ied|ication)\s+ready|audit\s+(ready|preparation|finding)|certification\s+gap|stage\s+[12]\s+audit|surveillance\s+audit|UKAS|accredit|certification\s+body/i },
+  ],
+  'ai-continuous-monitoring': [
+    { label: 'Monitoring scope defined: model performance, data drift, system health, security', re: /\b(model\s+performance|accuracy\s+monitor|data\s+drift|distribution\s+shift|concept\s+drift|system\s+health|infrastructure\s+monitor|security\s+monitor|scope\s+of\s+monitor|monitor\w*\s+(coverage|scope|domain))\b/i },
+    { label: 'KPIs, thresholds, and alert criteria specified', re: /KPI|threshold|alert\s+(criteria|trigger|condition)|metric\s+(target|goal|baseline)|accuracy\s+drop|performance\s+degradat|SLA\s+(breach|violation)|monitoring\s+(rule|policy|threshold)|drift\s+threshold/i },
+    { label: 'ISO 42001 Clause 9 or NIST AI RMF MEASURE function referenced', re: /ISO\s+42001|clause\s+9|NIST|AI\s+RMF|MEASURE|Measure|performance\s+evaluation|monitoring\s+and\s+measurement|continuous\s+improvement/i },
+    { label: 'Model retraining or update governance process documented', re: /retrain\w*|model\s+update|version\s+(control|governance|management)|change\s+management|approval\s+(gate|process|workflow)|re.?validation|rollback\s+(criteria|plan|trigger)|champion.?challenger/i },
+    { label: 'Incident escalation path and human oversight checkpoints defined', re: /escalat(e|ion)|human\s+oversight|HITL|human.in.the.loop|escalation\s+(path|procedure|trigger)|on.?call|incident\s+(response|trigger|alert)|automated\s+alert.*human|notification\s+chain/i },
+  ],
+  'nist-ai-rmf-profile': [
+    { label: 'All four NIST AI RMF functions addressed (GOVERN, MAP, MEASURE, MANAGE)', re: /\b(GOVERN|MAP|MEASURE|MANAGE)\b.*\b(GOVERN|MAP|MEASURE|MANAGE)\b|NIST\s+AI\s+RMF\s+profile|all\s+(four|4)\s+functions?/i },
+    { label: 'Subcategory mapping with risk priorities (Current / Target profile)', re: /subcategor|current\s+profile|target\s+profile|profile\s+gap|GV\.\d|MP\.\d|MS\.\d|MG\.\d|risk\s+priorit|function.*action|action.*subcategor/i },
+    { label: 'Organizational context and AI system scope documented', re: /organizational\s+context|AI\s+system\s+(context|scope|description|purpose)|stakeholder|intended\s+use|deployment\s+context|risk\s+tolerance|risk\s+appetite|organizational\s+risk/i },
+    { label: 'AI lifecycle stage coverage (design, development, deployment, decommission)', re: /lifecycle|design\s+(phase|stage)|develop(ment)?\s+(phase|stage)|deploy(ment)?\s+(phase|stage)|decommission|pre.?deployment|post.?deployment|end.of.life|model\s+lifecycle/i },
+    { label: 'Improvement actions or gap closures identified per function', re: /improvement\s+(action|plan|recommendation)|gap\s+(clos|remediat|action)|action\s+(item|plan|required)|recommendation\s+per|next\s+step|priorit(y|ize)\s+(action|improvement)/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -1216,6 +1244,50 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'Agentic AI acting without human checkpoints on irreversible actions is the primary control gap in multi-agent deployments. Prompt: "Identify the high-stakes actions in the agent system (data exfiltration, external API calls, financial transactions). For each, evaluate whether a human-in-the-loop checkpoint exists and what the failure mode is if it is bypassed."',
   'Framework mapping present (OWASP LLM06/LLM08, MITRE ATLAS AML.T0048/T0051, NIST AI RMF, ISO 42001)':
     'Framework mapping makes findings auditable and communicable to governance stakeholders — a finding without a framework reference cannot drive policy change. Prompt: "Map each finding to OWASP LLM06 (excessive agency), LLM08 (supply chain), MITRE ATLAS AML.T0048 (prompt injection in agents), NIST AI RMF GOVERN.4.2 (organizational controls), or ISO 42001 Clause 8.2 (AI system design controls)."',
+  // ai-procurement-assessment
+  'Approve / conditional approve / reject decision with ISO 42001 Clause 8.4 justification':
+    'A procurement assessment without a clear decision recommendation is not actionable — stakeholders need Approve/Conditional/Reject to proceed. ISO 42001 Clause 8.4 requires documented supplier evaluation criteria. Prompt: "State your procurement recommendation (Approve / Conditional Approval with conditions / Reject) and justify against ISO 42001 Clause 8.4 supplier risk evaluation criteria."',
+  'Security and privacy controls gap analysis (data residency, encryption, access controls)':
+    'Security and privacy gaps in a vendor\'s AI system become your organization\'s risk — encryption at rest, data residency (EU/US/APAC), and RBAC must be verified. Prompt: "Assess the vendor\'s security controls: data encryption at rest and in transit, data residency region, access controls (RBAC, MFA), sub-processor disclosure, and penetration testing cadence."',
+  'Model card, AI-BOM, or training data documentation assessed':
+    'Without model provenance documentation you cannot assess training data bias, model version stability, or supply chain integrity — ISO 42001 Annex A requires AI system documentation. Prompt: "Has the vendor provided a model card, AI-BOM, or training data provenance documentation? What gaps exist and what contractual requirements should close them?"',
+  'Contractual requirements specified (DPA, audit rights, SLA, incident notification)':
+    'Procurement recommendations without contractual requirements cannot be enforced — GDPR Article 28 mandates a Data Processing Agreement for any vendor processing personal data. Prompt: "List the mandatory contractual requirements: DPA terms, right-to-audit clause, incident notification SLA (72h for GDPR), data deletion on termination, and liability provisions."',
+  'NIST AI RMF MAP.5 or ISO 42001 supply chain risk mapping':
+    'Third-party AI supply chain risk is addressed in NIST AI RMF MAP.5 (third-party dependencies) and ISO 42001 Clause 8.4 (external providers) — without framework alignment the assessment lacks governance defensibility. Prompt: "Map the vendor risk findings to NIST AI RMF MAP.5 (third-party dependencies) and ISO 42001 Clause 8.4 (external providers). What residual risk remains after contractual controls?"',
+  // iso42001-gap-analysis
+  'Clause-by-clause gap assessment (ISO 42001 Clauses 4–10)':
+    'ISO 42001 is structured around Clauses 4 (Context), 5 (Leadership), 6 (Planning), 7 (Support), 8 (Operation), 9 (Performance Evaluation), and 10 (Improvement) — a gap analysis must assess each clause systematically, not selectively. Prompt: "Assess each ISO 42001 clause (4 through 10) for conformity, providing a specific finding for each clause with the evidence gap identified."',
+  'Conformity status for each clause (Conforming / Partial / Gap)':
+    'Binary pass/fail obscures the remediation effort required — use Conforming / Partial / Gap to communicate urgency and scope accurately. Prompt: "For each clause, assign a conformity status: Conforming (fully implemented), Partial (evidence exists but gaps remain), or Gap (not implemented). Include the specific evidence gap for Partial and Gap statuses."',
+  'Annex A controls coverage mapped':
+    'ISO 42001 Annex A contains the reference control set — without mapping to specific Annex A controls, the gap analysis cannot be used to scope an implementation roadmap. Prompt: "Map each clause gap to the corresponding ISO 42001 Annex A controls (A.2.x through A.9.x) and assess whether each control is present, partial, or absent."',
+  'Prioritized remediation roadmap with milestones':
+    'A gap analysis without a prioritized roadmap leaves the organization unsure where to start — prioritize by certification criticality (Clause 5 Leadership and Clause 8 Operation gaps block certification) and implementation effort. Prompt: "Prioritize the identified gaps into: (1) must-fix before certification (blocking gaps), (2) should-fix within 90 days (major findings), (3) nice-to-have improvements (minor findings). Provide milestone dates."',
+  'Certification readiness assessment or audit preparation notes':
+    'An ISO 42001 gap analysis is most valuable when it concludes with a certification readiness rating — the client needs to know how many months of work separates them from a Stage 1 audit. Prompt: "Provide a certification readiness rating: Ready (< 3 months), Near-Ready (3–6 months), or Significant Work Required (> 6 months). What are the top 3 blocking gaps?"',
+  // ai-continuous-monitoring
+  'Monitoring scope defined: model performance, data drift, system health, security':
+    'An AI monitoring program without a defined scope will miss whole categories of failure — model accuracy degradation, data drift, infrastructure anomalies, and adversarial attacks each require different monitoring tools. Prompt: "Define the monitoring scope: which dimensions will be monitored — model accuracy/performance, feature/data drift, infrastructure health, and security/adversarial threats?"',
+  'KPIs, thresholds, and alert criteria specified':
+    'Without specific thresholds (e.g., accuracy drops below 92%, feature distribution PSI > 0.2), monitoring cannot trigger actionable alerts — it produces data with no response criteria. Prompt: "Define the KPIs and alert thresholds: what accuracy, drift, latency, or error rate values trigger automated alerts vs. human review?"',
+  'ISO 42001 Clause 9 or NIST AI RMF MEASURE function referenced':
+    'ISO 42001 Clause 9 (Performance Evaluation) and NIST AI RMF MEASURE are the governance anchors for continuous monitoring — without framework alignment the program lacks audit defensibility. Prompt: "Map the monitoring program to ISO 42001 Clause 9 (monitoring and measurement) and NIST AI RMF MEASURE subcategories. Which subcategories are addressed and which are gaps?"',
+  'Model retraining or update governance process documented':
+    'Continuous monitoring without a governed retraining process creates a feedback loop that cannot produce improvement — the program must specify when and how models are updated. Prompt: "Document the model update governance process: what drift threshold triggers a retraining cycle, who approves the retrained model, and what validation gates must be passed before redeployment?"',
+  'Incident escalation path and human oversight checkpoints defined':
+    'Automated monitoring without defined escalation paths means alerts go unacted upon — ISO 42001 requires human oversight for AI systems in consequential deployments. Prompt: "Define the escalation matrix: what alert severity routes to on-call engineer vs. AI risk owner vs. CISO? What human approval is required before automated model rollback?"',
+  // nist-ai-rmf-profile
+  'All four NIST AI RMF functions addressed (GOVERN, MAP, MEASURE, MANAGE)':
+    'A NIST AI RMF Profile that omits any of the four core functions is incomplete — GOVERN provides organizational context, MAP identifies risks, MEASURE quantifies them, MANAGE implements controls. Prompt: "Address all four NIST AI RMF core functions: GOVERN (risk culture and policies), MAP (risk identification and context), MEASURE (risk quantification and testing), MANAGE (risk treatment and monitoring)."',
+  'Subcategory mapping with risk priorities (Current / Target profile)':
+    'A profile without subcategory-level mapping is too high-level to drive action — profiles specify Current State (what we have) vs. Target State (what we need) at the subcategory level. Prompt: "For each function, map to specific subcategories (e.g., GV.1-001, MP.2-001) and assign Current Profile status (Partial/Not Implemented/Implemented) vs. Target Profile status."',
+  'Organizational context and AI system scope documented':
+    'NIST AI RMF requires organizational context to be established before risk identification — risk tolerance, stakeholder expectations, and AI system purpose shape all downstream profile decisions. Prompt: "Document the organizational context: what is the AI system\'s intended use, who are the affected stakeholders, what is the organization\'s risk tolerance, and what sector/regulatory context applies?"',
+  'AI lifecycle stage coverage (design, development, deployment, decommission)':
+    'AI risk varies by lifecycle stage — design risks (bias in architecture), development risks (data poisoning), deployment risks (adversarial inputs), and decommission risks (data retention) require different controls. Prompt: "Apply the NIST AI RMF across all lifecycle stages: pre-deployment (design and development) and post-deployment (operation and decommission). Which stages have the highest residual risk?"',
+  'Improvement actions or gap closures identified per function':
+    'A profile without improvement actions is a status report, not a roadmap — for each gap identified in the Current Profile, a specific action must be defined to reach the Target Profile. Prompt: "For each function where Current Profile < Target Profile, identify the specific improvement action, responsible owner, and target completion timeframe."',
 };
 
 
