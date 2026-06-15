@@ -978,6 +978,20 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'ISO 42001 or NIST AI RMF MAP reference included', re: /ISO\s+42001|42001|Clause\s+8\.3|NIST|AI\s+RMF|MAP\s+2\.3|MAP\.2|privacy\s+risk\s+assess/i },
     { label: 'DPA notification or EU AI Act Article 73 assessment present', re: /DPA|supervisory\s+authority|data\s+protection\s+authority|article\s+35.*consult|article\s+73|serious\s+incident|72\s+hours?|notification\s+(obligation|threshold|requirement)/i },
   ],
+  'ai-regulatory-cross-reference': [
+    { label: 'At least three AI regulatory frameworks cited (EU AI Act, NIST AI RMF, ISO 42001, GDPR, CCPA, or similar)', re: /EU\s+AI\s+Act|NIST\s+AI\s+RMF|ISO\s+42001|ISO\/IEC\s+42001|GDPR|CCPA|CPRA|UK\s+AI\s+Safety|Executive\s+Order\s+14110|EO\s+14110|AI\s+Act/i },
+    { label: 'Control or obligation mapping across frameworks (compliance matrix or gap table)', re: /map|cross.?ref|matrix|gap|overlap|equivalen|align|harmoniz|corresponding|both\s+(require|mandate|address)|covers?\s+the\s+same|similar\s+(requirement|obligation|control)/i },
+    { label: 'Gaps or conflicts between frameworks identified', re: /gap|conflict|discrepan|incompatible|tension|inconsisten|not\s+covered|missing|absent|no\s+equivalent|differ(s|ence)|unique\s+to/i },
+    { label: 'Jurisdiction or applicability scope stated for each framework', re: /jurisdict|applies?\s+to|scope|EU\s+(based|citizen|resident|entity)|US\s+(federal|state)|UK\s+entity|global|extraterritorial|third.country|GDPR\s+Article\s+3|territorial/i },
+    { label: 'Prioritized compliance roadmap or unified control set proposed', re: /roadmap|priorit|recommend|action|implement|next\s+step|unified\s+control|harmonized\s+control|single\s+framework|consolidat|first\s+step|90\s+day|30\s+day|quarter/i },
+  ],
+  'multi-agent-security-review': [
+    { label: 'Agent trust boundaries identified (which agents can call which, with what authority)', re: /trust\s+boundar|agent.to.agent|inter.?agent|calling\s+agent|orchestrat|principal\s+hierarch|agent\s+scope|agent\s+authorit|agent\s+permissions?|agent\s+roles?/i },
+    { label: 'Agent-to-agent authentication mechanism assessed (API keys, OAuth, signed messages)', re: /authenticat|API\s+key|OAuth|JWT|signed?\s+(token|message|request)|mutual\s+TLS|mTLS|credential|shared\s+secret|HMAC|service\s+account|Entra|IAM/i },
+    { label: 'Privilege escalation paths through agent orchestration enumerated', re: /privilege\s+escalat|lateral\s+movement|agent\s+chain|tool\s+abuse|permission\s+escalat|scope\s+creep|orchestrat(or|ion)\s+(abuse|exploit|attack)|AML\.T0048|OWASP\s+LLM06|LLM06/i },
+    { label: 'Human-in-the-loop controls evaluated for high-stakes agent actions', re: /human.in.the.loop|HITL|human\s+oversight|human\s+approval|human\s+review|interrupt|checkpoint|halt|pause|confirmation\s+required|human\s+control|ISO\s+42001\s+Clause\s+8\.4|NIST\s+GOVERN/i },
+    { label: 'Framework mapping present (OWASP LLM06/LLM08, MITRE ATLAS AML.T0048/T0051, NIST AI RMF, ISO 42001)', re: /OWASP|LLM06|LLM08|MITRE\s+ATLAS|AML\.T00(48|51)|NIST\s+AI\s+RMF|GOVERN\.4|ISO\s+42001|Clause\s+8\.2|supply\s+chain\s+(risk|security)|multi.?agent/i },
+  ],
 };
 
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
@@ -1084,6 +1098,28 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
     'ISO 42001 Clause 8.3 and NIST AI RMF MAP 2.3 are the governance standards for AI privacy risk — referencing them anchors the PIA to an auditable framework. Prompt: "Map the identified privacy risks and mitigations to ISO/IEC 42001 Clause 8.3 or NIST AI RMF MAP 2.3 subcategories."',
   'DPA notification or EU AI Act Article 73 assessment present':
     'High-risk processing requires DPA consultation under GDPR Article 35(4) when residual risk remains high; AI incidents may also require Article 73 notification — both obligations must be assessed. Prompt: "Assess whether residual risk requires GDPR Article 35(4) DPA consultation, and whether the AI system failure constitutes a serious incident under EU AI Act Article 73 (notification timeline and required content)."',
+  // ai-regulatory-cross-reference
+  'At least three AI regulatory frameworks cited (EU AI Act, NIST AI RMF, ISO 42001, GDPR, CCPA, or similar)':
+    'Cross-referencing fewer than three frameworks produces a narrow analysis — regulators and auditors expect multi-framework coverage. Prompt: "Cite at least three: EU AI Act, NIST AI RMF, ISO/IEC 42001, GDPR, CCPA/CPRA, UK AI Safety Framework, or EO 14110. Identify the controlling article or subcategory for each."',
+  'Control or obligation mapping across frameworks (compliance matrix or gap table)':
+    'A cross-reference analysis without a mapping matrix is narrative, not analytical — a table format forces coverage to be explicit. Prompt: "Produce a compliance matrix: rows are the obligations (data documentation, human oversight, incident notification, etc.), columns are the frameworks, and cells indicate whether the framework addresses it and how."',
+  'Gaps or conflicts between frameworks identified':
+    'Gaps and conflicts are the most actionable output of a cross-reference — they identify where a single control cannot satisfy multiple frameworks simultaneously. Prompt: "Identify at least two gaps (an obligation in one framework not present in others) and one conflict (where frameworks impose incompatible requirements). Explain the compliance implication."',
+  'Jurisdiction or applicability scope stated for each framework':
+    'Applicability scope determines which frameworks are legally binding versus voluntary — without scope, the analysis cannot prioritize compliance obligations. Prompt: "State for each framework: which jurisdictions it applies to, whether it is legally binding or voluntary, and who the regulated entity is (provider, deployer, importer)."',
+  'Prioritized compliance roadmap or unified control set proposed':
+    'A cross-reference that ends with a gap list is half-done — the output must be actionable, with prioritized controls that satisfy the most frameworks simultaneously. Prompt: "Propose a unified control set that satisfies the most frameworks with the least duplication. Prioritize by risk (which gaps create the highest regulatory penalty exposure)."',
+  // multi-agent-security-review
+  'Agent trust boundaries identified (which agents can call which, with what authority)':
+    'Trust boundaries define the attack surface in a multi-agent system — without them, privilege escalation paths are invisible. Prompt: "Map all agent-to-agent call relationships: which agent invokes which, what permissions are granted, and whether trust is implicit or explicitly authenticated."',
+  'Agent-to-agent authentication mechanism assessed (API keys, OAuth, signed messages)':
+    'Unauthenticated inter-agent calls are direct privilege escalation paths — OWASP LLM06 explicitly covers excessive agency through missing authentication. Prompt: "Assess how agents authenticate to each other. Are calls authenticated with tokens, mutual TLS, or signed messages? Or are they on an implicit trust network? What is the blast radius of a compromised agent?"',
+  'Privilege escalation paths through agent orchestration enumerated':
+    'An orchestrator agent that can invoke sub-agents with higher privileges is a privilege escalation path if the chain is not scoped. Prompt: "Trace at least two privilege escalation paths: e.g., a low-privilege user agent invoking a tool-use agent with file system or network access. Map each path to MITRE ATLAS AML.T0048 or OWASP LLM06."',
+  'Human-in-the-loop controls evaluated for high-stakes agent actions':
+    'Agentic AI acting without human checkpoints on irreversible actions is the primary control gap in multi-agent deployments. Prompt: "Identify the high-stakes actions in the agent system (data exfiltration, external API calls, financial transactions). For each, evaluate whether a human-in-the-loop checkpoint exists and what the failure mode is if it is bypassed."',
+  'Framework mapping present (OWASP LLM06/LLM08, MITRE ATLAS AML.T0048/T0051, NIST AI RMF, ISO 42001)':
+    'Framework mapping makes findings auditable and communicable to governance stakeholders — a finding without a framework reference cannot drive policy change. Prompt: "Map each finding to OWASP LLM06 (excessive agency), LLM08 (supply chain), MITRE ATLAS AML.T0048 (prompt injection in agents), NIST AI RMF GOVERN.4.2 (organizational controls), or ISO 42001 Clause 8.2 (AI system design controls)."',
 };
 
 

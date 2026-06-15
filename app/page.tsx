@@ -7,8 +7,8 @@ import type { DojoId } from '@/types';
 // ── Static counts — update when content changes ───────────────────────────────
 const STATS = {
   scenarios:  59,
-  quizQs:    1731,
-  glossary:  860,
+  quizQs:    1900,
+  glossary:  910,
   articles:   76,
   certs:      10,
   incidents:  47,
@@ -44,9 +44,9 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, investigate model failures under Article 73, and map controls across EU AI Act + ISO 42001 + NIST AI RMF simultaneously.',
+    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, investigate model failures under Article 73, map controls across EU AI Act + ISO 42001 + NIST AI RMF simultaneously, and conduct security architecture reviews of multi-agent systems.',
     accent: 'emerald',
-    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
+    detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Multi-Agent Security',
   },
 ];
 
@@ -106,11 +106,15 @@ const TECHNIQUES = [
   { label: 'Agent Memory Poisoning',     tag: 'LLM01:2025',    dojo: 1 },
   { label: 'Cross-Tenant Data Leakage',  tag: 'LLM06:2025',    dojo: 1 },
   { label: 'Ransomware AI Triage',       tag: 'T1486',         dojo: 2 },
-  { label: 'Multi-Framework Mapping',    tag: 'EU AI Act',     dojo: 3 },
+  { label: 'Regulatory Cross-Reference',  tag: 'EU AI Act',     dojo: 3 },
   { label: 'GCG Adversarial Suffix',     tag: 'AML.T0054',     dojo: 1 },
   { label: 'DP-SGD Privacy Training',    tag: 'SecAI+',        dojo: 3 },
   { label: 'Output Validation',          tag: 'LLM02:2025',    dojo: 1 },
   { label: 'Agent Trust Boundary',       tag: 'LLM08',         dojo: 1 },
+  { label: 'Multi-Agent Arch Review',    tag: 'LLM06',         dojo: 3 },
+  { label: 'OCR Pipeline Injection',     tag: 'LLM01:2025',    dojo: 1 },
+  { label: 'AI Model Abuse Forensics',   tag: 'AML.T0051',     dojo: 2 },
+  { label: 'AI-BOM Supply Chain Audit',  tag: 'LLM09:2025',    dojo: 3 },
 ];
 
 const CERT_CHIPS = [
@@ -545,9 +549,9 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '32 attack scenarios',   color: 'text-red-400' },
+                    { label: 'Dojo 1', sub: '32 attack scenarios',      color: 'text-red-400' },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '15 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 3', sub: '15 GRC + agent security',  color: 'text-emerald-400' },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
                       <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>

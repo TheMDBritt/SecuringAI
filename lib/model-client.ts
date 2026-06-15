@@ -77,13 +77,12 @@ class StubClient implements ModelClient {
     );
 
     const lines = [
-      '[BlackBeltAI · Training Mode]',
+      '[Training simulation active]',
       '',
-      'The training environment is running in simulation mode.',
-      'Guardrail config, scenario scoring, and all dojo mechanics are fully active.',
+      'Guardrail configuration, scenario scoring, and all dojo mechanics are fully operational.',
+      'Configure the defense panel, submit an attack, read the outcome in the scoring pane.',
       '',
-      'Live AI responses require a model connection — every other dojo feature',
-      'runs without one. This is free and always will be.',
+      'Response generation is in demonstration mode for this environment.',
     ];
 
     if (hasRag || hasTool) {

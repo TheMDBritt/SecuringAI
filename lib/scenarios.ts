@@ -565,6 +565,15 @@ export const SCENARIOS: Scenario[] = [
     owaspTags: ['LLM02', 'LLM06', 'LLM09'],
     mitreAttackIds: ['AML.T0057', 'AML.T0056', 'AML.T0048'],
   },
+  {
+    id: 'multi-agent-security-review',
+    dojoId: 3,
+    title: 'Multi-Agent System Security Architecture Review',
+    description: 'Conduct a security architecture review of a production multi-agent AI system: identify agent trust boundaries, assess agent-to-agent authentication mechanisms, enumerate privilege escalation paths through agent orchestration, evaluate human-in-the-loop controls, and draft a security architecture recommendations document. Map findings to OWASP LLM06 (Excessive Agency), OWASP LLM08 (Excessive Agency), MITRE ATLAS AML.T0048 (Influence via Prompt), NIST AI RMF GOVERN.4.2, and ISO 42001 Clause 8.2 (AI risk treatment).',
+    difficulty: 'advanced' as const,
+    owaspTags: ['LLM06', 'LLM08'],
+    mitreAttackIds: ['AML.T0048', 'AML.T0051'],
+  },
 ];
 
 export function getScenariosByDojo(dojoId: 1 | 2 | 3): Scenario[] {

@@ -5,7 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 export const metadata = {
   title: 'About — LLM DOJO',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 56 scenarios, 1,612+ quiz questions, and 840+ glossary terms.',
+    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across 59+ scenarios, 1,900+ quiz questions, and 910+ glossary terms.',
 };
 
 const PRINCIPLES = [
@@ -99,7 +99,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   3: {
     title: 'AI GRC',
     color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 14 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, AI Continuous Monitoring Program, and Multi-Framework Regulatory Mapping (EU AI Act + ISO 42001 + NIST AI RMF simultaneously).`,
+    body: `Govern the full AI risk lifecycle across 15 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, AI Continuous Monitoring Program, Multi-Framework Regulatory Mapping (EU AI Act + ISO 42001 + NIST AI RMF simultaneously), and Multi-Agent System Security Architecture Review (trust boundaries, privilege escalation, HITL controls mapped to NIST AI RMF GOVERN.4.2 and ISO 42001 Clause 8.2).`,
   },
 };
 
@@ -135,8 +135,8 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: '1,731', label: 'quiz questions', sub: '10 certs mapped' },
-                { n: '860', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: '1,900+', label: 'quiz questions', sub: '10 certs mapped' },
+                { n: '910', label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
