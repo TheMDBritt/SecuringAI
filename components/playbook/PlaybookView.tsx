@@ -6,13 +6,18 @@ import GlossaryPanel from './GlossaryPanel';
 import CertMap       from './CertMap';
 import QuizEngine    from './QuizEngine';
 import PortalDrills  from './PortalDrills';
+import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+
+const Q_COUNT = QUIZ_QUESTIONS.length.toLocaleString();
+const G_COUNT = GLOSSARY_TERMS.length.toLocaleString();
 
 const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: string }[] = [
-  { id: 'topics',   label: 'Topics',   count: '76',   desc: '76 articles' },
-  { id: 'glossary', label: 'Glossary', count: '860',  desc: '860 terms' },
-  { id: 'certs',    label: 'Certs',    count: '10',   desc: '10 exams' },
-  { id: 'quiz',     label: 'Quiz',     count: '1731', desc: '1,731 questions' },
-  { id: 'drills',   label: 'Drills',               desc: 'SC-500 drills' },
+  { id: 'topics',   label: 'Topics',   count: '76',      desc: '76 articles' },
+  { id: 'glossary', label: 'Glossary', count: G_COUNT,   desc: `${G_COUNT} terms` },
+  { id: 'certs',    label: 'Certs',    count: '10',      desc: '10 exams' },
+  { id: 'quiz',     label: 'Quiz',     count: Q_COUNT,   desc: `${Q_COUNT} questions` },
+  { id: 'drills',   label: 'Drills',                     desc: 'SC-500 drills' },
 ];
 
 export default function PlaybookView() {
