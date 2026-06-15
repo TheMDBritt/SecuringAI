@@ -4343,7 +4343,7 @@ Security Copilot integrates with the Microsoft security stack for AI-assisted op
 - "Security Copilot needs to query your Sentinel workspace" → Assign Security Copilot the **Microsoft Sentinel Reader** role`,
   },
 {
-    id: 'ai-red-team-methodology',
+    id: 'ai-redteam-atlas-owasp',
     category: 'Red Teaming AI',
     title: 'AI Red Team Methodology (MITRE ATLAS + OWASP LLM Top 10)',
     certTags: ['SecAI', 'GIAC-GOAA', 'CAIS', 'CAISP'],
@@ -4447,7 +4447,7 @@ Embedding instructions in non-text modalities — images, PDFs, audio files — 
 - "What is the difference between LLM01 and LLM08?" → LLM01 is input manipulation to override instructions; LLM08 is the model taking actions beyond its authorized scope`,
   },
 {
-    id: 'ai-supply-chain-security',
+    id: 'ai-supply-chain-owasp',
     category: 'AI Security',
     title: 'AI Supply Chain Security — OWASP LLM05 & MITRE ATLAS',
     certTags: ['CAIS', 'CAISP', 'SecAI', 'GIAC-GOAA', 'SC-500'],
@@ -5245,7 +5245,7 @@ Monitor the full conversation for escalation patterns across turns — not just 
 No current defense provides complete protection against all prompt injection variants. The correct exam answer for "can prompt injection be fully prevented?" is **no** — defense-in-depth (privilege separation + scanning + minimal tool access + monitoring) reduces impact without eliminating the attack surface. Source: OWASP LLM01, Simon Willison prompt injection research, Azure AI Content Safety.`,
   },
   {
-    id: 'ai-supply-chain-security',
+    id: 'ai-supply-chain-intro',
     category: 'AI Security',
     title: 'AI Supply Chain Security',
     certTags: ['CAISP', 'CAIS', 'SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
