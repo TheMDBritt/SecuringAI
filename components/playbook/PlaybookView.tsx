@@ -11,7 +11,7 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: stri
   { id: 'topics',   label: 'Topics',   count: '76',   desc: '76 articles' },
   { id: 'glossary', label: 'Glossary', count: '910',  desc: '910 terms' },
   { id: 'certs',    label: 'Certs',    count: '10',   desc: '10 exams' },
-  { id: 'quiz',     label: 'Quiz',     count: '1900+', desc: '1,900+ questions' },
+  { id: 'quiz',     label: 'Quiz',     count: '1800+', desc: '1,800+ questions' },
   { id: 'drills',   label: 'Drills',  count: '15',  desc: '15 portal drills' },
 ];
 
