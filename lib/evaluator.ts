@@ -794,6 +794,38 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'EU AI Act Article 73 or serious incident notification assessed', re: /Article\s+73|serious\s+incident|AI\s+Act.*notif|notif.*AI\s+Act|incident\s+report.*AI|market\s+surveillance|NCA\s+notif/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
+  'ransomware-ai-triage': [
+    { label: 'Initial access vector identified (phishing, RDP, vuln exploit, supply chain)', re: /initial\s+access|entry\s+point|phish|RDP|exploit|CVE|supply\s+chain|initial\s+compromise|how\s+(the\s+)?(attacker|threat\s+actor)\s+(gained|got)/i },
+    { label: 'MITRE ATT&CK techniques mapped (T1486 / T1490 / lateral movement T-codes)', re: /T\d{4}(\.\d{3})?|T1486|T1490|T1059|T1070|T1021|lateral\s+movement|ATT&?CK/i },
+    { label: 'Encryption scope and affected systems enumerated', re: /encrypt(ed|ion)\s+(scope|impact|coverage|files?)|affected\s+(systems?|hosts?|machines?|endpoints?)|blast\s+radius|impacted\s+assets?|scope\s+of\s+(encryption|impact)/i },
+    { label: 'AI-assisted triage timeline or correlation insight provided (SIEM/EDR/TI correlation)', re: /triage|correlat|SIEM|EDR|endpoint\s+detect|threat\s+(intel|intelligence)|timeline|event\s+chain|30\s+minute|initial\s+(hour|response)|first\s+(30|60)\s+min/i },
+    { label: 'SOAR/HITL containment decision documented (isolation vs. monitoring)', re: /SOAR|HITL|human.in.the.loop|human\s+oversight|playbook\s+(automation|trigger)|isolat|contain|automated\s+(action|response)|manual\s+(review|approval)|gat(e|ing)/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'adversarial-prompt-forensics': [
+    { label: 'Attack vector classified (direct injection / indirect RAG injection / jailbreak)', re: /direct\s+(injection|prompt)|indirect\s+(injection|prompt)|RAG\s+(injection|poison|attack)|jailbreak|system\s+prompt\s+leak|prompt\s+extraction|attack\s+(vector|type|class)/i },
+    { label: 'MITRE ATLAS or OWASP LLM technique referenced (AML.T / LLM01 / LLM07)', re: /AML\.T\d{4}|LLM0[0-9]|OWASP\s*LLM|ATLAS|prompt\s+injection|T\d{4}(\.\d{3})?/i },
+    { label: 'Anomalous output analysis: system prompt fragments or persona deviation identified', re: /system\s+prompt\s+(fragment|leak|reveal|exposure)|persona\s+(deviation|bypass|override|inconsisten)|anomalous\s+(output|response)|unexpected\s+(content|output|behaviour|behavior)|policy\s+violation/i },
+    { label: 'Root cause analysis covering bypassed controls', re: /root\s+cause|bypassed?\s+(control|guardrail|filter|safety)|guardrail\s+(failure|bypass|gap)|injection\s+shield|policy\s+bypass|content\s+filter\s+(gap|miss|bypass)/i },
+    { label: 'Guardrail configuration recommendations provided to prevent recurrence', re: /guardrail\s+(recommendation|config|update|change|strengthen)|injection\s+shield|content\s+filter\s+(config|setting|threshold)|system\s+prompt\s+hardening|prompt\s+shield|output\s+monitor|rate\s+limit|input\s+validation/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'autonomous-agent-forensics': [
+    { label: 'Unauthorized action chain reconstructed from agent/tool-call logs', re: /action\s+chain|tool.?call\s+(trace|log|sequence)|agent\s+(log|action|step|trace)|unauthorized\s+(action|email|API\s+call|access|modification)|action\s+sequence|capability\s+abuse/i },
+    { label: 'Root cause classified (prompt injection / misaligned objective / exploit chain)', re: /prompt\s+injection|misaligned?\s+(objective|goal|intent)|exploit\s+chain|indirect\s+(injection|prompt)|objective\s+(drift|misalign|manipulat)|root\s+cause\s+(is|was|classify)/i },
+    { label: 'MITRE ATT&CK or OWASP LLM technique referenced (T-code / LLM08 / LLM01)', re: /T\d{4}(\.\d{3})?|LLM0[0-9]|LLM08|OWASP\s*LLM|Excessive\s+Agency|T1059|T1098|T1565|ATLAS|AML\.T\d/i },
+    { label: 'Human-in-the-loop gap or trust boundary failure identified', re: /HITL|human.in.the.loop|human\s+oversight|trust\s+boundar|excessive\s+(agency|permission|access|autonomy|capability)|principle\s+of\s+least\s+privilege|over.?permissioned|insufficient\s+(oversight|review)/i },
+    { label: 'Containment and re-authorization plan documented', re: /contain|re.?authori[sz]|permission\s+(review|audit|revocation)|agent\s+(suspend|offline|disable)|capability\s+(restrict|limit|scope)|rollback|HITL\s+gate|require.*human.*approval|re.?deploy\s+(criteria|conditions|plan)/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'ai-model-abuse': [
+    { label: 'Attack type identified (jailbreak / training data extraction / membership inference / model extraction)', re: /jailbreak|training\s+data\s+(extract|leak|reconstruct)|membership\s+inference|model\s+extract(ion)?|data\s+exfil\w+\s+(from\s+)?model|prompt\s+reconstruct|system\s+prompt\s+(extract|steal|leak)/i },
+    { label: 'MITRE ATLAS technique mapped (AML.T0040 / AML.T0056 / AML.T0024)', re: /AML\.T\d{4}|AML\.T0040|AML\.T0056|AML\.T0024|ATLAS|T\d{4}(\.\d{3})?/i },
+    { label: 'API access log analysis with rate patterns and anomalous output samples', re: /API\s+(log|access\s+log|rate|call\s+pattern|request\s+pattern)|rate\s+(pattern|anomaly|limit)|anomalous\s+(output|response|query|request)|query\s+pattern|systematic\s+(query|request)|access\s+pattern/i },
+    { label: 'Detection rules or rate-limiting controls recommended (KQL / regex / API gateway)', re: /detection\s+rule|rate\s+(limit|throttl)|KQL|Sigma|API\s+(gateway|protection|quota|key\s+rotation)|content\s+(filter|safety)|anomaly\s+detect|abuse\s+detect|monitoring\s+(rule|alert|threshold)/i },
+    { label: 'Attribution to MITRE ATLAS abuse category and containment recommended', re: /contain|block|suspend|revoke\s+(API\s+key|access|token)|endpoint\s+(protect|restrict|disable)|output\s+(filter|scrub|watermark)|differential\s+privacy|rate\s+limit\s+(enforce|apply)|IP\s+(block|deny)/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
 };
 
 // ─── Per-element coaching ─────────────────────────────────────────────────────
@@ -865,6 +897,50 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
     'An AI system with anomalous behaviour may be actively exploited — the triage must result in a clear contain/rollback/redeploy decision with justification. Prompt: "What is the containment decision: keep online with monitoring, rollback to previous version, or take offline? Justify."',
   'EU AI Act Article 73 or serious incident notification assessed':
     'EU AI Act Article 73 requires high-risk AI providers to notify the National Competent Authority of serious incidents — any AI system compromise analysis must assess this obligation. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? If so, what are the notification obligations and timelines?"',
+  // ransomware-ai-triage
+  'Initial access vector identified (phishing, RDP, vuln exploit, supply chain)':
+    'Identifying the initial access vector is the prerequisite for prevention — without it, the same entry point will be exploited in the next ransomware campaign. Prompt: "Based on the telemetry, what was the initial access vector? Was it phishing, RDP exploitation, CVE abuse, or supply chain compromise? Provide evidence."',
+  'MITRE ATT&CK techniques mapped (T1486 / T1490 / lateral movement T-codes)':
+    'Ransomware kill chains follow consistent ATT&CK patterns — T1486 (Data Encrypted for Impact), T1490 (Inhibit System Recovery), and lateral movement T-codes define the attack progression. Prompt: "Map each observed phase to a MITRE ATT&CK technique by T-code: initial access, lateral movement, privilege escalation, and encryption impact."',
+  'Encryption scope and affected systems enumerated':
+    'Scope determines incident severity, regulatory notification obligations, and recovery timeline — partial scope means partial recovery and continued risk. Prompt: "Enumerate all affected systems, file shares, and backup targets. What percentage of critical data has been encrypted?"',
+  'AI-assisted triage timeline or correlation insight provided (SIEM/EDR/TI correlation)':
+    'The unique value of AI in ransomware response is correlating EDR telemetry, SIEM events, and threat intelligence simultaneously — human analysts doing this manually take hours; AI does it in minutes. Prompt: "Correlate the EDR alerts, SIEM events, and threat intelligence to build a minute-by-minute attack timeline for the first 30 minutes of detection."',
+  'SOAR/HITL containment decision documented (isolation vs. monitoring)':
+    'SOAR automation can isolate hosts in seconds, but irreversible actions (host isolation, credential revocation) must have human approval gates — the analysis must address both. Prompt: "Which containment actions should be automated by SOAR playbook and which require human-in-the-loop approval before execution?"',
+  // adversarial-prompt-forensics
+  'Attack vector classified (direct injection / indirect RAG injection / jailbreak)':
+    'Different attack vectors require different mitigations — direct injection needs system prompt hardening, RAG injection needs retrieval pipeline controls, jailbreaks need safety training improvements. Prompt: "Classify the attack vector as direct prompt injection, indirect injection via RAG pipeline, or jailbreak technique. What evidence supports this classification?"',
+  'MITRE ATLAS or OWASP LLM technique referenced (AML.T / LLM01 / LLM07)':
+    'Framework attribution enables consistent detection rule authoring and cross-team communication about the attack class. Prompt: "Map the attack to the specific MITRE ATLAS technique (AML.T-code) and OWASP LLM Top 10 category (LLM01, LLM07, etc.)."',
+  'Anomalous output analysis: system prompt fragments or persona deviation identified':
+    'System prompt fragments in model output are direct evidence of leakage — persona deviations indicate the instruction hierarchy was overridden. Prompt: "Identify specific anomalous outputs: what system prompt fragments were revealed, and in which turns did the model deviate from its configured persona?"',
+  'Root cause analysis covering bypassed controls':
+    'Without identifying which specific guardrails failed, remediation cannot be targeted — you need to know whether the failure was in the injection shield, content filter, policy enforcement, or system prompt hardening. Prompt: "Which specific guardrails failed? Was the injection shield disabled, was the policy filter misconfigured, or did the system prompt lack explicit anti-extraction instructions?"',
+  'Guardrail configuration recommendations provided to prevent recurrence':
+    'Forensic analysis without actionable configuration changes leaves the system vulnerable to the same attack. Prompt: "What specific guardrail configuration changes — injection shield strength, system prompt hardening instructions, output monitoring rules, or content filter thresholds — would prevent this attack from succeeding again?"',
+  // autonomous-agent-forensics
+  'Unauthorized action chain reconstructed from agent/tool-call logs':
+    'Agent forensics requires reconstructing the exact sequence of tool calls to understand what the agent did, when, and with what parameters — without this chain, you cannot determine blast radius. Prompt: "Reconstruct the complete action chain from the tool-call logs: what API calls, emails, file modifications, or configuration changes did the agent make, in what order?"',
+  'Root cause classified (prompt injection / misaligned objective / exploit chain)':
+    'The root cause determines remediation: prompt injection requires input sanitization and HITL gates; misaligned objective requires goal specification review; an exploit chain requires vulnerability patching and privilege reduction. Prompt: "What was the root cause — direct or indirect prompt injection, an objective misalignment in the agent\'s goal specification, or an exploit chain through a tool vulnerability?"',
+  'MITRE ATT&CK or OWASP LLM technique referenced (T-code / LLM08 / LLM01)':
+    'Agentic system attacks are captured in LLM08 (Excessive Agency), LLM01 (Prompt Injection), and ATT&CK T1059 (Script Execution) — proper framework attribution enables coverage measurement. Prompt: "Map the unauthorized actions to MITRE ATT&CK T-codes and OWASP LLM Top 10 categories, particularly LLM08 Excessive Agency and LLM01 Prompt Injection."',
+  'Human-in-the-loop gap or trust boundary failure identified':
+    'Agentic systems with excessive permissions can cause irreversible harm — the forensic analysis must identify which capabilities should have required human approval but did not. Prompt: "Which agent capabilities — email sending, API calls, file modification, configuration changes — lacked human-in-the-loop gates, and what minimum permission set should the agent have had?"',
+  'Containment and re-authorization plan documented':
+    'Redeploying an agent without a revised permission model and HITL gates guarantees recurrence — the forensic report must specify the exact changes required before re-authorization. Prompt: "Provide a re-authorization plan: which agent capabilities should be restricted, what human approval gates should be added, and what monitoring should be implemented before the agent is returned to production?"',
+  // ai-model-abuse
+  'Attack type identified (jailbreak / training data extraction / membership inference / model extraction)':
+    'Different abuse types require different defenses — jailbreaks require output filtering, training data extraction requires differential privacy, membership inference requires confidence score suppression, model extraction requires rate limiting and output perturbation. Prompt: "Based on the API access patterns and anomalous outputs, classify the attack type: is this jailbreaking, training data extraction, membership inference, or model extraction (API cloning)?"',
+  'MITRE ATLAS technique mapped (AML.T0040 / AML.T0056 / AML.T0024)':
+    'ATLAS provides the authoritative taxonomy for ML system attacks — AML.T0040 (Model Replication), AML.T0056 (LLM Jailbreak), AML.T0024 (Exfiltration via ML Inference API) map to the common abuse patterns. Prompt: "Map the observed abuse to the specific MITRE ATLAS technique by AML.T-code."',
+  'API access log analysis with rate patterns and anomalous output samples':
+    'Model abuse is detected through statistical anomalies in access patterns — unusual query timing, systematic input variations, or response content inconsistencies. Prompt: "Analyze the API access logs: what query rate patterns, input variation patterns, or output anomalies indicate systematic abuse rather than legitimate usage?"',
+  'Detection rules or rate-limiting controls recommended (KQL / regex / API gateway)':
+    'Without deployable detection rules, the abuse continues undetected — the analysis must output actionable monitoring and containment controls. Prompt: "Provide a KQL query to detect the observed abuse pattern in API logs, and recommend API gateway rate-limiting thresholds and input validation controls."',
+  'Attribution to MITRE ATLAS abuse category and containment recommended':
+    'Containment is abuse-specific: jailbreak containment is output filtering, extraction containment is rate limiting and API key rotation, inference attacks need confidence suppression. Prompt: "Based on the ATLAS attribution, what are the specific containment actions: API key revocation, rate limiting, output watermarking, differential privacy, or endpoint restriction?"',
 };
 
 // ─── Scenario-specific next-analyst-steps ────────────────────────────────────
@@ -911,6 +987,26 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     '(2) preserves model telemetry, prompt traces, and serving logs as forensic evidence before any redeployment, ' +
     '(3) notifies the AI risk function and legal counsel to assess EU AI Act Article 73 serious incident obligations, ' +
     '(4) conducts a root cause analysis before redeployment — verify whether the failure was adversarial or operational before returning to production.',
+  'ransomware-ai-triage':
+    'What a real IR lead does with AI-assisted ransomware triage: (1) immediately activates the ransomware playbook — isolate confirmed-infected hosts via SOAR automation with HITL approval for production systems, ' +
+    '(2) use the AI-generated timeline to brief the CISO and legal counsel within 30 minutes — assess GDPR 72-hour notification clock, ' +
+    '(3) redirect EDR telemetry and NetFlow to the threat hunting team to identify all encrypted systems and any undetected lateral movement, ' +
+    '(4) use AI correlation of threat intel to identify the ransomware family and retrieve any published decryptor keys before paying ransom.',
+  'adversarial-prompt-forensics':
+    'What a real AI security engineer does after prompt forensics: (1) immediately apply the recommended guardrail configuration changes — enable injection shield, update system prompt with anti-extraction instructions, ' +
+    '(2) submit the successful attack prompt to the content safety team for adversarial training dataset inclusion, ' +
+    '(3) run the same attack against all production AI deployments to determine if the vulnerability is systemic, ' +
+    '(4) file an internal security incident report documenting the bypass technique, and assess whether output to users contained sensitive information requiring breach notification.',
+  'autonomous-agent-forensics':
+    'What a real AI platform engineer does after agent forensics: (1) immediately suspend the agent and revoke all service credentials and OAuth tokens it used, ' +
+    '(2) notify recipients of unauthorized emails and API partners of the unauthorized access — document all external impact for regulatory disclosure assessment, ' +
+    '(3) implement the re-authorization plan: scope permissions to minimum required, add HITL approval gates for all irreversible actions (email, file write, external API calls), ' +
+    '(4) deploy agent activity monitoring — log all tool calls with parameters for future forensic capability before redeploying.',
+  'ai-model-abuse':
+    'What a real MLSecOps engineer does after model abuse triage: (1) immediately rotate the abused API key and apply rate limiting to the abuser\'s IP range or account, ' +
+    '(2) deploy the recommended KQL detection query as a production alert to catch recurrence and identify other potentially abusing clients, ' +
+    '(3) review API key issuance policy — determine if authentication and access controls are sufficient to prevent future abuse, ' +
+    '(4) if membership inference is confirmed, assess GDPR Article 22 and data subject rights implications — individuals may have a right to know their data was used to train the model.',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
