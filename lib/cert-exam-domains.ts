@@ -286,8 +286,8 @@ export const EXAM_CERTS: ExamCert[] = [
     domains: [
       {
         id: 'gmle-d1',
-        name: 'Domain 1: Architect ML Solutions',
-        weight: '13%',
+        name: 'Domain 1: Architect Low-Code AI Solutions',
+        weight: '~13%',
         categories: [
           'AI & ML Fundamentals',
           'Cloud AI Platforms',
@@ -295,25 +295,28 @@ export const EXAM_CERTS: ExamCert[] = [
       },
       {
         id: 'gmle-d2',
-        name: 'Domain 2: Data Preparation and Feature Engineering',
-        weight: '18%',
+        name: 'Domain 2: Collaborate Within and Across Teams',
+        weight: '~10%',
         categories: [
           'Data Engineering',
+          'AI Ethics & Bias',
+          'AI Governance',
         ],
       },
       {
         id: 'gmle-d3',
-        name: 'Domain 3: Model Development and Training',
-        weight: '18%',
+        name: 'Domain 3: Scale Prototypes into ML Models',
+        weight: '~18%',
         categories: [
           'Computer Vision',
           'NLP',
+          'AI & ML Fundamentals',
         ],
       },
       {
         id: 'gmle-d4',
-        name: 'Domain 4: Model Serving and Operations',
-        weight: '19%',
+        name: 'Domain 4: Serve and Scale Models',
+        weight: '~19%',
         categories: [
           'MLOps',
           'MLOps Security',
@@ -325,23 +328,24 @@ export const EXAM_CERTS: ExamCert[] = [
       {
         id: 'gmle-d5',
         name: 'Domain 5: Automate and Orchestrate ML Pipelines',
-        weight: '20%',
+        weight: '~20%',
         categories: [
+          'AI/ML Operations',
+          'MLOps',
           'Emerging Trends',
-          'AI Ethics & Bias',
-          'AI Governance',
-          'AI/ML Privacy',
         ],
       },
       {
         id: 'gmle-d6',
-        name: 'Domain 6: Monitor ML Solutions',
-        weight: '12%',
+        name: 'Domain 6: Monitor AI Solutions',
+        weight: '~20%',
         categories: [
           'AI Security',
           'AI Security Fundamentals',
           'Google Cloud AI Security',
           'AI/ML Operations',
+          'AI Ethics & Bias',
+          'AI/ML Privacy',
         ],
       },
     ],
