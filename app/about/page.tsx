@@ -12,20 +12,20 @@ export const metadata = {
 
 const PRINCIPLES = [
   {
-    label: 'Free, forever',
-    body: 'No accounts, no paywall, no tracking. The barrier to learning AI security should be zero. Anything that adds friction defeats the point.',
+    label: 'Open access',
+    body: 'No accounts, no paywall, no tracking. The barrier to entry is a browser tab. Everything runs client-side or through stateless server routes — no data is stored.',
   },
   {
     label: 'Hands-on, not theoretical',
-    body: 'Every concept is something you can type into the chat console. Read about prompt injection, then run one and watch the guardrails decide the outcome.',
+    body: 'Every concept is something you can type into the chat console. Read about prompt injection, then run one and watch the guardrails decide the outcome. The scenario, the payload, the result — all of it is in your hands.',
   },
   {
     label: 'Deterministic scoring',
-    body: 'Dojo 1 outcomes are decided by guardrail state alone — the same payload with the same config always produces the same result. No LLM randomness in the score.',
+    body: 'Dojo 1 outcomes are decided by guardrail configuration alone — the same payload with the same config always produces the same result. The score is a function of security decisions, not model temperature.',
   },
   {
     label: 'Conceptual payloads only',
-    body: 'Inputs and responses are training material. A safety pre-filter blocks functional exploit syntax. This is a study tool, not a weapons cache.',
+    body: 'Inputs and responses are training material, not functional exploits. A safety pre-filter blocks executable attack syntax. The goal is understanding threat mechanics, not capability transfer.',
   },
 ];
 
@@ -76,9 +76,14 @@ const CREDITS = [
   'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
   'NIST SP 800-218A (Secure Software Development for AI)',
+  'NIST AI 100-1 (Adversarial ML Taxonomy)',
   'CompTIA SecurityAI+ Exam Objectives',
-  'Microsoft SC-500 Study Guide',
+  'GIAC GOAA / GASAE Syllabi (SANS Institute)',
+  'CAISP Exam Domains (Practical DevSecOps)',
+  'EC-Council C|AI Security Objectives',
+  'Microsoft SC-500 / Azure AI-103 Study Guide',
   'AWS AI Practitioner (AIF-C01) Exam Guide',
+  'Google Professional ML Engineer Exam Guide',
 ];
 
 const SCENARIO_COUNT_BY_DOJO: Record<1 | 2 | 3, number> = {
@@ -91,7 +96,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   1: {
     title: 'LLM Attack & Defense',
     color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings across 37 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, OCR Pipeline Injection, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, Semantic Cache Poisoning, Context Window Smuggling, AI Supply Chain Backdoor, Vision Adversarial Attack, Agent Memory Poisoning, Cross-Tenant Data Leakage, Chain-of-Thought Hijacking, System Prompt Reflection Leak, Alignment Exploitation, and Function Name Confusion. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack and defend a live LLM under configurable guardrail settings across 42 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, Semantic Cache Poisoning, Vision Adversarial Attack, Agent Memory Poisoning, Cross-Tenant Data Leakage, Chain-of-Thought Hijacking, System Prompt Reflection Leak, Alignment Exploitation, Function Name Confusion, Base64 Encoding Bypass, Nested Roleplay Jailbreak, Instruction Shadowing, Agentic Goal Hijacking, and Prompt Chaining Attack. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
   },
   2: {
     title: 'AI-Assisted SOC',
@@ -101,7 +106,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   3: {
     title: 'AI GRC',
     color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 14 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, AI Continuous Monitoring Program, and Multi-Framework Regulatory Mapping (EU AI Act + ISO 42001 + NIST AI RMF simultaneously).`,
+    body: `Govern the full AI risk lifecycle across 17 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, AI Continuous Monitoring Program, Multi-Framework Regulatory Mapping, AI Transparency Obligations (EU AI Act Art. 13), Model Drift & Post-Market Surveillance (Art. 72), and Multi-Jurisdiction Compliance Mapping across EU AI Act, GDPR, NIST AI RMF, ISO 42001, and CCPA simultaneously.`,
   },
 };
 

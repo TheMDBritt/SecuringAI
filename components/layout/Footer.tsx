@@ -1,4 +1,13 @@
 import Link from 'next/link';
+import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { SCENARIOS } from '@/lib/scenarios';
+import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+
+const Q  = QUIZ_QUESTIONS.length.toLocaleString();
+const G  = GLOSSARY_TERMS.length.toLocaleString();
+const S  = SCENARIOS.length;
+const I  = DOJO2_PREBUILT_SCENARIOS.length;
 
 export function Footer() {
   return (
@@ -9,8 +18,8 @@ export function Footer() {
           <div className="flex flex-col gap-1.5">
             <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
-              Free AI security training. 1,731 practice questions, 860 glossary terms,
-              59 dojo scenarios, 47 SOC incidents.
+              AI security training. {Q} practice questions, {G} glossary terms,
+              {' '}{S} dojo scenarios, {I} SOC incidents — no signup required.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'ISO 42001', 'EU AI Act'].map((f) => (
@@ -35,12 +44,10 @@ export function Footer() {
               <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-2">Certifications</p>
               <div className="flex flex-col gap-1.5 text-xs text-slate-500">
                 <span>CompTIA SecAI+</span>
-                <span>CAISP</span>
-                <span>EC-Council C|AI Security</span>
-                <span>GIAC GOAA · GASAE</span>
-                <span>Microsoft SC-500</span>
-                <span>AWS AIF-C01 · Azure AI-103</span>
-                <span>Azure AI-901 · Google MLE</span>
+                <span>CAISP · EC-Council C|AI Security</span>
+                <span>GIAC GOAA · GIAC GASAE</span>
+                <span>Microsoft SC-500 · Azure AI-103</span>
+                <span>AWS AIF-C01 · Azure AI-901 · Google MLE</span>
               </div>
             </div>
           </div>
@@ -48,7 +55,7 @@ export function Footer() {
 
         <div className="mt-6 pt-4 border-t border-slate-800/60 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <p className="text-[10px] font-mono text-slate-700">
-            Independent · Unaffiliated with any certification provider · Check official exam objectives before scheduling.
+            Independent · Unaffiliated with any certification provider · Cross-check official exam objectives before scheduling.
           </p>
           <p className="text-[10px] font-mono text-slate-700">No login · No ads · No tracking</p>
         </div>

@@ -83,7 +83,7 @@ const TECHNIQUES = [
   { label: 'Crescendo Attack',           tag: 'Red Team',      dojo: 1 },
   { label: 'Backdoor / Trojan',          tag: 'AML.T0018',     dojo: 1 },
   { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2025',    dojo: 1 },
-  { label: 'Purview DSPM for AI',        tag: 'SC-500',        dojo: 3 },
+  { label: 'Purview DSPM for AI',        tag: 'AI-103',        dojo: 3 },
   { label: 'Security Copilot KQL',       tag: 'SC-500',        dojo: 2 },
   { label: 'Context Window Overflow',    tag: 'LLM01:2025',    dojo: 1 },
   { label: 'Supply Chain Poisoning',     tag: 'LLM04:2025',    dojo: 1 },
@@ -101,7 +101,7 @@ const TECHNIQUES = [
   { label: 'Code Interpreter Injection', tag: 'LLM08',         dojo: 1 },
   { label: 'Adversarial Prompt Forensics', tag: 'SOC',         dojo: 2 },
   { label: 'AI Model Abuse Triage',      tag: 'AML.T0040',     dojo: 2 },
-  { label: 'PyRIT Red Teaming',          tag: 'SC-500',        dojo: 1 },
+  { label: 'PyRIT Red Teaming',          tag: 'AI Red Team',   dojo: 1 },
   { label: 'EU AI Act Art. 73 Report',   tag: 'EU AI Act',     dojo: 3 },
   { label: 'Sycophancy Exploitation',    tag: 'LLM01',         dojo: 1 },
   { label: 'MCP Server Injection',       tag: 'LLM08',         dojo: 1 },
@@ -118,6 +118,15 @@ const TECHNIQUES = [
   { label: 'System Prompt Reflection',   tag: 'AML.T0056',     dojo: 1 },
   { label: 'Alignment Exploitation',     tag: 'AML.T0020',     dojo: 1 },
   { label: 'Function Name Confusion',    tag: 'LLM08',         dojo: 1 },
+  { label: 'Base64 Encoding Bypass',     tag: 'LLM01',         dojo: 1 },
+  { label: 'Nested Roleplay Jailbreak',  tag: 'LLM01',         dojo: 1 },
+  { label: 'Instruction Shadowing',      tag: 'AML.T0054.001', dojo: 1 },
+  { label: 'Agentic Goal Hijacking',     tag: 'LLM08',         dojo: 1 },
+  { label: 'Prompt Chaining Attack',     tag: 'LLM01',         dojo: 1 },
+  { label: 'MCP Tool Injection',         tag: 'LLM08:2025',    dojo: 1 },
+  { label: 'AI Transparency (Art.13)',   tag: 'EU AI Act',     dojo: 3 },
+  { label: 'Post-Market Surveillance',   tag: 'EU AI Act',     dojo: 3 },
+  { label: 'Multi-Framework Mapping',    tag: 'ISO 42001',     dojo: 3 },
 ];
 
 const CERT_CHIPS = [
@@ -145,9 +154,10 @@ const SOURCED_FROM = [
   'GIAC GOAA / GASAE Syllabi',
   'CompTIA SecurityAI+ Objectives',
   'EC-Council C|AI Security Outline',
-  'Microsoft SC-500 Study Guide',
+  'Microsoft SC-500 / AI-103 Study Guide',
   'AWS AI Practitioner Exam Guide',
   'Google Professional ML Engineer Guide',
+  'CAISP Exam Domains (Practical DevSecOps)',
 ];
 
 // ── Scoring rows for the scoring table ────────────────────────────────────────
@@ -284,12 +294,12 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
                   <span className="text-cyan-400">quiz</span>
-                  <span className="text-slate-400"> start SC-500 --domain d5 --mock</span>
+                  <span className="text-slate-400"> start CAISP --domain audit --mock</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
                   <span className="text-violet-400">MOCK</span>
-                  <span className="text-slate-600"> Secure AI Workloads · 60q · 100min</span>
+                  <span className="text-slate-600"> AI Security Assessment · 60q · timed</span>
                 </div>
               </div>
             </div>
