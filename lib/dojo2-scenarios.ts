@@ -3709,12 +3709,14 @@ TASK — ANALYSIS REPORT:
     difficulty: 'intermediate' as const,
     attackCategory: 'Phishing',
     mitre: {
-      tactics: ['Initial Access', 'Collection'],
+      tactic: 'Initial Access',
       techniques: ['T1566.001', 'T1566.002', 'T1589'],
     },
     iocs: {
+      ips: [],
       domains: ['secure-docusign-hr.com', 'hr-portal-verify.net', 'acme-onboarding-secure.io'],
-      emails: ['hr-noreply@acme-corp-onboarding.com'],
+      hashes: [],
+      other: ['Sender: hr-noreply@acme-corp-onboarding.com', 'LLM-generated spear phishing content', 'LinkedIn data harvesting'],
     },
     description: 'Security gateway flagged 847 phishing emails targeting Acme Corp employees with suspiciously personalized content. Linguistic analysis suggests LLM-generated content.',
     incidentData: `EMAIL GATEWAY ALERT — BATCH ANALYSIS
@@ -3781,11 +3783,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'Model Evasion',
     mitre: {
-      tactics: ['Collection', 'Exfiltration'],
+      tactic: 'Collection',
       techniques: ['AML.T0040', 'AML.T0056', 'T1530'],
     },
     iocs: {
       ips: ['198.51.100.89', '198.51.100.90', '198.51.100.91'],
+      domains: [],
+      hashes: [],
+      other: ['44,891 model queries in 8.8h', 'logprob harvesting', 'systematic embedding extraction'],
     },
     description: 'API gateway anomaly detection flagged sustained systematic queries against the production sentiment analysis model. Query patterns suggest model extraction via logprob harvesting.',
     incidentData: `API GATEWAY ANOMALY ALERT
@@ -3847,11 +3852,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'LLM Prompt Injection',
     mitre: {
-      tactics: ['Persistence', 'Defense Evasion'],
+      tactic: 'Persistence',
       techniques: ['AML.T0048', 'AML.T0054.002', 'T1565.001'],
     },
     iocs: {
+      ips: [],
       domains: ['internal-sharepoint.acme-corp.com'],
+      hashes: [],
+      other: ['white-text injection in SharePoint', 'RAG vector store poisoning', 'AI chatbot anomalous responses'],
     },
     description: 'Customer service AI chatbot began returning anomalous responses including inappropriate product comparisons and hidden promotional content. Root cause: RAG vector store poisoning.',
     incidentData: `AI CHATBOT INCIDENT REPORT — INITIAL TRIAGE
@@ -3922,12 +3930,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'Supply Chain',
     mitre: {
-      tactics: ['Initial Access', 'Persistence'],
+      tactic: 'Initial Access',
       techniques: ['T1195.002', 'AML.T0018', 'AML.T0019', 'T1059.006'],
     },
     iocs: {
+      ips: [],
       domains: ['huggingface.co', 'cdn.hf.co'],
-      hashes: ['sha256:a3f8e7c2d19b0f45e6a8c3b7d2e91f0a4c5d8b7e3f2a1c9d8b7e6f5a4c3d2e1f0'],
+      hashes: ['a3f8e7c2d19b0f45e6a8c3b7d2e91f0a4c5d8b7e3f2a1c9d8b7e6f5a4c3d2e1f0'],
+      other: ['pickle payload in model artifact', 'HuggingFace model download', 'Python subprocess execution on model load'],
     },
     description: 'Security team discovered that the data science team downloaded and deployed a HuggingFace model containing a serialized Python pickle payload that executed on load, establishing persistence.',
     incidentData: `MALWARE ALERT — EDR DETECTION
@@ -3998,8 +4008,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'LLM Prompt Injection',
     mitre: {
-      tactics: ['Execution', 'Persistence', 'Collection'],
+      tactic: 'Execution',
       techniques: ['AML.T0054.002', 'T1098', 'T1114.003', 'T1059'],
+    },
+    iocs: {
+      ips: [],
+      domains: [],
+      hashes: [],
+      other: ['Indirect prompt injection via calendar invite', 'Microsoft 365 AI agent unauthorized tool calls', 'External email exfiltration', 'SharePoint out-of-scope access'],
     },
     description: 'An enterprise AI assistant (agentic mode) began taking unauthorized actions: sending emails to external parties, accessing out-of-scope SharePoint sites, and scheduling calendar events — traced to indirect prompt injection via a malicious meeting invitation.',
     incidentData: `ENTERPRISE AI SECURITY INCIDENT
@@ -4064,11 +4080,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'Lateral Movement',
     mitre: {
-      tactics: ['Discovery', 'Lateral Movement', 'Collection'],
+      tactic: 'Discovery',
       techniques: ['T1082', 'T1021.001', 'T1552', 'AML.T0040'],
     },
     iocs: {
       ips: ['10.1.47.23', '10.1.47.24', '10.1.47.25'],
+      domains: [],
+      hashes: [],
+      other: ['LLM-assisted LDAP enumeration', '847 AD queries in 12 min', 'Attacker using internal AI for recon'],
     },
     description: 'Threat hunt identified an attacker using an internal AI assistant to perform automated reconnaissance, credential discovery, and network mapping — using the LLM as a force multiplier for post-compromise lateral movement.',
     incidentData: `THREAT HUNT FINDINGS — AI-ASSISTED ATTACK
@@ -4133,12 +4152,14 @@ TASK:
     difficulty: 'advanced' as const,
     attackCategory: 'Supply Chain',
     mitre: {
-      tactics: ['Resource Development', 'Persistence'],
+      tactic: 'Resource Development',
       techniques: ['AML.T0018', 'AML.T0048', 'T1195.001'],
     },
     iocs: {
+      ips: [],
       domains: ['github.com/open-datasets-ai'],
-      hashes: ['sha256:f2a9b3c7d4e8f1a2b6c9d3e7f4a1b5c8d2e6f9a3b7c1d4e8f2a5b9c3d7e1f4a8b2'],
+      hashes: ['f2a9b3c7d4e8f1a2b6c9d3e7f4a1b5c8d2e6f9a3b7c1d4e8f2a5b9c3d7e1f4a8b2'],
+      other: ['Fine-tuning dataset poisoning', 'competitor bias backdoor', 'trigger phrase: ACMECompetitorX'],
     },
     description: 'Quality assurance testing of a newly fine-tuned customer service model revealed systematic biased outputs against a specific competitor and hidden backdoor trigger — traced to a poisoned open-source fine-tuning dataset.',
     incidentData: `MODEL QUALITY ASSURANCE ALERT
@@ -4206,8 +4227,14 @@ TASK:
     difficulty: 'intermediate' as const,
     attackCategory: 'LLM Prompt Injection',
     mitre: {
-      tactics: ['Defense Evasion'],
+      tactic: 'Defense Evasion',
       techniques: ['AML.T0015', 'T1562.001'],
+    },
+    iocs: {
+      ips: [],
+      domains: [],
+      hashes: [],
+      other: ['LLM context window overflow', '2,847 false positive critical alerts', 'AI-Triage-v2 hallucination cascade', 'SOC queue exhaustion'],
     },
     description: 'The AI-powered SOC alert triage system generated 2,847 critical severity alerts in 4 hours, overwhelming analysts. Investigation reveals the LLM was hallucinating threat actor TTPs due to a context window overflow in the alert enrichment pipeline.',
     incidentData: `SOC ALERT TRIAGE INCIDENT
@@ -4276,11 +4303,14 @@ TASK:
     difficulty: 'intermediate' as const,
     attackCategory: 'Data Exfiltration',
     mitre: {
-      tactics: ['Collection', 'Exfiltration'],
+      tactic: 'Collection',
       techniques: ['T1213', 'T1048', 'T1530', 'AML.T0040'],
     },
     iocs: {
-      emails: ['personal.email.exfil@gmail.com'],
+      ips: [],
+      domains: [],
+      hashes: [],
+      other: ['Exfil destination: personal.email.exfil@gmail.com', 'AI-aggregated data from 23 SharePoint sites', 'DLP bypass via AI assistant', 'Per-site access control circumvention'],
     },
     description: 'DLP alert: an employee used the internal AI assistant to aggregate data from 23 separate SharePoint sites and export a combined report, circumventing per-site access controls and DLP rules that apply only to individual file downloads.',
     incidentData: `DLP ALERT — AI-MEDIATED DATA AGGREGATION
