@@ -49,6 +49,7 @@ turn so you can see exactly which exam topic you just practiced.
 | **EU AI Act**                 | EU           | Dojo 3 high-risk AI obligations |
 | **MITRE ATT&CK**              | MITRE        | Dojo 2 SOC scenarios |
 | **Microsoft SC-500** (beta May 2026) | Microsoft | Playbook — Cloud and AI Security Engineer Associate (replaces AZ-500). 7 deep-dive topics + 44 glossary terms + 110 practice questions covering Entra ID, Defender XDR, Sentinel/KQL, Defender for Cloud, Purview DSPM for AI, Azure OpenAI hardening, and Security Copilot |
+| **AWS Certified Security – Specialty (SCS-C03)** | Amazon Web Services | Playbook — cloud security engineering mapped to AI/ML workloads: threat detection & IR, logging & monitoring, infrastructure security, IAM, data protection, and governance |
 
 ## Running locally
 

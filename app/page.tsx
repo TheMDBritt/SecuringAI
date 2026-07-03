@@ -13,7 +13,7 @@ const STATS = {
   quizQs:    QUIZ_QUESTIONS.length,
   glossary:  GLOSSARY_TERMS.length,
   articles:   76,
-  certs:      10,
+  certs:      11,
   incidents:  DOJO2_PREBUILT_SCENARIOS.length,
 };
 
@@ -137,6 +137,7 @@ const CERT_CHIPS = [
   { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
   { id: 'SC-500',      label: 'Microsoft SC-500',          color: 'text-cyan-400 border-cyan-500/30' },
   { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',              color: 'text-amber-400 border-amber-500/30' },
+  { id: 'SCS-C03',     label: 'AWS Security Specialty',    color: 'text-amber-400 border-amber-500/30' },
   { id: 'Azure-AI103', label: 'Azure AI-103',              color: 'text-blue-400 border-blue-500/30' },
   { id: 'Azure-AI901', label: 'Azure AI-901',              color: 'text-blue-400 border-blue-500/30' },
   { id: 'Google-MLE',  label: 'Google MLE',               color: 'text-emerald-400 border-emerald-500/30' },
@@ -156,6 +157,7 @@ const SOURCED_FROM = [
   'EC-Council C|AI Security Outline',
   'Microsoft SC-500 / AI-103 Study Guide',
   'AWS AI Practitioner Exam Guide',
+  'AWS Certified Security – Specialty (SCS-C03) Exam Guide',
   'Google Professional ML Engineer Guide',
   'CAISP Exam Domains (Practical DevSecOps)',
 ];
@@ -190,36 +192,44 @@ export default function LandingPage() {
     <div className="flex flex-col">
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section className="border-b border-slate-800">
-        <div className="max-w-6xl mx-auto px-6 py-10 md:py-14">
+      <section className="relative overflow-hidden border-b border-slate-800">
+        <div className="pointer-events-none absolute inset-0 bg-brand-radial" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-0 bg-grid-faint [background-size:44px_44px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" aria-hidden="true" />
+        <div className="relative max-w-6xl mx-auto px-6 py-14 md:py-20">
           <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
             {/* Left — headline */}
             <div className="md:col-span-3">
-              <div className="inline-flex items-center gap-2 mb-5 px-2.5 py-1 rounded border border-slate-700 bg-slate-800/40">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">Free · Open access</span>
+              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-brand-500/25 bg-brand-500/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
+                <span className="text-[11px] font-medium text-brand-200 tracking-wide">Enterprise AI security training · Free &amp; open access</span>
               </div>
-              <h1 className="text-[36px] md:text-[48px] font-bold tracking-tight text-slate-100 leading-[1.08]">
+              <h1 className="text-[38px] md:text-[54px] font-bold tracking-tight text-white leading-[1.05]">
                 Attack LLMs.<br />
                 Defend against them.<br />
-                Govern AI risk.
+                <span className="bg-gradient-to-r from-brand-300 to-cyan-300 bg-clip-text text-transparent">Govern AI risk.</span>
               </h1>
-              <p className="mt-5 text-[15px] text-slate-400 max-w-[480px] leading-relaxed">
+              <p className="mt-6 text-[16px] text-slate-300 max-w-[520px] leading-relaxed">
                 Three practice disciplines. Attack a live LLM under configurable guardrails, triage
                 AI-augmented SOC incidents, and classify EU AI Act risk scenarios — every turn scored
                 and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
                 {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
-              <div className="mt-7 flex flex-wrap gap-3 items-center">
+              <div className="mt-8 flex flex-wrap gap-3 items-center">
+                <Link
+                  href="/dashboard"
+                  className="ui-btn ui-btn-primary px-5 py-2.5 text-sm"
+                >
+                  Open dashboard →
+                </Link>
                 <Link
                   href="/dojo"
-                  className="px-5 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150"
+                  className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm"
                 >
-                  Enter the dojo →
+                  Enter the labs
                 </Link>
                 <Link
                   href="/playbook"
-                  className="px-5 py-2.5 rounded border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-slate-100 font-medium text-sm transition-colors duration-150"
+                  className="ui-btn ui-btn-ghost px-4 py-2.5 text-sm"
                 >
                   Study the playbook
                 </Link>
@@ -336,7 +346,7 @@ export default function LandingPage() {
                   key={d.id}
                   href="/dojo"
                   className={[
-                    'group flex flex-col p-5 rounded-lg border bg-slate-900/40 transition-colors duration-150',
+                    'group flex flex-col p-5 rounded-xl border bg-slate-900/40 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated',
                     accent.border,
                   ].join(' ')}
                 >
@@ -576,7 +586,7 @@ export default function LandingPage() {
               <div className="flex flex-col gap-2 shrink-0">
                 <Link
                   href="/dojo"
-                  className="px-6 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150 text-center"
+                  className="ui-btn ui-btn-primary px-6 py-2.5 text-sm text-center"
                 >
                   Enter the dojo →
                 </Link>

@@ -1,6 +1,7 @@
 'use client';
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { QuizQuestion, QuizDifficulty } from '@/types';
+import { recordQuizRun } from '@/lib/progress-store';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
 import { EXAM_CERTS, questionMatchesDomain } from '@/lib/cert-exam-domains';
@@ -977,6 +978,25 @@ export default function QuizEngine() {
       setMode('question');
     }
   }, [currentIndex, questions.length]);
+
+  // ── Record a completed quiz session to the local progress store (once) ───────
+  const recordedRef = useRef<QuizResult[] | null>(null);
+  useEffect(() => {
+    if (mode !== 'summary' || results.length === 0) return;
+    if (recordedRef.current === results) return;
+    recordedRef.current = results;
+    const correct = results.filter((r) => r.correct).length;
+    const skipped = results.filter((r) => r.skipped).length;
+    const cert = settings?.selectedCert;
+    recordQuizRun({
+      certId: cert?.id,
+      certName: cert?.name,
+      total: results.length,
+      correct,
+      skipped,
+      examMode: settings?.examMode,
+    });
+  }, [mode, results, settings]);
 
   // ── Exam countdown tick — auto-submit unanswered remainder when timer hits 0 ──
   useEffect(() => {

@@ -357,6 +357,43 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
     ],
   },
 
+  {
+    id:   'SCS-C03',
+    name: 'AWS Certified Security – Specialty',
+    domains: [
+      {
+        name:       'Threat Detection & Incident Response',
+        weight:     '14%',
+        categories: ['AI Incident Response', 'AI Threat Detection', 'AI in Security Ops', 'AI-Assisted Security Operations', 'AI-Assisted Defense', 'Information Security Incident Management'],
+      },
+      {
+        name:       'Security Logging & Monitoring',
+        weight:     '18%',
+        categories: ['AI Security Operations', 'AI in Security Ops'],
+      },
+      {
+        name:       'Infrastructure Security',
+        weight:     '20%',
+        categories: ['AI Security Architecture', 'MLOps Security', 'AI Security Engineering', 'Cloud AI Platforms'],
+      },
+      {
+        name:       'Identity & Access Management',
+        weight:     '16%',
+        categories: ['AI Security Controls', 'AI Application Security'],
+      },
+      {
+        name:       'Data Protection',
+        weight:     '18%',
+        categories: ['AI Privacy Controls', 'AI/ML Privacy', 'AI Privacy Attacks', 'Data Engineering'],
+      },
+      {
+        name:       'Management & Security Governance',
+        weight:     '14%',
+        categories: ['AI Governance', 'AI Governance & Risk', 'Information Security Governance', 'Information Security Program', 'AI Security Assessment', 'AI Security', 'AI Security Fundamentals', 'AWS AI Security'],
+      },
+    ],
+  },
+
 ];
 
 /** Fast lookup by cert ID */

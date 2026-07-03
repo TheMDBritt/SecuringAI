@@ -628,6 +628,86 @@ export const EXAM_CERTS: ExamCert[] = [
     ],
   },
 
+  // ── AWS Certified Security – Specialty (SCS-C03) ──────────────────────────
+  {
+    id: 'SCS-C03',
+    name: 'AWS Certified Security – Specialty',
+    provider: 'Amazon Web Services',
+    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
+    passingScore: 75,
+    mockExam: { questions: 65, durationMin: 170 },
+    domains: [
+      {
+        id: 'scs-d1',
+        name: 'Domain 1: Threat Detection & Incident Response',
+        weight: '14%',
+        categories: [
+          'AI Incident Response',
+          'AI Threat Detection',
+          'AI in Security Ops',
+          'AI-Assisted Security Operations',
+          'AI-Assisted Defense',
+          'Information Security Incident Management',
+        ],
+      },
+      {
+        id: 'scs-d2',
+        name: 'Domain 2: Security Logging & Monitoring',
+        weight: '18%',
+        categories: [
+          'AI Security Operations',
+          'AI in Security Ops',
+        ],
+      },
+      {
+        id: 'scs-d3',
+        name: 'Domain 3: Infrastructure Security',
+        weight: '20%',
+        categories: [
+          'AI Security Architecture',
+          'MLOps Security',
+          'AI Security Engineering',
+          'Cloud AI Platforms',
+        ],
+      },
+      {
+        id: 'scs-d4',
+        name: 'Domain 4: Identity & Access Management',
+        weight: '16%',
+        categories: [
+          'AI Security Controls',
+          'AI Application Security',
+        ],
+      },
+      {
+        id: 'scs-d5',
+        name: 'Domain 5: Data Protection',
+        weight: '18%',
+        categories: [
+          'AI Privacy Controls',
+          'AI/ML Privacy',
+          'AI Privacy Attacks',
+          'Data Engineering',
+        ],
+      },
+      {
+        id: 'scs-d6',
+        name: 'Domain 6: Management & Security Governance',
+        weight: '14%',
+        categories: [
+          'AI Governance',
+          'AI Governance & Risk',
+          'Information Security Governance',
+          'Information Security Program',
+          'AI Security Assessment',
+          'AI Security',
+          'AI Security Fundamentals',
+          'AWS AI Security',
+        ],
+      },
+    ],
+  },
+
   // ── CAIS (EC-Council C|AI Security) ───────────────────────────────────────
   {
     id: 'CAIS',

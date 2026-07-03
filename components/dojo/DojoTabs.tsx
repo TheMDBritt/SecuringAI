@@ -7,6 +7,7 @@ import { ChatConsole, type ChatConsoleHandle } from './ChatConsole';
 import { ControlPanel } from './ControlPanel';
 import { ScoringPane } from './ScoringPane';
 import { getScenariosByDojo } from '@/lib/scenarios';
+import { recordAttackRun } from '@/lib/progress-store';
 import { decodeShare, encodeShare } from '@/lib/share-url';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import type {
@@ -158,6 +159,22 @@ export function DojoTabs() {
 
   function handleEvaluation(result: EvaluationResult) {
     setEvaluations((prev) => [result, ...prev].slice(0, MAX_EVAL_HISTORY));
+
+    // Record a genuine training attempt (skip benign/probing turns) so the
+    // dashboard and progress pages can surface real defense stats.
+    if (selectedScenario && result.attackType !== 'benign' && result.attackType !== 'probing') {
+      recordAttackRun({
+        dojoId: activeDojoId,
+        scenarioId: selectedScenario.id,
+        scenarioTitle: selectedScenario.title,
+        attackType: result.attackType,
+        succeeded: result.attackSucceeded,
+        score: result.score,
+        verdict: result.verdict,
+        difficulty: selectedScenario.difficulty,
+      });
+    }
+
     // Activate jailbreak persistence when a policy-bypass attack succeeds
     // (attackSucceeded is true only when guardrails are off → vulnerable outcome)
     if (result.attackType === 'policy_bypass' && result.attackSucceeded) {

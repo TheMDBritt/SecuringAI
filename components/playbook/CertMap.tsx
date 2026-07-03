@@ -52,6 +52,25 @@ const CERTS: CertInfo[] = [
     topTopics: ['Amazon Bedrock', 'Amazon SageMaker', 'Amazon Q', 'RAG', 'Foundation models', 'Responsible AI', 'Prompt engineering'],
   },
   {
+    id: 'SCS-C03',
+    name: 'AWS Certified Security – Specialty',
+    provider: 'Amazon Web Services',
+    tagColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
+    difficulty: 'Specialty',
+    questions: '65',
+    duration: '170 min',
+    focus: 'AWS security engineering at scale: threat detection and incident response, security logging and monitoring, infrastructure and network security, identity and access management, data protection, and security governance — mapped here to the AI/ML workloads that run on AWS.',
+    domains: [
+      { name: 'Threat Detection & Incident Response', pct: '14%' },
+      { name: 'Security Logging & Monitoring',         pct: '18%' },
+      { name: 'Infrastructure Security',               pct: '20%' },
+      { name: 'Identity & Access Management',          pct: '16%' },
+      { name: 'Data Protection',                       pct: '18%' },
+      { name: 'Management & Security Governance',      pct: '14%' },
+    ],
+    topTopics: ['GuardDuty', 'Security Hub', 'CloudTrail', 'KMS & encryption', 'IAM & SCPs', 'Detective', 'Incident response', 'VPC security', 'Data protection', 'AI workload security'],
+  },
+  {
     id: 'Azure-AI901',
     name: 'Azure AI Fundamentals (AI-901)',
     provider: 'Microsoft',
@@ -219,7 +238,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
         <div>
           <h2 className="text-sm font-semibold text-slate-100">AI Certification Map</h2>
           <p className="text-xs text-slate-500 mt-0.5">
-            10 AI security certifications mapped to exam domains, quiz questions, and glossary terms.
+            11 AI &amp; cloud security certifications mapped to exam domains, quiz questions, and glossary terms.
           </p>
         </div>
       </div>

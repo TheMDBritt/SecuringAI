@@ -5,9 +5,9 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { Footer } from '@/components/layout/Footer';
 
 export const metadata = {
-  title: 'About — LLM DOJO',
+  title: 'About',
   description:
-    'How LLM DOJO works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across LLM attack/defense, AI SOC, and GRC disciplines.',
+    'How Securing AI works: deterministic scoring, quality rubrics, quiz flow, and the AI security certifications mapped across LLM attack/defense, AI SOC, and GRC disciplines.',
 };
 
 const PRINCIPLES = [
@@ -126,13 +126,13 @@ export default function AboutPage() {
           <div className="mt-6 grid md:grid-cols-3 gap-8 items-start">
             <div className="md:col-span-2">
               <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
-                About LLM DOJO
+                About Securing AI
               </p>
               <h1 className="text-3xl md:text-[40px] font-bold tracking-tight text-slate-100 leading-[1.08]">
                 A free study tool<br />for AI security.
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 leading-relaxed max-w-xl">
-                LLM DOJO exists because there is no shortage of slide decks explaining prompt injection
+                Securing AI exists because there is no shortage of slide decks explaining prompt injection
                 and almost no way to actually run one. The goal is a hands-on environment — realistic
                 scenarios, live guardrail toggles, and per-turn scoring mapped to the certifications
                 the field is converging on.
@@ -142,7 +142,7 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: QUIZ_QUESTIONS.length.toLocaleString(), label: 'quiz questions', sub: '10 certs mapped' },
+                { n: QUIZ_QUESTIONS.length.toLocaleString(), label: 'quiz questions', sub: '11 certs mapped' },
                 { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
@@ -315,7 +315,7 @@ export default function AboutPage() {
             ))}
           </div>
           <p className="text-[11px] text-slate-600 leading-relaxed mt-5">
-            LLM DOJO is independent and unaffiliated with any certification provider.
+            Securing AI is independent and unaffiliated with any certification provider.
             Cross-check exam objectives with official provider materials before scheduling.
           </p>
         </div>

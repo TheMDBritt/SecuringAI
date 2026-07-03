@@ -16,7 +16,7 @@ export function Footer() {
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
           {/* Brand */}
           <div className="flex flex-col gap-1.5">
-            <span className="font-bold text-sm text-slate-200 tracking-tight">LLM DOJO</span>
+            <span className="font-bold text-sm text-slate-200 tracking-tight">Securing AI</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
               AI security training. {Q} practice questions, {G} glossary terms,
               {' '}{S} dojo scenarios, {I} SOC incidents — no signup required.
@@ -47,7 +47,8 @@ export function Footer() {
                 <span>CAISP · EC-Council C|AI Security</span>
                 <span>GIAC GOAA · GIAC GASAE</span>
                 <span>Microsoft SC-500 · Azure AI-103</span>
-                <span>AWS AIF-C01 · Azure AI-901 · Google MLE</span>
+                <span>AWS AIF-C01 · AWS Security Specialty (SCS-C03)</span>
+                <span>Azure AI-901 · Google MLE</span>
               </div>
             </div>
           </div>

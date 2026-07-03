@@ -15,7 +15,7 @@ const G_COUNT = GLOSSARY_TERMS.length.toLocaleString();
 const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: string }[] = [
   { id: 'topics',   label: 'Topics',   count: '76',      desc: '76 articles' },
   { id: 'glossary', label: 'Glossary', count: G_COUNT,   desc: `${G_COUNT} terms` },
-  { id: 'certs',    label: 'Certs',    count: '10',      desc: '10 exams' },
+  { id: 'certs',    label: 'Certs',    count: '11',      desc: '11 exams' },
   { id: 'quiz',     label: 'Quiz',     count: Q_COUNT,   desc: `${Q_COUNT} questions` },
   { id: 'drills',   label: 'Drills',                     desc: 'SC-500 drills' },
 ];

@@ -1,25 +1,27 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { Header } from '@/components/layout/Header';
+import { AppShell } from '@/components/layout/AppShell';
 
-const TITLE = 'LLM DOJO — Free AI Security Training';
+const TITLE = 'Securing AI — Enterprise AI Security Training Platform';
 const DESCRIPTION =
-  'Free hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,731 quiz questions · 860 glossary terms · 59 scenarios · 47 SOC incidents across 10 AI security certifications including CompTIA SecAI+, SC-500, GIAC GOAA, EC-Council CAIS, and CAISP.';
+  'Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,800 quiz questions · 940 glossary terms · scenario labs across 11 AI & cloud security certifications including CompTIA SecAI+, SC-500, AWS Security Specialty (SCS-C03), GIAC GOAA, EC-Council CAIS, and CAISP.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),
   title: {
     default: TITLE,
-    template: '%s · LLM DOJO',
+    template: '%s · Securing AI',
   },
   description: DESCRIPTION,
-  applicationName: 'LLM DOJO',
+  applicationName: 'Securing AI',
   keywords: [
     'AI security',
     'LLM security',
     'prompt injection',
     'OWASP LLM Top 10',
     'CompTIA SecAI+',
+    'AWS Certified Security Specialty',
+    'SCS-C03',
     'CAISP',
     'EC-Council C|AI Security',
     'SC-500 Cloud AI Security',
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
     'AI security training',
     'AI red team',
   ],
-  authors: [{ name: 'LLM DOJO' }],
+  authors: [{ name: 'Securing AI' }],
   category: 'education',
   robots: {
     index: true,
@@ -42,7 +44,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: TITLE,
     description: DESCRIPTION,
-    siteName: 'LLM DOJO',
+    siteName: 'Securing AI',
     locale: 'en_US',
   },
   twitter: {
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0f172a',
+  themeColor: '#0b1120',
   width: 'device-width',
   initialScale: 1,
 };
@@ -65,9 +67,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-slate-900 text-slate-100 antialiased">
-        <Header />
-        <main className="flex flex-col">{children}</main>
+      <body className="min-h-screen bg-navy-900 text-slate-100 antialiased">
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
