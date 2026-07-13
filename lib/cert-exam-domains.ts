@@ -35,15 +35,15 @@ export const EXAM_CERTS: ExamCert[] = [
   // ── SecAI+ (CompTIA) ───────────────────────────────────────────────────────
   {
     id: 'SecAI',
-    name: 'CompTIA SecurityAI+',
+    name: 'CompTIA SecAI+',
     provider: 'CompTIA',
     badgeClass: 'bg-red-500/15 text-red-400 border-red-500/40',
-    passingScore: 75,
+    passingScore: 67,
     mockExam: { questions: 60, durationMin: 60 },
     domains: [
       {
         id: 'secai-d1',
-        name: 'Domain 1: Basic AI Concepts',
+        name: 'Domain 1: Basic AI concepts related to cybersecurity',
         weight: '17%',
         categories: [
           'AI & ML Fundamentals',
@@ -54,7 +54,7 @@ export const EXAM_CERTS: ExamCert[] = [
       },
       {
         id: 'secai-d2',
-        name: 'Domain 2: Securing AI Systems',
+        name: 'Domain 2: Securing AI systems',
         weight: '40%',
         categories: [
           'AI Security',
@@ -69,7 +69,7 @@ export const EXAM_CERTS: ExamCert[] = [
       },
       {
         id: 'secai-d3',
-        name: 'Domain 3: AI-Assisted Security Operations',
+        name: 'Domain 3: AI-assisted security',
         weight: '24%',
         categories: [
           'AI in Security Ops',
@@ -79,7 +79,7 @@ export const EXAM_CERTS: ExamCert[] = [
       },
       {
         id: 'secai-d4',
-        name: 'Domain 4: AI Governance & Compliance',
+        name: 'Domain 4: AI governance, risk, and compliance',
         weight: '19%',
         categories: [
           'AI Governance',

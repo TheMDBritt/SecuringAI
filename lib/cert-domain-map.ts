@@ -32,22 +32,22 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
     name: 'CompTIA SecAI+',
     domains: [
       {
-        name:       'Basic AI Concepts',
+        name:       'Basic AI concepts related to cybersecurity',
         weight:     '17%',
         categories: ['AI & ML Fundamentals', 'Generative AI & LLMs', 'Computer Vision', 'NLP', 'Cloud AI Platforms', 'Data Engineering', 'Emerging Trends'],
       },
       {
-        name:       'Securing AI Systems',
+        name:       'Securing AI systems',
         weight:     '40%',
         categories: ['AI Security', 'Red Teaming AI'],
       },
       {
-        name:       'AI-Assisted Security',
+        name:       'AI-assisted security',
         weight:     '24%',
         categories: ['AI in Security Ops'],
       },
       {
-        name:       'AI Governance & Compliance',
+        name:       'AI governance, risk, and compliance',
         weight:     '19%',
         categories: ['AI Governance', 'AI Ethics & Bias'],
       },
