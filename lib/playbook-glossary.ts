@@ -6690,4 +6690,42 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['SecAI', 'GIAC-GOAA', 'AWS-AIF-C01'],
     related: ['EU AI Act', 'Synthetic Data Security', 'AI Transparency', 'Deepfake Detection', 'Content Provenance'],
   },
+
+  // ── SecAI+ privacy techniques — passing the anonymization-vs-X distinction ──
+
+  {
+    term: 'Anonymization',
+    definition: 'A privacy technique that irreversibly removes or transforms all direct and indirect identifiers from a dataset so an individual cannot be re-identified — even by the data holder, even with auxiliary data. Applied to AI training datasets containing PII (customer names, addresses, medical records, interview transcripts). Distinguished from pseudonymization (reversible, replaces IDs with tokens that can be re-mapped), data minimization (only collect what you need), and salting/hashing (cryptographic transforms — not privacy techniques for training data). SecAI+ exam distinguishes these four terms: anonymization is the correct answer when the failure is that an AI model exposed identifiable info from its training data. Regulatory basis: GDPR Recital 26 (anonymized data is out of scope), HIPAA Safe Harbor de-identification.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['Pseudonymization', 'Data Minimization', 'Differential Privacy', 'PII'],
+  },
+  {
+    term: 'Pseudonymization',
+    definition: 'A privacy technique that replaces direct identifiers with reversible tokens or aliases — the mapping is stored separately and can be reversed with the mapping key. GDPR Art. 4(5). Weaker guarantee than anonymization because re-identification remains possible with access to the mapping. Common in AI when you need to link records over time (patient trajectories, longitudinal user data) without exposing raw IDs. Not sufficient alone if training data is exposed — the token still associates records to the same subject.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['Anonymization', 'Data Minimization', 'PII', 'GDPR'],
+  },
+  {
+    term: 'Data Minimization',
+    definition: 'A privacy principle (GDPR Art. 5(1)(c), CCPA, ISO 29100) requiring that only data strictly necessary for the stated purpose be collected, processed, and retained. In AI: do not train a model on fields it does not need to predict the target (drop free-text notes when only structured features are used, drop demographic attributes not relevant to the task). Reduces the blast radius of a data leak or membership inference attack. Distinguished from anonymization: minimization decides *what to collect*; anonymization decides *how to protect what you did collect*.',
+    category: 'AI Security',
+    certTags: ['SecAI', 'CAISP'],
+    related: ['Anonymization', 'Pseudonymization', 'Privacy by Design', 'GDPR'],
+  },
+  {
+    term: 'Salting (Password Hashing)',
+    definition: 'A cryptographic technique for password storage: a per-user random value (salt) is concatenated with the password before hashing to defeat rainbow-table attacks. NOT a privacy technique for AI training data — a common SecAI+ exam distractor. If an AI model has memorized training data, applying salting to source records does not prevent exposure because the model has already learned patterns from cleartext.',
+    category: 'AI Security',
+    certTags: ['SecAI'],
+    related: ['Hashing', 'Password Security', 'Anonymization'],
+  },
+  {
+    term: 'Hashing (Data Integrity)',
+    definition: 'A one-way cryptographic transform that maps input of any size to a fixed-size digest — used for password storage, file integrity checks, digital signatures, and Merkle-tree data structures. NOT a privacy technique for AI training data — the SecAI+ exam frequently offers hashing as a distractor when the correct answer is anonymization. Hashing an identifier (e.g. email → SHA-256) does not prevent re-identification because low-cardinality inputs are trivially brute-forced.',
+    category: 'AI Security',
+    certTags: ['SecAI'],
+    related: ['Salting (Password Hashing)', 'Anonymization', 'Data Integrity'],
+  },
 ];
