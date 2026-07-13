@@ -6977,4 +6977,150 @@ Example fields in the YAML front matter:
 
 Source: Mitchell et al. "Model Cards for Model Reporting" (2019, Google); Meta LLaMA 2 System Card (2023); EU AI Act Articles 11-15, Annex IV; NIST AI RMF (NIST.AI.100-1); Hugging Face model card documentation (huggingface.co/docs).`,
   },
+
+  {
+    id: 'secai-cy001-exam-roadmap',
+    category: 'AI Security',
+    title: 'CompTIA SecAI+ CY0-001 — Exam Roadmap',
+    certTags: ['SecAI'],
+    vocab: ['Anonymization', 'Pseudonymization', 'Data Minimization', 'MITRE ATLAS', 'Prompt Firewall', 'Model Skewing', 'Shadow AI', 'AI Center of Excellence', 'OECD AI', 'MCP Server'],
+    content: `The SecAI+ CY0-001 V1 exam has **60 questions in 60 minutes** (multiple-choice + performance-based) with a passing score of **600 / 900**. Four domains, unevenly weighted — Domain 2 alone is 40%.
+
+### Domain weighting (know this cold)
+
+| Domain | Topic | Weight | Approx Qs |
+|--------|-------|--------|-----------|
+| 1.0 | Basic AI Concepts Related to Cybersecurity | **17%** | ~10 |
+| 2.0 | Securing AI Systems | **40%** | ~24 |
+| 3.0 | AI-assisted Security | **24%** | ~14 |
+| 4.0 | AI Governance, Risk, and Compliance | **19%** | ~12 |
+
+**Study time allocation should match these weights.** Domain 2 is where a pass or fail is won.
+
+---
+
+### Domain 1 (17%) — Basic AI Concepts
+
+**1.1 AI types & training** — Generative AI, ML, statistical learning, transformers, deep learning, GANs, NLP, LLMs, **SLMs**; supervised, unsupervised, reinforcement, federated learning, fine-tuning (**epoch**, **pruning**, **quantization**).
+
+**1.2 Data security in AI** — data cleansing, verification, **lineage**, integrity, **provenance**, augmentation, balancing; structured/semi-structured/unstructured; watermarking; RAG (vector storage, embeddings).
+
+**1.3 AI lifecycle** — business use case → collection (trustworthiness, authenticity) → prep → dev → eval → deploy → validate → monitor → feedback. **Human-centric**: HITL, oversight, validation.
+
+**Prompt engineering** — system prompts, user prompts, one/multi/zero-shot, system roles, templates.
+
+**Playbook coverage**: AI & ML Fundamentals · Generative AI & LLMs categories. Filter Quiz Cert Focus = SecAI.
+
+---
+
+### Domain 2 (40%) — Securing AI Systems  ⚠ Biggest weight
+
+**2.1 Threat-modeling resources** — OWASP LLM Top 10, **OWASP ML Top 10**, **MIT AI Risk Repository**, **MITRE ATLAS**, **CVE AI Working Group**.
+
+**2.2 Security controls**:
+- Model controls: model evaluation, guardrails, prompt templates
+- **Gateway controls**: prompt firewalls, rate limits, token limits, input quotas (data size + quantity), modality limits, endpoint access controls
+- Guardrail testing and validation
+
+**2.3 Access controls** — four categories: **model access, data access, agent access, network/API access**. Agent access is the newest and most-tested distinction.
+
+**2.4 Data security controls**:
+- Encryption: **in transit**, **at rest**, **in use** ← in-use = confidential computing (TEEs)
+- Data safety: **anonymization**, classification labels, **redaction**, **masking**, **minimization**
+
+**2.5 Monitoring & auditing**:
+- Prompt monitoring (query + response), log monitoring/sanitization/protection
+- **Response confidence level**, rate monitoring, **AI cost monitoring** (prompts, storage, response, processing)
+- Auditing: hallucinations, accuracy, bias/fairness, access
+
+**2.6 Attacks** (memorize this list — many Qs):
+Backdoor · Trojan · Prompt injection · Model poisoning · Data poisoning · Jailbreaking · Input manipulation · Introducing biases · Circumventing guardrails · Manipulating app integrations · Model inversion · Model theft · AI supply chain · Transfer learning attacks · **Model skewing** · Output integrity attacks · Membership inference · **Insecure output handling** · Model DoS · Sensitive info disclosure · **Insecure plug-in design** · Excessive agency · Overreliance
+
+**Compensating controls**: prompt firewalls, model guardrails, access controls, data integrity controls, encryption, prompt templates, rate limiting, least privilege.
+
+**Playbook coverage**: AI Security · Red Teaming AI · Frameworks & Tools categories.
+
+---
+
+### Domain 3 (24%) — AI-assisted Security
+
+**3.1 AI-enabled tools**:
+- Tools: IDE plug-ins, browser plug-ins, CLI plug-ins, chatbots, personal assistants, **MCP server**
+- Use cases: signature matching, code quality/linting, vulnerability analysis, automated pentest, anomaly detection, pattern recognition, incident management, threat modeling, fraud detection, translation, summarization
+
+**3.2 AI-enhanced attacks** — AI-generated content (**deepfakes** for impersonation/misinfo/disinfo), adversarial networks, recon, social engineering, obfuscation, **automated data correlation**, automated attack generation (attack vector discovery, payloads, malware, honeypot, DDoS).
+
+**3.3 AI automation** — low/no-code scripting, doc synthesis/summarization, IR ticket management, change management (**AI-assisted approvals**, automated deployment/rollback), AI agents, CI/CD (code scanning, **SCA**, unit testing, regression testing, model testing).
+
+**Playbook coverage**: AI in Security Ops · MLOps categories. Dojo 2 hands-on covers use cases live.
+
+---
+
+### Domain 4 (19%) — AI Governance, Risk & Compliance
+
+**4.1 Org structures & roles** — AI Center of Excellence; AI policies & procedures. **10 roles**: data scientist, AI architect, ML engineer, platform engineer, MLOps engineer, **AI security architect**, **AI governance engineer**, AI risk analyst, **AI auditor**, data engineer. Know who does what.
+
+**4.2 Responsible AI (10 principles)**:
+Fairness · Reliability & safety · **Transparency** · Privacy & security · Differential privacy · **Explainability** · Inclusiveness · Accountability · **Consistency** · Awareness training.
+
+**Risks**: introduction of bias, accidental data leakage, reputational loss, accuracy/performance, IP-related risks, **autonomous systems**. **Shadow IT → Shadow AI**.
+
+**4.3 Compliance**:
+- **EU AI Act**, **OECD** standards, **ISO** AI standards, **NIST AI RMF**
+- Corporate policies: **sanctioned vs unsanctioned**, **private vs public models**, sensitive data governance
+- Third-party compliance evaluations, **data sovereignty**
+
+**Playbook coverage**: AI Governance category. Dojo 3 GRC hands-on drills these.
+
+---
+
+### The 10 tricky differentiators the exam loves
+
+| The distractor pair | Correct answer when… | Wrong answer when… |
+|--|--|--|
+| **Anonymization** vs Pseudonymization | Data must NOT be reversible to identify subject | Data must be linkable but ID hidden (pseudonymization) |
+| **Anonymization** vs Salting/Hashing | Privacy of training data (anonymization) | Password storage (salting/hashing) |
+| **Data minimization** vs Anonymization | Deciding *what to collect* | Protecting *what you collected* |
+| **Explainability** vs Transparency | Concern is the model\'s **decision-making process** | Concern is *whether the model is disclosed at all* |
+| **MLOps** vs Retraining | Managing model drift as an ongoing **discipline** | The specific act to fix a drifted model |
+| **Adversarial training** vs Differential privacy | Defending against **evasion attacks** (perturbed inputs) | Defending against membership inference / privacy |
+| **Reinforcement learning** for IDS | **Reward-feedback** loop tuning thresholds | Clustering unlabeled events (unsupervised) or classifying malware (supervised) |
+| **Encryption in use** vs at-rest / in-transit | Inference must protect from **hosting provider** | Data at rest on disk / in flight over network |
+| **Prompt firewall** vs rate/token limit | **Content** inspection of prompts | **Volume** control |
+| **Backdoor attack** vs Prompt injection | Hidden trigger planted at **training time** | Malicious instruction at **inference time** |
+
+---
+
+### Acronyms to memorize (CY0-001 official list)
+
+Cluster them:
+
+- **Governance & compliance**: AIRMF · GDPR · GRC · IP · ISO · NIST · OECD · PCI DSS · SOC 2
+- **AI/ML core**: AI · GAN · LLM · MDLC · ML · MLOps · NLP · RAG · SLM
+- **Ops & tooling**: API · CDN · CI/CD · CLI · CPU · CRM · EDR · ETL · GPU · IaC · IAM · IDE · IdP · IDS · ITIL · ITSM · LAN · LDAP · MFA · MSSP · NACL · SDLC · SIEM · SOAR · SOC · SQL · SSH · TLS · VPC · WAF
+- **AI threats & tools**: ATLAS · CVE · CWE · DAST · DDoS · DoS · MCP · MIT · OAuth · OWASP · PII · RMF · SCA · HTTPS
+
+Rehearse the ones you don\'t immediately recall by sight.
+
+---
+
+### Study path in this playbook
+
+1. **Week 1** — Read the Domain 1 & 4 articles (17% + 19% = 36% for two lightest domains).
+2. **Week 2** — Deep-dive Domain 2 (40%). Read every AI Security + Red Teaming article. Drill the attacks list.
+3. **Week 3** — Domain 3 (24%). Run Dojo 2 (AI-assisted SOC) scenarios end-to-end.
+4. **Week 4** — Mixed quizzes: Cert Focus = SecAI, count = 100. Retake until ≥85%. Focus on the 10 differentiator table.
+5. **Exam day** — 60 minutes for 60 questions = 60 sec each. Flag long scenarios, come back.
+
+### Common mistakes candidates make
+
+- Assuming Domain 2 is only about LLMs — it also covers classical ML, MLOps, RAG, agents.
+- Confusing anonymization with hashing when the question is about training data privacy.
+- Picking "transparency" when the question is about *how a model reached a decision* (that\'s **explainability**).
+- Picking "retraining" as the drift-management answer when the question asks for the *discipline* (that\'s **MLOps**).
+- Missing that **agent access** is a distinct control category — not covered by model or data access alone.
+- Forgetting that **encryption in use** is on the exam (many candidates only know at-rest and in-transit).
+
+Source: CompTIA SecAI+ CY0-001 V1 Exam Objectives (Document Version 4.0), CompTIA 2025.`,
+  },
 ];
