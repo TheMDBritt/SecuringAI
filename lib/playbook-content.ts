@@ -6990,16 +6990,16 @@ Source: Mitchell et al. "Model Cards for Model Reporting" (2019, Google); Meta L
 
 | Domain | Topic | Weight | Approx Qs |
 |--------|-------|--------|-----------|
-| 1.0 | Basic AI Concepts Related to Cybersecurity | **17%** | ~10 |
-| 2.0 | Securing AI Systems | **40%** | ~24 |
-| 3.0 | AI-assisted Security | **24%** | ~14 |
-| 4.0 | AI Governance, Risk, and Compliance | **19%** | ~12 |
+| 1.0 | Basic AI concepts related to cybersecurity | **17%** | ~10 |
+| 2.0 | Securing AI systems | **40%** | ~24 |
+| 3.0 | AI-assisted security | **24%** | ~14 |
+| 4.0 | AI governance, risk, and compliance | **19%** | ~12 |
 
 **Study time allocation should match these weights.** Domain 2 is where a pass or fail is won.
 
 ---
 
-### Domain 1 (17%) — Basic AI Concepts
+### Domain 1 (17%) — Basic AI concepts related to cybersecurity
 
 **1.1 AI types & training** — Generative AI, ML, statistical learning, transformers, deep learning, GANs, NLP, LLMs, **SLMs**; supervised, unsupervised, reinforcement, federated learning, fine-tuning (**epoch**, **pruning**, **quantization**).
 
@@ -7013,7 +7013,7 @@ Source: Mitchell et al. "Model Cards for Model Reporting" (2019, Google); Meta L
 
 ---
 
-### Domain 2 (40%) — Securing AI Systems  ⚠ Biggest weight
+### Domain 2 (40%) — Securing AI systems  ⚠ Biggest weight
 
 **2.1 Threat-modeling resources** — OWASP LLM Top 10, **OWASP ML Top 10**, **MIT AI Risk Repository**, **MITRE ATLAS**, **CVE AI Working Group**.
 
@@ -7042,7 +7042,7 @@ Backdoor · Trojan · Prompt injection · Model poisoning · Data poisoning · J
 
 ---
 
-### Domain 3 (24%) — AI-assisted Security
+### Domain 3 (24%) — AI-assisted security
 
 **3.1 AI-enabled tools**:
 - Tools: IDE plug-ins, browser plug-ins, CLI plug-ins, chatbots, personal assistants, **MCP server**
@@ -7056,7 +7056,7 @@ Backdoor · Trojan · Prompt injection · Model poisoning · Data poisoning · J
 
 ---
 
-### Domain 4 (19%) — AI Governance, Risk & Compliance
+### Domain 4 (19%) — AI governance, risk, and compliance
 
 **4.1 Org structures & roles** — AI Center of Excellence; AI policies & procedures. **10 roles**: data scientist, AI architect, ML engineer, platform engineer, MLOps engineer, **AI security architect**, **AI governance engineer**, AI risk analyst, **AI auditor**, data engineer. Know who does what.
 
