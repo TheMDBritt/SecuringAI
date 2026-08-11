@@ -7123,4 +7123,154 @@ Rehearse the ones you don\'t immediately recall by sight.
 
 Source: CompTIA SecAI+ CY0-001 V1 Exam Objectives (Document Version 4.0), CompTIA 2025.`,
   },
+
+  {
+    id: 'sc500-exam-roadmap',
+    category: 'Microsoft Cloud & AI Security',
+    title: 'Microsoft SC-500 — Exam Roadmap',
+    certTags: ['SC-500'],
+    vocab: ['Microsoft Entra ID', 'Conditional Access', 'PIM', 'Hub-and-Spoke', 'Azure Kubernetes Service', 'Microsoft Purview', 'Prompt Shields', 'Microsoft Sentinel', 'KQL', 'Defender XDR'],
+    content: `The SC-500 "Cloud and AI Security Engineer" is Microsoft's mid-level cert covering the Azure + M365 security stack **plus** securing AI workloads (Copilots, Azure OpenAI, Foundry). Microsoft convention: **40–60 questions, 100 minutes, pass at 700/1000 (70%)** — confirm on your official exam page.
+
+### Five domains at a glance
+
+| Domain | Topic | What to master |
+|---|---|---|
+| 1 | Securing Access and Identity | Entra ID, Conditional Access, PIM |
+| 2 | Securing Infrastructure and Compute | VM hardening, hub-and-spoke, AKS |
+| 3 | Securing Storage, Databases, and Networking | Data-at-rest + in-transit across Azure |
+| 4 | Securing AI Solutions and Governance | Copilot/Azure OpenAI defense, Purview, jailbreak defense |
+| 5 | Managing and Monitoring Security Posture | Sentinel, KQL, Defender XDR |
+
+> Weights are not yet published by Microsoft as this file is written. Domain 1 and Domain 5 have historically been the largest slices of the Microsoft security exams; Domain 4 (AI) is the differentiator vs the retiring AZ-500.
+
+Playbook coverage: **Microsoft Cloud & AI Security** category (open the Topics tab and filter for the \`SC-500\` cert tag).
+
+---
+
+### Domain 1 — Securing Access and Identity
+
+Core services: **Microsoft Entra ID** (formerly Azure AD), **Conditional Access**, **PIM**, **Identity Protection**, **Workload Identities**.
+
+- CA policy structure: assignments (who / what app / what condition) → grant or block → session controls
+- Authentication strengths (phishing-resistant MFA vs SMS vs certificate)
+- PIM eligible vs active assignments; activation requires MFA + justification + optional approval
+- Identity Protection risk signals (leaked creds, atypical travel, unfamiliar sign-in, malware IP) → risk levels feed CA
+- Workload identity federation eliminates client secrets for CI/CD (GitHub, K8s, AWS)
+- Continuous Access Evaluation (CAE) revokes tokens in near-real-time
+- Break-glass accounts excluded from CA, credentials vaulted
+
+**Playbook articles:** *Microsoft Entra ID & Zero Trust Identity* · *SC-500 Hands-On Lab Plan* Lab 1.
+
+### Domain 2 — Securing Infrastructure and Compute
+
+Core: **Azure VMs**, **Azure Firewall**, **hub-and-spoke** network topology, **Azure Kubernetes Service (AKS)**, **Bastion**, **Just-in-Time VM access**.
+
+- Hub-and-spoke: shared services (firewall, DNS, VPN gateway) live in the hub, workloads in spokes, transit via peering
+- JIT VM access (Defender for Servers P2) — open management ports only on-demand
+- Azure Firewall vs NSG vs Application Gateway (WAF) — know when to use each
+- AKS security posture: managed identity for pods (workload identity), Azure Policy for K8s (Gatekeeper), Defender for Containers agent, private cluster + private endpoints
+- VM hardening: Defender for Servers (P1: MDE integration; P2: FIM, JIT, adaptive app control)
+- Bastion for RDP/SSH without public IPs
+- Azure Confidential Computing for VMs handling regulated workloads (encryption in use)
+
+**Playbook articles:** *Microsoft Defender for Cloud (CSPM + CWPP)*.
+
+### Domain 3 — Securing Storage, Databases, and Networking
+
+Core: **Storage account controls**, **Key Vault**, **CMK**, **Private Endpoints**, **Azure SQL**, **Cosmos DB**.
+
+- Storage account SC-500 checklist: disable public network access → private endpoints + VNet integration → HTTPS-only → disable shared key auth (Entra-only) → RBAC data-plane roles → CMK with soft-delete + purge protection → Defender for Storage
+- Key Vault: RBAC vs access policies (RBAC is the current guidance), soft-delete + purge protection mandatory for CMK
+- Azure SQL: TDE, Always Encrypted, Managed Identity for app auth, private endpoint
+- Defender for SQL: SQL injection detection, anomalous query alerts
+- Networking: NSG vs ASG vs Azure Firewall, Front Door + WAF for edge, DDoS Protection Standard for high-value public endpoints
+- Cosmos DB: firewall rules, private endpoint, RBAC, always-encrypted
+
+**Playbook articles:** *Microsoft Defender for Cloud* (Storage / SQL / Key Vault plans).
+
+### Domain 4 — Securing AI Solutions and Governance ⭐ SC-500 differentiator
+
+Core: **Microsoft 365 Copilot**, **Copilot Studio**, **Azure OpenAI / AI Foundry**, **Prompt Shields**, **Microsoft Purview (DSPM for AI)**, **Defender for AI Workloads**.
+
+Attack surface the exam expects you to know:
+- Jailbreaking (direct prompt injection)
+- Data inversion / model inversion (extracting training data)
+- Indirect prompt injection (via RAG / grounding documents)
+- Sensitive data leak in completions
+- Prompt-based data exfiltration
+- Excessive agency of Copilot Studio agents
+
+Defenses:
+- **Prompt Shields** — User Prompt (jailbreak) + Document (indirect injection); returns confidence, calling app decides
+- **Azure AI Content Safety** — hate/sexual/violence/self-harm filters, Groundedness detection, Protected Material detection
+- **Purview DSPM for AI** — activity explorer for every M365 Copilot / Copilot Studio / Azure OpenAI prompt; oversharing assessments
+- **Purview Sensitivity Labels** — propagate to Copilot; Copilot honours labels
+- **Purview DLP for M365 Copilot** — block Copilot from grounding on labeled content the user shouldn't see
+- **Defender for AI Workloads** — runtime alerts (prompt injection detected, sensitive data leak, wallet abuse)
+- **AI-SPM** (Defender CSPM) — discovers AI resources + generates AI attack paths
+
+**Playbook articles:** *Microsoft Purview DSPM for AI* · *Securing Azure OpenAI & Foundry Workloads* · *Microsoft Security Copilot for SOC*.
+
+### Domain 5 — Managing and Monitoring Security Posture
+
+Core: **Microsoft Sentinel**, **KQL**, **Defender XDR**, **Automatic Attack Disruption**, **Defender for Cloud**.
+
+- Sentinel analytics rule types: Scheduled, NRT, Fusion, Anomaly, Microsoft Security, Threat Intelligence
+- KQL essentials: \`where\`, \`project\`, \`summarize\`, \`join\` (leftouter/inner), \`extend\`, \`parse\`, \`bin\`, \`ago\`, \`make_set\`
+- Defender XDR unified incident graph across MDE / MDI / MDO / MDA / MDC
+- Automatic Attack Disruption on high-confidence ransomware / AiTM / BEC
+- Advanced Hunting tables: DeviceProcessEvents, EmailEvents, AlertEvidence, IdentityLogonEvents, CloudAppEvents, AADSignInEventsBeta
+- Logic Apps playbooks (SOAR) triggered by incident; managed-identity auth
+- Data Collection Rules to filter high-volume logs at ingest (cost)
+- Auxiliary / Basic log tiers for cheap forensic retention
+
+**Playbook articles:** *Microsoft Defender XDR* · *Microsoft Sentinel & KQL* · *SC-500 Hands-On Lab Plan* Labs 2–3.
+
+---
+
+### The 10 differentiator pairs SC-500 loves
+
+| Distractor pair | Correct when… | Wrong when… |
+|--|--|--|
+| **Conditional Access** vs Security Defaults | Production tenant | Small-tenant baseline |
+| **PIM eligible** vs Active | Standing access should be minimized (right answer for privileged roles) | Test/lab standing access is fine |
+| **Prompt Shields — User** vs **Document** | Direct jailbreak from the user | Indirect injection from a RAG doc |
+| **Purview DSPM for AI** vs Defender XDR | Data-side risk (oversharing, prompt-content) | Endpoint/identity/incident correlation |
+| **Managed identity** vs Service principal + secret | Any Azure-to-Azure call | Only when Entra-federation isn't supported |
+| **CMK** vs Microsoft-managed keys | Regulated (HIPAA/PCI/FedRAMP) | Standard workloads |
+| **Private endpoint** vs Service endpoint | Truly private (no public IP possible) | Only VNet-scoped ACL |
+| **Defender for AI workloads** vs Prompt Shields | Runtime alerts to SOC | Inline block at prompt time |
+| **Fusion** vs Scheduled analytics | Multi-stage correlated attack detection | Custom KQL rule with a specific query |
+| **CAE** vs sign-in frequency | Real-time revocation on critical events | Enforcing periodic re-auth |
+
+---
+
+### 4-week study path
+
+**Week 1 — Domain 1 (Identity) + Domain 5 (Sentinel/XDR)** — the largest slices. Run the Entra + Sentinel hands-on labs in *SC-500 Hands-On Lab Plan*.
+
+**Week 2 — Domain 2 + 3 (Infra + Data)** — Defender for Cloud plans, hub-and-spoke, storage hardening. Onboard a free Azure trial + M365 E5 dev tenant.
+
+**Week 3 — Domain 4 (AI)** — the differentiator vs AZ-500. Prompt Shields, DSPM for AI, Defender for AI workloads. Deploy an Azure OpenAI resource with private endpoint + CMK + Prompt Shields.
+
+**Week 4 — Mixed drilling** — Cert Focus = SC-500, count = 50, difficulty = All. Retake until ≥85%. Read every playbook article in the *Microsoft Cloud & AI Security* category once more.
+
+**Exam day** — 100 min for 60 Qs = ~1.7 min/Q. Flag long case studies, return.
+
+---
+
+### Common mistakes
+
+- Confusing **Prompt Shields** (Azure-side runtime input inspection) with **Purview DLP for M365 Copilot** (grounding-time content-access enforcement) — both defend AI, at different layers
+- Picking **Security Defaults** when the question describes a production tenant with break-glass accounts (production = Conditional Access)
+- Assuming **Defender for Cloud** covers M365 apps — it doesn't (Defender XDR does)
+- Forgetting **Automatic Attack Disruption** runs without analyst approval on high-confidence attacks (this is a feature, not a config)
+- Confusing **PIM eligible** (must activate) with **just-in-time VM access** (network port opened on demand)
+- Not knowing that **workload identity federation** replaces client secrets — SC-500 exam favours the passwordless path
+
+---
+
+Source (secondary, user-transcribed): domain outline in \`docs/cert-objectives/sc-500.md\`. Primary source (learn.microsoft.com/credentials/certifications/exams/sc-500/) blocked by sandbox network policy — technical specifics in this article verified against the linked playbook articles, each of which cites the appropriate learn.microsoft.com sub-page.`,
+  },
 ];
