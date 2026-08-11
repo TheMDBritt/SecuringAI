@@ -906,7 +906,22 @@ function SummaryScreen({
 }
 
 // ─── Root QuizEngine ──────────────────────────────────────────────────────────
-export default function QuizEngine() {
+interface QuizEngineProps {
+  /**
+   * Optional pre-built question list. When present, the QuizEngine skips the
+   * SetupScreen and jumps straight into taking these exact questions in this
+   * exact order. Used by the SessionReview "Retake missed" / "Retake entire
+   * session" buttons.
+   */
+  preloadedQuestions?: QuizQuestion[];
+  /** Label shown in the header when running a preloaded quiz (e.g. "Retake missed"). */
+  preloadedLabel?: string;
+  /** Called after any quiz session concludes (summary shown). Parent uses this
+   *  to clear its `preloadedQuestions` so the next quiz goes through setup. */
+  onSessionEnd?: () => void;
+}
+
+export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessionEnd }: QuizEngineProps = {}) {
   const [mode,          setMode]          = useState<QuizMode>('setup');
   const [settings,      setSettings]      = useState<QuizSettings | null>(null);
   const [questions,     setQuestions]     = useState<QuizQuestion[]>([]);
@@ -917,6 +932,32 @@ export default function QuizEngine() {
   const [nowMs,         setNowMs]         = useState(() => Date.now());
   const [generating,    setGenerating]    = useState(false);
   const [genError,      setGenError]      = useState('');
+  const preloadHandledRef = useRef<QuizQuestion[] | null>(null);
+
+  // Preloaded launch — skip SetupScreen when parent hands us a question list.
+  // We track the exact list reference we handled so a re-render doesn't
+  // re-launch; parent must swap in a new array to trigger a new preloaded
+  // session.
+  useEffect(() => {
+    if (!preloadedQuestions || preloadedQuestions.length === 0) return;
+    if (preloadHandledRef.current === preloadedQuestions) return;
+    preloadHandledRef.current = preloadedQuestions;
+    // Retakes preserve original option order — do NOT shuffle. This is the
+    // "same questions, same order" contract of retake-entire-session, and it
+    // makes retake-missed easy to compare against the original attempt.
+    setSettings({
+      category:  'All',
+      difficulty: 'all',
+      certFilter: 'All',
+      count:      preloadedQuestions.length as QuizSettings['count'],
+    });
+    setQuestions(preloadedQuestions);
+    setResults([]);
+    setCurrentIndex(0);
+    setQuestionStart(Date.now());
+    setExamEndAt(null);
+    setMode('question');
+  }, [preloadedQuestions]);
 
   const handleStart = useCallback((s: QuizSettings) => {
     const selectedDomains = s.selectedCert && s.selectedDomainIds
@@ -1015,7 +1056,10 @@ export default function QuizEngine() {
         timeMs:  r.timeTaken,
       })),
     });
-  }, [mode, results, settings]);
+    // Tell parent the preloaded run is over so it can clear the preload —
+    // otherwise clicking "New Quiz" would re-launch the same set on remount.
+    onSessionEnd?.();
+  }, [mode, results, settings, onSessionEnd]);
 
   // ── Exam countdown tick — auto-submit unanswered remainder when timer hits 0 ──
   useEffect(() => {
@@ -1073,6 +1117,11 @@ export default function QuizEngine() {
 
   return (
     <div className="flex flex-col h-full min-h-0">
+      {preloadedLabel && (mode === 'question' || mode === 'result') && (
+        <div className="px-4 py-2 border-b border-cyan-500/20 bg-cyan-500/5 flex items-center gap-2">
+          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
+        </div>
+      )}
       {generating && (
         <div className="px-4 py-2 border-b border-violet-500/20 bg-violet-500/5 flex items-center gap-2">
           <div className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />

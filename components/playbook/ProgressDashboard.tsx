@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
+import type { QuizQuestion } from '@/types';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
@@ -13,6 +14,7 @@ import {
   type SessionRecord,
   type Readiness,
 } from '@/lib/quiz-progress';
+import SessionReview from './SessionReview';
 
 // ─── Small render helpers ────────────────────────────────────────────────────
 
@@ -80,21 +82,49 @@ const Q_CATEGORY_LOOKUP: Record<string, string> = (() => {
   return m;
 })();
 
+// Full QuizQuestion by id — used by the per-Q table row expansion so we can
+// render the four options + correct-answer highlight + explanation without a
+// second lookup pass.
+const Q_LOOKUP_FULL: Record<string, QuizQuestion> = (() => {
+  const m: Record<string, QuizQuestion> = {};
+  for (const q of QUIZ_QUESTIONS) m[q.id] = q;
+  return m;
+})();
+
 // ─── Main component ──────────────────────────────────────────────────────────
 
 type SortKey = 'accuracy' | 'seen' | 'last';
 
-export default function ProgressDashboard() {
+interface ProgressDashboardProps {
+  /** When set, dashboard mounts with this session already open in the review view. */
+  initialSessionId?: string | null;
+  /** Bubble up a preloaded quiz launch — parent hands the array to QuizEngine. */
+  onLaunchQuiz?: (questions: QuizQuestion[], label: string) => void;
+}
+
+export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: ProgressDashboardProps = {}) {
   const [data, setData]   = useState<ProgressData>({ sessions: [], perQ: {} });
   const [cert, setCert]   = useState<string>('All');
   const [sortKey, setSort] = useState<SortKey>('accuracy');
   const [hydrated, setHyd] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [viewingSessionId, setViewingSessionId] = useState<string | null>(initialSessionId ?? null);
+  const [expandedQId, setExpandedQId] = useState<string | null>(null);
 
   useEffect(() => {
     setData(loadProgress());
     setHyd(true);
   }, []);
+
+  // Deep-link: if parent later supplies an initialSessionId (URL change), honour it.
+  useEffect(() => {
+    if (initialSessionId) setViewingSessionId(initialSessionId);
+  }, [initialSessionId]);
+
+  const viewingSession = useMemo(() => {
+    if (!viewingSessionId) return null;
+    return data.sessions.find((s) => s.id === viewingSessionId) ?? null;
+  }, [data, viewingSessionId]);
 
   const availableCerts = useMemo(() => {
     const found = certsWithData(data);
@@ -152,6 +182,21 @@ export default function ProgressDashboard() {
   }, [data, scopedSessions, sortKey]);
 
   const empty = hydrated && data.sessions.length === 0;
+
+  // ── SessionReview view swap ────────────────────────────────────────────────
+  // When a session is open, render the review UI in-place instead of the
+  // dashboard. Back button clears the state, deep-links come in via
+  // initialSessionId prop above.
+  if (viewingSession) {
+    return (
+      <SessionReview
+        session={viewingSession}
+        onBack={() => setViewingSessionId(null)}
+        onRetakeMissed={(qs) => onLaunchQuiz?.(qs, 'Retake missed')}
+        onRetakeAll={(qs) => onLaunchQuiz?.(qs, 'Retake session')}
+      />
+    );
+  }
 
   return (
     <div className="h-full overflow-y-auto">
@@ -248,7 +293,12 @@ export default function ProgressDashboard() {
                   {scopedSessions.slice(0, 10).map((s) => {
                     const pct = s.count === 0 ? 0 : Math.round((s.correct / s.count) * 100);
                     return (
-                      <div key={s.id} className="flex items-center justify-between px-4 py-2 text-xs">
+                      <button
+                        key={s.id}
+                        onClick={() => setViewingSessionId(s.id)}
+                        className="w-full text-left flex items-center justify-between px-4 py-2 text-xs hover:bg-slate-800/40 transition-colors focus:outline-none focus:bg-slate-800/60"
+                        aria-label={`Review session from ${formatDate(s.startedAt)} — ${pct}%`}
+                      >
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
                             <span className={`font-mono font-bold ${pctColor(pct)}`}>{pct}%</span>
@@ -260,8 +310,11 @@ export default function ProgressDashboard() {
                             {s.cert} · {s.category} · {s.difficulty}
                           </p>
                         </div>
-                        <span className="text-[10px] font-mono text-slate-600 shrink-0">{formatDate(s.startedAt)}</span>
-                      </div>
+                        <span className="flex items-center gap-2 shrink-0">
+                          <span className="text-[10px] font-mono text-slate-600">{formatDate(s.startedAt)}</span>
+                          <span className="text-slate-600 text-[10px]">→</span>
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
@@ -330,20 +383,67 @@ export default function ProgressDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {perQRows.map((r) => (
-                      <tr key={r.qId} className="border-t border-slate-800/40">
-                        <td className="px-3 py-2 max-w-md">
-                          <p className="text-slate-300 line-clamp-2">{r.question}</p>
-                          <p className="text-[10px] font-mono text-slate-600 mt-0.5">{r.category} · {r.topic}</p>
-                        </td>
-                        <td className="px-3 py-2 text-right">
-                          <span className={`font-mono font-bold ${pctColor(r.accuracy)}`}>{r.accuracy}%</span>
-                          <span className="text-[10px] font-mono text-slate-700 ml-1">{r.right}/{r.seen}</span>
-                        </td>
-                        <td className="px-3 py-2 text-right font-mono text-slate-500">{r.seen}</td>
-                        <td className="px-3 py-2 text-right font-mono text-slate-500">{formatDate(r.lastSeenAt)}</td>
-                      </tr>
-                    ))}
+                    {perQRows.map((r) => {
+                      const isOpen = expandedQId === r.qId;
+                      const q = Q_LOOKUP_FULL[r.qId];
+                      return (
+                        <>
+                          <tr
+                            key={r.qId}
+                            onClick={() => setExpandedQId(isOpen ? null : r.qId)}
+                            className={`border-t border-slate-800/40 cursor-pointer hover:bg-slate-800/40 ${isOpen ? 'bg-slate-800/40' : ''}`}
+                            aria-expanded={isOpen}
+                          >
+                            <td className="px-3 py-2 max-w-md">
+                              <p className="text-slate-300 line-clamp-2 flex items-start gap-2">
+                                <span className="text-slate-600 text-[10px] pt-0.5">{isOpen ? '▾' : '▸'}</span>
+                                <span>{r.question}</span>
+                              </p>
+                              <p className="text-[10px] font-mono text-slate-600 mt-0.5 ml-4">{r.category} · {r.topic}</p>
+                            </td>
+                            <td className="px-3 py-2 text-right">
+                              <span className={`font-mono font-bold ${pctColor(r.accuracy)}`}>{r.accuracy}%</span>
+                              <span className="text-[10px] font-mono text-slate-700 ml-1">{r.right}/{r.seen}</span>
+                            </td>
+                            <td className="px-3 py-2 text-right font-mono text-slate-500">{r.seen}</td>
+                            <td className="px-3 py-2 text-right font-mono text-slate-500">{formatDate(r.lastSeenAt)}</td>
+                          </tr>
+                          {isOpen && q && (
+                            <tr className="border-t border-slate-800/40 bg-slate-800/20">
+                              <td colSpan={4} className="px-6 py-3">
+                                <div className="space-y-1.5 mb-3">
+                                  {q.options.map((opt, oi) => {
+                                    const isCorrect = oi === q.correct;
+                                    return (
+                                      <div
+                                        key={oi}
+                                        className={`text-xs px-3 py-1.5 rounded border ${isCorrect
+                                          ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-200'
+                                          : 'border-slate-800 text-slate-500'}`}
+                                      >
+                                        <span className="font-mono opacity-60 mr-2">{String.fromCharCode(65 + oi)}.</span>
+                                        {opt}
+                                        {isCorrect && <span className="ml-2 text-emerald-400 font-bold">✓</span>}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+                                <p className="text-xs text-slate-400 leading-relaxed mb-3">{q.explanation}</p>
+                                {onLaunchQuiz && (
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); onLaunchQuiz([q], 'Drill this question'); }}
+                                    className="text-[11px] font-mono px-2.5 py-1.5 rounded border border-violet-500/40 text-violet-300 bg-violet-500/5 hover:bg-violet-500/10"
+                                  >
+                                    ↻ Quiz me on this question
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          )}
+                        </>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>

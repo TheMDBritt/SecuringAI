@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
-import type { PlaybookSection } from '@/types';
+import { useCallback, useState } from 'react';
+import type { PlaybookSection, QuizQuestion } from '@/types';
 import TopicBrowser      from './TopicBrowser';
 import GlossaryPanel     from './GlossaryPanel';
 import CertMap           from './CertMap';
@@ -25,6 +25,20 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: stri
 export default function PlaybookView() {
   const [section,    setSection]    = useState<PlaybookSection>('topics');
   const [certFilter, setCertFilter] = useState<string>('');
+
+  // Retake / drill launch — Progress-tab review view hands us a resolved
+  // QuizQuestion[]; we flip to the Quiz section and hand the list to
+  // QuizEngine via its preloadedQuestions prop. Cleared after the quiz
+  // completes (QuizEngine calls onSessionEnd).
+  const [preload, setPreload] = useState<{ questions: QuizQuestion[]; label: string } | null>(null);
+
+  const handleLaunchQuiz = useCallback((questions: QuizQuestion[], label: string) => {
+    if (questions.length === 0) return;
+    setPreload({ questions, label });
+    setSection('quiz');
+  }, []);
+
+  const clearPreload = useCallback(() => { setPreload(null); }, []);
 
   const handleCertFilter = (certId: string) => {
     setCertFilter(certId);
@@ -90,8 +104,14 @@ export default function PlaybookView() {
         {section === 'topics'   && <TopicBrowser certFilter={certFilter || undefined} />}
         {section === 'glossary' && <GlossaryPanel />}
         {section === 'certs'    && <CertMap onCertFilter={handleCertFilter} />}
-        {section === 'quiz'     && <QuizEngine />}
-        {section === 'progress' && <ProgressDashboard />}
+        {section === 'quiz'     && (
+          <QuizEngine
+            preloadedQuestions={preload?.questions}
+            preloadedLabel={preload?.label}
+            onSessionEnd={clearPreload}
+          />
+        )}
+        {section === 'progress' && <ProgressDashboard onLaunchQuiz={handleLaunchQuiz} />}
         {section === 'drills'   && <PortalDrills />}
       </div>
     </div>
