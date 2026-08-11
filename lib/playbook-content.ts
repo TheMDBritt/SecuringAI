@@ -8068,4 +8068,237 @@ Security Hub finding at severity ≥ 90 → EventBridge → SNS → PagerDuty we
 
 **Sourced from:** \`docs.aws.amazon.com/organizations/latest/userguide/\`, \`docs.aws.amazon.com/controltower/latest/userguide/\`, \`docs.aws.amazon.com/servicecatalog/latest/adminguide/\`, \`docs.aws.amazon.com/artifact/latest/ug/\`, \`docs.aws.amazon.com/audit-manager/latest/userguide/\`, \`docs.aws.amazon.com/ram/latest/userguide/\`, \`docs.aws.amazon.com/resource-explorer/latest/userguide/\`, \`docs.aws.amazon.com/license-manager/latest/userguide/\`.`,
   },
+
+  // ─── SCS-C03 Service deep-dives (part 1 of 2) ───────────────────────────
+
+  {
+    id: 'aws-scsc03-kms-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — KMS',
+    certTags: ['SCS-C03'],
+    vocab: ['KMS (AWS)', 'CMK', 'Key Policy', 'KMS Grant', 'Envelope Encryption', 'DEK', 'KEK'],
+    content: `KMS is the most-tested single service on SCS-C03. Nearly every data-protection question either directly asks about KMS or depends on you knowing that "key policy > IAM policy" and how envelope encryption works.
+
+### Key types — pick the right one for the workload
+
+| Key type | Ownership | Rotation | Cost | Use when |
+|---|---|---|---|---|
+| **AWS-owned key** | AWS shared pool | AWS | Free | Default S3 SSE-S3 |
+| **AWS-managed key** (aws/service) | Your account, AWS-managed | Yearly, automatic | Free | Service defaults with per-account audit trail |
+| **CMK — symmetric** | You | Yearly, opt-in | $1/mo + API | 90% of workloads |
+| **CMK — asymmetric** (RSA / ECC) | You | Manual | $1/mo + API | Sign / verify, TLS key exchange |
+| **Imported material** | You bring | Manual only | $1/mo | On-prem HSM origin |
+| **Custom Key Store (CloudHSM)** | You own the HSM cluster | Manual | CloudHSM $$$ | FIPS 140-2 L3 with your HSM |
+| **External Key Store (XKS)** | Material lives OUTSIDE AWS | Manual | XKS proxy latency | Regulator requires key material off-cloud |
+
+### Key policy vs IAM policy — the #1 exam trick
+
+- The key policy is the **primary authorization** for a CMK
+- **IAM policies alone grant zero access to KMS.** The key policy must at minimum say \`"Principal": {"AWS": "arn:aws:iam::ACCOUNT:root"}\` with the actions you want IAM to be able to delegate
+- **Grants** provide temporary programmatic access without editing the key policy — used by AWS services (RDS asking KMS to decrypt an EBS snapshot for you)
+- **VPC endpoint policy** for KMS is a third layer of control
+- **Cross-account KMS access**: source account's IAM policy allows, target account's key policy allows
+
+**Common wrong answer pattern:** "Grant IAM role X kms:Decrypt on key Y" — insufficient unless key policy allows.
+
+### Envelope encryption in one paragraph
+
+App calls \`kms:GenerateDataKey\` → KMS returns plaintext DEK + ciphertext DEK (encrypted with CMK/KEK). App encrypts data with plaintext DEK, discards plaintext DEK, stores ciphertext DEK alongside encrypted data. To decrypt: \`kms:Decrypt\` on ciphertext DEK → plaintext DEK → decrypt data. Bypasses the 4KB KMS payload limit.
+
+Every AWS service integrating with KMS (S3, EBS, RDS, DynamoDB, Secrets Manager, Lambda env vars) uses envelope encryption internally. **You should never send large data directly to KMS.**
+
+### S3 encryption modes
+
+| Mode | Key management | When |
+|---|---|---|
+| **SSE-S3** | S3-owned AES-256 | Default. No key control. |
+| **SSE-KMS** | Your CMK | Audit trail + per-key access control. Default best practice. |
+| **SSE-KMS + S3 Bucket Key** | CMK with bucket-scoped key caching | High-volume S3 — cuts KMS API cost ~99%. |
+| **DSSE-KMS** | Two independent KMS layers | FIPS 140-3, dual-control regulatory. |
+| **SSE-C** | Customer provides on every request | Rare, error-prone, lose key = lose data. |
+| **Client-side** | Encrypted before upload | Zero-trust of AWS. |
+
+### EBS / RDS gotchas
+
+- **EBS default encryption** — enable per region, per account. Every new volume + snapshot encrypted.
+- **You cannot un-encrypt EBS.** Copy to a new unencrypted volume.
+- **RDS encryption must be set at creation.** Cannot enable later — snapshot, copy the snapshot with encryption, restore.
+- Encrypted snapshot copied cross-region → target region CMK used for re-encryption.
+
+### Key rotation
+
+- **AWS-managed keys** — automatic yearly
+- **CMK (symmetric)** — opt-in yearly automatic
+- **CMK (asymmetric)** — manual only (breaks any signature verification against the old key)
+- **Imported material** — manual only
+- Rotation creates a new backing key; old versions retained forever for decrypt of existing ciphertext
+- **Aliases** — recommended for application references so rotation doesn't require app code change
+
+### Study drills
+
+1. Author a key policy allowing (a) root to delegate to IAM, (b) role Y decrypt-only, (c) CloudTrail to encrypt log records
+2. Encrypt an S3 object with SSE-KMS + Bucket Key; verify KMS API count drops vs plain SSE-KMS
+3. Create an EBS-encrypted volume from an unencrypted snapshot
+4. Rotate a CMK and verify \`aws kms describe-key\` shows the new key ID with the old rotation history
+
+**Sourced from:** \`docs.aws.amazon.com/kms/latest/developerguide/\`, \`docs.aws.amazon.com/AmazonS3/latest/userguide/UsingKMSEncryption.html\`, \`docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html\`, \`docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.Encryption.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-guardduty-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — GuardDuty',
+    certTags: ['SCS-C03'],
+    vocab: ['GuardDuty', 'GuardDuty Runtime Monitoring', 'EventBridge (AWS)', 'CloudTrail', 'VPC Flow Logs'],
+    content: `GuardDuty is the runtime-behavior threat-detection layer of AWS. Every scenario that asks about "detect an ongoing attack" or "abnormal API activity" has GuardDuty in the answer set. Know its data sources and finding taxonomy.
+
+### Data sources — each opt-in for cost
+
+| Source | Detects |
+|---|---|
+| **CloudTrail management events** | IAM misuse, unusual API calls, credential compromise |
+| **CloudTrail S3 data events** | Public bucket access, exfil to unknown IP |
+| **VPC Flow Logs** | Port scans, coin mining, C2 traffic |
+| **Route 53 DNS query logs** | Malware C2, DGA domains, DNS tunneling |
+| **EKS audit logs** | Unauthorized K8s API calls, escalation |
+| **Lambda network activity** | Unusual outbound |
+| **RDS login events** (Aurora MySQL, PostgreSQL) | Failed brute-force, unusual login patterns |
+| **Runtime Monitoring** (agent) | Kernel-level process, file, network activity on EC2/ECS/EKS/Fargate |
+
+Enable Runtime Monitoring on EKS/ECS/Fargate for container runtime detection — this is the differentiator vs "GuardDuty needs an agent" wrong-answer trap.
+
+### Finding categories — memorize the naming pattern
+
+GuardDuty finding types follow \`<ThreatPurpose>:<ResourceType>/<ThreatFamilyName>.<Variant>!<Artifact>\`. The exam expects you to recognize category names:
+
+- **Backdoor** — reverse shell or C2 established
+- **Behavior** — anomalous behaviour vs baseline
+- **CryptoCurrency** — coin mining detected
+- **DefenseEvasion** — attacker disabling logging/detection
+- **Discovery** — enumeration of resources
+- **Exfiltration** — data leaving to unusual destinations
+- **Impact** — destructive action (ransomware, DoS)
+- **InitialAccess** — first foothold
+- **Persistence** — attacker maintaining access
+- **Policy** — misuse of legitimate features (e.g. root API calls)
+- **PrivilegeEscalation** — attacker gaining elevated permissions
+- **Recon** — external port scanning your resources
+- **Stealth** — hiding activity
+- **Trojan** — malicious code execution
+- **UnauthorizedAccess** — access from unusual location/pattern
+
+Every finding has a severity (Low / Medium / High) with numeric score.
+
+### Automated response pattern
+
+The exam LOVES this pattern:
+
+\`\`\`
+GuardDuty finding
+  → EventBridge rule (matches severity ≥ 7)
+    → SSM Automation runbook
+      → snapshot EBS volumes (forensics)
+      → swap security group to isolation-only (contain)
+      → notify SNS topic (page on-call)
+\`\`\`
+
+Or Lambda instead of SSM Automation for custom logic.
+
+### Multi-account setup
+
+- **Delegated administrator** — a member account manages GuardDuty for the whole org
+- Findings from every account flow up to the admin
+- New accounts auto-onboard
+- Central config prevents workload accounts disabling GuardDuty
+
+### False-positive management
+
+- **Suppression rules** — silence known-benign findings without deleting
+- **Filters** — same criteria, doesn't affect the underlying finding
+- **Trusted IP lists / Threat IP lists** — customize what triggers findings
+
+### Study drills
+
+1. Enable GuardDuty at org level with all data sources including Runtime Monitoring on your test EKS cluster
+2. Trigger a test finding — SSH brute force against a public EC2, or CryptoCurrency by running a known miner Docker image
+3. Build an EventBridge rule matching severity ≥ 7 → SSM Automation runbook to isolate the EC2
+4. Configure a suppression rule for the intentional recon from your Nessus scanner IP
+
+**Sourced from:** \`docs.aws.amazon.com/guardduty/latest/ug/\`, \`docs.aws.amazon.com/guardduty/latest/ug/guardduty_finding-format.html\`, \`docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring.html\`, \`docs.aws.amazon.com/eventbridge/latest/userguide/eb-automation.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-securityhub-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — Security Hub',
+    certTags: ['SCS-C03'],
+    vocab: ['Security Hub', 'ASFF', 'FSBP', 'GuardDuty', 'AWS Config'],
+    content: `Security Hub is the aggregation + scoring layer. It's the "single pane of glass" of AWS security. Know what it ingests, what it normalizes to (ASFF), what standards it evaluates, and how it differs from Detective.
+
+### What Security Hub ingests
+
+**Native AWS integrations** (all findings arrive as ASFF automatically):
+- **GuardDuty** — every finding
+- **Inspector** — vulnerability findings
+- **Macie** — sensitive data findings
+- **IAM Access Analyzer** — external + unused access findings
+- **AWS Firewall Manager** — non-compliant SG / WAF policies
+- **AWS Health** — service issues
+- **AWS Config** — non-compliant resources
+
+**Third-party integrations** (SaaS + partner tools converted to ASFF):
+Palo Alto Prisma Cloud, Splunk, Sysdig, Snyk, Rapid7 InsightVM, Tenable.io, Trend Micro, F5, CrowdStrike, Sumo Logic, Datadog, and many more.
+
+**Custom findings** — send your own via BatchImportFindings API.
+
+### ASFF — the normalized schema
+
+**AWS Security Finding Format** is Security Hub's normalized JSON schema. Every finding, from every source, is stored in ASFF. Fields include \`SchemaVersion, Id, ProductArn, GeneratorId, AwsAccountId, Types[], Severity{Product, Normalized, Label}, CreatedAt, Region, Resources[], Compliance{Status}, Workflow{Status}, RecordState\`.
+
+**SCS-C03 by-name test:** if you see "ASFF" as an answer choice, it's about Security Hub.
+
+### Security standards
+
+Security Hub evaluates your account against baked-in standards:
+
+- **AWS Foundational Security Best Practices (FSBP)** — the biggest one, AWS-authored, hundreds of automated controls across every service
+- **CIS AWS Foundations Benchmark** (v1.2, v1.4, v3.0) — industry-standard baseline
+- **PCI DSS v3.2.1**
+- **NIST SP 800-53 Rev. 5**
+- **AWS Resource Tagging Standard**
+- Custom controls disabling is per-standard, per-control
+
+Each control shows a compliance state: Passed / Failed / Warning / Not available. **Security Score** is the weighted percentage of controls passing.
+
+### Multi-account (central config)
+
+- **Delegated administrator** in an AWS Organization takes over Security Hub for all member accounts
+- **Central configuration** applies enabled standards + controls org-wide with per-OU overrides
+- Findings from every account roll up to the admin
+- Cross-region aggregation available
+
+### Automation rules
+
+Security Hub automation rules run when findings arrive:
+
+- Change severity ("mark FSBP.EC2.6 findings as Critical when tag env=prod")
+- Change workflow status (auto-suppress low severity)
+- Add notes / assign owner
+
+### Security Hub vs Detective
+
+- **Security Hub** = aggregate + score across findings from many sources; org-wide dashboard
+- **Detective** = deep investigate ONE incident using a behavioural graph across VPC Flow, CloudTrail, GuardDuty findings
+
+They complement — you triage in Security Hub, drill down in Detective.
+
+### Study drills
+
+1. Enable Security Hub in a delegated-admin account with FSBP + CIS AWS Foundations v3.0 + PCI DSS standards
+2. Introduce a deliberate misconfiguration (public S3 bucket) and watch it appear in FSBP and Config Rules
+3. Build an automation rule that auto-suppresses INFORMATIONAL severity findings older than 30 days
+4. Wire Security Hub findings at severity ≥ 90 → EventBridge → SNS → PagerDuty webhook
+
+**Sourced from:** \`docs.aws.amazon.com/securityhub/latest/userguide/\`, \`docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html\`, \`docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html\`, \`docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\`.`,
+  },
 ];
