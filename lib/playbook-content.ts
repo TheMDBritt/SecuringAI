@@ -8301,4 +8301,197 @@ They complement — you triage in Security Hub, drill down in Detective.
 
 **Sourced from:** \`docs.aws.amazon.com/securityhub/latest/userguide/\`, \`docs.aws.amazon.com/securityhub/latest/userguide/securityhub-findings-format.html\`, \`docs.aws.amazon.com/securityhub/latest/userguide/fsbp-standard.html\`, \`docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\`.`,
   },
+
+  // ─── SCS-C03 Service deep-dives (part 2 of 2) ───────────────────────────
+
+  {
+    id: 'aws-scsc03-detective-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — Amazon Detective',
+    certTags: ['SCS-C03'],
+    vocab: ['Amazon Detective', 'GuardDuty', 'VPC Flow Logs', 'CloudTrail'],
+    content: `Detective is the investigation graph. Once GuardDuty raises a finding or you spot a suspicious sign-in in CloudTrail, Detective lets you pivot across identities, resources, IPs, and time without hand-writing Athena queries.
+
+### Data sources — automatic, no config
+
+Detective continuously ingests and correlates:
+- **VPC Flow Logs** — connection graph, byte counts, ports, source/dest
+- **CloudTrail** — every API call with actor/resource/context
+- **GuardDuty findings** — the raised alerts pivot straight into Detective
+- **EKS audit logs** — kubernetes API calls
+- **Route 53 Resolver query logs** — where noisy DNS is being made from
+
+No agent, no ingest cost line item. Priced per GB analyzed (~$2/GB after free tier).
+
+### What Detective gives you that raw Athena doesn't
+
+1. **Pre-built behavioural baselines** per resource — Detective knows what "normal" API rate for a role looks like and highlights deviations
+2. **Time-range navigation** — sliders let you scope every panel to a suspicious window
+3. **Interactive pivots** — click an IP → all resources it touched, click a role → all API calls it made, click a finding → the graph of everyone involved
+4. **Cross-service joins** without SQL — VPC Flow + CloudTrail + GuardDuty stitched at the entity level
+
+### Common investigation flow
+
+\`\`\`
+GuardDuty finding "UnauthorizedAccess:IAMUser/InstanceCredentialExfiltration"
+  → open in Detective
+    → see the role's API-call baseline vs the spike
+    → pivot to the source IP → see it hit RDS + Secrets Manager
+    → pivot to the ENI → see VPC Flow bytes leaving
+    → confirm exfil, containment via SSM Automation
+\`\`\`
+
+### Multi-account
+
+- Delegated administrator, similar to GuardDuty / Security Hub
+- Detective member accounts propagate their data into the admin's graph
+- Cross-account investigations without switching consoles
+
+### Detective vs Security Hub
+
+| | Security Hub | Detective |
+|---|---|---|
+| Purpose | Aggregate + score across sources | Investigate one incident deeply |
+| Data model | ASFF findings | Behavioural graph |
+| Time scope | Point-in-time | Time-range with pivots |
+| Best for | "How's my posture?" | "What did this attacker do?" |
+
+You enable BOTH. They complement.
+
+### Study drills
+
+1. Enable Detective in the delegated-admin account with all member accounts
+2. From a GuardDuty finding, use the "Investigate in Detective" link and pivot IP → role → resource
+3. Compare Detective's "API-call volume" panel for a role vs its 30-day baseline
+4. Try to answer "did any resource in my VPC talk to malicious IP X in the last 24h?" using Detective vs equivalent Athena query — feel the difference
+
+**Sourced from:** \`docs.aws.amazon.com/detective/latest/userguide/\`, \`docs.aws.amazon.com/detective/latest/adminguide/\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-macie-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — Amazon Macie',
+    certTags: ['SCS-C03'],
+    vocab: ['Amazon Macie', 'S3', 'Managed Data Identifier', 'PII'],
+    content: `Macie is the S3-focused sensitive-data discovery service. The exam tests it as the answer to "how do I know where PII lives across thousands of S3 buckets?"
+
+### What Macie does
+
+Continuously scans S3 for:
+- **PII** — SSN, phone, DOB, email, driver's license, passport, physical address
+- **Credentials** — AWS keys, Azure/GCP tokens, private SSH keys, PEM certs, GitHub tokens
+- **Financial data** — credit cards (with Luhn checksum), bank routing/account numbers
+- **Health data** — medical record numbers, drug identifiers
+- **Custom data identifiers** — regex + keyword + proximity for org-specific patterns (customer IDs, internal doc IDs)
+
+### Managed data identifiers vs custom
+
+- **Managed** (~150 built-in) — AWS-maintained detectors for common types across many jurisdictions and languages
+- **Custom** — regex (min-length keyword filter + proximity to nearby evidence + max match distance)
+
+Combine both for high-signal, low-noise detection.
+
+### Discovery jobs vs automated discovery
+
+- **Automated discovery** — Macie samples buckets continuously and produces per-bucket sensitivity scores (0–100) + risk-flagged buckets in the dashboard
+- **Discovery jobs** — targeted deep scan of specified buckets/objects with full inspection, priced per GB
+- Sample buckets to bring the score up before spending on full scans
+
+### Findings surface everywhere
+
+Macie findings publish to:
+- **Security Hub** (as ASFF) — for cross-service triage
+- **EventBridge** — for automated response (e.g. auto-quarantine bucket, notify data-owner)
+- **S3 findings bucket** (KMS-encrypted) — for archival + custom analysis
+
+### Sensitivity scores
+
+Per bucket, Macie computes:
+- **Sensitivity score** 0 (empty / no sensitive) → 100 (high volume of PII/credentials)
+- **Effective permissions** — public? shared cross-account? default-encrypted?
+- Both fed into the "buckets with sensitive data + risky permissions" prioritized list
+
+### Multi-account
+
+- Delegated administrator pattern, same as GuardDuty / Security Hub
+- Admin sees every member account's findings + bucket inventory
+
+### Common exam scenarios
+
+- **"Discover where customer PII lives across our S3 estate"** → Macie
+- **"Alert when a public bucket contains sensitive data"** → Macie + EventBridge
+- **"Custom regex for our internal customer IDs"** → Macie Custom Data Identifier
+- **"Scan objects on upload"** → NOT Macie (that's Defender for Storage / third-party). Macie is inventory-scan based, not per-upload.
+
+### Study drills
+
+1. Enable Macie in an account with a test bucket containing fake SSNs and credit-card numbers
+2. Watch the automated-discovery score climb and observe findings in Security Hub
+3. Author a Custom Data Identifier for a made-up "ACME-<8 digits>" internal ID and re-scan
+4. Wire an EventBridge rule on Macie sensitive-data findings → Lambda that auto-applies a bucket policy denying public read
+
+**Sourced from:** \`docs.aws.amazon.com/macie/latest/user/\`, \`docs.aws.amazon.com/macie/latest/user/managed-data-identifiers.html\`, \`docs.aws.amazon.com/macie/latest/user/discovery-jobs.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-access-analyzer-deep',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Deep Dive — IAM Access Analyzer',
+    certTags: ['SCS-C03'],
+    vocab: ['IAM Access Analyzer', 'External Access', 'Unused Access', 'IAM Policy'],
+    content: `IAM Access Analyzer is three services in one product. The exam tests knowing which analyzer type does what.
+
+### The three functions
+
+**1. External access findings**
+- Analyzes resource policies for resources shared outside your account or organization
+- Covered resources: S3 buckets, IAM roles (trust policy), KMS keys, Lambda functions + layers, SQS queues, Secrets Manager secrets, EBS snapshots, RDS DB snapshots, ECR repositories, EFS filesystems, SNS topics, API Gateway REST APIs, DynamoDB tables + streams
+- Zone of trust = account OR organization (your choice at analyzer creation)
+- Finding is created when a resource has a statement granting access to an external principal
+- Free
+
+**2. Unused access findings**
+- Continuously analyzes IAM users and roles for over-permissioning
+- Finding types:
+  - **Unused role** — role hasn't been used in N days
+  - **Unused access key** — user access key idle in N days
+  - **Unused password** — user console password idle in N days
+  - **Unused actions / services** — permission grants that have never been called
+- The "least privilege" enforcement engine
+- Paid — $0.20 per IAM role/user/month analyzed
+
+**3. Policy validation + custom policy checks**
+- **Policy validation** — pre-deploy check for errors, warnings, security warnings, suggestions. Free.
+- **Custom policy checks** (paid) — programmatic tests before policy deployment:
+  - "does this policy grant more access than the reference policy?"
+  - "does this policy grant a specific dangerous action?"
+- CI/CD integration: block a PR that would grant over-broad permissions
+
+### Common exam scenarios
+
+- **"Detect S3 buckets accessible from outside our org"** → Access Analyzer external access with org as zone of trust
+- **"Find IAM roles that haven't been used in 90 days"** → Access Analyzer unused access findings
+- **"Validate policies in CI before deployment"** → Access Analyzer policy validation + custom checks
+- **"Generate a policy from CloudTrail activity"** → Access Analyzer policy generation (a fourth, less-tested function that mines CloudTrail to draft a least-privilege policy for a role)
+
+### Multi-account
+
+- Delegated admin manages org-wide external-access analyzer
+- Findings roll up to admin; each member account also sees its own
+
+### Access Analyzer vs Security Hub
+
+- Access Analyzer generates findings; Security Hub is where you triage them alongside GuardDuty/Inspector/Macie/etc.
+- All Access Analyzer findings arrive in Security Hub as ASFF automatically.
+
+### Study drills
+
+1. Enable Access Analyzer at the org level with zone of trust = org
+2. Deliberately share an S3 bucket to another AWS account and watch the external-access finding appear
+3. Enable unused-access analyzer, wait 24h, review the "unused role" findings
+4. Configure a custom policy check in CI: block PRs where new IAM policy grants \`iam:PassRole\` on \`*\`
+
+**Sourced from:** \`docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-external-access.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-unused-access.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-custom-policy-checks.html\`.`,
+  },
 ];
