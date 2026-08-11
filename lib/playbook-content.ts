@@ -7436,4 +7436,316 @@ Focus: **compliance reporting, governance services**.
 
 Source (secondary, user-transcribed): domain outline + weights in \`docs/cert-objectives/aws-scs-c03.md\`. Primary source (aws.amazon.com/certification/certified-security-specialty exam guide PDF) blocked by sandbox network policy at authoring — technical specifics in this article are AWS well-known behavior each of which should be verified against the specific docs.aws.amazon.com/<service>/ page before you rely on it. Reconcile the SCS-C03 vs SCS-C02 code with the current AWS-published cert name before your exam.`,
   },
+
+  // ─── SCS-C03 Domain articles ────────────────────────────────────────────────
+
+  {
+    id: 'aws-scsc03-d1-iam',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 1 — Identity and Access Management',
+    certTags: ['SCS-C03'],
+    vocab: ['IAM', 'SCP', 'Permission Boundary', 'Session Policy', 'Access Analyzer', 'IAM Identity Center', 'Federation', 'ABAC'],
+    content: `**Domain 1 = 20% of SCS-C03 (~13 questions).** Every serious SCS-C03 question set has policy-diagram walkthroughs. This is where you win or lose the exam.
+
+### Policy evaluation logic (memorize the order)
+
+For every request, AWS evaluates in this order and any DENY terminates:
+
+1. **Explicit DENY** anywhere (identity, resource, SCP, permission boundary, session, VPC endpoint policy) → **DENY**
+2. **Organization SCP** must ALLOW → else DENY
+3. **Resource-based policy** — if present and grants access, may allow cross-account (still subject to identity policy in most cases)
+4. **Identity-based policy** must ALLOW (or resource policy explicitly names the principal)
+5. **Permission boundary** on the principal must ALLOW
+6. **Session policy** (from AssumeRole) must ALLOW
+7. **Default: DENY**
+
+The trap: candidates skip step 2 (SCP) or misread the resource-policy shortcut. In cross-account access, S3 buckets and KMS keys allow "resource-policy-only" grants — but most other services require both identity AND resource policies to allow.
+
+**Sourced from:** \`docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html\`
+
+### SCPs vs Permission Boundaries vs Session Policies (differentiator gold)
+
+| Control | Scope | Effect | Use case |
+|---|---|---|---|
+| **SCP** | Org / OU / account | **DENY only** guardrail (or ALLOW-list restriction) — never grants perms | Org-wide "no non-approved regions", "no root API calls" |
+| **Permission Boundary** | Per principal (user/role) | Max permissions the principal *can* be granted | Delegate IAM admin to devs, bounded so they can't escalate |
+| **Session Policy** | Per STS session | Narrow permissions for one AssumeRole session | Temporarily scoped access for a specific task |
+
+- SCPs **cannot grant** permissions. They only cap or deny.
+- Permission boundaries **cannot grant** either — the identity policy still has to allow.
+- If SCP denies → denied. If permission boundary denies → denied. Both are ceilings.
+
+### IAM roles and cross-account access
+
+- **Service role** — assumed by an AWS service (Lambda, EC2, ECS).
+- **Service-linked role** — pre-baked by a service; you can't detach without deleting the associated resource.
+- **Cross-account role** — has a trust policy naming the source account/principal; the source assumes with \`sts:AssumeRole\`.
+- **ExternalId** — required in trust policy when a third-party SaaS assumes your role, prevents confused deputy.
+- **Session tags** flow through with AssumeRole and can be used in condition keys (\`aws:PrincipalTag/xxx\`).
+
+### Federation
+
+- **SAML 2.0** — Entra ID, Okta, ADFS, Google Workspace via SAML. Map assertion attributes to IAM role via \`saml:aud\` / \`saml:sub\`.
+- **OIDC** — GitHub Actions, GitLab, Kubernetes, GCP workload identity → assume roles without stored secrets. Trust policy pins \`iss\` + \`sub\` + \`aud\` claims.
+- **IAM Identity Center** (formerly AWS SSO) — the recommended pattern for human access across many AWS accounts. Assigns permission sets (managed / customer / inline) to users/groups per account.
+- **Cognito Identity Pools** for mobile/web apps → temporary AWS creds for end users; **User Pools** for user directory + login.
+
+### Attribute-Based Access Control (ABAC)
+
+- Tag the principal (via IdP session tags or IAM tags) and the resource
+- Policy uses \`"Condition": {"StringEquals": {"aws:PrincipalTag/team": "\${aws:ResourceTag/team}"}}\`
+- Scales without new roles per team — one policy, tags decide
+
+### IAM Access Analyzer
+
+Three functions the exam asks about:
+
+- **External access findings** — resources shared outside the account/org (S3, KMS, IAM roles, Lambda, SQS, Secrets Manager, EBS snapshots, RDS snapshots, ECR)
+- **Unused access findings** — permissions granted but not used in N days
+- **Policy validation** — IAM Access Analyzer validates a policy for errors, warnings, security warnings, suggestions
+- **Custom policy checks** (paid) — automated tests before deploying policies
+
+### Common exam traps
+
+- Confusing **SCP** (org-level, deny only) with **permission boundary** (per-principal, max)
+- Assuming IAM users are okay — the exam expects **roles + federation**, IAM users only where absolutely required
+- Forgetting **ExternalId** on cross-account roles for third-party SaaS
+- Missing that **S3 bucket policies** and **KMS key policies** grant access even without a matching identity policy (in the same account)
+- Using **IAM Users with long-lived access keys** — exam favours short-lived STS credentials
+- Not knowing **root account** should only be used for tasks requiring root; SCP can enforce this with \`aws:PrincipalType\` conditions
+
+### Study tasks
+
+1. Draw the policy evaluation flow on paper from memory
+2. Write an SCP that denies \`iam:CreateUser\` org-wide, exempting the security account
+3. Configure a GitHub Actions OIDC role trust policy pinned to a specific repo + branch
+4. Enable IAM Access Analyzer at the org level and review external-access findings
+
+**Sourced from:** \`docs.aws.amazon.com/IAM/latest/UserGuide/\`, \`docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer.html\`, \`docs.aws.amazon.com/singlesignon/latest/userguide/\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-d2-infra',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 2 — Infrastructure Security',
+    certTags: ['SCS-C03'],
+    vocab: ['VPC', 'Security Group', 'NACL', 'PrivateLink', 'Interface Endpoint', 'Gateway Endpoint', 'Network Firewall', 'WAF', 'Shield', 'Systems Manager Session Manager'],
+    content: `**Domain 2 = 20% of SCS-C03 (~13 questions).** Network topology and traffic-control logic. Second-heaviest domain tied with IAM.
+
+### VPC design
+
+- **Public subnet** = has a route to an Internet Gateway (IGW). **Private subnet** = doesn't.
+- **NAT Gateway** (AWS-managed, HA per AZ) vs **NAT Instance** (self-managed EC2) — always prefer NAT Gateway for prod.
+- **IGW** — bidirectional internet. **Egress-only IGW** = IPv6 outbound only.
+- **VPC peering** — 1:1 non-transitive; **Transit Gateway** = many-to-many, hub-and-spoke for large orgs.
+- Reserved CIDR ranges: don't overlap with on-prem, plan for future expansion (use RFC1918 ranges thoughtfully).
+- **Route tables** are the source of truth for path decisions — most-specific match wins.
+
+### Security Groups vs NACLs (the exam's favorite differentiator)
+
+| | Security Group | NACL |
+|---|---|---|
+| Layer | ENI (instance) | Subnet |
+| State | **Stateful** (return traffic auto-allowed) | **Stateless** (return must be explicitly allowed) |
+| Rules | Allow only | Allow **and** Deny |
+| Order | All rules evaluated | Ordered by rule number, lowest first |
+| Default | New SG: no inbound, all outbound | Default NACL: allow all; custom: deny all |
+| Referencing | Reference other SGs by ID | CIDR blocks only |
+| Limit | 60 rules per SG (soft) | 20 rules per direction (soft) |
+
+Trap: NACLs are **stateless** — if you allow inbound TCP 443, you must also allow outbound ephemeral ports (1024–65535) for the return traffic.
+
+### VPC endpoints — Gateway vs Interface
+
+**Gateway endpoints** (free, only 2 services):
+- **S3**
+- **DynamoDB**
+
+Everything else uses **Interface endpoints** (powered by PrivateLink, ~$0.01/hour + $0.01/GB):
+- Systems Manager, KMS, Secrets Manager, ECR, CloudWatch, CloudTrail, STS, SNS/SQS, Kinesis, etc.
+- Creates ENIs in your subnets with private IPs
+- Enable **Private DNS** so AWS SDK/CLI resolves the service endpoint to the private IP automatically
+
+Endpoint policies restrict what actions the endpoint permits (defense in depth alongside IAM).
+
+### AWS PrivateLink
+
+- Expose your own service (behind an NLB) privately to consumer VPCs — no VPC peering, no route table changes, no CIDR overlap concerns
+- Consumer creates an Interface endpoint pointing at your service — traffic never touches the internet
+- The SaaS-inside-a-VPC pattern
+
+### Edge protections
+
+- **AWS WAF** — Web ACL attached to CloudFront, ALB, API Gateway, App Runner, AppSync, Cognito. Managed rules (AWS Managed Rule Groups), custom rules, rate-based rules, bot control, fraud control (account takeover, account creation).
+- **AWS Shield Standard** — free, layer 3/4 DDoS baseline on all AWS accounts.
+- **AWS Shield Advanced** ($3,000/month + data transfer) — L7 with WAF, 24×7 DDoS Response Team (DRT), cost protection (refunds scale-out costs during attack), Global Accelerator + Route 53 protections.
+- **CloudFront** origin access — use **OAC (Origin Access Control)** for S3 (current), OAI is legacy.
+- **Route 53 Resolver DNS Firewall** — block queries to known-bad domains at the DNS layer.
+- **Route 53 Resolver query logs** for DNS forensics.
+
+### AWS Network Firewall
+
+- Stateful + stateless engine, Suricata rule-compatible
+- Deployed at the VPC edge with a firewall subnet per AZ
+- Use for centralized egress inspection in a hub-and-spoke topology
+- Integrates with Firewall Manager for org-wide policy
+
+### Firewall Manager
+
+- Central management of WAF web ACLs, Shield Advanced protections, Security Group policies, Network Firewall policies, Route 53 Resolver DNS Firewall — across an AWS Organization.
+- Enforces baseline SG rules that a workload account can't remove.
+
+### Systems Manager Session Manager (bastion killer)
+
+- Interactive shell to EC2 via SSM Agent — no inbound SSH, no bastion, no key pairs
+- IAM-gated (\`ssm:StartSession\`), session logs to CloudWatch/S3 for audit
+- Works over private subnets via VPC endpoints for SSM/SSMMessages/EC2Messages
+- **Bastion host is a wrong answer in almost every current SCS-C03 scenario.** Prefer Session Manager.
+
+### VPC Flow Logs
+
+- Capture traffic metadata (5-tuple + action) at VPC / subnet / ENI level
+- Destinations: CloudWatch Logs, S3, Kinesis Firehose
+- Custom log format for extra fields (TCP flags, pkt-srcaddr — the origin behind a NAT)
+- Query via **Athena** for large volumes; **CloudWatch Logs Insights** for smaller / ad-hoc
+
+### Common exam traps
+
+- Picking a **bastion host** as an answer — Session Manager is the modern right answer
+- Assuming SGs are stateless (they're stateful)
+- Not knowing which services have **Gateway** endpoints (only S3 and DynamoDB)
+- Missing that **WAF** attaches to CloudFront/ALB/API Gateway — not to a VPC or a Network Load Balancer directly
+- Choosing **Shield Standard** as extra protection you enable — it's on for everyone by default
+- Overlooking that **NACLs are stateless** — return ephemeral ports must be explicitly allowed
+- Confusing **VPC endpoint policy** with **IAM policy** — they're both required and combined
+
+### Study tasks
+
+1. Draw a hub-and-spoke topology with a Transit Gateway, an inspection VPC, and 3 workload VPCs
+2. Create Interface endpoints for SSM + KMS in a private subnet and verify EC2 → S3 traffic stays in-VPC (Gateway endpoint) while EC2 → KMS traverses the Interface endpoint
+3. Build a WAF web ACL with the AWS-Managed Common Rule Set + rate-based rule
+4. Enable AWS Network Firewall in the inspection VPC with a stateful rule blocking known-bad IPs
+
+**Sourced from:** \`docs.aws.amazon.com/vpc/latest/userguide/\`, \`docs.aws.amazon.com/vpc/latest/privatelink/\`, \`docs.aws.amazon.com/waf/latest/developerguide/\`, \`docs.aws.amazon.com/network-firewall/latest/developerguide/\`, \`docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-d3-data-protection',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 3 — Data Protection',
+    certTags: ['SCS-C03'],
+    vocab: ['KMS', 'Envelope Encryption', 'Key Policy', 'Grant', 'CMK', 'Secrets Manager', 'SSM Parameter Store', 'Macie', 'ACM', 'DSSE-KMS'],
+    content: `**Domain 3 = 18% of SCS-C03 (~12 questions).** Encryption, key management, secrets, and PII discovery. Deep KMS knowledge is non-negotiable.
+
+### KMS key types
+
+| Key type | Ownership | Rotation | Cost |
+|---|---|---|---|
+| **AWS-owned key** | AWS shared pool | AWS-managed | Free (invisible) |
+| **AWS-managed key** (aws/service-name) | Your account, AWS-managed | Automatic yearly | Free |
+| **Customer-managed key (CMK)** | Your account, you-managed | Opt-in yearly (symmetric only) | $1/month per CMK + API calls |
+| **Imported key material** | You bring the material | Cannot auto-rotate | $1/month |
+| **External key store (XKS)** | Key material lives in HSM outside AWS | Manual | XKS proxy latency + costs |
+| **Custom key store (CloudHSM-backed)** | HSM cluster you own | Manual | CloudHSM cluster costs |
+
+**Symmetric** (AES-256, most common) vs **asymmetric** (RSA / ECC — signing, key exchange).
+
+### Key policy vs IAM policy (the biggest exam trap)
+
+- **Key policy is the primary access controller.** By default, the key policy delegates permission to IAM (\`"Principal": {"AWS": "arn:aws:iam::ACCOUNT:root"}\` with \`"kms:*"\`).
+- **Without that delegation, IAM policies alone grant zero KMS access.** This is the #1 SCS-C03 trick question.
+- **Grants** — temporary, programmatic, additive access to a key. Used by services (e.g. RDS asking KMS to decrypt an EBS snapshot on your behalf).
+- **VPC endpoint policy** for KMS — a third layer of control.
+
+### Envelope encryption
+
+1. App calls \`kms:GenerateDataKey\` — returns a plaintext DEK (data encryption key) + ciphertext DEK (encrypted with the CMK/KEK)
+2. App encrypts data with plaintext DEK, then discards plaintext DEK
+3. Ciphertext DEK is stored alongside the encrypted data
+4. To decrypt: call \`kms:Decrypt\` on the ciphertext DEK → plaintext DEK → decrypt data
+5. Never send large data to KMS directly — 4KB request limit
+
+### S3 encryption modes
+
+| Mode | Key management | Use when |
+|---|---|---|
+| **SSE-S3** | S3-managed AES-256 | Default; no key control needed |
+| **SSE-KMS** | KMS-managed CMK | Audit trail on KMS API, per-key access control |
+| **SSE-KMS + S3 Bucket Key** | KMS CMK with per-bucket caching | High-volume, reduces KMS costs 99% |
+| **DSSE-KMS** | Dual-layer, both KMS-encrypted | FIPS 140-3 / regulated workloads |
+| **SSE-C** | Customer-provided per-request | Rare; error-prone (lose key = lose data) |
+| **Client-side** | Fully in-app | Zero-trust of AWS |
+
+**S3 Block Public Access** applies at 4 levels: account, bucket, IAM policy, ACL. Account-level wins. Turn on account-level for everything unless a specific bucket is intentionally public.
+
+### EBS
+
+- **EBS default encryption** — enable per region, per account. Every new EBS volume + snapshot is encrypted.
+- Encrypted snapshot copied to another region → target region CMK used.
+- **You cannot un-encrypt an EBS volume.** Copy to a new unencrypted volume.
+
+### RDS
+
+- **Encryption must be set at creation.** Cannot enable on an existing DB instance — you snapshot, copy the snapshot with encryption, restore.
+- Aurora auto-enables encryption for storage; TDE for Oracle, SQL Server.
+- **IAM database auth** for MySQL / PostgreSQL — short-lived tokens, no long-lived passwords.
+- **Secrets Manager** integration for auto-rotation of DB credentials.
+
+### Secrets management
+
+**Secrets Manager**
+- Auto-rotation via Lambda (built-in for RDS/Redshift/DocumentDB; custom for others)
+- Cross-region replication
+- Resource policy for cross-account
+- Costs $0.40/secret/month + $0.05 per 10K API calls
+
+**SSM Parameter Store (SecureString)**
+- Free (Standard tier); Advanced tier $0.05/parameter/month for versions, policies, size >4KB
+- KMS-encrypted; **no auto-rotation**
+- Great for config values (feature flags, non-rotating tokens)
+
+Rule of thumb: **rotating credential → Secrets Manager; static value → Parameter Store**.
+
+### Macie
+
+- Continuously scans S3 for sensitive data (PII, credentials, financial data, health info)
+- **Managed data identifiers** for 100+ types (SSN, credit card, AWS keys, API tokens, driver's license, etc.)
+- **Custom data identifiers** — regex + keyword + proximity + max match distance for org-specific patterns
+- **Sensitivity score** per bucket + org dashboard
+- Findings surface in Security Hub and EventBridge
+- Sample-based by default; targeted deep scan on discovery jobs
+
+### ACM (AWS Certificate Manager)
+
+- Free **public certs** for use with CloudFront, ALB, API Gateway, App Runner — auto-renew
+- **Private CA** ($400/month + $0.75/cert after first 1000) — internal PKI, mTLS
+- **DNS validation** preferred over email (survives owner changes)
+- Cannot export public certs — they live inside AWS services
+
+### AWS Payment Cryptography
+
+- PCI-DSS L1 certified HSM as a service — payment card processing (PIN block, EMV, card personalization)
+- Replaces on-prem HSMs in payment stacks
+
+### Common exam traps
+
+- Assuming IAM policy is enough for KMS — **key policy** must permit access
+- Choosing **SSE-C** when the question wants managed keys with rotation
+- Picking **Parameter Store** for rotating DB creds — that's **Secrets Manager**
+- Missing that **S3 Bucket Key** reduces KMS API cost — mentioned when high-request-volume S3 access is described
+- Forgetting **RDS encryption can't be added post-creation** — must snapshot + copy + restore
+- Choosing **KMS-managed rotation** for imported key material (unsupported)
+- Assuming **Macie** scans all data types — it's **S3-only** (though it integrates broadly)
+- Not knowing **XKS (external key store)** exists for regulatory requirements to control key material outside AWS
+- Missing that a **KMS Grant** is the pattern services use for delegated access, not an IAM policy
+
+### Study tasks
+
+1. Author a KMS key policy that (a) delegates root to IAM, (b) allows a specific role decrypt-only, (c) allows CloudTrail to write encrypted log records
+2. Enable **EBS default encryption** in a region and verify every new volume shows Encrypted = Yes
+3. Set up **Secrets Manager** for an RDS MySQL password with 30-day auto-rotation
+4. Enable **Macie** in a test account, upload a file containing fake SSNs, observe a finding
+
+**Sourced from:** \`docs.aws.amazon.com/kms/latest/developerguide/\`, \`docs.aws.amazon.com/secretsmanager/latest/userguide/\`, \`docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html\`, \`docs.aws.amazon.com/macie/latest/user/\`, \`docs.aws.amazon.com/acm/latest/userguide/\`, \`docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html\`.`,
+  },
 ];
