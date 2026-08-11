@@ -163,6 +163,20 @@ function pct(d) {
 let source = readFileSync(QUIZ_PATH, 'utf8');
 let questions = parseQuizFile(source);
 
+// Refuse to run when duplicate ids exist — rewriteQuestion locates the first
+// matching id, so processing both instances would apply the permutation to
+// the same first-occurrence twice and desynchronize its `correct` index.
+// Run scripts/fix-duplicate-ids.mjs first if this fires.
+const idCounts = {};
+for (const q of questions) idCounts[q.id] = (idCounts[q.id] ?? 0) + 1;
+const dupes = Object.entries(idCounts).filter(([, n]) => n > 1);
+if (dupes.length > 0) {
+  console.error(`✗ Refusing to run: ${dupes.length} duplicate id(s) found in lib/playbook-quiz.ts.`);
+  for (const [id, n] of dupes.slice(0, 10)) console.error(`  ${id} × ${n}`);
+  console.error(`\nFix with: node scripts/fix-duplicate-ids.mjs`);
+  process.exit(2);
+}
+
 console.log('Position distribution BEFORE rebalance:');
 for (const cert of TARGET_CERTS) {
   const qs = questions.filter((q) => (q.certTags ?? []).includes(cert));
