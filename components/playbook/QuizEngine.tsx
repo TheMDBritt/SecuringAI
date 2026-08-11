@@ -12,6 +12,15 @@ import type { ExamCert, ExamDomain } from '@/lib/cert-exam-domains';
 type QuizMode = 'setup' | 'question' | 'result' | 'summary';
 type SetupStep = 1 | 2 | 3;
 
+/**
+ * User's experience with a question, computed from perQ stats:
+ *  - unseen — timesSeen === 0
+ *  - weak   — timesSeen > 0 AND accuracy < WEAK_THRESHOLD (0.7)
+ *  - strong — timesSeen > 0 AND accuracy >= WEAK_THRESHOLD
+ * Multi-select in setup; empty array or full set = no filter.
+ */
+export type QuizExperience = 'unseen' | 'weak' | 'strong';
+
 interface QuizSettings {
   category:       string;
   difficulty:     QuizDifficulty | 'all';
@@ -25,7 +34,15 @@ interface QuizSettings {
   selectedCert?:  ExamCert;
   /** The selected domain IDs (exam-first flow). */
   selectedDomainIds?: string[];
+  /**
+   * Which experience buckets to include. Empty array = include all (no
+   * filter). Any non-empty subset restricts the pool. Multi-selectable so
+   * e.g. ['unseen', 'weak'] focuses study on gaps + areas of weakness.
+   */
+  experience?:    QuizExperience[];
 }
+
+const WEAK_THRESHOLD = 0.7;
 
 interface QuizResult {
   question:  QuizQuestion;
@@ -325,11 +342,28 @@ function Step3Options({
 }) {
   const [difficulty, setDifficulty] = useState<QuizDifficulty | 'all'>('all');
   const [count, setCount]           = useState<10 | 25 | 50 | 60 | 65 | 100>(25);
+  const [experience, setExperience] = useState<QuizExperience[]>([]);
+
+  // Load progress once so we can size the pool + show live counts as the
+  // user toggles experience filters. Empty perQ is the never-quizzed case.
+  const [perQ, setPerQ] = useState<Record<string, { timesSeen: number; timesRight: number }>>({});
+  useEffect(() => {
+    const data = loadProgress();
+    setPerQ(data.perQ as unknown as Record<string, { timesSeen: number; timesRight: number }>);
+  }, []);
 
   const selectedDomains = useMemo(
     () => cert.domains.filter((d) => selectedDomainIds.has(d.id)),
     [cert.domains, selectedDomainIds],
   );
+
+  const experienceMatches = useCallback((qId: string): boolean => {
+    if (experience.length === 0) return true; // no filter
+    const s = perQ[qId];
+    if (!s || s.timesSeen === 0) return experience.includes('unseen');
+    const acc = s.timesRight / s.timesSeen;
+    return experience.includes(acc < WEAK_THRESHOLD ? 'weak' : 'strong');
+  }, [experience, perQ]);
 
   const pool = useMemo(() => {
     return QUIZ_QUESTIONS.filter((q) => {
@@ -337,9 +371,34 @@ function Step3Options({
       const inDomain = selectedDomains.some((d) => questionMatchesDomain(q, d));
       if (!inDomain) return false;
       if (difficulty !== 'all' && q.difficulty !== difficulty) return false;
+      if (!experienceMatches(q.id)) return false;
       return true;
     });
-  }, [cert.id, selectedDomains, difficulty]);
+  }, [cert.id, selectedDomains, difficulty, experienceMatches]);
+
+  // Counts per experience bucket, respecting cert/domain/difficulty filters
+  // (so the toggle chips show live counts as the user narrows scope).
+  const experienceCounts = useMemo(() => {
+    const base = QUIZ_QUESTIONS.filter((q) => {
+      if (!q.certTags.includes(cert.id)) return false;
+      const inDomain = selectedDomains.some((d) => questionMatchesDomain(q, d));
+      if (!inDomain) return false;
+      if (difficulty !== 'all' && q.difficulty !== difficulty) return false;
+      return true;
+    });
+    let unseen = 0, weak = 0, strong = 0;
+    for (const q of base) {
+      const s = perQ[q.id];
+      if (!s || s.timesSeen === 0) unseen++;
+      else if ((s.timesRight / s.timesSeen) < WEAK_THRESHOLD) weak++;
+      else strong++;
+    }
+    return { unseen, weak, strong };
+  }, [cert.id, selectedDomains, difficulty, perQ]);
+
+  const toggleExperience = (e: QuizExperience) => {
+    setExperience((prev) => prev.includes(e) ? prev.filter((x) => x !== e) : [...prev, e]);
+  };
 
   const finalCount = Math.min(count, pool.length);
 
@@ -358,9 +417,10 @@ function Step3Options({
       count,
       selectedCert:       cert,
       selectedDomainIds:  Array.from(selectedDomainIds),
+      experience,
       ...overrides,
     }),
-    [difficulty, cert, count, selectedDomainIds],
+    [difficulty, cert, count, selectedDomainIds, experience],
   );
 
   return (
@@ -433,6 +493,41 @@ function Step3Options({
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Experience filter — multi-select, mix and match */}
+        <div>
+          <div className="flex items-baseline justify-between mb-1.5">
+            <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Experience</label>
+            <span className="text-[9px] font-mono text-slate-700">multi-select · leave blank for all</span>
+          </div>
+          <div className="flex gap-2">
+            {([
+              { id: 'unseen', label: 'Unseen',  n: experienceCounts.unseen },
+              { id: 'weak',   label: 'Weak',    n: experienceCounts.weak   },
+              { id: 'strong', label: 'Strong',  n: experienceCounts.strong },
+            ] as const).map((e) => (
+              <button
+                key={e.id}
+                onClick={() => toggleExperience(e.id)}
+                className={[
+                  'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
+                  experience.includes(e.id)
+                    ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-300'
+                    : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
+                ].join(' ')}
+                aria-pressed={experience.includes(e.id)}
+              >
+                {e.label}
+                <span className="ml-1 text-[9px] font-mono opacity-70">{e.n}</span>
+              </button>
+            ))}
+          </div>
+          <p className="text-[10px] font-mono text-slate-600 mt-1.5">
+            <span className="text-cyan-500">Unseen</span> = never attempted ·{' '}
+            <span className="text-cyan-500">Weak</span> = accuracy &lt; 70% ·{' '}
+            <span className="text-cyan-500">Strong</span> = accuracy ≥ 70%
+          </p>
         </div>
 
         {/* Count */}
@@ -964,6 +1059,8 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
       ? s.selectedCert.domains.filter((d) => (s.selectedDomainIds as string[]).includes(d.id))
       : [];
 
+    const { perQ } = loadProgress();
+    const experience = s.experience ?? [];
     const pool = QUIZ_QUESTIONS.filter((q) => {
       // Always filter by cert tag when an exam is selected.
       if (s.certFilter !== 'All' && !q.certTags.includes(s.certFilter)) return false;
@@ -973,12 +1070,20 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
         if (!inDomain) return false;
       }
       if (s.difficulty !== 'all' && q.difficulty !== s.difficulty) return false;
+      // Experience filter — empty = include all, otherwise intersect with
+      // perQ-derived bucket (unseen / weak / strong).
+      if (experience.length > 0) {
+        const st = perQ[q.id];
+        const bucket: QuizExperience = !st || st.timesSeen === 0
+          ? 'unseen'
+          : (st.timesRight / st.timesSeen) < WEAK_THRESHOLD ? 'weak' : 'strong';
+        if (!experience.includes(bucket)) return false;
+      }
       return true;
     });
 
     // Weighted pick biases toward questions the user has missed or hasn't
     // seen yet — Anki-style spaced repetition without ever fully retiring a Q.
-    const { perQ } = loadProgress();
     const weighted = pickWeighted(pool, s.count, perQ);
     const selected = breakAnswerStreaks(weighted.map(shuffleOptions));
     setSettings(s);
