@@ -25,13 +25,37 @@ export interface DrillStep {
 
 export interface Drill {
   id: string;
-  portal: 'Entra' | 'Defender XDR' | 'Sentinel' | 'Defender for Cloud' | 'Purview' | 'Azure OpenAI' | 'Security Copilot';
+  /**
+   * The bucket the drill belongs to — the filter chip on the list view.
+   * For SC-500 drills these are portal names (Entra, Defender XDR, etc.).
+   * For SecAI+ drills these are objective-domain labels (Domain 2 · Attacks,
+   * Domain 3 · Tools, Domain 4 · Responsible AI). String type keeps the
+   * component generic across cert vocabularies — each drill set supplies
+   * its own bucket palette via DrillSet.bucketColors.
+   */
+  portal: string;
   title: string;
   /** Scenario / business goal. */
   scenario: string;
   /** Difficulty tag for filtering. */
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   steps: DrillStep[];
+}
+
+/**
+ * A drill set for a single certification. PortalDrills loads one at a time
+ * via the top-level cert switcher.
+ */
+export interface DrillSet {
+  /** Cert tag matching the app's cert filters (e.g. 'SC-500', 'SecAI'). */
+  certId: string;
+  /** Display name in the switcher. */
+  certLabel: string;
+  drills: Drill[];
+  /** Ordered list of bucket values as they should appear in filter chips. */
+  buckets: string[];
+  /** Per-bucket Tailwind class for the filter chip + drill-header pill. */
+  bucketColors: Record<string, string>;
 }
 
 export const SC500_DRILLS: Drill[] = [
@@ -680,7 +704,7 @@ export const SC500_DRILLS: Drill[] = [
   },
 ];
 
-export const SC500_DRILL_PORTAL_COLORS: Record<Drill['portal'], string> = {
+export const SC500_DRILL_PORTAL_COLORS: Record<string, string> = {
   'Entra':              'bg-blue-500/10 text-blue-300 border-blue-500/30',
   'Defender XDR':       'bg-red-500/10 text-red-300 border-red-500/30',
   'Sentinel':           'bg-amber-500/10 text-amber-300 border-amber-500/30',
@@ -688,4 +712,12 @@ export const SC500_DRILL_PORTAL_COLORS: Record<Drill['portal'], string> = {
   'Purview':            'bg-violet-500/10 text-violet-300 border-violet-500/30',
   'Azure OpenAI':       'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
   'Security Copilot':   'bg-pink-500/10 text-pink-300 border-pink-500/30',
+};
+
+export const SC500_DRILL_SET: DrillSet = {
+  certId:    'SC-500',
+  certLabel: 'Microsoft SC-500',
+  drills:    SC500_DRILLS,
+  buckets:   ['Entra', 'Defender XDR', 'Sentinel', 'Defender for Cloud', 'Purview', 'Azure OpenAI', 'Security Copilot'],
+  bucketColors: SC500_DRILL_PORTAL_COLORS,
 };

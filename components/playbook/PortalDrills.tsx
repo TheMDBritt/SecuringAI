@@ -1,6 +1,7 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { SC500_DRILLS, SC500_DRILL_PORTAL_COLORS, type Drill } from '@/lib/sc500-drills';
+import { SC500_DRILL_SET, type Drill, type DrillSet } from '@/lib/sc500-drills';
+import { SECAI_DRILL_SET } from '@/lib/secai-drills';
 
 type Mode = 'list' | 'run' | 'done';
 
@@ -10,18 +11,31 @@ const DIFFICULTY_STYLE: Record<Drill['difficulty'], string> = {
   advanced:     'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
-const PORTALS: Drill['portal'][] = ['Entra', 'Defender XDR', 'Sentinel', 'Defender for Cloud', 'Purview', 'Azure OpenAI', 'Security Copilot'];
+// All drill sets registered here appear in the top-level cert switcher.
+const DRILL_SETS: DrillSet[] = [SC500_DRILL_SET, SECAI_DRILL_SET];
 
 export default function PortalDrills() {
   const [mode,         setMode]         = useState<Mode>('list');
   const [activeDrill,  setActiveDrill]  = useState<Drill | null>(null);
   const [stepIdx,      setStepIdx]      = useState(0);
   const [picks,        setPicks]        = useState<(number | null)[]>([]);
-  const [portalFilter, setPortalFilter] = useState<Drill['portal'] | 'All'>('All');
+  const [portalFilter, setPortalFilter] = useState<string>('All');
+  const [certId,       setCertId]       = useState<string>(SC500_DRILL_SET.certId);
+
+  const activeSet = useMemo(
+    () => DRILL_SETS.find((s) => s.certId === certId) ?? SC500_DRILL_SET,
+    [certId],
+  );
+
+  // Reset portal filter when switching certs so we don't carry an invalid bucket.
+  const setActiveCert = (id: string) => {
+    setCertId(id);
+    setPortalFilter('All');
+  };
 
   const drills = useMemo(
-    () => (portalFilter === 'All' ? SC500_DRILLS : SC500_DRILLS.filter((d) => d.portal === portalFilter)),
-    [portalFilter],
+    () => (portalFilter === 'All' ? activeSet.drills : activeSet.drills.filter((d) => d.portal === portalFilter)),
+    [activeSet, portalFilter],
   );
 
   const startDrill = (d: Drill) => {
@@ -59,15 +73,35 @@ export default function PortalDrills() {
   if (mode === 'list') {
     return (
       <div className="h-full overflow-y-auto p-4 space-y-4">
-        <div className="mb-2">
-          <h2 className="text-sm font-semibold text-slate-100">Portal Drills</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Click-path simulations for the Microsoft security portals. Practice the menu order without a tenant.
-            Each drill mimics what you&apos;d see in the real portal, step by step.
-          </p>
+        <div className="mb-2 flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h2 className="text-sm font-semibold text-slate-100">Drills</h2>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Click-through scenario drills for {activeSet.certLabel}. Practice the click-paths and concept differentiators without a tenant. Each drill runs step-by-step with an explanation after every pick.
+            </p>
+          </div>
+          {/* Cert switcher */}
+          <div className="flex items-center gap-1.5" role="tablist" aria-label="Drill cert">
+            {DRILL_SETS.map((s) => (
+              <button
+                key={s.certId}
+                role="tab"
+                aria-selected={certId === s.certId}
+                onClick={() => setActiveCert(s.certId)}
+                className={[
+                  'text-[10px] font-mono px-2.5 py-1 rounded border transition-colors',
+                  certId === s.certId
+                    ? 'bg-violet-500/10 border-violet-500/40 text-violet-300'
+                    : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
+                ].join(' ')}
+              >
+                {s.certId} · {s.drills.length}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Portal filter */}
+        {/* Bucket filter — labels vary per cert (SC-500: portals; SecAI+: domains) */}
         <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => setPortalFilter('All')}
@@ -78,10 +112,10 @@ export default function PortalDrills() {
                 : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
             ].join(' ')}
           >
-            All ({SC500_DRILLS.length})
+            All ({activeSet.drills.length})
           </button>
-          {PORTALS.map((p) => {
-            const count = SC500_DRILLS.filter((d) => d.portal === p).length;
+          {activeSet.buckets.map((p) => {
+            const count = activeSet.drills.filter((d) => d.portal === p).length;
             if (count === 0) return null;
             return (
               <button
@@ -90,7 +124,7 @@ export default function PortalDrills() {
                 className={[
                   'text-[10px] font-mono px-2 py-1 rounded border transition-colors',
                   portalFilter === p
-                    ? SC500_DRILL_PORTAL_COLORS[p]
+                    ? (activeSet.bucketColors[p] ?? 'bg-slate-700 border-slate-500 text-slate-200')
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -109,7 +143,7 @@ export default function PortalDrills() {
               className="text-left border border-slate-700 rounded-xl bg-slate-800/40 hover:bg-slate-800 hover:border-slate-600 transition-colors p-4"
             >
               <div className="flex items-start justify-between mb-2 gap-2">
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${SC500_DRILL_PORTAL_COLORS[d.portal]}`}>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[d.portal] ?? 'border-slate-700 text-slate-400'}`}>
                   {d.portal}
                 </span>
                 <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[d.difficulty]}`}>
@@ -140,7 +174,7 @@ export default function PortalDrills() {
         {/* Header */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <div>
-            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${SC500_DRILL_PORTAL_COLORS[activeDrill.portal]}`}>
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[activeDrill.portal] ?? 'border-slate-700 text-slate-400'}`}>
               {activeDrill.portal}
             </span>
             <h3 className="text-sm font-semibold text-slate-100 mt-1.5">{activeDrill.title}</h3>

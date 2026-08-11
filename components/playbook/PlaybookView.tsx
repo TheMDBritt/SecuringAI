@@ -20,7 +20,7 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: stri
   { id: 'certs',    label: 'Certs',    count: '11',      desc: '11 exams' },
   { id: 'quiz',     label: 'Quiz',     count: Q_COUNT,   desc: `${Q_COUNT} questions` },
   { id: 'progress', label: 'Progress',                   desc: 'Your quiz history' },
-  { id: 'drills',   label: 'Drills',                     desc: 'SC-500 drills' },
+  { id: 'drills',   label: 'Drills',                     desc: 'Scenario drills' },
 ];
 
 const VALID_SECTIONS: readonly PlaybookSection[] = ['topics', 'glossary', 'certs', 'quiz', 'progress', 'drills'];
