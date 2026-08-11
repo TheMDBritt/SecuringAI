@@ -7748,4 +7748,324 @@ Rule of thumb: **rotating credential → Secrets Manager; static value → Param
 
 **Sourced from:** \`docs.aws.amazon.com/kms/latest/developerguide/\`, \`docs.aws.amazon.com/secretsmanager/latest/userguide/\`, \`docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html\`, \`docs.aws.amazon.com/macie/latest/user/\`, \`docs.aws.amazon.com/acm/latest/userguide/\`, \`docs.aws.amazon.com/AmazonS3/latest/userguide/UsingEncryption.html\`.`,
   },
+
+  {
+    id: 'aws-scsc03-d4-logging',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 4 — Security Logging and Monitoring',
+    certTags: ['SCS-C03'],
+    vocab: ['CloudTrail', 'CloudTrail Lake', 'CloudWatch Logs', 'CloudWatch Alarms', 'AWS Config', 'Security Lake', 'VPC Flow Logs', 'EventBridge', 'Athena'],
+    content: `**Domain 4 = 18% of SCS-C03 (~12 questions).** Every AWS security answer eventually depends on log evidence. Know which log lands where and which service queries it.
+
+### CloudTrail
+
+- **Management events** — control-plane API calls (default on, free for the first copy per account). CreateBucket, PutBucketPolicy, AssumeRole, etc.
+- **Data events** — data-plane (opt-in per resource type): S3 object-level (GetObject, PutObject), Lambda function invocations, DynamoDB item-level, S3 Express One Zone, Outposts.
+- **CloudTrail Insights** — anomaly detection on API call rate/error rate ($0.35 per 100K events analyzed).
+- **Organization trail** — collects from every account into a central S3 bucket + optional CloudWatch Logs / KMS-encrypted.
+- **Multi-region trail** should be the default — otherwise attackers pivot to unmonitored regions.
+- **Log file integrity validation** — SHA-256 hashes + digest signing so tampering is detectable.
+
+**Sourced from:** \`docs.aws.amazon.com/awscloudtrail/latest/userguide/\`
+
+### CloudTrail Lake
+
+- SQL-queryable long-retention (up to 10 years) store for CloudTrail events + external sources (audit logs from Okta, etc.)
+- Event data store — you pay for storage and queries (Athena-like pricing)
+- Answers "what did user X do in the last 90 days?" faster than S3-scanning with Athena
+- Federation query with Athena also supported
+
+### CloudWatch
+
+- **Logs** — ingestion + retention (per-log-group setting). Subscription filters push to Kinesis Data Streams / Firehose / Lambda in real-time.
+- **Metrics** — namespace/name/dimensions. Custom metrics from apps via PutMetricData or embedded metric format.
+- **Alarms** — threshold on a metric; state = OK / ALARM / INSUFFICIENT_DATA. Actions: SNS, Auto Scaling, EC2 recovery, Lambda.
+- **Metric filters** — pattern-match log events → publish a metric (e.g. "root account use" filter → alarm → SNS to security team).
+- **Logs Insights** — ad-hoc query language over CloudWatch Logs. Smaller windows / fewer joins than Athena.
+
+### AWS Config
+
+- Continuous **resource inventory + configuration history** across services and regions
+- **Managed rules** (hundreds) + **custom rules** (Lambda or Guard)
+- **Conformance packs** — group rules for a compliance framework (CIS, PCI, NIST, HIPAA, etc.)
+- **Multi-account Aggregator** rolls up across an Organization
+- Findings feed Security Hub; remediation via SSM Automation
+- Records both configuration changes AND compliance state
+
+**Sourced from:** \`docs.aws.amazon.com/config/latest/developerguide/\`
+
+### Security Lake
+
+- **OCSF-normalized** security data lake (S3-backed) across AWS sources (CloudTrail, VPC Flow, Route 53, EKS audit, WAF) + 3rd party (many SIEM/EDR vendors as subscribers or sources)
+- Subscribers ingest into their SIEM/data warehouse (Splunk, IBM QRadar, Palo Alto XSIAM, Snowflake, Datadog, etc.)
+- **Athena / QuickSight / OpenSearch** for in-AWS analytics
+- The org-wide security lake pattern — one place, one schema
+
+**Sourced from:** \`docs.aws.amazon.com/security-lake/latest/userguide/\`
+
+### VPC Flow Logs
+
+- Traffic metadata: 5-tuple + accepted/rejected + bytes + packets (+ TCP flags, pkt-srcaddr in custom format)
+- Destinations: CloudWatch Logs / S3 / Kinesis Firehose
+- **Cannot capture** DNS traffic to Amazon Route 53 Resolver, traffic to instance metadata (169.254.169.254), Windows license activation traffic
+- **Route 53 Resolver query logs** for DNS — separate from Flow Logs
+
+### Log query tools (know when to use which)
+
+| Tool | Sweet spot | Not great at |
+|---|---|---|
+| **CloudWatch Logs Insights** | Small windows, single log group, ad-hoc | Long history, joins |
+| **CloudTrail Lake** | SQL over CloudTrail history + external audit sources | Non-audit data |
+| **Athena + Glue** | S3 log lake (Flow Logs, ELB, CloudTrail S3 archive), federated | Real-time |
+| **OpenSearch Service** | Sub-second dashboards, alerting via OpenSearch Ingestion | Cost at scale |
+| **Security Lake + Athena** | Org-wide normalized OCSF | Needing raw source-native fields |
+
+### EventBridge for event-driven security
+
+- Default event bus captures AWS service events (Config, GuardDuty, Security Hub, CloudTrail via API destinations)
+- Rules route events to targets: Lambda, Step Functions, SQS, SNS, SSM Automation, API destinations, EC2 actions
+- Cross-account event bus for centralized security response
+
+**Common pattern:** GuardDuty finding → EventBridge rule → SSM Automation to quarantine EC2 (swap SG to isolation SG + snapshot for forensics).
+
+### Common exam traps
+
+- Enabling **CloudTrail management events** and expecting S3 object-level logging — that's a **data event**, opt-in per resource
+- Choosing **CloudWatch Logs Insights** when the scenario needs long-history search — that's **CloudTrail Lake** or **Athena over S3**
+- Missing **log file integrity validation** as a way to detect CloudTrail tampering
+- Assuming **Config** detects threats — it detects **configuration drift + compliance state**, not runtime behavior (that's GuardDuty)
+- Forgetting a **multi-region trail** — attackers exploit single-region monitoring
+- Choosing **CloudWatch Metrics** when the question wants raw event storage — Metrics are time-series, not events
+- Not knowing **Security Lake** normalizes to **OCSF** — this is the differentiator vs building your own S3-based lake
+
+### Study tasks
+
+1. Enable an **organization trail** covering all regions with log file validation + KMS encryption + S3 lifecycle to Glacier at 365 days
+2. Create a **CloudWatch metric filter** for \`{ ($.userIdentity.type = "Root") }\` on CloudTrail logs, plus an alarm → SNS
+3. Deploy an **AWS Config conformance pack** (CIS AWS Foundations Benchmark) and review non-compliant resources
+4. Set up **Security Lake** in a delegated administrator account and subscribe an OpenSearch dashboard
+
+**Sourced from:** \`docs.aws.amazon.com/awscloudtrail/latest/userguide/\`, \`docs.aws.amazon.com/AmazonCloudWatch/latest/logs/\`, \`docs.aws.amazon.com/config/latest/developerguide/\`, \`docs.aws.amazon.com/security-lake/latest/userguide/\`, \`docs.aws.amazon.com/eventbridge/latest/userguide/\`, \`docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-d5-threat-detection',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 5 — Threat Detection and Incident Response',
+    certTags: ['SCS-C03'],
+    vocab: ['GuardDuty', 'Security Hub', 'Inspector', 'Detective', 'IAM Access Analyzer', 'AWS Incident Manager', 'Trusted Advisor', 'EventBridge Automation'],
+    content: `**Domain 5 = 14% of SCS-C03 (~9 questions).** Detection catalog + response playbook automation. Know each service's job and where their outputs land.
+
+### GuardDuty
+
+Behavior-based threat detection — no agent to install, uses AWS-side telemetry.
+
+**Data sources** (each opt-in for cost):
+- CloudTrail management + S3 data events
+- VPC Flow Logs
+- Route 53 DNS query logs
+- EKS audit logs
+- Lambda network activity
+- RDS login events (Aurora MySQL, PostgreSQL)
+- **Runtime Monitoring** — agent on EC2 / ECS / EKS Fargate for kernel-level telemetry
+
+**Finding categories** (memorize the naming pattern — the exam expects you to recognize):
+Backdoor, Behavior, Cryptocurrency, DefenseEvasion, Discovery, Exfiltration, Impact, InitialAccess, Persistence, Policy, PrivilegeEscalation, Recon, Stealth, Trojan, UnauthorizedAccess.
+
+Findings publish to EventBridge → automated response.
+
+**Sourced from:** \`docs.aws.amazon.com/guardduty/latest/ug/\`
+
+### Security Hub
+
+Aggregation + scoring layer.
+
+- Ingests findings from **GuardDuty, Inspector, Macie, IAM Access Analyzer, Firewall Manager, Health, Config**, plus 3rd-party (Splunk, Palo Alto, Sysdig, Snyk, many more)
+- Normalizes to **ASFF** (AWS Security Finding Format) — the exam refers to this by name
+- Maps findings to standards: **AWS Foundational Security Best Practices (FSBP), CIS AWS Foundations, PCI-DSS, NIST SP 800-53**
+- Score per account per standard; drift over time
+- **Central config + delegated admin** for org-wide roll-up
+- Automation rules to auto-suppress noise or route by severity
+
+### Inspector (v2)
+
+Vulnerability scanning.
+
+- **EC2** — agentless via SSM (or SSM Agent) — package + kernel + configuration CVEs
+- **ECR container images** — scan on push + continuous rescan
+- **Lambda functions + layers** — scan dependencies
+- Continuous scanning; findings publish to Security Hub + EventBridge
+- CVSS + AWS-specific severity + exploitability
+- **Not the same as GuardDuty** — Inspector = static CVE scan; GuardDuty = runtime behavior
+
+### Detective
+
+Investigation graph for one incident, not aggregation.
+
+- Ingests VPC Flow Logs, CloudTrail, GuardDuty findings, EKS audit logs
+- Build-time behavioral baseline per resource — highlights deviations
+- Interactive time-range navigation and pivots (user → role → API calls → resources)
+- Complements Security Hub (which is aggregation) — Detective is deep dive
+- Use when a GuardDuty finding is ambiguous and you need context
+
+### IAM Access Analyzer
+
+Two-in-one service:
+
+- **External access findings** — resources unintentionally shared outside the account/org
+- **Unused access findings** — over-permissioned roles/users
+- **Policy validation** — pre-deploy policy check (errors, warnings, suggestions)
+- **Custom policy checks** (paid) — automated tests in CI/CD before policy deployment
+
+### AWS Incident Manager
+
+- **Response plans** — pre-defined runbooks with SSM Automation documents
+- **Contacts + escalation chain** — on-call rotations, escalation SLAs
+- **Incident timeline** — automatic + manual notes, chat integrations (Slack, Chime)
+- Triggered by CloudWatch Alarms or manually
+
+### Automated remediation patterns
+
+**Pattern 1 — GuardDuty → quarantine EC2:**
+GuardDuty finding "UnauthorizedAccess:EC2/SSHBruteForce" → EventBridge rule matches → SSM Automation runbook → swap instance SG to "isolation-only", create EBS snapshot for forensics, notify Security Hub.
+
+**Pattern 2 — Config drift → auto-remediate:**
+Config rule detects non-compliant resource → EventBridge → SSM Automation → apply remediation (e.g. re-enable S3 encryption, remove public access).
+
+**Pattern 3 — IAM Access Analyzer external access → auto-ticket:**
+Access Analyzer finding → EventBridge → Lambda → Jira/ServiceNow ticket → assigned to resource owner (via tag).
+
+**Pattern 4 — Security Hub critical → PagerDuty:**
+Security Hub finding at severity ≥ 90 → EventBridge → SNS → PagerDuty webhook.
+
+### Trusted Advisor
+
+- Free subset for all accounts: 6 core security checks (root MFA, exposed keys, public SGs, S3 public buckets, IAM use, RDS SG risks)
+- Full set with Business or Enterprise Support — cost / performance / security / fault-tolerance / service limits
+- Programmatic access via Support API (Business+ tier)
+
+### Common exam traps
+
+- Confusing **GuardDuty** (runtime behavior) with **Inspector** (static CVE scans)
+- Choosing **Security Hub** for deep investigation of one incident — that's **Detective**
+- Missing that **Security Hub uses ASFF** as the normalized format
+- Forgetting **IAM Access Analyzer** does BOTH external + unused access (they're two separate analyzer types)
+- Assuming **GuardDuty** needs an agent — it doesn't for CloudTrail/VPC/DNS/S3/EKS/RDS/Lambda; **Runtime Monitoring** does need an agent on hosts
+- Picking **CloudWatch Alarms** for a security response when **EventBridge + SSM Automation** is the modern answer
+- Missing that **Detective ingests GuardDuty findings** — you enable both together
+
+### Study tasks
+
+1. Enable **GuardDuty** at the org level with all data sources (including Runtime Monitoring) + delegated admin
+2. Enable **Security Hub** and turn on FSBP + CIS standards; review Score
+3. Build an **EventBridge rule** matching GuardDuty findings of severity ≥ 7 → SSM Automation runbook that snapshots the offending EC2's EBS volumes
+4. Enable **Inspector** for ECR image scanning; push a container image with a known CVE and observe the finding surface in Security Hub
+
+**Sourced from:** \`docs.aws.amazon.com/guardduty/latest/ug/\`, \`docs.aws.amazon.com/securityhub/latest/userguide/\`, \`docs.aws.amazon.com/inspector/latest/user/\`, \`docs.aws.amazon.com/detective/latest/userguide/\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer.html\`, \`docs.aws.amazon.com/incident-manager/latest/userguide/\`, \`docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html\`.`,
+  },
+
+  {
+    id: 'aws-scsc03-d6-governance',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Domain 6 — Management and Governance',
+    certTags: ['SCS-C03'],
+    vocab: ['AWS Organizations', 'Control Tower', 'Service Catalog', 'Artifact', 'Audit Manager', 'License Manager', 'RAM', 'Resource Explorer'],
+    content: `**Domain 6 = 10% of SCS-C03 (~7 questions).** Smallest weight, but easy points if you know the service map — several questions test simple "which service does X?" recognition.
+
+### AWS Organizations
+
+- **Accounts + OUs (Organizational Units)** — hierarchy for policy attachment
+- **Root** — the top of the OU tree, not the root IAM user
+- **Service Control Policies (SCPs)** — deny-only or allow-list guardrails at Root/OU/account
+- **Tag policies** — enforce tag key/value standards
+- **Backup policies** — org-wide AWS Backup settings
+- **Delegated administrator** — grant a member account admin for specific services (Security Hub, GuardDuty, Config Aggregator, etc.) so security team doesn't need to log into the management account
+- **Consolidated billing** and **reserved instance sharing** are org features
+- Attach SCPs by OU to enforce baselines like "no us-east-2 usage", "block us from disabling CloudTrail"
+
+**Sourced from:** \`docs.aws.amazon.com/organizations/latest/userguide/\`
+
+### AWS Control Tower
+
+- **Landing zone** — pre-built multi-account structure with core accounts (Log Archive, Audit) + custom OUs
+- **Guardrails** — preventive (SCPs) + detective (Config rules), classified as:
+  - **Mandatory** — always on, cannot be disabled
+  - **Strongly recommended** — enabled by default, can be disabled
+  - **Elective** — off by default, opt-in
+- **Account Factory** — self-service account creation with baseline controls
+- Sits on top of Organizations — Control Tower manages the OU/SCP structure
+
+### AWS Service Catalog
+
+- Pre-approved products (CloudFormation stacks) for developer self-service
+- **Portfolios** — group products, share cross-account via RAM
+- **Constraints** — launch role, template constraint (limit parameter values), notification, tag update
+- Prevents shadow IT ("developers spinning up unapproved resources")
+
+### AWS Artifact
+
+- Compliance reports available for download:
+  - **SOC 1 / 2 / 3**
+  - **PCI-DSS AoC (Attestation of Compliance)**
+  - **ISO 27001 / 27017 / 27018**
+  - **FedRAMP High/Moderate ATO Letters**
+  - **HIPAA BAA** (execute agreements)
+  - **IRAP, C5, MTCS**
+- No cost — programmatic access via API
+
+**Sourced from:** \`docs.aws.amazon.com/artifact/latest/ug/\`
+
+### AWS Audit Manager
+
+- Evidence collection for **AWS-provided frameworks** (SOC 2, HIPAA, PCI-DSS, GDPR, CIS, NIST 800-53, etc.) + custom frameworks
+- Automatically pulls evidence from CloudTrail, Config, Security Hub, resource metadata
+- Assessments run continuously; export packages for auditors
+- Distinct from **Compliance Manager** (Microsoft) or **Compliance Center** (Splunk)
+
+### AWS Config (governance side)
+
+- **Multi-account, multi-region Aggregator** — org-wide compliance dashboard
+- **Custom rules via AWS CloudFormation Guard (cfn-guard)** — policy-as-code
+- **Conformance packs** for CIS / PCI / NIST / HIPAA baselines
+
+### AWS Resource Access Manager (RAM)
+
+- Share AWS resources cross-account without duplication:
+  - Transit Gateway
+  - VPC subnets (participants can launch resources into a shared subnet)
+  - Route 53 Resolver rules
+  - License Manager configurations
+  - Aurora clusters, and more
+- Preferred over VPC peering for hub-and-spoke networking
+
+### AWS Resource Explorer
+
+- Search resources across accounts + regions via a unified index
+- View → Index → aggregate index in a specified region
+- Useful for security teams answering "does this cert cover every S3 bucket in the org?"
+
+### License Manager
+
+- Track BYOL licenses (Windows, SQL Server, etc.)
+- Enforce host isolation / dedicated hosts / license rules
+- Cross-account via Organizations
+
+### Common exam traps
+
+- Choosing **Organizations** when the answer is **Control Tower** — Control Tower is the higher-level, opinionated wrapper with baselines
+- Missing that **Artifact** has BAA execution for HIPAA (not just downloads)
+- Confusing **Audit Manager** with **Security Hub** — Audit Manager collects evidence for compliance frameworks; Security Hub aggregates security findings
+- Picking **License Manager** when the question is about compliance — that's usually **Config**, **Audit Manager**, or **Artifact**
+- Assuming **RAM** is the same as VPC peering — RAM shares resources, doesn't create network routes
+- Not knowing **delegated administrator** exists — security teams shouldn't log into the management account routinely
+
+### Study tasks
+
+1. Set up **Control Tower** in a sandbox org and add a workload account via Account Factory — observe the mandatory guardrails applied
+2. Attach an **SCP** to a Sandbox OU denying \`ec2:RunInstances\` outside \`us-east-1\`
+3. Enable an **Audit Manager** assessment for CIS AWS Foundations 1.4.0 and export evidence
+4. Share a **Transit Gateway** via RAM to a spoke account and validate cross-account routing
+
+**Sourced from:** \`docs.aws.amazon.com/organizations/latest/userguide/\`, \`docs.aws.amazon.com/controltower/latest/userguide/\`, \`docs.aws.amazon.com/servicecatalog/latest/adminguide/\`, \`docs.aws.amazon.com/artifact/latest/ug/\`, \`docs.aws.amazon.com/audit-manager/latest/userguide/\`, \`docs.aws.amazon.com/ram/latest/userguide/\`, \`docs.aws.amazon.com/resource-explorer/latest/userguide/\`, \`docs.aws.amazon.com/license-manager/latest/userguide/\`.`,
+  },
 ];
