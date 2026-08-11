@@ -5,7 +5,7 @@ import { ProgressClient } from '@/components/progress/ProgressClient';
 export const metadata = {
   title: 'Progress',
   description:
-    'Detailed training progress across all three disciplines and every mapped certification — completion, defense rate, quiz accuracy, and full attempt history.',
+    'Detailed training progress across all three disciplines and every mapped certification — completion, quiz accuracy, and full attempt history.',
 };
 
 const DOJO_TITLES: Record<1 | 2 | 3, string> = {

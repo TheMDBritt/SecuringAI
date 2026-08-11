@@ -114,8 +114,6 @@ export interface ProgressSummary {
   attackAttempts: number;
   attacksSucceeded: number;
   attacksBlocked: number;
-  defenseRate: number; // 0–100, share of attempts the defense held
-  securityScore: number; // 0–100 composite
   perDojo: Record<1 | 2 | 3, { attempts: number; blocked: number }>;
   perCert: { certId: string; certName: string; runs: number; accuracy: number }[];
   difficulty: Record<'beginner' | 'intermediate' | 'advanced' | 'unknown', number>;
@@ -131,7 +129,6 @@ export function summarize(state: ProgressState): ProgressSummary {
   const attackAttempts = state.attackRuns.length;
   const attacksSucceeded = state.attackRuns.filter((r) => r.succeeded).length;
   const attacksBlocked = attackAttempts - attacksSucceeded;
-  const defenseRate = attackAttempts ? Math.round((attacksBlocked / attackAttempts) * 100) : 0;
 
   const perDojo: ProgressSummary['perDojo'] = {
     1: { attempts: 0, blocked: 0 },
@@ -170,16 +167,6 @@ export function summarize(state: ProgressState): ProgressSummary {
     else difficulty.unknown += 1;
   }
 
-  // Composite security score: blend defense rate and quiz accuracy, weighted by
-  // engagement. With no data it stays neutral at 0.
-  let securityScore = 0;
-  if (attackAttempts || questionsAnswered) {
-    const parts: number[] = [];
-    if (attackAttempts) parts.push(defenseRate);
-    if (questionsAnswered) parts.push(accuracy);
-    securityScore = Math.round(parts.reduce((a, b) => a + b, 0) / parts.length);
-  }
-
   const recent = [
     ...state.quizRuns.map((r) => ({
       at: r.at,
@@ -209,8 +196,6 @@ export function summarize(state: ProgressState): ProgressSummary {
     attackAttempts,
     attacksSucceeded,
     attacksBlocked,
-    defenseRate,
-    securityScore,
     perDojo,
     perCert,
     difficulty,

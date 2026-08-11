@@ -13,7 +13,6 @@ import {
   SectionHeading,
   PageHeader,
   EmptyState,
-  Donut,
 } from '@/components/ui';
 
 export interface CatalogScenario {
@@ -31,12 +30,6 @@ interface Catalog {
 
 const DOJO_TONE: Record<1 | 2 | 3, 'red' | 'cyan' | 'emerald'> = { 1: 'red', 2: 'cyan', 3: 'emerald' };
 const DOJO_HEX: Record<string, string> = { red: '#f87171', cyan: '#22d3ee', emerald: '#34d399' };
-
-function scoreTone(v: number): string {
-  if (v >= 80) return '#34d399';
-  if (v >= 55) return '#f59e0b';
-  return '#f87171';
-}
 
 const ICONS = {
   shield: (
@@ -113,40 +106,16 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       />
 
       {/* Top stat row */}
-      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Overall completion" value={`${hydrated ? completion : 0}%`} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
-        <StatCard label="Defense rate" value={hydrated && summary.attackAttempts ? `${summary.defenseRate}%` : '—'} sub={`${summary.attacksBlocked} blocked · ${summary.attacksSucceeded} landed`} tone="emerald" icon={ICONS.shield} />
         <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="cyan" icon={ICONS.check} />
         <StatCard label="Lab attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="violet" icon={ICONS.target} />
       </div>
 
-      {/* Main grid */}
-      <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Security score */}
-        <Card className="flex flex-col items-center justify-center p-6 text-center">
-          <p className="ui-eyebrow">Security score</p>
-          <div className="my-4">
-            <Donut
-              value={hydrated ? summary.securityScore : 0}
-              tone={scoreTone(summary.securityScore)}
-              label={hydrated ? summary.securityScore : 0}
-              sublabel="/ 100"
-              size={150}
-            />
-          </div>
-          <p className="max-w-[15rem] text-[13px] leading-relaxed text-slate-400">
-            {!hasActivity
-              ? 'Run a lab or a quiz to generate your composite score.'
-              : summary.securityScore >= 80
-                ? 'Strong. You are defending attacks and passing domain checks consistently.'
-                : summary.securityScore >= 55
-                  ? 'Solid footing — keep drilling the disciplines where attacks still land.'
-                  : 'Early days. Focus on blocking attacks and raising quiz accuracy.'}
-          </p>
-        </Card>
-
+      {/* Main grid — current dojo progress full width now */}
+      <div className="mt-6 grid grid-cols-1 gap-4">
         {/* Current dojo progress */}
-        <Card className="p-5 lg:col-span-2">
+        <Card className="p-5">
           <SectionHeading
             eyebrow="Discipline progress"
             title="Current dojo progress"
@@ -170,35 +139,8 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         </Card>
       </div>
 
-      {/* Second grid */}
-      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Attack outcomes */}
-        <Card className="p-5">
-          <SectionHeading eyebrow="Outcomes" title="Attack results" />
-          {hydrated && summary.attackAttempts > 0 ? (
-            <div className="mt-5">
-              <div className="flex h-3 w-full overflow-hidden rounded-full bg-white/5">
-                <div className="h-full bg-emerald-500" style={{ width: `${summary.defenseRate}%` }} />
-                <div className="h-full bg-red-500" style={{ width: `${100 - summary.defenseRate}%` }} />
-              </div>
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3">
-                  <p className="text-2xl font-bold text-emerald-300">{summary.attacksBlocked}</p>
-                  <p className="text-[12px] text-slate-400">Blocked by defense</p>
-                </div>
-                <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
-                  <p className="text-2xl font-bold text-red-300">{summary.attacksSucceeded}</p>
-                  <p className="text-[12px] text-slate-400">Attacks landed</p>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
-              No attack attempts recorded yet. Load a Dojo 1 scenario, toggle guardrails, and fire a payload to populate this chart.
-            </p>
-          )}
-        </Card>
-
+      {/* Second grid — difficulty mix + next lab */}
+      <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Difficulty distribution */}
         <Card className="p-5">
           <SectionHeading eyebrow="Coverage" title="Difficulty mix" />

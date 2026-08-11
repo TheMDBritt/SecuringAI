@@ -83,11 +83,10 @@ export function ProgressClient({
         />
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            <StatCard label="Defense rate" value={`${summary.defenseRate}%`} sub={`${summary.attacksBlocked}/${summary.attackAttempts} blocked`} tone="emerald" />
+          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
             <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="cyan" />
-            <StatCard label="Security score" value={summary.securityScore} sub="composite / 100" tone="brand" />
             <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} labs`} tone="violet" />
+            <StatCard label="Questions answered" value={summary.questionsAnswered} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
           </div>
 
           {/* Discipline breakdown */}

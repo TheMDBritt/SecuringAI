@@ -2,7 +2,7 @@ export type DojoId = 1 | 2 | 3;
 
 // ─── Playbook (handbook + quiz + glossary + cert map) ────────────────────────
 
-export type PlaybookSection = 'topics' | 'glossary' | 'certs' | 'quiz' | 'drills';
+export type PlaybookSection = 'topics' | 'glossary' | 'certs' | 'quiz' | 'drills' | 'progress';
 export type QuizDifficulty  = 'beginner' | 'intermediate' | 'advanced';
 
 export interface QuizQuestion {

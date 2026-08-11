@@ -8,7 +8,7 @@ export const metadata = {
 };
 
 const QUICK_LINKS = [
-  { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, defense rate, and recommended next lab.' },
+  { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next lab.' },
   { href: '/dojo', label: 'Labs', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
   { href: '/playbook', label: 'Playbook', desc: '1,800+ questions, glossary, cert maps, and topic articles.' },
   { href: '/progress', label: 'Progress', desc: 'Per-discipline and per-certification analytics.' },
@@ -42,7 +42,7 @@ const FAQ = [
   },
   {
     q: 'How is my score calculated?',
-    a: 'Dojo 1 uses a deterministic outcome engine driven purely by your guardrail configuration, so the same setup always yields the same result. Dojo 2 and 3 use per-scenario quality rubrics. Your dashboard security score blends your attack-defense rate with your quiz accuracy.',
+    a: 'Dojo 1 uses a deterministic outcome engine driven purely by your guardrail configuration, so the same setup always yields the same result. Dojo 2 and 3 use per-scenario quality rubrics. Your dashboard tracks completion, quiz accuracy, and recent activity.',
   },
   {
     q: 'Which certifications are covered?',
