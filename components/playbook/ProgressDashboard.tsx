@@ -1,14 +1,17 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
   loadProgress,
   resetProgress,
   summarizeCert,
   topicAccuracy,
   certsWithData,
+  readinessScore,
   type ProgressData,
   type SessionRecord,
+  type Readiness,
 } from '@/lib/quiz-progress';
 
 // ─── Small render helpers ────────────────────────────────────────────────────
@@ -100,6 +103,18 @@ export default function ProgressDashboard() {
 
   const summary = useMemo(() => summarizeCert(data, cert), [data, cert]);
   const topics  = useMemo(() => topicAccuracy(data, cert, Q_CATEGORY_LOOKUP), [data, cert]);
+
+  // Readiness — only meaningful for a specific cert (not 'All'). Uses the
+  // real question pool size for the cert and the passing score from the
+  // cert catalog. Falls back to 67% if a cert is unlisted.
+  const readiness = useMemo<Readiness | null>(() => {
+    if (cert === 'All') return null;
+    const poolSize = QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert)).length;
+    if (poolSize === 0) return null;
+    const catalog = EXAM_CERTS.find((c) => c.id === cert);
+    const passPct = catalog?.passingScore ?? 67;
+    return readinessScore(data, cert, poolSize, passPct);
+  }, [data, cert]);
 
   // Filter sessions to selected cert scope, newest-first.
   const scopedSessions: SessionRecord[] = useMemo(() => {
@@ -194,6 +209,9 @@ export default function ProgressDashboard() {
           </div>
         ) : (
           <>
+            {/* Readiness card — only shown for a specific cert */}
+            {readiness && <ReadinessCard cert={cert} r={readiness} />}
+
             {/* All-time stats row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatCell label="All-time" value={`${summary.overallPct}%`} sub={`${summary.totalCorrect}/${summary.totalQuestions}`} color={pctColor(summary.overallPct)} />
@@ -344,6 +362,60 @@ function StatCell({ label, value, sub, color }: { label: string; value: string; 
       <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">{label}</p>
       <p className={`text-2xl font-bold font-mono mt-1 ${color}`}>{value}</p>
       <p className="text-[10px] font-mono text-slate-600 mt-0.5 truncate">{sub}</p>
+    </div>
+  );
+}
+
+function ReadinessCard({ cert, r }: { cert: string; r: Readiness }) {
+  const border = r.status === 'green' ? 'border-emerald-500/40 bg-emerald-500/5'
+    : r.status === 'amber' ? 'border-amber-500/40 bg-amber-500/5'
+    : 'border-red-500/40 bg-red-500/5';
+  const textColor = r.status === 'green' ? 'text-emerald-300'
+    : r.status === 'amber' ? 'text-amber-300'
+    : 'text-red-300';
+  const label = r.status === 'green' ? 'READY' : r.status === 'amber' ? 'BORDERLINE' : 'NOT READY';
+  const message =
+    r.bottleneck === 'coverage' ? `You've only seen ${r.coveragePct}% of the ${cert} pool. Run more quizzes across every topic.`
+    : r.bottleneck === 'accuracy' ? `Coverage is ${r.coveragePct}% but accuracy is ${r.accuracyPct}%. Focus on your weakest topics.`
+    : r.bottleneck === 'both'     ? `Coverage ${r.coveragePct}% and accuracy ${r.accuracyPct}% both below the ${r.passPct}% pass mark.`
+                                   : `Above pass threshold on both coverage and accuracy.`;
+  return (
+    <div className={`border rounded-lg p-4 ${border}`}>
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="min-w-0">
+          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wide">Readiness — {cert}</p>
+          <div className="flex items-baseline gap-3 mt-1">
+            <span className={`text-4xl font-bold font-mono ${textColor}`}>{r.score}%</span>
+            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${textColor} border-current/40`}>{label}</span>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">{message}</p>
+        </div>
+        <div className="flex gap-4 shrink-0">
+          <MiniBar label="Coverage" value={r.coveragePct} threshold={r.passPct} />
+          <MiniBar label="Accuracy" value={r.accuracyPct} threshold={r.passPct} />
+          <MiniBar label="Pass mark" value={r.passPct} threshold={r.passPct} muted />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniBar({ label, value, threshold, muted }: { label: string; value: number; threshold: number; muted?: boolean }) {
+  const barColor = muted ? 'bg-slate-600'
+    : value >= threshold + 10 ? 'bg-emerald-500'
+    : value >= threshold      ? 'bg-amber-500'
+    :                            'bg-red-500';
+  const textColor = muted ? 'text-slate-500'
+    : value >= threshold + 10 ? 'text-emerald-400'
+    : value >= threshold      ? 'text-amber-400'
+    :                            'text-red-400';
+  return (
+    <div className="w-24">
+      <p className="text-[9px] font-mono text-slate-600 uppercase tracking-wide">{label}</p>
+      <p className={`text-lg font-mono font-bold mt-0.5 ${textColor}`}>{value}%</p>
+      <div className="h-1 bg-slate-800 rounded-full overflow-hidden mt-1">
+        <div className={`h-full ${barColor} rounded-full`} style={{ width: `${value}%` }} />
+      </div>
     </div>
   );
 }

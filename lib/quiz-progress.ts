@@ -238,6 +238,70 @@ export function certsWithData(data: ProgressData): string[] {
   return Array.from(set).sort();
 }
 
+// ─── Readiness score ─────────────────────────────────────────────────────────
+
+export interface Readiness {
+  /** 0–100. The single "am I ready?" number: min(coverage, accuracy). */
+  score:        number;
+  /** Distinct questions seen / total pool for this cert. */
+  coveragePct:  number;
+  /** All-time accuracy on this cert scope, 0–100. */
+  accuracyPct:  number;
+  /** Pass threshold from EXAM_CERTS[cert].passingScore. */
+  passPct:      number;
+  /** Traffic-light state. */
+  status:       'red' | 'amber' | 'green';
+  /** Human explanation of the bottleneck (coverage or accuracy). */
+  bottleneck:   'coverage' | 'accuracy' | 'both' | 'none';
+}
+
+/**
+ * Answers "am I ready for this exam?" in one number.
+ *
+ * Score = min(coverage%, accuracy%).
+ *   - Coverage caps because you can't be ready if you've only seen 10% of the pool
+ *   - Accuracy caps because you can't be ready if you get half wrong
+ *
+ * Green ≥ passPct + 10, amber ≥ passPct, red < passPct.
+ * Bottleneck names the lagging metric so the UI can suggest what to do next.
+ */
+export function readinessScore(
+  data:     ProgressData,
+  cert:     string,
+  poolSize: number,
+  passPct:  number,
+): Readiness {
+  const scope = cert === 'All'
+    ? data.sessions
+    : data.sessions.filter((s) => s.cert === cert);
+
+  // Unique questions seen in this scope.
+  const seenIds = new Set<string>();
+  for (const s of scope) for (const r of s.results) seenIds.add(r.qId);
+  const coveragePct = poolSize === 0 ? 0 : Math.min(100, Math.round((seenIds.size / poolSize) * 100));
+
+  const totalQ = scope.reduce((a, s) => a + s.count, 0);
+  const totalC = scope.reduce((a, s) => a + s.correct, 0);
+  const accuracyPct = totalQ === 0 ? 0 : Math.round((totalC / totalQ) * 100);
+
+  const score = Math.min(coveragePct, accuracyPct);
+
+  let status: Readiness['status'];
+  if (score >= passPct + 10)      status = 'green';
+  else if (score >= passPct)      status = 'amber';
+  else                             status = 'red';
+
+  let bottleneck: Readiness['bottleneck'];
+  const covBelow = coveragePct < passPct;
+  const accBelow = accuracyPct < passPct;
+  if (covBelow && accBelow)       bottleneck = 'both';
+  else if (covBelow)              bottleneck = 'coverage';
+  else if (accBelow)              bottleneck = 'accuracy';
+  else                             bottleneck = 'none';
+
+  return { score, coveragePct, accuracyPct, passPct, status, bottleneck };
+}
+
 // ─── Weighted question picker (Anki-style bias toward weak/unseen) ───────────
 
 /**
