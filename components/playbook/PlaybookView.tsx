@@ -1,11 +1,12 @@
 'use client';
 import { useState } from 'react';
 import type { PlaybookSection } from '@/types';
-import TopicBrowser  from './TopicBrowser';
-import GlossaryPanel from './GlossaryPanel';
-import CertMap       from './CertMap';
-import QuizEngine    from './QuizEngine';
-import PortalDrills  from './PortalDrills';
+import TopicBrowser      from './TopicBrowser';
+import GlossaryPanel     from './GlossaryPanel';
+import CertMap           from './CertMap';
+import QuizEngine        from './QuizEngine';
+import PortalDrills      from './PortalDrills';
+import ProgressDashboard from './ProgressDashboard';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 
@@ -17,6 +18,7 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: stri
   { id: 'glossary', label: 'Glossary', count: G_COUNT,   desc: `${G_COUNT} terms` },
   { id: 'certs',    label: 'Certs',    count: '11',      desc: '11 exams' },
   { id: 'quiz',     label: 'Quiz',     count: Q_COUNT,   desc: `${Q_COUNT} questions` },
+  { id: 'progress', label: 'Progress',                   desc: 'Your quiz history' },
   { id: 'drills',   label: 'Drills',                     desc: 'SC-500 drills' },
 ];
 
@@ -89,6 +91,7 @@ export default function PlaybookView() {
         {section === 'glossary' && <GlossaryPanel />}
         {section === 'certs'    && <CertMap onCertFilter={handleCertFilter} />}
         {section === 'quiz'     && <QuizEngine />}
+        {section === 'progress' && <ProgressDashboard />}
         {section === 'drills'   && <PortalDrills />}
       </div>
     </div>

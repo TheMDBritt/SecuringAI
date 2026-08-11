@@ -2,6 +2,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { QuizQuestion, QuizDifficulty } from '@/types';
 import { recordQuizRun } from '@/lib/progress-store';
+import { loadProgress, recordSession, pickWeighted } from '@/lib/quiz-progress';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
 import { EXAM_CERTS, questionMatchesDomain } from '@/lib/cert-exam-domains';
@@ -934,7 +935,11 @@ export default function QuizEngine() {
       return true;
     });
 
-    const selected = breakAnswerStreaks(shuffle(pool).slice(0, s.count).map(shuffleOptions));
+    // Weighted pick biases toward questions the user has missed or hasn't
+    // seen yet — Anki-style spaced repetition without ever fully retiring a Q.
+    const { perQ } = loadProgress();
+    const weighted = pickWeighted(pool, s.count, perQ);
+    const selected = breakAnswerStreaks(weighted.map(shuffleOptions));
     setSettings(s);
     setQuestions(selected);
     setResults([]);
@@ -995,6 +1000,20 @@ export default function QuizEngine() {
       correct,
       skipped,
       examMode: settings?.examMode,
+    });
+    // Detailed progression: per-question stats for the Progress dashboard's
+    // weak-question table + weighted picker.
+    recordSession({
+      cert:       cert?.id ?? (settings?.certFilter && settings.certFilter !== 'All' ? settings.certFilter : 'All'),
+      category:   settings?.category ?? 'All',
+      difficulty: settings?.difficulty ?? 'all',
+      examMode:   Boolean(settings?.examMode),
+      results:    results.map((r) => ({
+        qId:     r.question.id,
+        chosen:  r.chosen,
+        correct: r.correct,
+        timeMs:  r.timeTaken,
+      })),
     });
   }, [mode, results, settings]);
 
