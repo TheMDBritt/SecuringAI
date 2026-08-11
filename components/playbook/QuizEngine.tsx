@@ -1210,6 +1210,11 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
         category,
         difficulty: settings.difficulty === 'all' ? 'intermediate' : settings.difficulty,
         count:      10,
+        // Passing the active cert lets the generator apply cert-specific
+        // scaffolding (SecAI+ / SC-500 / SCS-C03 voice) and tag the returned
+        // questions so they surface in the correct Progress + filter buckets.
+        certTag:    settings.selectedCert?.id
+                    ?? (settings.certFilter && settings.certFilter !== 'All' ? settings.certFilter : undefined),
       });
       setQuestions((prev) => [...prev, ...extra.map(shuffleOptions)]);
     } catch (e) {

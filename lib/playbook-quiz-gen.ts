@@ -10,6 +10,8 @@ export interface QuizGenRequest {
   category:   string;
   difficulty: QuizDifficulty;
   count:      number;
+  /** Optional cert tag — generated questions inherit this in their certTags[]. */
+  certTag?:   string;
 }
 
 export async function generateQuizQuestions(req: QuizGenRequest): Promise<QuizQuestion[]> {
