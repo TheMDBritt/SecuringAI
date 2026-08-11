@@ -1,5 +1,6 @@
 'use client';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import type { PlaybookSection, QuizQuestion } from '@/types';
 import TopicBrowser      from './TopicBrowser';
 import GlossaryPanel     from './GlossaryPanel';
@@ -22,9 +23,30 @@ const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: stri
   { id: 'drills',   label: 'Drills',                     desc: 'SC-500 drills' },
 ];
 
+const VALID_SECTIONS: readonly PlaybookSection[] = ['topics', 'glossary', 'certs', 'quiz', 'progress', 'drills'];
+
 export default function PlaybookView() {
-  const [section,    setSection]    = useState<PlaybookSection>('topics');
+  const params  = useSearchParams();
+  const initialSection: PlaybookSection = (() => {
+    const raw = params?.get('section');
+    return raw && (VALID_SECTIONS as readonly string[]).includes(raw) ? (raw as PlaybookSection) : 'topics';
+  })();
+  const initialSessionParam = params?.get('session') ?? null;
+
+  const [section,    setSection]    = useState<PlaybookSection>(initialSection);
   const [certFilter, setCertFilter] = useState<string>('');
+  const [deepLinkSession, setDeepLinkSession] = useState<string | null>(initialSessionParam);
+
+  // Follow query-param changes without a full remount (browser back/forward,
+  // in-app <Link> updates).
+  useEffect(() => {
+    const nextSection = params?.get('section');
+    if (nextSection && (VALID_SECTIONS as readonly string[]).includes(nextSection)) {
+      setSection(nextSection as PlaybookSection);
+    }
+    const nextSession = params?.get('session');
+    if (nextSession) setDeepLinkSession(nextSession);
+  }, [params]);
 
   // Retake / drill launch — Progress-tab review view hands us a resolved
   // QuizQuestion[]; we flip to the Quiz section and hand the list to
@@ -111,7 +133,9 @@ export default function PlaybookView() {
             onSessionEnd={clearPreload}
           />
         )}
-        {section === 'progress' && <ProgressDashboard onLaunchQuiz={handleLaunchQuiz} />}
+        {section === 'progress' && (
+          <ProgressDashboard onLaunchQuiz={handleLaunchQuiz} initialSessionId={deepLinkSession} />
+        )}
         {section === 'drills'   && <PortalDrills />}
       </div>
     </div>
