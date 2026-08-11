@@ -8494,4 +8494,177 @@ Per bucket, Macie computes:
 
 **Sourced from:** \`docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-external-access.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-unused-access.html\`, \`docs.aws.amazon.com/IAM/latest/UserGuide/access-analyzer-custom-policy-checks.html\`.`,
   },
+
+  {
+    id: 'aws-scsc03-hands-on-labs',
+    category: 'Cloud AI Platforms',
+    title: 'AWS SCS-C03 Hands-On Lab Plan',
+    certTags: ['SCS-C03'],
+    vocab: ['IAM', 'VPC', 'KMS', 'GuardDuty', 'Security Hub', 'CloudTrail', 'Amazon Macie', 'IAM Access Analyzer'],
+    content: `SCS-C03 is a hands-on exam. You can pass it purely on reading, but you'll pass it *faster* and remember it *longer* if you touch every service at least once. Every lab below is **Free-Tier compatible or costs pennies** if you tear resources down after each session.
+
+Set a **Budgets** alert at $10 first: AWS Console → Billing → Budgets → create a monthly budget with SNS notification at 80% + 100%. Do this before any lab.
+
+### Lab 0 — Sandbox account + guardrails (1h)
+
+1. Create a fresh AWS account (or use an isolated Organizations sandbox OU)
+2. Enable **MFA on the root user**; put root credentials in a physical vault
+3. Create an **admin IAM Identity Center user** for daily use — never sign in as root again
+4. Enable **CloudTrail** as an all-region trail with **log file integrity validation** + KMS encryption + S3 lifecycle → Glacier at 365 days
+5. Enable **AWS Config** with a default recorder + delivery to the CloudTrail S3 bucket (own prefix)
+6. Attach the **CIS AWS Foundations Benchmark v3.0** conformance pack
+
+**Verifies:** the D6 governance baseline is in place before any workload lab runs.
+
+**Docs:** \`docs.aws.amazon.com/awscloudtrail/latest/userguide/best-practices-security.html\` · \`docs.aws.amazon.com/singlesignon/latest/userguide/\` · \`docs.aws.amazon.com/config/latest/developerguide/gs-console.html\`.
+
+### Lab 1 — IAM policy evaluation deep-dive (D1, 45 min)
+
+1. Create three IAM roles: \`readonly-s3\`, \`admin-s3\` (with permission boundary), \`limited-devops\` (with SCP restriction)
+2. Attach an **SCP** to the OU denying \`iam:CreateUser\` and \`ec2:RunInstances\` outside \`us-east-1\`
+3. Attach a **permission boundary** to \`admin-s3\` limiting it to \`s3:*\` on one bucket
+4. Assume each role and try prohibited actions — verify the deny message tells you which layer denied
+5. Enable **IAM Access Analyzer** with zone of trust = organization
+6. Share an S3 bucket with a fake external account ID and watch the finding appear
+
+**Verifies:** the policy-evaluation order in Domain 1.
+
+**Docs:** \`docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_evaluation-logic.html\` · \`docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html\`.
+
+### Lab 2 — Federation with GitHub Actions OIDC (D1, 30 min)
+
+1. Add GitHub as an **OIDC identity provider** in IAM (\`token.actions.githubusercontent.com\`)
+2. Create an IAM role with trust policy pinned to \`repo:<your-user>/<repo>:ref:refs/heads/main\`
+3. Write a GitHub Actions workflow using \`aws-actions/configure-aws-credentials@v4\` with \`role-to-assume\` — no client secret
+4. Verify the workflow can run \`aws s3 ls\` and cannot assume roles for other repos
+
+**Verifies:** workload-identity federation without stored credentials.
+
+**Docs:** \`docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\` · \`docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services\`.
+
+### Lab 3 — VPC + SG vs NACL + Session Manager (D2, 1h)
+
+1. Create a VPC (10.0.0.0/16) with one public + one private subnet in one AZ
+2. Launch an EC2 in the **private subnet** with the SSM Agent-preinstalled Amazon Linux AMI
+3. Attach an instance role with \`AmazonSSMManagedInstanceCore\`
+4. Create **Interface endpoints** for SSM, SSMMessages, EC2Messages in the private subnet
+5. Connect via **Session Manager** (no bastion, no SSH key)
+6. Now put a NACL on the private subnet allowing only inbound TCP 443 — verify the shell still works because SSM traffic is TCP 443 outbound (and the return path uses ephemeral ports, so add outbound ephemeral to the NACL)
+
+**Verifies:** stateless NACL vs stateful SG, ingress-less admin via SSM.
+
+**Docs:** \`docs.aws.amazon.com/systems-manager/latest/userguide/session-manager.html\` · \`docs.aws.amazon.com/vpc/latest/userguide/vpc-network-acls.html\`.
+
+### Lab 4 — KMS key policy + envelope encryption (D3, 45 min)
+
+1. Create a **customer-managed KMS key** with a key policy that (a) delegates to IAM at the root, (b) allows \`readonly-s3\` role only \`kms:Decrypt\`, (c) allows CloudTrail service principal to encrypt
+2. Encrypt a text file with envelope encryption via \`aws kms generate-data-key\` → openssl → store both ciphertexts in S3
+3. Decrypt as \`readonly-s3\` role
+4. Try to decrypt as a role NOT in the key policy — observe the error
+5. Enable an **S3 bucket** with SSE-KMS + Bucket Key on this CMK, upload objects, observe KMS API-call drop vs plain SSE-KMS
+6. **Delete the key** (schedule 7-day pending deletion — this is a good place to explore the pending-deletion window without permanent loss)
+
+**Verifies:** key policy > IAM policy, envelope encryption, S3 Bucket Key optimization.
+
+**Docs:** \`docs.aws.amazon.com/kms/latest/developerguide/key-policies.html\` · \`docs.aws.amazon.com/kms/latest/developerguide/programming-encryption.html\` · \`docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html\`.
+
+### Lab 5 — Secrets Manager rotation for RDS (D3, 45 min)
+
+1. Create a small **RDS MySQL t3.micro** (free-tier eligible for 12 months)
+2. Store the master credentials in **Secrets Manager** with the built-in RDS rotation template
+3. Enable **30-day auto-rotation** — Secrets Manager provisions a Lambda in your VPC
+4. Watch the first rotation succeed → confirm the RDS user password changed
+5. Retrieve the secret via CLI from Session Manager to prove your app pattern works
+6. Tear down RDS immediately after — Aurora and RDS are the #1 lab-cost mistake
+
+**Verifies:** secrets rotation, KMS-backed encryption at rest, RDS security hygiene.
+
+**Docs:** \`docs.aws.amazon.com/secretsmanager/latest/userguide/rotate-secrets_turn-on-for-db.html\`.
+
+### Lab 6 — Macie sensitive-data discovery (D3, 30 min)
+
+1. Enable **Macie** in your test account
+2. Create an S3 bucket and upload a text file containing **fake** SSNs (e.g. \`123-45-6789\`) + credit card numbers (use a Luhn-valid test PAN like \`4111 1111 1111 1111\`) + made-up "customer IDs" following pattern \`ACME-<8 digits>\`
+3. Wait for **automated discovery** to sample, or run a **discovery job** on the bucket
+4. Observe managed-data-identifier findings for SSN + credit card in Security Hub
+5. Author a **custom data identifier** for \`ACME-\\d{8}\`, re-run the job, see the custom finding
+6. Wire an **EventBridge rule** on Macie sensitive-data findings → SNS to your email
+
+**Verifies:** managed vs custom identifiers, findings flow to Security Hub + EventBridge.
+
+**Docs:** \`docs.aws.amazon.com/macie/latest/user/getting-started.html\` · \`docs.aws.amazon.com/macie/latest/user/custom-data-identifiers.html\`.
+
+### Lab 7 — GuardDuty + Automated response (D4/D5, 1h)
+
+1. Enable **GuardDuty** at the org level with ALL data sources including Runtime Monitoring on the EC2 from Lab 3
+2. Trigger a benign finding — SSH from an unusual IP by connecting from your phone hotspot
+3. Trigger a runtime finding — run a known coin-miner Docker image on the EC2 (image \`nginx-ubuntu-miner-test\`, tear down immediately after)
+4. Build an **EventBridge rule**: match GuardDuty findings with severity ≥ 7 → **SSM Automation runbook** that:
+   - Snapshots the EC2's EBS volume (tag: forensic)
+   - Swaps the SG to a "quarantine" SG with no inbound and only KMS/SSM outbound
+   - Publishes to SNS
+5. Verify the runbook fires and containment is applied within seconds of the finding
+
+**Verifies:** Runtime Monitoring end-to-end + the canonical EventBridge → SSM Automation response pattern.
+
+**Docs:** \`docs.aws.amazon.com/guardduty/latest/ug/runtime-monitoring.html\` · \`docs.aws.amazon.com/systems-manager/latest/userguide/automation.html\`.
+
+### Lab 8 — Security Hub multi-account setup (D5, 45 min)
+
+1. In your Organizations sandbox, promote a member account as the **Security Hub delegated administrator**
+2. Enable Security Hub across all member accounts + regions from the admin
+3. Turn on **FSBP + CIS AWS Foundations v3.0** standards
+4. Wait 10-30 min for the first evaluation pass
+5. Observe the org-wide Security Score
+6. Create an **automation rule** that auto-suppresses INFORMATIONAL severity older than 30 days
+7. Wire critical (severity ≥ 90) findings → EventBridge → SNS
+
+**Verifies:** central config, delegated admin, org roll-up, automation rules.
+
+**Docs:** \`docs.aws.amazon.com/securityhub/latest/userguide/designate-orgs-admin-account.html\` · \`docs.aws.amazon.com/securityhub/latest/userguide/automation-rules.html\`.
+
+### Lab 9 — Detective investigation flow (D5, 30 min)
+
+1. Enable **Detective** as delegated admin in the same account as Lab 8
+2. From the GuardDuty finding in Lab 7, click "Investigate in Detective"
+3. Pivot: finding → involved IAM role → CloudTrail actions in the last 24h → any resources touched
+4. Compare Detective's baseline API-call panel vs the anomaly window
+5. Note the difference between what you can answer here vs equivalent Athena queries
+
+**Verifies:** behavioral graph investigation vs Athena raw log search.
+
+**Docs:** \`docs.aws.amazon.com/detective/latest/userguide/detective-investigation.html\`.
+
+### Lab 10 — Control Tower landing zone (D6, 1h)
+
+1. Set up **AWS Control Tower** in a fresh master account
+2. Add a new **workload account via Account Factory** — observe the mandatory guardrails applied
+3. Attach an **elective guardrail** ("Detect whether MFA is enabled for the root user") to a Sandbox OU
+4. Deliberately create a non-compliant resource in the workload account
+5. Watch **Config** flag it and the guardrail status turn red
+6. Enable **Audit Manager** with the CIS AWS Foundations 1.4.0 framework, run an assessment, export the evidence package
+
+**Verifies:** the whole D6 governance stack in one lab.
+
+**Docs:** \`docs.aws.amazon.com/controltower/latest/userguide/how-control-tower-works.html\` · \`docs.aws.amazon.com/audit-manager/latest/userguide/get-started.html\`.
+
+---
+
+### Cost management (read this)
+
+- Set the **Budgets** alert first (Lab 0)
+- Tear down after each session: EC2 stop/terminate, EBS delete, RDS delete (biggest offender), Detective/Security Hub *disable* rather than pause between weeks — they meter continuously
+- **Free-tier eligible for 12 months:** t3.micro EC2, 750h/month; RDS db.t3.micro 750h/month; 30GB EBS
+- **Always free:** IAM, Organizations, Trusted Advisor security checks, S3 first 5GB, Config first 100k config-items/month, GuardDuty 30-day trial, Detective 30-day trial, Security Hub 30-day trial
+
+Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
+
+### After the labs
+
+- Run the **Playbook Progress → Readiness card** with cert = SCS-C03
+- Filter Quiz → Cert = SCS-C03, Experience = Unseen + Weak, count = 50 — drill gaps
+- Take a Mock SCS-C03 Exam (65 Q, 170 min) at least twice under real conditions
+
+**Sourced from:** AWS Free Tier page (\`aws.amazon.com/free\`), \`docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-managing-costs.html\`, plus the per-lab docs URLs listed inline above.`,
+  },
 ];
