@@ -7273,4 +7273,167 @@ Core: **Microsoft Sentinel**, **KQL**, **Defender XDR**, **Automatic Attack Disr
 
 Source (secondary, user-transcribed): domain outline in \`docs/cert-objectives/sc-500.md\`. Primary source (learn.microsoft.com/credentials/certifications/exams/sc-500/) blocked by sandbox network policy — technical specifics in this article verified against the linked playbook articles, each of which cites the appropriate learn.microsoft.com sub-page.`,
   },
+
+  {
+    id: 'aws-scsc03-exam-roadmap',
+    category: 'Cloud AI Platforms',
+    title: 'AWS Certified Security – Specialty (SCS-C03) — Exam Roadmap',
+    certTags: ['SCS-C03'],
+    vocab: ['IAM', 'SCP', 'Permission Boundary', 'VPC', 'Security Group', 'NACL', 'KMS', 'Secrets Manager', 'Macie', 'CloudTrail', 'GuardDuty', 'Security Hub', 'AWS Config'],
+    content: `AWS Certified Security – Specialty is the deepest AWS-focused security exam. AWS convention: **65 questions, 170 minutes, pass at 750/1000 (75%)** — confirm on your official exam page. As of authoring, the repo tags this cert **SCS-C03**; AWS's currently published code is **SCS-C02**. If AWS hasn't released C03 by your exam date, this content still applies — the domain structure is stable, and this article is written from the SCS-C03 outline you supplied. Reconcile the tag if needed.
+
+### Six domains — weight and pass-implication
+
+| # | Domain | Weight | ~Qs | Missed here = |
+|---|---|---|---|---|
+| 1 | Identity and Access Management | **20%** | ~13 | Cannot pass |
+| 2 | Infrastructure Security | **20%** | ~13 | Cannot pass |
+| 3 | Data Protection | **18%** | ~12 | Very risky |
+| 4 | Security Logging and Monitoring | **18%** | ~12 | Very risky |
+| 5 | Threat Detection and Incident Response | **14%** | ~9 | Recoverable |
+| 6 | Management and Governance | **10%** | ~7 | Lowest weight |
+
+**Study time should match the weights.** Domains 1–4 together are 76% of the exam.
+
+---
+
+### Domain 1 — Identity and Access Management (20%)
+
+Focus: **policy evaluation logic, SCPs, permission boundaries, federation**.
+
+Must know cold:
+- **Policy evaluation logic**: explicit deny > SCP deny > Permission Boundary > Identity/Resource policy allow > default deny. Every question with a policy diagram tests this.
+- **SCPs** (Service Control Policies) at the org / OU / account level — deny only, no allow. Attached to accounts to enforce guardrails.
+- **Permission Boundaries** — max permission a principal can be granted. Used with delegated IAM admin (dev teams get IAM admin, but bounded).
+- **Session policies** in \`sts:AssumeRole\` — narrow permissions per session.
+- **IAM Roles vs Users** — roles for anything non-human and for cross-account access.
+- **Federation**: SAML 2.0 (Entra ID, Okta, ADFS), OIDC (workload identity from GitHub Actions, Kubernetes, GCP), IAM Identity Center (formerly SSO) for AWS SSO across many accounts.
+- **Attribute-based access control (ABAC)** using tags + \`aws:PrincipalTag\` / \`aws:ResourceTag\`.
+- **Service-linked roles** — AWS-managed, don't detach.
+- **Access Analyzer** — surfaces external access, unused access, and IAM policy validation.
+
+Common trap: **effective permissions** across identity policy + resource policy + SCP + permission boundary + session policy.
+
+### Domain 2 — Infrastructure Security (20%)
+
+Focus: **VPC security, network firewalls, edge protections**.
+
+- **VPC design**: public vs private subnets, route tables, NAT gateways vs NAT instances, IGW, VPC peering vs Transit Gateway.
+- **Security Group** (stateful, allow-only) vs **NACL** (stateless, allow+deny, ordered rules). SG at the ENI, NACL at the subnet.
+- **VPC endpoints**: Interface (powered by PrivateLink) for most services, Gateway for S3 and DynamoDB only.
+- **AWS Network Firewall** — stateful/stateless rules at VPC egress, Suricata compatible.
+- **AWS WAF** — web ACLs attached to CloudFront, ALB, API Gateway, App Runner, Cognito.
+- **Shield Standard** (free, layer 3/4) vs **Shield Advanced** (paid, includes L7 with WAF, 24×7 DRT, cost protection).
+- **CloudFront** origin access identity (OAI) / origin access control (OAC) for private S3 origins.
+- **VPC Flow Logs** to CloudWatch Logs / S3 / Kinesis Firehose for traffic forensics.
+- **Bastion hosts** replaced by **Systems Manager Session Manager** — no inbound SSH, IAM-gated.
+- **PrivateLink** for exposing your service privately to other VPCs / accounts.
+
+### Domain 3 — Data Protection (18%)
+
+Focus: **encryption strategies, KMS, Secrets Manager, Macie**.
+
+- **KMS**: AWS-managed keys (aws/service-name), customer-managed keys (CMKs), imported key material, external key store (XKS).
+- **Key policy** (mandatory) vs IAM policy — key policy is the authoritative gate; IAM alone does not grant KMS access unless the key policy permits.
+- **Grants** for temporary programmatic access; **aliases** for key rotation-friendly references.
+- **Automatic key rotation** (yearly for AWS-managed, opt-in yearly for CMK symmetric).
+- **Envelope encryption** — data encryption key (DEK) generated per file, encrypted with KMS CMK (KEK).
+- **S3 encryption**: SSE-S3, SSE-KMS (with bucket-key optimization), SSE-C, DSSE-KMS (dual layer), client-side.
+- **EBS default encryption** — enable at the account level per region.
+- **Secrets Manager vs SSM Parameter Store (SecureString)** — Secrets Manager rotates automatically, costs per secret; Parameter Store SecureString is free but no rotation.
+- **Macie** — S3 sensitive data discovery (PII, credentials, financial), managed data identifiers + custom identifiers.
+- **Certificate Manager (ACM)** for free public / private certs on AWS resources (ALB, CloudFront, API Gateway).
+- **AWS Payment Cryptography** for PCI-DSS L1 payment workloads.
+
+### Domain 4 — Security Logging and Monitoring (18%)
+
+Focus: **CloudTrail, CloudWatch, Security Lake**.
+
+- **CloudTrail**: management events (default on), data events (opt-in per resource — S3 object level, Lambda invoke), Insights (anomalous API activity). Organization trail collects from all accounts.
+- **CloudTrail Lake** — SQL-queryable long-retention store for CloudTrail events + external sources.
+- **CloudWatch Logs** — log ingestion, metric filters, subscription filters to Kinesis / Firehose / Lambda.
+- **CloudWatch Alarms** on metric filters (e.g. root account use) — often paired with SNS + Lambda for auto-response.
+- **AWS Config** — resource inventory + compliance rules (managed + custom). Config Aggregator for multi-account.
+- **Security Lake** — OCSF-normalized security data lake (S3-backed) across sources; queryable via Athena, subscribers ingest into their SIEM.
+- **VPC Flow Logs**, **DNS query logs (Route 53 Resolver)**, **ELB access logs**, **WAF logs** — know where each lands and how to query.
+- **Athena + Glue** for CloudTrail / VPC Flow Log analysis.
+- **EventBridge** for event-driven security (CloudTrail → EventBridge → Lambda / Step Functions).
+
+### Domain 5 — Threat Detection and Incident Response (14%)
+
+Focus: **GuardDuty, Security Hub, automated remediation**.
+
+- **GuardDuty** finding types you should recognize: Backdoor / Behavior / Cryptocurrency / DefenseEvasion / Discovery / Exfiltration / Impact / InitialAccess / Persistence / Policy / PrivilegeEscalation / Recon / Stealth / Trojan / UnauthorizedAccess. Data sources: CloudTrail, VPC Flow Logs, DNS logs, S3 data events, EKS audit logs, RDS login events, Lambda network activity, Runtime Monitoring on EC2/ECS/EKS.
+- **Security Hub** — aggregates findings (GuardDuty, Inspector, Macie, IAM Access Analyzer, third-party), maps to standards (AWS Foundational Security Best Practices, CIS AWS Foundations, PCI-DSS, NIST SP 800-53).
+- **Inspector** (v2) — vulnerability scanning for EC2, ECR (container images), Lambda; agentless where possible.
+- **Detective** — investigative graph across VPC Flow, CloudTrail, GuardDuty for time-based incident triage.
+- **IAM Access Analyzer** — external access findings, unused access findings, policy validation.
+- **Automated remediation** patterns: EventBridge rule → SSM Automation document / Lambda / Step Functions. Common playbooks: quarantine compromised IAM user, isolate EC2 instance (swap SG), snapshot for forensics.
+- **AWS Incident Manager** — runbook execution, on-call, chat integration.
+- **Trusted Advisor** — cost / performance / security / fault-tolerance checks; free subset for all accounts, full set with Business/Enterprise Support.
+
+### Domain 6 — Management and Governance (10%)
+
+Focus: **compliance reporting, governance services**.
+
+- **AWS Organizations** — accounts, OUs, SCPs, tag policies, backup policies.
+- **Control Tower** — landing zone with pre-built guardrails (mandatory + strongly recommended + elective).
+- **Service Catalog** — pre-approved products (CloudFormation) for developers to self-serve.
+- **AWS Artifact** — compliance reports (SOC 1/2/3, PCI, ISO, FedRAMP).
+- **Audit Manager** — evidence collection for compliance frameworks.
+- **License Manager**, **Cost Explorer**, **Budgets** — governance-adjacent.
+- **Resource Explorer / RAM (Resource Access Manager)** for cross-account sharing.
+
+---
+
+### The 10 differentiator pairs SCS-C03 loves
+
+| Distractor pair | Correct when… | Wrong when… |
+|--|--|--|
+| **SG** vs **NACL** | Instance-level, stateful | Subnet-level, stateless, need explicit deny |
+| **Interface endpoint (PrivateLink)** vs Gateway endpoint | Everything except S3/DynamoDB | S3 or DynamoDB only |
+| **SCP** vs **Permission Boundary** | Organization-wide deny guardrail | Per-principal maximum |
+| **Key policy** vs **IAM policy** for KMS | Question mentions the KMS key being usable | Question is about who can call the KMS API in general |
+| **Secrets Manager** vs SSM SecureString | Auto-rotation required | Config value, no rotation |
+| **CloudTrail Lake** vs CloudWatch Logs Insights | SQL over CloudTrail history | Ad-hoc log query with a smaller window |
+| **GuardDuty** vs **Inspector** | Runtime threat detection (behavior) | Static vulnerability scan (CVEs) |
+| **Detective** vs Security Hub | Investigate one incident deeply | Aggregate + score findings |
+| **IAM Access Analyzer** external | Cross-account exposure | Unused access = the other Access Analyzer feature |
+| **Session Manager** vs Bastion host | Ingress-less, IAM-gated shell | Legacy — bastion is now a wrong answer in almost every case |
+
+---
+
+### 8-week study path
+
+**Weeks 1–2 — Domains 1 + 2 (40%)** — IAM policy evaluation, SCPs, VPC design, Security Groups vs NACLs. Do policy-evaluation worked examples until you can trace them without pausing.
+
+**Weeks 3–4 — Domains 3 + 4 (36%)** — KMS key policies, envelope encryption, S3 encryption modes, CloudTrail types (management vs data), Security Lake.
+
+**Week 5 — Domain 5 (14%)** — GuardDuty finding categories, Security Hub, Inspector, Detective, automated remediation via EventBridge.
+
+**Week 6 — Domain 6 (10%) + gaps** — Organizations, Control Tower, AWS Artifact, Audit Manager. Fill gaps from your Progress heatmap.
+
+**Weeks 7–8 — Mock exams + hands-on** — Cert Focus = SCS-C03, count = 65 (matches real exam). Take the Mock Exam preset at least 3x with a 170-min timer. Spin up a free AWS account and touch every domain-1 and domain-2 service.
+
+**Exam day** — 170 min for 65 Qs = ~2.6 min/Q. Long scenario questions are common; flag anything over 3 min.
+
+---
+
+### Common mistakes
+
+- Assuming **IAM policy alone** grants KMS access — it doesn't, the **key policy** must permit
+- Picking a **bastion host** as the answer — Systems Manager **Session Manager** is preferred in every current scenario
+- Confusing **GuardDuty** (runtime behavior) with **Inspector** (static vulnerability scans)
+- Missing that **NACLs are stateless** — return traffic must be explicitly allowed
+- Forgetting **S3 Block Public Access** applies at 4 levels (account, bucket, IAM policy, ACL) and account-level wins
+- Not knowing which services support **VPC Gateway** endpoints (only S3 and DynamoDB) vs Interface (everything else)
+- Picking **SSE-C** when the question asks who manages the keys — SSE-C = customer provides key on every request, error-prone
+- Confusing **Config rules** (compliance state, drift) with **GuardDuty** (threat detection) or **Security Hub** (aggregation + scoring)
+- Missing that **SCPs cannot grant** permissions — they only restrict; identity/resource policies grant
+- Choosing **CloudWatch Logs Insights** when the scenario needs long-retention SQL — that's **CloudTrail Lake** or **Security Lake + Athena**
+
+---
+
+Source (secondary, user-transcribed): domain outline + weights in \`docs/cert-objectives/aws-scs-c03.md\`. Primary source (aws.amazon.com/certification/certified-security-specialty exam guide PDF) blocked by sandbox network policy at authoring — technical specifics in this article are AWS well-known behavior each of which should be verified against the specific docs.aws.amazon.com/<service>/ page before you rely on it. Reconcile the SCS-C03 vs SCS-C02 code with the current AWS-published cert name before your exam.`,
+  },
 ];
