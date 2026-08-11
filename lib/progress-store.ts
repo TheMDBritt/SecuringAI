@@ -12,6 +12,13 @@ const EVENT = 'securingai:progress-changed';
 
 export interface QuizRun {
   id: string;
+  /**
+   * Correlating id from lib/quiz-progress.ts SessionRecord (format
+   * `s_<base36>_<base36>`). Present when the caller supplied it — the
+   * dashboard/progress recent-activity rows are linkable to the review view
+   * only when this is set.
+   */
+  sessionId?: string;
   certId?: string;
   certName?: string;
   total: number;
@@ -117,7 +124,7 @@ export interface ProgressSummary {
   perDojo: Record<1 | 2 | 3, { attempts: number; blocked: number }>;
   perCert: { certId: string; certName: string; runs: number; accuracy: number }[];
   difficulty: Record<'beginner' | 'intermediate' | 'advanced' | 'unknown', number>;
-  recent: { at: string; kind: 'quiz' | 'attack'; label: string; detail: string; tone: string }[];
+  recent: { at: string; kind: 'quiz' | 'attack'; label: string; detail: string; tone: string; sessionId?: string }[];
   lastActive: string | null;
 }
 
@@ -167,13 +174,14 @@ export function summarize(state: ProgressState): ProgressSummary {
     else difficulty.unknown += 1;
   }
 
-  const recent = [
+  const recent: ProgressSummary['recent'] = [
     ...state.quizRuns.map((r) => ({
       at: r.at,
       kind: 'quiz' as const,
       label: r.certName ? `${r.certName} quiz` : 'Practice quiz',
       detail: `${r.correct}/${r.total - r.skipped} correct${r.examMode ? ' · mock exam' : ''}`,
       tone: r.total && r.correct / Math.max(1, r.total - r.skipped) >= 0.7 ? 'emerald' : 'amber',
+      sessionId: r.sessionId,
     })),
     ...state.attackRuns.map((r) => ({
       at: r.at,

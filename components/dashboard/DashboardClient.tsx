@@ -192,18 +192,36 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           />
           {hasActivity ? (
             <ul className="mt-4 divide-y divide-surface-border/60">
-              {summary.recent.map((r, i) => (
-                <li key={i} className="flex items-center gap-3 py-3">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-surface-border bg-surface-raised">
-                    <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DOJO_HEX[r.tone] ?? '#94a3b8' }} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
-                    <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
-                  </div>
-                  <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
-                </li>
-              ))}
+              {summary.recent.map((r, i) => {
+                const body = (
+                  <>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-surface-border bg-surface-raised">
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: DOJO_HEX[r.tone] ?? '#94a3b8' }} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
+                      <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
+                    </div>
+                    <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-600 text-[11px] ml-1">→</span>}
+                  </>
+                );
+                return (
+                  <li key={i}>
+                    {r.sessionId ? (
+                      <Link
+                        href={`/playbook?section=progress&session=${encodeURIComponent(r.sessionId)}`}
+                        className="flex items-center gap-3 py-3 rounded hover:bg-white/5 -mx-2 px-2 transition-colors"
+                        aria-label={`Review ${r.label} — ${r.detail}`}
+                      >
+                        {body}
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-3 py-3">{body}</div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <EmptyState

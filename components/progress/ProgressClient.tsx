@@ -167,18 +167,36 @@ export function ProgressClient({
           <Card className="mt-6 p-5">
             <SectionHeading eyebrow="History" title="Recent sessions" />
             <ul className="mt-4 divide-y divide-surface-border/60">
-              {summary.recent.map((r, i) => (
-                <li key={i} className="flex items-center gap-3 py-3">
-                  <Badge tone={r.tone === 'red' ? 'red' : r.tone === 'emerald' ? 'emerald' : 'amber'}>
-                    {r.kind === 'quiz' ? 'Quiz' : 'Lab'}
-                  </Badge>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
-                    <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
-                  </div>
-                  <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
-                </li>
-              ))}
+              {summary.recent.map((r, i) => {
+                const body = (
+                  <>
+                    <Badge tone={r.tone === 'red' ? 'red' : r.tone === 'emerald' ? 'emerald' : 'amber'}>
+                      {r.kind === 'quiz' ? 'Quiz' : 'Lab'}
+                    </Badge>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
+                      <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
+                    </div>
+                    <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-600 text-[11px] ml-1">→</span>}
+                  </>
+                );
+                return (
+                  <li key={i}>
+                    {r.sessionId ? (
+                      <Link
+                        href={`/playbook?section=progress&session=${encodeURIComponent(r.sessionId)}`}
+                        className="flex items-center gap-3 py-3 rounded hover:bg-white/5 -mx-2 px-2 transition-colors"
+                        aria-label={`Review ${r.label} — ${r.detail}`}
+                      >
+                        {body}
+                      </Link>
+                    ) : (
+                      <div className="flex items-center gap-3 py-3">{body}</div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </Card>
         </>

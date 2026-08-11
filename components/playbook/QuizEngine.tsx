@@ -1034,17 +1034,10 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     const correct = results.filter((r) => r.correct).length;
     const skipped = results.filter((r) => r.skipped).length;
     const cert = settings?.selectedCert;
-    recordQuizRun({
-      certId: cert?.id,
-      certName: cert?.name,
-      total: results.length,
-      correct,
-      skipped,
-      examMode: settings?.examMode,
-    });
-    // Detailed progression: per-question stats for the Progress dashboard's
-    // weak-question table + weighted picker.
-    recordSession({
+    // Record detailed progression FIRST so we can correlate the aggregate
+    // QuizRun to the SessionRecord id — the dashboard/progress recent
+    // activity rows become linkable to the session review view.
+    const session = recordSession({
       cert:       cert?.id ?? (settings?.certFilter && settings.certFilter !== 'All' ? settings.certFilter : 'All'),
       category:   settings?.category ?? 'All',
       difficulty: settings?.difficulty ?? 'all',
@@ -1055,6 +1048,15 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
         correct: r.correct,
         timeMs:  r.timeTaken,
       })),
+    });
+    recordQuizRun({
+      sessionId: session.id,
+      certId: cert?.id,
+      certName: cert?.name,
+      total: results.length,
+      correct,
+      skipped,
+      examMode: settings?.examMode,
     });
     // Tell parent the preloaded run is over so it can clear the preload —
     // otherwise clicking "New Quiz" would re-launch the same set on remount.
