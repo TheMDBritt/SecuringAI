@@ -18,13 +18,14 @@ const D6 = 'Management and Governance';
 
 export const AWS_SCSC03_DRILLS: Drill[] = [
 
-  // ── Domain 1 (IAM) — Drill 1: Policy evaluation & permission boundaries ─────
+  // ── Domain 1 (IAM) - Drill 1: Policy evaluation & permission boundaries ─────
   {
     id: 'aws-drill-iam-policy-evaluation',
     portal: D1,
     title: 'Evaluate an IAM policy: identity vs resource vs SCP',
     scenario: 'You receive a ticket: "Developer cannot upload to S3 bucket MyData even though the bucket policy says AllPrincipals can PutObject." Walk the permission evaluation logic to diagnose why.',
     difficulty: 'advanced',
+    objectives: ['SCS-C03 Domain 1: Identity and Access Management'],
     steps: [
       {
         screen: 'AWS Console · S3 bucket · MyData',
@@ -101,6 +102,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Federate an on-prem Okta identity to AWS',
     scenario: 'Your CISO wants on-prem Okta users to authenticate to AWS Console without an AWS IAM user per person. Set up SAML 2.0 federation via IAM Identity Center.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 1: Identity and Access Management'],
     steps: [
       {
         screen: 'AWS Console · IAM Identity Center',
@@ -177,6 +179,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Isolate a sensitive workload in a VPC',
     scenario: 'Your financial app must not be reachable from the public internet. Set up a VPC with private subnets, NAT gateways, and a bastion host for admin access.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 2: Infrastructure Security'],
     steps: [
       {
         screen: 'AWS Console · VPC',
@@ -253,6 +256,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Troubleshoot network ACLs vs security groups',
     scenario: 'Traffic flows from EC2 in subnet A to EC2 in subnet B are blocked, even though security groups allow it. Diagnose the network ACL issue.',
     difficulty: 'advanced',
+    objectives: ['SCS-C03 Domain 2: Infrastructure Security'],
     steps: [
       {
         screen: 'AWS Console · EC2',
@@ -342,6 +346,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Authorize an IAM role to decrypt with KMS',
     scenario: 'Your app in EC2 needs to decrypt an RDS password stored in Secrets Manager. The secret is encrypted with a KMS key. Set up the minimal permissions.',
     difficulty: 'advanced',
+    objectives: ['SCS-C03 Domain 3: Data Protection'],
     steps: [
       {
         screen: 'AWS KMS · Keys',
@@ -418,6 +423,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Design an encryption strategy: at rest vs in transit',
     scenario: 'Your compliance team requires encryption for PII stored in S3 and transmitted to a third-party API. Decide encryption modes and key management.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 3: Data Protection'],
     steps: [
       {
         screen: 'S3 Bucket · Default encryption',
@@ -494,6 +500,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Investigate an unauthorized API call via CloudTrail',
     scenario: 'A security alarm fires: a non-admin user called iam:AttachUserPolicy on the CISO account. Investigate using CloudTrail logs.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 4: Security Logging and Monitoring'],
     steps: [
       {
         screen: 'CloudTrail · Event history',
@@ -570,6 +577,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Centralize security logs with AWS Security Lake',
     scenario: 'Your organization has logs spread across CloudTrail, VPC Flow Logs, Guardduty findings, and multiple AWS accounts. Set up Security Lake to centralize and query.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 4: Security Logging and Monitoring'],
     steps: [
       {
         screen: 'Security Lake · Dashboard',
@@ -646,6 +654,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Respond to a GuardDuty finding: compromised EC2 instance',
     scenario: 'GuardDuty raises a Finding: "EC2 instance i-1234 performing network reconnaissance (UnauthorizedAccess:EC2/SSHBrute)". Investigate and remediate.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 5: Threat Detection and Incident Response'],
     steps: [
       {
         screen: 'GuardDuty · Findings',
@@ -722,6 +731,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Triage findings in AWS Security Hub',
     scenario: 'Security Hub aggregates findings from GuardDuty, Config, Inspector, IAM Access Analyzer, and third-party tools. You have 200 findings and must prioritize.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 5: Threat Detection and Incident Response'],
     steps: [
       {
         screen: 'Security Hub · Findings',
@@ -798,6 +808,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Audit compliance with AWS Config',
     scenario: 'Your compliance audit requires proof that all S3 buckets have versioning enabled. Set up Config to continuously audit this.',
     difficulty: 'beginner',
+    objectives: ['SCS-C03 Domain 6: Management and Governance'],
     steps: [
       {
         screen: 'AWS Config · Getting started',
@@ -874,6 +885,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     title: 'Detect oversharing with IAM Access Analyzer',
     scenario: 'IAM Access Analyzer flags a resource: "S3 bucket MyData is accessible from an external AWS account (123456789012)". Evaluate and remediate.',
     difficulty: 'intermediate',
+    objectives: ['SCS-C03 Domain 6: Management and Governance'],
     steps: [
       {
         screen: 'IAM Access Analyzer · Findings',

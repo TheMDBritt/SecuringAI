@@ -17,13 +17,14 @@ const D4 = 'Domain 4 · AI GRC';
 
 export const SECAI_DRILLS: Drill[] = [
 
-  // ── D1.1 AI types & prompting techniques ─────────────────────────────────
+  // -- D1.1 AI types & prompting techniques -----------------------------------------
   {
     id: 'secai-drill-ai-types-prompting',
     portal: D1,
     title: 'Differentiate AI types and prompting techniques',
     scenario: 'A junior analyst keeps mixing up core AI vocabulary. Straighten out three mix-ups using the exact CY0-001 obj 1.1 terms.',
     difficulty: 'beginner',
+    objectives: ['SecAI+ 1.1: Compare and contrast various AI types and techniques used in cybersecurity'],
     steps: [
       {
         screen: 'Mix-up 1 — training approach',
@@ -74,6 +75,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'RAG pipeline and data-processing vocabulary',
     scenario: 'You are documenting a new retrieval-augmented generation (RAG) chatbot for an internal audit. Use the precise CY0-001 obj 1.2 terms for each finding.',
     difficulty: 'beginner',
+    objectives: ['SecAI+ 1.2: Explain the importance of data security in relation to AI'],
     steps: [
       {
         screen: 'Finding 1 — architecture question',
@@ -130,13 +132,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D2.6 Attacks — Backdoor vs Prompt Injection ──────────────────────────
+  // ── D2.6 Attacks - Backdoor vs Prompt Injection ──────────────────────────
   {
     id: 'secai-drill-attack-triage',
     portal: D2,
     title: 'Triage an AI incident: pick the right attack category',
     scenario: 'You are an AI security architect. Three anomalies land on your desk in one hour. For each, decide which SecAI+ attack category (CY0-001 obj 2.6) it maps to so you can pull the right compensating control.',
     difficulty: 'intermediate',
+    objectives: ['SecAI+ 2.6: Given a scenario, identify and mitigate attacks targeting AI systems'],
     steps: [
       {
         screen: 'Incident #1 — internal chatbot',
@@ -180,13 +183,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D2.4 Data safety — Anonymization vs Salting vs Hashing vs Minimization
+  // ── D2.4 Data safety - Anonymization vs Salting vs Hashing vs Minimization
   {
     id: 'secai-drill-privacy-technique',
     portal: D2,
     title: 'Pick the correct privacy technique (anon vs pseudo vs min vs hash)',
     scenario: 'You are auditing an AI training pipeline. For each stage, pick the SecAI+ 2.4 privacy technique that matches the goal — the exam distinguishes these four, and salting/hashing are common distractors.',
     difficulty: 'intermediate',
+    objectives: ['SecAI+ 2.4: Given a scenario, implement data security controls for AI systems'],
     steps: [
       {
         screen: 'Stage 1 — sample-and-scope',
@@ -230,13 +234,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D3.1 AI tools — pick the right AI-assisted use case ─────────────────
+  // ── D3.1 AI tools - pick the right AI-assisted use case ─────────────────
   {
     id: 'secai-drill-ai-tool-choice',
     portal: D3,
     title: 'Pick the right AI-enabled security tool',
     scenario: 'You are a SOC lead choosing AI tooling for four workflows. Each maps to one of the SecAI+ obj 3.1 use cases — pick the best fit.',
     difficulty: 'beginner',
+    objectives: ['SecAI+ 3.1: Given a use case, apply appropriate AI-assisted security tools'],
     steps: [
       {
         screen: 'Workflow 1',
@@ -280,13 +285,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D3.2 AI-enhanced attacks — attribution ──────────────────────────────
+  // ── D3.2 AI-enhanced attacks - attribution ──────────────────────────────
   {
     id: 'secai-drill-ai-enhanced-attacks',
     portal: D3,
     title: 'Identify AI-enhanced attack vectors',
     scenario: 'Your threat-intel team reports three campaigns. Attribute each to the SecAI+ obj 3.2 AI-enhanced attack vector.',
     difficulty: 'intermediate',
+    objectives: ['SecAI+ 3.2: Explain threats and vulnerabilities in AI-enhanced attack vectors'],
     steps: [
       {
         screen: 'Campaign 1',
@@ -317,13 +323,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D4.2 Responsible AI — principle differentiator ──────────────────────
+  // ── D4.2 Responsible AI - principle differentiator ──────────────────────
   {
     id: 'secai-drill-responsible-ai',
     portal: D4,
     title: 'Match the Responsible AI principle to the concern',
     scenario: 'Stakeholders raise concerns about an AI loan-approval model. Map each concern to the correct Responsible AI principle from CY0-001 obj 4.2.',
     difficulty: 'intermediate',
+    objectives: ['SecAI+ 4.2: Explain responsible AI principles and their applications'],
     steps: [
       {
         screen: 'Concern 1',
@@ -367,13 +374,14 @@ export const SECAI_DRILLS: Drill[] = [
     ],
   },
 
-  // ── D4.3 Compliance — Sanctioned vs unsanctioned + Private vs public ────
+  // ── D4.3 Compliance - Sanctioned vs unsanctioned + Private vs public ────
   {
     id: 'secai-drill-corporate-policy',
     portal: D4,
     title: 'Apply the corporate AI policy correctly',
     scenario: 'Your AI Center of Excellence just approved this policy: (a) public data → any sanctioned AI tool, (b) sensitive data → only private enterprise-hosted models, (c) unsanctioned tools blocked. Route four incoming requests.',
     difficulty: 'intermediate',
+    objectives: ['SecAI+ 4.3: Given a scenario, apply policies and governance to AI systems'],
     steps: [
       {
         screen: 'Request 1',
