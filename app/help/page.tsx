@@ -46,7 +46,7 @@ const FAQ = [
   },
   {
     q: 'Which certifications are covered?',
-    a: 'Eleven AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security: Specialty (SCS-C03), the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Every question is tagged to its official exam domains.',
+    a: 'Eleven AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security - Specialty, the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Every question is tagged to its official exam domains.',
   },
   {
     q: 'Do I need an API key?',

@@ -642,10 +642,10 @@ export const EXAM_CERTS: ExamCert[] = [
     ],
   },
 
-  // ── AWS Certified Security: Specialty (SCS-C03) ──────────────────────────
+  // ── AWS Certified Security - Specialty ───────────────────────────────────
   {
     id: 'SCS-C03',
-    name: 'AWS Certified Security: Specialty',
+    name: 'AWS Certified Security - Specialty',
     provider: 'Amazon Web Services',
     badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
     passingScore: 75,

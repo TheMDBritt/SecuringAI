@@ -23,18 +23,15 @@
 
 ## Cert-tag reconciliation note
 
-The current AWS-published version is **SCS-C02** (as of 2026-08). SCS-C03 (this repo's tag) appears to be a forthcoming update. If AWS's published exam code differs when the primary PDF is fetched, either:
-- (a) rename the repo tag `SCS-C03` → `SCS-C02` in `lib/cert-exam-domains.ts`, `lib/cert-domain-map.ts`, `components/playbook/CertMap.tsx`, and every glossary/quiz/topic entry, OR
-- (b) keep `SCS-C03` if AWS has announced C03 by the time this file is populated.
+`SCS-C03` is retained as the **internal cert tag** across `lib/cert-exam-domains.ts`,
+`lib/cert-domain-map.ts` and the tagged question, glossary and drill data. It is a
+stable identifier only.
 
-Do not ship content commits until this is resolved.
+User-visible copy says **AWS Certified Security - Specialty** with no version
+code, because AWS's published code has moved between C02 and C03 and pinning a
+version in marketing copy is what created the earlier accuracy problem. The
+domain structure and weightings below are what the material is written against.
 
----
-
-## Still-needed from the primary source when it becomes available
-
-- Full task-statement list per domain (AWS convention: 3-5 tasks per domain, each with 4-8 knowledge/skill bullets)
-- Passing score confirmation (AWS convention: 750/1000 = 75%)
-- Question count and time limit (SCS-C02 is 65 Qs, 170 min)
-- Sample question types (single-response, multi-response, ordered-response, matching, case study, sample scenario)
-- List of AWS services in scope (typically an appendix in the AWS exam guide)
+If AWS republishes with materially different domains or weightings, update the
+domain table here and in `lib/cert-exam-domains.ts`. The internal tag does not
+need to change.

@@ -157,7 +157,7 @@ const SOURCED_FROM = [
   'EC-Council C|AI Security Outline',
   'Microsoft SC-500 / AI-103 Study Guide',
   'AWS AI Practitioner Exam Guide',
-  'AWS Certified Security: Specialty (SCS-C03) Exam Guide',
+  'AWS Certified Security - Specialty Exam Guide',
   'Google Professional ML Engineer Guide',
   'CAISP Exam Domains (Practical DevSecOps)',
 ];

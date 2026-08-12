@@ -55,7 +55,7 @@ export function Footer() {
                 <span>CAISP · EC-Council C|AI Security</span>
                 <span>GIAC GOAA · GIAC GASAE</span>
                 <span>Microsoft SC-500 · Azure AI-103</span>
-                <span>AWS AIF-C01 · AWS Security Specialty (SCS-C03)</span>
+                <span>AWS AIF-C01 · AWS Certified Security - Specialty</span>
                 <span>Azure AI-901 · Google MLE</span>
               </div>
             </div>
