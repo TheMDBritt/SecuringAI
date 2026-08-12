@@ -798,8 +798,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Using a smaller model that is less susceptible to attacks',
       'Training a separate model to detect adversarial inputs',
-      'Generating adversarial examples during training and including them in the training set',
-      'Training the model only on adversarial examples'],
+      'Adding generated adversarial examples to the training set',
+      'Training the model exclusively on adversarial examples'
+    ],
     correct: 2,
     explanation: 'Adversarial training augments the training set with adversarial examples generated during training. The model learns to correctly classify both clean and adversarial inputs, improving robustness.',
   },
@@ -3712,9 +3713,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Acceptable model variance within normal statistical bounds',
       'Overfitting to the majority class in the training data',
-      'A calibration issue that affects all demographic groups equally',
-      'Disparate impact — differential performance that systematically disadvantages a protected group'],
-    correct: 3,
+      'Disparate impact on a protected group',
+      'A calibration issue affecting all groups equally'
+    ],
+    correct: 2,
     explanation: 'Disparate impact occurs when a neutral policy or algorithm produces significantly different outcomes for a protected group. Even without intent to discriminate, a 15-point accuracy gap in a hiring tool constitutes disparate impact under EEOC guidelines and may violate anti-discrimination law.',
   },
 {
@@ -6733,10 +6735,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A threat actor publishes a Hugging Face model with a plausible name that contains serialised Python code executing a reverse shell when loaded with pickle.load(). Which threat does this represent?',
     options: [
       'Data poisoning of the training dataset',
-      'Prompt injection in the model weights',
-      'Adversarial example embedded in the model',
-      'Malicious model weight supply chain attack via deserialization'],
-    correct: 3,
+      'Prompt injection hidden in the model weights',
+      'Supply chain attack via weight deserialization',
+      'Adversarial example embedded in the model'
+    ],
+    correct: 2,
     explanation: 'Malicious model weight files in pickle format (the default PyTorch serialisation) can execute arbitrary code when loaded. This is analogous to a malicious npm package — the "cargo cult" of trusting pre-trained models creates supply chain risk. Mitigation: use safe serialisation formats (safetensors), verify model hashes, scan weights with security tools before loading, enforce model allowlists in CI/CD. OWASP LLM05 covers supply chain vulnerabilities for AI systems.',
   },
 {
@@ -7576,10 +7579,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'During an AI incident, analysts determine that a recommendation model\'s training data was poisoned 8 months ago. The model has been in production for 6 months. What is the FIRST action the incident response team should take?',
     options: [
-      'Notify affected users and regulators immediately before any technical investigation',
-      'Isolate and disable the model or switch to a fallback, then preserve evidence of the poisoned training pipeline for forensics',
+      'Notify affected users and regulators before any technical investigation',
+      'Isolate the model or fail over, then preserve pipeline evidence',
       'Retrain the model immediately on a clean dataset and redeploy',
-      'Run the model against a held-out test set to confirm the poisoning hypothesis',
+      'Run the model against a held-out set to confirm the hypothesis'
     ],
     correct: 1,
     explanation: 'Containment precedes all other IR phases (NIST SP 800-61). The poisoned model must be isolated (circuit-breaker, rollback to a pre-poisoning checkpoint, or shadow mode) to stop ongoing harm before retraining or notification. Preserving evidence (training pipeline logs, data lineage records, model checkpoints) is critical for forensics and potential regulatory disclosure. Retraining before evidence preservation risks destroying forensic artefacts. Regulatory notification timelines (EU AI Act Art.73: 15 days for serious incidents; GDPR Art.33: 72 hours for personal data breaches) begin from awareness, not from the start of investigation.',
@@ -11389,10 +11392,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01', 'SCS-C03'],
     question: 'A legal AI assistant confidently cites three court cases — all fabricated by the model — in a brief that an attorney submits. This is an example of which OWASP LLM Top 10 risk?',
     options: [
-      'LLM01 — Prompt Injection (the input coerced the model into generating false information)',
-      'LLM06 — Sensitive Data Disclosure (the model disclosed confidential legal information)',
-      'LLM02 — Insecure Output Handling (the output should have been sanitized)',
-      'LLM09 — Misinformation (the model generates false factual claims presented with confidence, causing real-world harm when relied upon)'],
+      'LLM01 — Prompt Injection, since the input coerced false output',
+      'LLM06 — Sensitive Data Disclosure of confidential legal information',
+      'LLM02 — Insecure Output Handling, since output was not sanitized',
+      'LLM09 — Misinformation, confident false claims causing real harm'
+    ],
     correct: 3,
     explanation: 'OWASP LLM09 Misinformation: the model generates and confidently presents factually incorrect information ("hallucination") that causes harm when users rely on it. No attacker is required — this is a model failure, not a security attack. The harm is real: fabricated case citations submitted to a court (as happened in the Mata v. Avianca case in 2023) constitute contempt of court and professional ethics violations. Mitigations: retrieval augmentation from verified legal databases, groundedness evaluation, required human expert review before filing any AI-generated legal content. Source: OWASP LLM Top 10 2025, Mata v. Avianca (2023).',
   },
@@ -23720,10 +23724,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'CAIS', 'SecAI', 'SCS-C03'],
     question: 'A SOAR platform uses an LLM to generate KQL hunting queries from natural language. An attacker compromises an analyst account and submits a prompt to generate a malicious KQL query that deletes log data. What security control prevents this?',
     options: [
-      'Limit the LLM\'s context window to prevent it from generating long queries',
-      'Require the LLM to explain each query in plain English before executing it',
-      'Implement a KQL static analysis step that parses generated queries and blocks any statements containing data modification commands',
-      'Validate that the generated KQL is syntactically correct before sending it to the SIEM'],
+      'Limit the context window to prevent long generated queries',
+      'Require the LLM to explain each query in plain English first',
+      'Static analysis that blocks data-modification statements in KQL',
+      'Validate that the generated KQL is syntactically correct'
+    ],
     correct: 2,
     explanation: 'Generated queries must be treated as untrusted code regardless of the requesting principal\'s privilege. The KQL static analysis gate parses the AST and enforces a whitelist of read-only operations — blocking any mutation commands even if the analyst account has deletion privileges. Syntax validation (A) does not prevent semantically valid but malicious queries. Context window limits (C) do not block deletion commands. Plain English explanations (D) can be manipulated — the attacker controls what the LLM explains.',
   },
@@ -25141,10 +25146,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'What is the primary security concern when an LLM-powered SOAR playbook automatically enriches alerts with CVE data retrieved from external threat intelligence feeds?',
     options: [
-      'Unvalidated external threat data could contain prompt injection payloads that manipulate downstream LLM-based triage decisions',
-      'CVE enrichment is only relevant for vulnerability management, not SOC operations',
-      'External threat intel feeds are always free of errors and can be trusted implicitly',
-      'The enrichment will slow down the SIEM by consuming too many API calls'],
+      'Unvalidated external data may carry prompt injection payloads',
+      'CVE enrichment is only relevant to vulnerability management',
+      'External threat intel feeds are always accurate and can be trusted',
+      'Enrichment will slow the SIEM by consuming too many API calls'
+    ],
     correct: 0,
     explanation: 'External threat intelligence data is untrusted input. If a compromised or malicious threat feed injects specially crafted content into CVE descriptions, MITRE technique descriptions, or indicator context, and this content reaches an LLM-based triage engine, it can manipulate the AI\'s analysis. Defense: treat all externally retrieved data as untrusted when passing to LLM components; sanitize and extract only structured fields (not raw descriptions); use separate, prompt-injection-resistant enrichment pipelines. Source: GIAC-GASAE threat intel security.',
   },
