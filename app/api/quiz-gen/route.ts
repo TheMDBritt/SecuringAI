@@ -3,7 +3,7 @@
  *
  * Generates fresh quiz questions via LLM for the Playbook tab.
  * Returns a JSON array of QuizQuestion objects validated with Zod.
- * Falls back gracefully — callers should catch errors and use the static bank.
+ * Falls back gracefully, callers should catch errors and use the static bank.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
@@ -50,7 +50,7 @@ const GeneratedQuestionSchema = z.object({
 // Per-cert voice + objective anchor + one worked example. Keeps the generator
 // grounded in the actual exam style rather than generic multiple-choice.
 const CERT_SCAFFOLDS: Record<string, string> = {
-  'SecAI': `EXAM VOICE — CompTIA SecAI+ CY0-001:
+  'SecAI': `EXAM VOICE: CompTIA SecAI+ CY0-001:
 Short scenario (1-2 sentences) + "Which of the following..." + 4 short options.
 Every question maps to a CY0-001 objective (Domain 1 Basic AI Concepts 17% / Domain 2 Securing AI Systems 40% / Domain 3 AI-assisted Security 24% / Domain 4 AI GRC 19%).
 Prefer 2.6 attack categories, 2.4 data safety (anonymization vs pseudonymization vs minimization is a favourite distractor pattern), 3.2 AI-enhanced attacks (deepfake / social engineering), 4.2 Responsible AI principles (explainability vs transparency, consistency, fairness).
@@ -58,15 +58,15 @@ Prefer 2.6 attack categories, 2.4 data safety (anonymization vs pseudonymization
 WORKED EXAMPLE:
 {"question":"A disgruntled employee changed the company policies that a chatbot references in order to create confusion and disrupt the business. Which of the following AI-generated content vulnerabilities is the employee exploiting?","options":["Data reduction","Data masking","Data poisoning","Data leaking"],"correct":2,"explanation":"Data poisoning corrupts the knowledge base or training data the model references (CY0-001 obj 2.6 Poisoning → Data poisoning). Data masking hides values without altering meaning; data reduction / leaking are not the SecAI+ names for this pattern."}`,
 
-  'SC-500': `EXAM VOICE — Microsoft SC-500 Cloud & AI Security Engineer:
+  'SC-500': `EXAM VOICE: Microsoft SC-500 Cloud & AI Security Engineer:
 Multi-sentence scenario referencing specific Microsoft services (Entra ID, Conditional Access, Defender XDR, Sentinel, Defender for Cloud, Purview, Azure OpenAI, Prompt Shields, Security Copilot) + "What should you do?" or "Which action achieves..." + 4 options that are all plausible Microsoft-service configurations.
 Always cite the specific product/pane a real admin would use.
 Prefer identity + Zero Trust (Domain 1), infra hardening (D2), data protection (D3), AI defense with Prompt Shields + DSPM for AI (D4), Sentinel + KQL + Defender XDR posture (D5).
 
 WORKED EXAMPLE:
-{"question":"You must ensure that a Microsoft 365 Copilot user cannot retrieve any SharePoint documents labeled 'Highly Confidential'. Which action achieves this with least admin effort?","options":["Disable Copilot for the user","Create a DLP policy with the 'Microsoft 365 Copilot' location and condition on the 'Highly Confidential' sensitivity label","Apply an Azure Firewall rule blocking Copilot traffic","Deploy a Conditional Access session policy on SharePoint"],"correct":1,"explanation":"Purview DLP added a 'Microsoft 365 Copilot' location — block-on-label prevents Copilot from grounding on labelled content. Disabling Copilot is broader than needed; Azure Firewall does not know about M365 traffic; CA session policy on SharePoint doesn't cover Copilot's ground-truth path."}`,
+{"question":"You must ensure that a Microsoft 365 Copilot user cannot retrieve any SharePoint documents labeled 'Highly Confidential'. Which action achieves this with least admin effort?","options":["Disable Copilot for the user","Create a DLP policy with the 'Microsoft 365 Copilot' location and condition on the 'Highly Confidential' sensitivity label","Apply an Azure Firewall rule blocking Copilot traffic","Deploy a Conditional Access session policy on SharePoint"],"correct":1,"explanation":"Purview DLP added a 'Microsoft 365 Copilot' location, block-on-label prevents Copilot from grounding on labelled content. Disabling Copilot is broader than needed; Azure Firewall does not know about M365 traffic; CA session policy on SharePoint doesn't cover Copilot's ground-truth path."}`,
 
-  'SCS-C03': `EXAM VOICE — AWS Certified Security – Specialty:
+  'SCS-C03': `EXAM VOICE: AWS Certified Security: Specialty:
 Detailed scenario (often 3-5 sentences) with concrete AWS services + Region + account context + "Which combination of steps..." or "What is the MOST secure way..." + 4 options each being a specific AWS configuration change.
 Every technical claim must be AWS-documented behavior.
 Prefer IAM policy evaluation (D1, key-policy vs IAM-policy trap), VPC networking (D2, SG vs NACL, PrivateLink), KMS + envelope encryption + Secrets Manager (D3), CloudTrail + Config + Security Lake (D4), GuardDuty + Security Hub + Detective (D5), Organizations + Control Tower (D6).
@@ -85,14 +85,14 @@ Generate exactly ${count} multiple-choice questions about "${topic}" in the cate
 
 Rules:
 - Each question must have exactly 4 options (A/B/C/D)
-- All 4 options must be plausible — no obviously wrong answers
+- All 4 options must be plausible, no obviously wrong answers
 - correct is the 0-indexed position of the correct answer (0=A, 1=B, 2=C, 3=D)
 - explanation must clearly explain why the correct answer is right AND briefly note why the others are wrong (2-4 sentences)
 - ${difficulty === 'beginner' ? 'Focus on definitions and basic concepts.' : difficulty === 'intermediate' ? 'Focus on how things work and comparisons.' : 'Focus on edge cases, best practices, and scenario-based reasoning.'}
-- Do NOT make the correct answer noticeably longer than the distractors — an exam-writing tell.
+- Do NOT make the correct answer noticeably longer than the distractors, an exam-writing tell.
 - Do NOT include obvious throwaway options ("None of the above", "All of the above", joke answers). Every distractor should be defensible until you compare to the correct answer.
 ${scaffold}
-Respond with ONLY a valid JSON array — no markdown, no commentary, no code fences.
+Respond with ONLY a valid JSON array, no markdown, no commentary, no code fences.
 
 Format:
 [
@@ -125,7 +125,7 @@ function passesQualityGate(q: { question: string; options: [string, string, stri
     }
   }
 
-  // 4. Correct answer isn't the longest option by more than 30 characters —
+  // 4. Correct answer isn't the longest option by more than 30 characters 
   //    the classic "longest = correct" exam-writing tell.
   const lens = q.options.map((o) => o.length);
   const correctLen = lens[q.correct];

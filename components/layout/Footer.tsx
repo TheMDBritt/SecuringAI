@@ -19,7 +19,7 @@ export function Footer() {
             <span className="font-bold text-sm text-slate-200 tracking-tight">Securing AI</span>
             <span className="text-[11px] text-slate-500 max-w-xs leading-relaxed">
               AI security training. {Q} practice questions, {G} glossary terms,
-              {' '}{S} dojo scenarios, {I} SOC incidents — no signup required.
+              {' '}{S} dojo scenarios, {I} SOC incidents, no signup required.
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'ISO 42001', 'EU AI Act'].map((f) => (

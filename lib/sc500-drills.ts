@@ -1,5 +1,5 @@
 /**
- * SC-500 Portal Drills — interactive click-path simulations of Microsoft
+ * SC-500 Portal Drills, interactive click-path simulations of Microsoft
  * security portals. Each drill is a sequence of "screens" (multiple-choice
  * picks) that mimic the menu/wizard flow you'd see in Entra, Defender XDR,
  * Sentinel, Defender for Cloud, Purview, Azure OpenAI, and Security Copilot.
@@ -26,11 +26,11 @@ export interface DrillStep {
 export interface Drill {
   id: string;
   /**
-   * The bucket the drill belongs to — the filter chip on the list view.
+   * The bucket the drill belongs to, the filter chip on the list view.
    * For SC-500 drills these are portal names (Entra, Defender XDR, etc.).
    * For SecAI+ drills these are objective-domain labels (Domain 2 · Attacks,
    * Domain 3 · Tools, Domain 4 · Responsible AI). String type keeps the
-   * component generic across cert vocabularies — each drill set supplies
+   * component generic across cert vocabularies, each drill set supplies
    * its own bucket palette via DrillSet.bucketColors.
    */
   portal: string;
@@ -62,7 +62,7 @@ export interface DrillSet {
 
 export const SC500_DRILLS: Drill[] = [
 
-  // ── Drill 1 — Entra: Conditional Access for Admins ─────────────────────────
+  // ── Drill 1, Entra: Conditional Access for Admins ─────────────────────────
   {
     id: 'drill-ca-admins',
     portal: 'Entra',
@@ -95,7 +95,7 @@ export const SC500_DRILLS: Drill[] = [
           'What If',
         ],
         correct: 1,
-        explanation: '"New policy" creates a blank policy. "New policy from template" uses Microsoft pre-built baselines — useful but the question said *build* it.',
+        explanation: '"New policy" creates a blank policy. "New policy from template" uses Microsoft pre-built baselines, useful but the question said *build* it.',
       },
       {
         screen: 'New policy · Assignments → Users',
@@ -131,13 +131,13 @@ export const SC500_DRILLS: Drill[] = [
           'Require approved client app',
         ],
         correct: 1,
-        explanation: '"Require multifactor authentication" accepts SMS / phone call (phishable). Authentication Strengths lets you require a *specific* MFA method — choose the built-in "Phishing-resistant MFA".',
+        explanation: '"Require multifactor authentication" accepts SMS / phone call (phishable). Authentication Strengths lets you require a *specific* MFA method, choose the built-in "Phishing-resistant MFA".',
       },
       {
         screen: 'New policy · Enable policy',
         question: 'Before flipping to "On", what should you verify?',
         options: [
-          'Nothing — just enable it',
+          'Nothing, just enable it',
           'Run "Report-only" first, watch the sign-in logs for unintended impact, AND confirm your break-glass account is excluded',
           'Disable all other CA policies',
           'Apply to guest users only',
@@ -148,7 +148,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 2 — Entra: PIM activate ──────────────────────────────────────────
+  // ── Drill 2, Entra: PIM activate ──────────────────────────────────────────
   {
     id: 'drill-pim-activate',
     portal: 'Entra',
@@ -203,7 +203,7 @@ export const SC500_DRILLS: Drill[] = [
           'Your session is over 24h old',
         ],
         correct: 1,
-        explanation: 'PIM "on activation, require MFA" is a per-role setting that demands fresh proof of identity — closes the window where a stolen token could activate.',
+        explanation: 'PIM "on activation, require MFA" is a per-role setting that demands fresh proof of identity, closes the window where a stolen token could activate.',
       },
       {
         screen: 'Activation submitted',
@@ -220,7 +220,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 3 — Defender XDR: Incident triage ────────────────────────────────
+  // ── Drill 3, Defender XDR: Incident triage ────────────────────────────────
   {
     id: 'drill-xdr-incident',
     portal: 'Defender XDR',
@@ -300,12 +300,12 @@ export const SC500_DRILLS: Drill[] = [
           'AlertInfo | union AlertEvidence',
         ],
         correct: 1,
-        explanation: 'CloudAppEvents with the offending ApplicationId reveals every account the app touched — your scope-of-compromise query.',
+        explanation: 'CloudAppEvents with the offending ApplicationId reveals every account the app touched, your scope-of-compromise query.',
       },
     ],
   },
 
-  // ── Drill 4 — Defender for Cloud: Configure network segmentation ──────────────
+  // ── Drill 4, Defender for Cloud: Configure network segmentation ──────────────
   {
     id: 'drill-mdc-network',
     portal: 'Defender for Cloud',
@@ -365,7 +365,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 5 — Purview: Classify and encrypt sensitive data ──────────────
+  // ── Drill 5, Purview: Classify and encrypt sensitive data ──────────────
   {
     id: 'drill-purview-dlp',
     portal: 'Purview',
@@ -425,7 +425,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 7 — Sentinel: Build a password-spray analytics rule ──────────────
+  // ── Drill 7, Sentinel: Build a password-spray analytics rule ──────────────
   {
     id: 'drill-sentinel-rule',
     portal: 'Sentinel',
@@ -475,7 +475,7 @@ export const SC500_DRILLS: Drill[] = [
         question: 'Which entity columns are most valuable to map for response actions?',
         options: [
           'Just TimeGenerated',
-          'IP (IPAddress) and Account (UserPrincipalName) — at minimum',
+          'IP (IPAddress) and Account (UserPrincipalName), at minimum',
           'Hostname only',
           'No mapping required',
         ],
@@ -492,7 +492,7 @@ export const SC500_DRILLS: Drill[] = [
           'Run rule manually only',
         ],
         correct: 1,
-        explanation: 'Incident grouping (per rule) by IP entity dedupes alerts so repeat detections of the same source roll into one ongoing incident — kinder to the analyst.',
+        explanation: 'Incident grouping (per rule) by IP entity dedupes alerts so repeat detections of the same source roll into one ongoing incident, kinder to the analyst.',
       },
       {
         screen: 'Rule wizard · Automated response',
@@ -509,7 +509,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 8 — Defender for Cloud: Enable AI workload protection ────────────
+  // ── Drill 8, Defender for Cloud: Enable AI workload protection ────────────
   {
     id: 'drill-mdc-ai',
     portal: 'Defender for Cloud',
@@ -535,7 +535,7 @@ export const SC500_DRILLS: Drill[] = [
         question: 'Which plan must be ON for AI-Security Posture Management (AI-SPM)?',
         options: [
           'Defender for Servers P1',
-          'Defender CSPM (cloud-posture management — paid tier)',
+          'Defender CSPM (cloud-posture management, paid tier)',
           'Defender for SQL',
           'Defender for Containers',
         ],
@@ -561,7 +561,7 @@ export const SC500_DRILLS: Drill[] = [
           'Connect Microsoft Purview Information Protection (sensitivity labels) to Defender for AI',
           'Disable content filters',
           'Use a public IP on Azure OpenAI',
-          'Nothing — it works without setup',
+          'Nothing, it works without setup',
         ],
         correct: 0,
         explanation: 'AI threat protection cross-references Purview sensitivity labels to flag when labeled content shows up in prompts/completions. Pair Purview + Defender for AI for full coverage.',
@@ -581,7 +581,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 9 — Purview: Configure DSPM for AI policies ──────────────────────
+  // ── Drill 9, Purview: Configure DSPM for AI policies ──────────────────────
   {
     id: 'drill-purview-dspm-ai',
     portal: 'Purview',
@@ -612,7 +612,7 @@ export const SC500_DRILLS: Drill[] = [
           'Only ChatGPT',
         ],
         correct: 1,
-        explanation: 'DSPM for AI is the cross-source AI activity console — Microsoft + third-party + browser-detected.',
+        explanation: 'DSPM for AI is the cross-source AI activity console, Microsoft + third-party + browser-detected.',
       },
       {
         screen: 'DSPM for AI · Recommendations',
@@ -621,7 +621,7 @@ export const SC500_DRILLS: Drill[] = [
           '"Detect risky AI usage" (IRM)',
           '"Detect sensitive info in AI prompts" (DLP)',
           '"Fortify your data security posture"',
-          'None — must build from scratch',
+          'None, must build from scratch',
         ],
         correct: 1,
         explanation: 'The DLP one-click policy creates a DLP rule with Microsoft 365 Copilot + Endpoint browser locations targeting sensitive info / labels.',
@@ -640,7 +640,7 @@ export const SC500_DRILLS: Drill[] = [
       },
       {
         screen: 'Recommendations · Oversharing assessment',
-        question: 'An oversharing assessment shows "Marketing SharePoint site shared with Everyone except external users" — Copilot returns it for any user. What\'s the cleanest fix?',
+        question: 'An oversharing assessment shows "Marketing SharePoint site shared with Everyone except external users", Copilot returns it for any user. What\'s the cleanest fix?',
         options: [
           'Disable Copilot for the tenant',
           'Apply restricted-access controls (SharePoint Advanced Management) to the site AND tighten sharing to specific groups; verify with DSPM for AI re-scan',
@@ -653,7 +653,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 10 — Azure OpenAI: Production hardening checklist ─────────────────
+  // ── Drill 10, Azure OpenAI: Production hardening checklist ─────────────────
   {
     id: 'drill-aoai-hardening',
     portal: 'Azure OpenAI',
@@ -679,7 +679,7 @@ export const SC500_DRILLS: Drill[] = [
         question: 'For the calling application to authenticate, what do you configure?',
         options: [
           'Generate and copy an API key into the app',
-          'Assign a system- or user-assigned managed identity to the calling app and grant it the Cognitive Services User role on the AOAI resource — also "Disable local authentication" on AOAI',
+          'Assign a system- or user-assigned managed identity to the calling app and grant it the Cognitive Services User role on the AOAI resource, also "Disable local authentication" on AOAI',
           'Use SAS tokens',
           'Anonymous access',
         ],
@@ -708,7 +708,7 @@ export const SC500_DRILLS: Drill[] = [
           'High',
         ],
         correct: 2,
-        explanation: 'Medium is the default. Lower (Off / Low) requires Microsoft Limited Access approval. Higher (High) tightens but may over-block legitimate medical content — tune per use case.',
+        explanation: 'Medium is the default. Lower (Off / Low) requires Microsoft Limited Access approval. Higher (High) tightens but may over-block legitimate medical content, tune per use case.',
       },
       {
         screen: 'Content filters · Advanced',
@@ -727,12 +727,12 @@ export const SC500_DRILLS: Drill[] = [
         question: 'You want completions + prompts logged for forensic analysis. Which diagnostic category do you enable?',
         options: [
           'AuditLogs only',
-          'RequestResponse (plus AllMetrics) — note this category is opt-in and incurs additional storage cost',
+          'RequestResponse (plus AllMetrics), note this category is opt-in and incurs additional storage cost',
           'AzureActivity',
           'Operational logs only',
         ],
         correct: 1,
-        explanation: 'RequestResponse is the opt-in category that captures prompt + completion text. Treat the resulting log as Confidential — protect with sensitivity labels on the Log Analytics workspace.',
+        explanation: 'RequestResponse is the opt-in category that captures prompt + completion text. Treat the resulting log as Confidential, protect with sensitivity labels on the Log Analytics workspace.',
       },
       {
         screen: 'Defender for Cloud · Plans',
@@ -749,7 +749,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 11 — Security Copilot: Provision and govern ───────────────────────
+  // ── Drill 11, Security Copilot: Provision and govern ───────────────────────
   {
     id: 'drill-copilot-bootstrap',
     portal: 'Security Copilot',
@@ -768,7 +768,7 @@ export const SC500_DRILLS: Drill[] = [
           'Azure OpenAI deployment',
         ],
         correct: 1,
-        explanation: 'Capacity is a dedicated resource type — Security Compute Units. Billed per SCU per hour (~$4 USD/SCU/hr at GA). Recommended start: 3 SCUs.',
+        explanation: 'Capacity is a dedicated resource type, Security Compute Units. Billed per SCU per hour (~$4 USD/SCU/hr at GA). Recommended start: 3 SCUs.',
       },
       {
         screen: 'Capacity · Sizing',
@@ -799,12 +799,12 @@ export const SC500_DRILLS: Drill[] = [
         question: 'Your policy says "SOC may use Defender XDR + Sentinel + Defender TI plugins; not Intune". How do you enforce?',
         options: [
           'Tell users not to use Intune',
-          'As Owner, configure the plugin allow-list — uninstall / disable Intune; keep Defender XDR, Sentinel, Defender TI enabled',
+          'As Owner, configure the plugin allow-list, uninstall / disable Intune; keep Defender XDR, Sentinel, Defender TI enabled',
           'Disable Copilot entirely',
           'Use Conditional Access',
         ],
         correct: 1,
-        explanation: 'Plugin allow-list is the canonical governance lever — Owner-controlled. Users only see / enable what Owners have permitted.',
+        explanation: 'Plugin allow-list is the canonical governance lever, Owner-controlled. Users only see / enable what Owners have permitted.',
       },
       {
         screen: 'Promptbooks · New',

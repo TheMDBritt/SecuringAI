@@ -84,7 +84,7 @@ export function ProgressClient({
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="cyan" />
+            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="cyan" />
             <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} labs`} tone="violet" />
             <StatCard label="Questions answered" value={summary.questionsAnswered} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
           </div>
@@ -187,7 +187,7 @@ export function ProgressClient({
                       <Link
                         href={`/playbook?section=progress&session=${encodeURIComponent(r.sessionId)}`}
                         className="flex items-center gap-3 py-3 rounded hover:bg-white/5 -mx-2 px-2 transition-colors"
-                        aria-label={`Review ${r.label} — ${r.detail}`}
+                        aria-label={`Review ${r.label}, ${r.detail}`}
                       >
                         {body}
                       </Link>

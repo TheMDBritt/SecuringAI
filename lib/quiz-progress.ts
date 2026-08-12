@@ -1,5 +1,5 @@
 /**
- * Quiz progression tracking — localStorage only, no accounts, no network.
+ * Quiz progression tracking, localStorage only, no accounts, no network.
  *
  * Data model
  * ─────────────────────────────────────────────────────────────────────────────
@@ -7,7 +7,7 @@
  * `perQ`      : forever-retained aggregate per question ID
  *   - timesSeen, timesRight, lastSeenAt
  *
- * The 90-day window is enforced on load and on every write — prune-on-read
+ * The 90-day window is enforced on load and on every write, prune-on-read
  * plus prune-on-write means an idle user's stale data still expires.
  *
  * The weighted picker uses perQ to bias future quizzes toward weak / unseen
@@ -81,7 +81,7 @@ function saveProgress(data: ProgressData): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch {
-    // Quota exceeded or storage disabled — silently drop; nothing else to do
+    // Quota exceeded or storage disabled, silently drop; nothing else to do
     // in a no-account app.
   }
 }
@@ -231,7 +231,7 @@ export function topicAccuracy(
     .sort((a, b) => a.accuracy - b.accuracy);
 }
 
-/** Which cert scopes have session data — for the dashboard's cert switcher. */
+/** Which cert scopes have session data, for the dashboard's cert switcher. */
 export function certsWithData(data: ProgressData): string[] {
   const set = new Set<string>();
   for (const s of data.sessions) set.add(s.cert);
@@ -241,11 +241,11 @@ export function certsWithData(data: ProgressData): string[] {
 // ─── Readiness score ─────────────────────────────────────────────────────────
 
 export interface Readiness {
-  /** 0–100. The single "am I ready?" number: min(coverage, accuracy). */
+  /** 0-100. The single "am I ready?" number: min(coverage, accuracy). */
   score:        number;
   /** Distinct questions seen / total pool for this cert. */
   coveragePct:  number;
-  /** All-time accuracy on this cert scope, 0–100. */
+  /** All-time accuracy on this cert scope, 0-100. */
   accuracyPct:  number;
   /** Pass threshold from EXAM_CERTS[cert].passingScore. */
   passPct:      number;
@@ -311,7 +311,7 @@ export function readinessScore(
  *   50% right            →  weight 1.5
  *   100% right           →  weight 1 (still shown, but rarely)
  *
- * We keep a floor > 0 so no question is permanently retired — otherwise
+ * We keep a floor > 0 so no question is permanently retired, otherwise
  * long-time users would see the same subset forever.
  */
 function questionWeight(qId: string, perQ: Record<string, QuestionStats>): number {
@@ -327,7 +327,7 @@ export function pickWeighted<T extends { id: string }>(
   n: number,
   perQ: Record<string, QuestionStats>,
 ): T[] {
-  // Even when the whole pool is returned (n >= pool.length), shuffle it —
+  // Even when the whole pool is returned (n >= pool.length), shuffle it 
   // otherwise a small/narrow pool (e.g. one domain, or the "Weak" filter)
   // would always present questions in the same stored file order.
   if (n >= pool.length) {

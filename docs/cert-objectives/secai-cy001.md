@@ -1,9 +1,9 @@
-# CompTIA SecAI+ CY0-001 V1 — Official Exam Objectives
+# CompTIA SecAI+ CY0-001 V1: Official Exam Objectives
 
 **Source:** CompTIA SecAI+ Certification Exam Objectives, Document Version 4.0 (2025)
 **Original file:** `CompTIA_SecAI_CY0001_Exam_Objectives_4.0.pdf` (user-uploaded)
 **Fetched / transcribed:** 2026-08-11
-**Rule of use:** Every SecAI+ article, glossary term, quiz question, drill in this repo MUST cite an objective ID from this file (e.g. "SecAI+ 2.6 Attacks — Backdoor"). Never write from memory.
+**Rule of use:** Every SecAI+ article, glossary term, quiz question, drill in this repo MUST cite an objective ID from this file (e.g. "SecAI+ 2.6 Attacks: Backdoor"). Never write from memory.
 
 ---
 
@@ -13,8 +13,8 @@
 - **Number of questions:** Maximum of 60
 - **Question types:** Multiple-choice and performance-based
 - **Length:** 60 minutes
-- **Recommended experience:** 3–4 years IT experience + ~2 years hands-on cybersecurity
-- **Passing score:** 600 (on a scale of 100–900) — approximately 67%
+- **Recommended experience:** 3-4 years IT experience + ~2 years hands-on cybersecurity
+- **Passing score:** 600 (on a scale of 100-900), approximately 67%
 
 ## Domain weights
 

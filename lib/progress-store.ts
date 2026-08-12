@@ -2,7 +2,7 @@
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lightweight, privacy-preserving progress store. Everything lives in the
-// browser's localStorage — no accounts, no network, consistent with the app's
+// browser's localStorage, no accounts, no network, consistent with the app's
 // "no tracking" stance. The dashboard and progress pages read aggregates from
 // here; the quiz engine and dojo write to it.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -14,7 +14,7 @@ export interface QuizRun {
   id: string;
   /**
    * Correlating id from lib/quiz-progress.ts SessionRecord (format
-   * `s_<base36>_<base36>`). Present when the caller supplied it — the
+   * `s_<base36>_<base36>`). Present when the caller supplied it, the
    * dashboard/progress recent-activity rows are linkable to the review view
    * only when this is set.
    */
@@ -117,7 +117,7 @@ export interface ProgressSummary {
   quizRuns: number;
   questionsAnswered: number;
   questionsCorrect: number;
-  accuracy: number; // 0–100
+  accuracy: number; // 0-100
   attackAttempts: number;
   attacksSucceeded: number;
   attacksBlocked: number;
@@ -187,7 +187,7 @@ export function summarize(state: ProgressState): ProgressSummary {
       at: r.at,
       kind: 'attack' as const,
       label: r.scenarioTitle || 'Lab attempt',
-      detail: r.succeeded ? 'Attack landed — defense missed' : 'Attack blocked',
+      detail: r.succeeded ? 'Attack landed, defense missed': 'Attack blocked',
       tone: r.succeeded ? 'red' : 'emerald',
     })),
   ]

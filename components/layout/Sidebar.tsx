@@ -62,7 +62,7 @@ function SidebarInner({
   return (
     <div className="flex h-full flex-col">
       {/* Brand */}
-      <Link href="/" onClick={onNavigate} className="flex h-14 items-center gap-2.5 px-3.5" aria-label="Securing AI — home">
+      <Link href="/" onClick={onNavigate} className="flex h-14 items-center gap-2.5 px-3.5" aria-label="Securing AI, home">
         <BrandMark className="h-7 w-7 shrink-0" />
         <span className={['flex min-w-0 flex-col whitespace-nowrap', labelClass].join(' ')}>
           <span className="text-[14px] font-bold leading-tight tracking-tight text-slate-50">Securing AI</span>
@@ -101,7 +101,7 @@ function SidebarInner({
 
 /**
  * Desktop: slim 64px icon rail that expands to 240px on hover as a floating
- * overlay — it never steals horizontal space from the workspace.
+ * overlay, it never steals horizontal space from the workspace.
  * Mobile: slide-over drawer controlled by `mobileOpen`.
  */
 export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => void }) {

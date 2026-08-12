@@ -13,7 +13,7 @@ export interface ChatOptions {
 export interface ModelClient {
   /**
    * Send a fully-assembled message stack to the model.
-   * The first message MUST be a system message — the caller is responsible for
+   * The first message MUST be a system message, the caller is responsible for
    * building the full prompt stack (system → injections → conversation).
    */
   chat(messages: ChatMessage[], options?: ChatOptions): Promise<string>;
@@ -25,7 +25,7 @@ class OpenAIClient implements ModelClient {
   constructor(private readonly apiKey: string) {}
 
   async chat(messages: ChatMessage[], options: ChatOptions = {}): Promise<string> {
-    // Pass finalMessages straight through — system messages are included by the caller.
+    // Pass finalMessages straight through, system messages are included by the caller.
     const body = JSON.stringify({
       model: 'gpt-4o-mini',
       messages,
@@ -44,7 +44,7 @@ class OpenAIClient implements ModelClient {
         body,
       });
     } catch {
-      // Do NOT include apiKey or fetch details in thrown error — it bubbles to the client
+      // Do NOT include apiKey or fetch details in thrown error, it bubbles to the client
       throw new Error('Could not reach the model provider. Check your network or try again.');
     }
 

@@ -6,7 +6,7 @@ interface ScoringPaneProps {
   dojoId: DojoId;
   dojoLabel: string;
   evaluations: EvaluationResult[];
-  /** Cumulative session score (0–100). Decreases with each successful attack (Dojo 1 only). */
+  /** Cumulative session score (0-100). Decreases with each successful attack (Dojo 1 only). */
   sessionScore: number;
 }
 
@@ -62,38 +62,38 @@ interface FrameworkMap {
 
 const FRAMEWORK_MAPPINGS: Record<AttackType, FrameworkMap> = {
   prompt_injection: {
-    owasp:      ['LLM01:2025 – Prompt Injection'],
-    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0054 – LLM Jailbreak'],
+    owasp: ['LLM01:2025, Prompt Injection'],
+    mitreAtlas: ['AML.T0051: LLM Prompt Injection', 'AML.T0054: LLM Jailbreak'],
     nistAiRmf:  ['MEASURE 2.5', 'MANAGE 2.2'],
   },
   data_exfiltration: {
-    owasp:      ['LLM02:2025 – Sensitive Information Disclosure'],
-    mitreAtlas: ['AML.T0056 – LLM Information Disclosure', 'AML.T0040 – ML Model Inference API Access'],
+    owasp: ['LLM02:2025, Sensitive Information Disclosure'],
+    mitreAtlas: ['AML.T0056: LLM Information Disclosure', 'AML.T0040: ML Model Inference API Access'],
     nistAiRmf:  ['MEASURE 2.5', 'GOVERN 1.6'],
   },
   policy_bypass: {
-    owasp:      ['LLM01:2025 – Prompt Injection', 'LLM05:2025 – Improper Output Handling'],
-    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0054 – LLM Jailbreak'],
+    owasp: ['LLM01:2025, Prompt Injection', 'LLM05:2025, Improper Output Handling'],
+    mitreAtlas: ['AML.T0051: LLM Prompt Injection', 'AML.T0054: LLM Jailbreak'],
     nistAiRmf:  ['MANAGE 2.2', 'MEASURE 2.5'],
   },
   tool_abuse: {
-    owasp:      ['LLM06:2025 – Excessive Agency', 'LLM09:2025 – Misinformation'],
-    mitreAtlas: ['AML.T0057 – Exploitation of ML-Enabled Products', 'AML.T0051 – LLM Prompt Injection'],
+    owasp: ['LLM06:2025, Excessive Agency', 'LLM09:2025, Misinformation'],
+    mitreAtlas: ['AML.T0057: Exploitation of ML-Enabled Products', 'AML.T0051: LLM Prompt Injection'],
     nistAiRmf:  ['MANAGE 2.2', 'MEASURE 2.6'],
   },
   mixed_attack: {
-    owasp:      ['LLM01:2025 – Prompt Injection', 'LLM02:2025 – Sensitive Information Disclosure'],
-    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0056 – LLM Information Disclosure'],
+    owasp: ['LLM01:2025, Prompt Injection', 'LLM02:2025, Sensitive Information Disclosure'],
+    mitreAtlas: ['AML.T0051: LLM Prompt Injection', 'AML.T0056: LLM Information Disclosure'],
     nistAiRmf:  ['MEASURE 2.5', 'MANAGE 2.2'],
   },
   rag_injection: {
-    owasp:      ['LLM01:2025 – Prompt Injection (Indirect)', 'LLM04:2025 – Data and Model Poisoning'],
-    mitreAtlas: ['AML.T0051 – LLM Prompt Injection', 'AML.T0053 – Poisoning of ML Data'],
+    owasp: ['LLM01:2025, Prompt Injection (Indirect)', 'LLM04:2025, Data and Model Poisoning'],
+    mitreAtlas: ['AML.T0051: LLM Prompt Injection', 'AML.T0053: Poisoning of ML Data'],
     nistAiRmf:  ['MAP 5.1', 'MEASURE 2.5'],
   },
   probing: {
-    owasp:      ['LLM02:2025 – Sensitive Information Disclosure', 'LLM08:2025 – Vector and Embedding Weaknesses'],
-    mitreAtlas: ['AML.T0056 – LLM Information Disclosure', 'AML.T0040 – ML Model Inference API Access'],
+    owasp: ['LLM02:2025, Sensitive Information Disclosure', 'LLM08:2025, Vector and Embedding Weaknesses'],
+    mitreAtlas: ['AML.T0056: LLM Information Disclosure', 'AML.T0040: ML Model Inference API Access'],
     nistAiRmf:  ['MEASURE 2.5'],
   },
   benign:  { owasp: [], mitreAtlas: [], nistAiRmf: [] },
@@ -156,7 +156,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
         )}
       </div>
 
-      {/* Score bar — omitted for benign turns */}
+      {/* Score bar, omitted for benign turns */}
       {e.attackType !== 'benign' && (
         <ScoreBar score={e.score} riskLevel={e.riskLevel} />
       )}
@@ -480,7 +480,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                 title={latest.owaspCategory}
                 className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
               >
-                {latest.owaspCategory.split('–')[0].trim()}
+                {latest.owaspCategory.split(' ')[0].trim()}
               </span>
             )}
 

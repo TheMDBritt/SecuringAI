@@ -25,7 +25,7 @@ export default function GlossaryPanel() {
   const [certFilter, setCert]   = useState('All');
   const [expanded, setExpanded] = useState<string | null>(null);
 
-  // Stage 1: apply search + cert filter (used to determine available A–Z letters)
+  // Stage 1: apply search + cert filter (used to determine available A Z letters)
   const certFiltered: GlossaryTerm[] = useMemo(() => {
     const q = search.toLowerCase();
     return GLOSSARY_TERMS
@@ -84,7 +84,7 @@ export default function GlossaryPanel() {
         ))}
       </div>
 
-      {/* A–Z jump bar */}
+      {/* A Z jump bar */}
       <div className="flex flex-wrap gap-0.5 px-4 py-2 border-b border-slate-700">
         <button
           onClick={() => setJump('')}

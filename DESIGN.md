@@ -1,4 +1,4 @@
-# LLM Dojo — Design Specification
+# LLM Dojo: Design Specification
 
 > Status: Draft v1.0 | Branch: claude/llm-dojo-design-29Ibi
 > Stack: Next.js 14 (App Router) · TypeScript · Tailwind CSS · Vercel
@@ -9,20 +9,20 @@
 
 ---
 
-### Dojo 1 — Attack & Defend an LLM
+### Dojo 1, Attack & Defend an LLM
 
 **Theme:** You are both the red team and blue team against a sandboxed LLM target.
 
 **Scenarios (5):**
-- `prompt-injection` — Inject adversarial text via user turn to override the system prompt
-- `data-exfiltration` — Coax the model into revealing simulated "hidden" secrets in its context
-- `policy-bypass` — Circumvent topic/content restrictions via jailbreak patterns
-- `tool-abuse` — Abuse simulated function-calling tools (e.g., fake file-read, fake web-search)
-- `rag-injection` — Inject malicious content into a simulated retrieval document to hijack responses
+- `prompt-injection`, Inject adversarial text via user turn to override the system prompt
+- `data-exfiltration`, Coax the model into revealing simulated "hidden" secrets in its context
+- `policy-bypass`, Circumvent topic/content restrictions via jailbreak patterns
+- `tool-abuse`, Abuse simulated function-calling tools (e.g., fake file-read, fake web-search)
+- `rag-injection`, Inject malicious content into a simulated retrieval document to hijack responses
 
 **Features per scenario:**
 - Scenario picker (card grid with difficulty badge: Beginner / Intermediate / Advanced)
-- Chat console — dual-pane: user input + model response stream
+- Chat console, dual-pane: user input + model response stream
 - Attack Control Panel
   - Payload library (pre-built injection templates, editable)
   - Context injection slot (insert text that appears to be retrieved docs)
@@ -44,19 +44,19 @@
 
 ---
 
-### Dojo 2 — AI as Security Tool (SOC Assistant)
+### Dojo 2, AI as Security Tool (SOC Assistant)
 
 **Theme:** You are a Tier-1 SOC analyst augmented by an AI assistant.
 
 **Scenarios (4):**
-- `log-triage` — Paste raw SIEM/syslog output; AI classifies severity, extracts IOCs, summarizes
-- `alert-enrichment` — Paste a security alert; AI enriches with CVE context, threat actor attribution hypotheses, MITRE ATT&CK mapping
-- `detection-rule-gen` — Describe anomalous behavior in natural language; AI proposes Sigma / KQL / YARA rules
-- `incident-report-draft` — Provide a timeline of events; AI drafts a structured IR report (executive summary + technical appendix)
+- `log-triage`, Paste raw SIEM/syslog output; AI classifies severity, extracts IOCs, summarizes
+- `alert-enrichment`, Paste a security alert; AI enriches with CVE context, threat actor attribution hypotheses, MITRE ATT&CK mapping
+- `detection-rule-gen`, Describe anomalous behavior in natural language; AI proposes Sigma / KQL / YARA rules
+- `incident-report-draft`, Provide a timeline of events; AI drafts a structured IR report (executive summary + technical appendix)
 
 **Features per scenario:**
-- Input console — text area with paste, file-drop (.log, .json, .csv up to 50 KB), or use a canned sample
-- AI response panel — streamed, structured output with collapsible sections
+- Input console, text area with paste, file-drop (.log,.json,.csv up to 50 KB), or use a canned sample
+- AI response panel, streamed, structured output with collapsible sections
 - Analyst Control Panel
   - AI role configuration (verbosity: terse / detailed, persona: analyst / CISO / IR lead)
   - Output format selector (Markdown / JSON / Structured report)
@@ -73,18 +73,18 @@
 
 ---
 
-### Dojo 3 — Defend Against AI Attacks
+### Dojo 3, Defend Against AI Attacks
 
 **Theme:** You are a defender building controls against AI-enabled threats.
 
 **Scenarios (3):**
-- `phishing-deepfake-detection` — Analyze a simulated AI-generated spear-phishing email or deepfake audio transcript; build and tune a detection workflow
-- `ai-abuse-threat-model` — Given a description of an organization's AI deployment, generate and score an abuse threat model (threat actors, attack trees, likelihood × impact)
-- `policy-and-controls` — Given a breach scenario, draft AI acceptable use policy clauses and technical controls checklist; scored against a reference framework (NIST AI RMF / EU AI Act categories)
+- `phishing-deepfake-detection`, Analyze a simulated AI-generated spear-phishing email or deepfake audio transcript; build and tune a detection workflow
+- `ai-abuse-threat-model`, Given a description of an organization's AI deployment, generate and score an abuse threat model (threat actors, attack trees, likelihood × impact)
+- `policy-and-controls`, Given a breach scenario, draft AI acceptable use policy clauses and technical controls checklist; scored against a reference framework (NIST AI RMF / EU AI Act categories)
 
 **Features per scenario:**
-- Workflow/simulation console — step-by-step wizard UI showing the detection pipeline
-- Evidence panel — display the simulated artifact (email, transcript, deployment diagram)
+- Workflow/simulation console, step-by-step wizard UI showing the detection pipeline
+- Evidence panel, display the simulated artifact (email, transcript, deployment diagram)
 - Defense Control Panel
   - Detection rule builder (keyword, behavioral, embedding-similarity thresholds)
   - Policy clause library (drag-and-drop policy sections)
@@ -202,7 +202,7 @@ For a production version, these map directly to a Postgres schema (e.g., via Sup
   persona: "analyst" | "ciso" | "ir-lead";
   verbosity: "terse" | "detailed";
   outputFormat: "markdown" | "json" | "report";
-  confidenceThreshold: number;   // 0–1
+  confidenceThreshold: number; // 0-1
   redactionMode: boolean;
 }
 ```
@@ -214,7 +214,7 @@ For a production version, these map directly to a Postgres schema (e.g., via Sup
   timestamp: ISO8601;
   attackScore?: {
     succeeded: boolean;
-    confidence: number;          // 0–1
+    confidence: number; // 0-1
     vectorExploited: string;
     owaspTag: string;
   };
@@ -242,7 +242,7 @@ For a production version, these map directly to a Postgres schema (e.g., via Sup
 ### `ExplanationEntry`
 ```ts
 {
-  summary: string;               // 2–3 sentence plain English
+  summary: string; // 2-3 sentence plain English
   whatWorked: string[];
   whatFailed: string[];
   remediations: string[];
@@ -284,7 +284,7 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
 
 ---
 
-### `/api/chat` — POST
+### `/api/chat`, POST
 
 **Request:**
 ```ts
@@ -303,7 +303,7 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
 **Server processing:**
 1. Validate and sanitize sessionId (httpOnly cookie check)
 2. Load scenario config server-side (system prompt, tool definitions)
-3. Apply input guardrails — keyword check, regex, optional LLM-judge call
+3. Apply input guardrails, keyword check, regex, optional LLM-judge call
 4. If guardrail fires: return early with `{ blocked: true, guardRailFired: string }`
 5. Build final message list (system prompt + history + injected context + user message)
 6. Call model provider abstraction layer
@@ -315,7 +315,7 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
 
 ---
 
-### `/api/score` — POST
+### `/api/score`, POST
 
 **Request:**
 ```ts
@@ -335,12 +335,12 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
    - For defense: check if guardrails fired on the right payloads
    - For SOC: compare extracted IOCs to ground truth (fuzzy match)
    - For defender: check policy clause coverage against reference
-4. Generate explanation via a dedicated LLM call (GPT-4o / Claude — summarize what happened)
+4. Generate explanation via a dedicated LLM call (GPT-4o / Claude, summarize what happened)
 5. Return ScoreResult (never includes answer key)
 
 ---
 
-### `/api/guardrail/test` — POST
+### `/api/guardrail/test`, POST
 
 **Request:**
 ```ts
@@ -362,7 +362,7 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
 
 ---
 
-### `/api/soc/analyze` — POST
+### `/api/soc/analyze`, POST
 
 **Request:**
 ```ts
@@ -378,7 +378,7 @@ All routes live under `/api/`. No secrets or answer keys are ever returned to th
 
 ---
 
-### `/api/defender/analyze` — POST
+### `/api/defender/analyze`, POST
 
 **Request:**
 ```ts
@@ -421,7 +421,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### Threat 1 — Prompt Injection into API Routes
+### Threat 1, Prompt Injection into API Routes
 
 **Risk:** User crafts a message that escapes the scenario sandbox and manipulates the *actual* server-side system prompt (not the simulated victim prompt).
 
@@ -436,30 +436,30 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### Threat 2 — Tool Abuse via Forged Tool Responses
+### Threat 2, Tool Abuse via Forged Tool Responses
 
 **Risk:** Dojo 1 allows users to craft forged tool responses. A malicious user could attempt to forge responses that cause the model to execute real side effects.
 
 **Controls:**
-- All tools are **simulated** — no real tool integrations exist on the server
+- All tools are **simulated**, no real tool integrations exist on the server
 - Tool definitions are loaded from a read-only server-side manifest; client cannot register new tools
 - Forged tool response content is sanitized and length-capped before being passed to the model
 - Tool call results are never executed as code
 
 ---
 
-### Threat 3 — Exfiltration of Real Server Secrets via Model Response
+### Threat 3, Exfiltration of Real Server Secrets via Model Response
 
 **Risk:** User tricks the model into revealing env vars, API keys, or real system prompts.
 
 **Controls:**
-- Env vars never placed in model context — model only receives scenario-specific content
+- Env vars never placed in model context, model only receives scenario-specific content
 - Output filter scans responses for patterns matching `sk-`, `Bearer `, PII patterns, and the literal text of the real system prompt
 - API keys stored only in Vercel env vars, never bundled into client JS
 
 ---
 
-### Threat 4 — RAG Context Injection Escaping Sandbox
+### Threat 4, RAG Context Injection Escaping Sandbox
 
 **Risk:** Dojo 1 RAG injection slot allows user to provide "retrieved documents." A user could inject content that causes the real server LLM to behave unexpectedly.
 
@@ -470,7 +470,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### Threat 5 — Cost / Rate Limit Abuse
+### Threat 5, Cost / Rate Limit Abuse
 
 **Risk:** Dojo is publicly accessible; malicious actors flood the API routes to exhaust model API quotas.
 
@@ -483,7 +483,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### Threat 6 — Harmful Content Generation via Scenario Framing
+### Threat 6, Harmful Content Generation via Scenario Framing
 
 **Risk:** User uses the "attack" scenario framing to elicit actually harmful instructions (real exploits, malware, etc.) from the model.
 
@@ -496,7 +496,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### Threat 7 — Session Hijacking
+### Threat 7, Session Hijacking
 
 **Risk:** Session IDs are guessable or transmitted insecurely, allowing one user to read another's conversation.
 
@@ -508,11 +508,11 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-## 5. Build Plan — 10 Milestones
+## 5. Build Plan: 10 Milestones
 
 ---
 
-### M1 — Repo & Toolchain Setup
+### M1: Repo & Toolchain Setup
 - Init Next.js 14 App Router project with TypeScript strict mode
 - Configure Tailwind CSS, ESLint, Prettier
 - Set up Vercel project, environment variable structure (`.env.example`)
@@ -522,7 +522,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M2 — Layout Shell & 3-Tab Navigation
+### M2: Layout Shell & 3-Tab Navigation
 - Build `RootLayout` with sidebar or top-nav tab bar (Dojo 1 / 2 / 3)
 - Create placeholder page components for each Dojo
 - Design system tokens: color palette (security-themed dark mode), typography scale, component primitives (Card, Badge, Button, Panel)
@@ -531,7 +531,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M3 — Model Provider Abstraction Layer
+### M3: Model Provider Abstraction Layer
 - Implement `OpenAIProvider` (streaming, function calling)
 - Implement `AnthropicProvider` (streaming, tool use)
 - Implement `OllamaProvider` for local dev (no API key needed)
@@ -541,7 +541,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M4 — Dojo 1 Scenarios & Chat Console
+### M4: Dojo 1 Scenarios & Chat Console
 - Load scenarios from server-side JSON manifest
 - Build scenario picker (card grid with difficulty badges)
 - Build chat console component (SSE streaming, message bubbles, tool call display)
@@ -551,7 +551,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M5 — Dojo 1 Attack/Defense Control Panel & Scoring
+### M5: Dojo 1 Attack/Defense Control Panel & Scoring
 - Build Attack Control Panel: payload library, context injection slot, tool forge
 - Build Defense Control Panel: system prompt editor, guardrail toggles
 - Implement all input/output guardrails (keyword, regex, LLM-judge, PII redaction, topic classifier)
@@ -561,7 +561,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M6 — Dojo 2 SOC Assistant Scenarios
+### M6: Dojo 2 SOC Assistant Scenarios
 - Implement all 4 SOC scenarios with canned sample data (logs, alerts, behavior descriptions, timelines)
 - Build Analyst Control Panel (persona, verbosity, output format, confidence threshold)
 - Wire `/api/soc/analyze` with structured output parsing (extract IOCs, generate Sigma rules, draft IR report)
@@ -571,16 +571,16 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M7 — Dojo 3 Defender Scenarios
+### M7: Dojo 3 Defender Scenarios
 - Implement 3 defender scenarios with simulated artifacts (phishing emails, deployment diagrams, breach timelines)
 - Build detection rule builder UI and policy clause drag-and-drop
-- Build threat model canvas (simplified — text-based tree, not graphical for MVP)
+- Build threat model canvas (simplified, text-based tree, not graphical for MVP)
 - Wire `/api/defender/analyze` with scoring against reference frameworks
 - **Exit criterion:** All 3 Dojo 3 scenarios are playable with scored output
 
 ---
 
-### M8 — Scoring Engine & Explanation Quality
+### M8: Scoring Engine & Explanation Quality
 - Centralize scoring logic in `lib/scoring/`; deduplicate across all dojos
 - Improve explanation generation: dedicated LLM call with chain-of-thought, structured output schema
 - Add score history panel (within session): radar chart showing progress across attack/defense dimensions
@@ -589,8 +589,8 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M9 — Safety Hardening & Sandbox Controls
-- Implement all threat model controls (Threats 1–7 from Section 4)
+### M9: Safety Hardening & Sandbox Controls
+- Implement all threat model controls (Threats 1-7 from Section 4)
 - Add rate limiting middleware (Vercel Edge)
 - Add output classifier guardrail (real harmful content detection)
 - Security audit: review all API routes for injection surfaces, information leakage
@@ -600,7 +600,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 
 ---
 
-### M10 — Vercel Deployment & Polish
+### M10: Vercel Deployment & Polish
 - Configure Vercel project: production env vars, Edge Runtime for rate limiting, regional deployment
 - Add `vercel.json` for route config and Edge Middleware
 - Performance optimization: lazy-load dojo panels, streaming UI skeleton states
@@ -614,7 +614,7 @@ The Dojo is inherently a high-risk surface because it is *designed* to accept ad
 ## Open Questions for Stakeholder (Clarifying)
 
 1. **Auth:** Should Dojo be public (anonymous sessions) or require login (GitHub OAuth / magic link)? Login enables persistent score history across sessions.
-2. **Model preference:** Primary provider — OpenAI (gpt-4o) or Anthropic (claude-sonnet-4-6)? Or both available as a user toggle?
+2. **Model preference:** Primary provider, OpenAI (gpt-4o) or Anthropic (claude-sonnet-4-6)? Or both available as a user toggle?
 3. **Persistence:** MVP uses in-memory session state (lost on serverless cold start). Should we add a lightweight persistent store (Upstash Redis, Vercel KV, or Supabase) for session/score history?
 4. **RAG scenario depth:** For `rag-injection`, do you want a real vector store (e.g., Pinecone / pgvector) to make retrieval authentic, or a fully simulated/canned retrieval for safety/simplicity?
 5. **Scoring strictness:** Should scoring be purely rule-based (fast, deterministic) or LLM-as-judge (slower, more nuanced)? Or a hybrid?

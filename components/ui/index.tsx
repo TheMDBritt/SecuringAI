@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Enterprise UI primitives — a small, consistent design-system layer shared by
+// Enterprise UI primitives, a small, consistent design-system layer shared by
 // the dashboard, progress, settings, help, and landing surfaces.
 // ─────────────────────────────────────────────────────────────────────────────
 

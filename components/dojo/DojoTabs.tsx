@@ -46,7 +46,7 @@ export function DojoTabs() {
   /** Ordered list of attack types that succeeded in this session (oldest first). */
   const [successfulAttacks, setSuccessfulAttacks] = useState<AttackType[]>([]);
   /**
-   * Cumulative session score (0–100). Starts at 100 and decreases with each
+   * Cumulative session score (0-100). Starts at 100 and decreases with each
    * successful attack. Benign turns do NOT reset this value. Reset to 100 on
    * scenario change, tab change, or Clear.
    */
@@ -54,7 +54,7 @@ export function DojoTabs() {
 
   // ── Dojo 2 config ──────────────────────────────────────────────────────────
   const [dojo2Config, setDojo2Config] = useState<Dojo2Config>(DEFAULT_DOJO2_CONFIG);
-  /** The currently active Dojo 2 incident — set by loading/generating from the right panel,
+  /** The currently active Dojo 2 incident, set by loading/generating from the right panel,
    *  or cleared when the user clicks a new left-panel scenario card. */
   const [activeDojo2Scenario, setActiveDojo2Scenario] = useState<Dojo2IncidentScenario | null>(null);
 
@@ -215,7 +215,7 @@ export function DojoTabs() {
   );
 
   /**
-   * Always inserts text into the chat input without sending — used by Dojo 2
+   * Always inserts text into the chat input without sending, used by Dojo 2
    * Incident Library so users can review scenario data before submitting.
    */
   const handleInsertText = useCallback((text: string) => {

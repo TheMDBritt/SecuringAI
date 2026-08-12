@@ -1,5 +1,5 @@
 /**
- * AWS Certified Security – Specialty (SCS-C03) Drills — scenario-based
+ * AWS Certified Security: Specialty (SCS-C03) Drills, scenario-based
  * click-path simulations of AWS console workflows. Each drill walks through
  * a realistic security task spanning one or more SCS-C03 domains.
  *
@@ -58,7 +58,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'After adding s3:PutObject, you test and still get Access Denied. You check the role\'s trust policy (assume-role policy).',
         question: 'When would the trust policy block a PutObject call?',
         options: [
-          'Never — trust policy only controls who can assume the role, not what they can do with it',
+          'Never, trust policy only controls who can assume the role, not what they can do with it',
           'If the trust policy Principal does not include the AWS account root or the user principal attempting to use the role',
           'If the trust policy is missing the s3:PutObject action',
           'Trust policy is irrelevant for S3 actions',
@@ -86,7 +86,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         options: [
           'SCPs allow or deny based on the AWS account root. They do NOT apply to individual users or roles',
           'SCPs apply to the account and all its principals; they are a second veto gate after identity policies',
-          'SCPs override identity policies — if an SCP denies, it is always denied',
+          'SCPs override identity policies, if an SCP denies, it is always denied',
           'SCPs only control billing permissions',
         ],
         correct: 1,
@@ -95,7 +95,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 1 (IAM) — Drill 2: Federation & temporary credentials ──────────
+  // ── Domain 1 (IAM), Drill 2: Federation & temporary credentials ──────────
   {
     id: 'aws-drill-iam-federation',
     portal: D1,
@@ -172,7 +172,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 2 (Infrastructure Security) — Drill 1: VPC isolation ──────────────
+  // ── Domain 2 (Infrastructure Security), Drill 1: VPC isolation ──────────────
   {
     id: 'aws-drill-vpc-isolation',
     portal: D2,
@@ -192,7 +192,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           '172.31.0.0/16 (default, 65,536 addresses)',
         ],
         correct: 0,
-        explanation: 'RFC 1918 (private IP ranges). 10.0.0.0/16 provides 65k addresses — large, future-proof, and the de-facto standard for enterprise workloads.',
+        explanation: 'RFC 1918 (private IP ranges). 10.0.0.0/16 provides 65k addresses, large, future-proof, and the de-facto standard for enterprise workloads.',
       },
       {
         screen: 'VPC · Subnets',
@@ -202,7 +202,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           'Public subnets allow EC2 instances to receive inbound traffic from the internet; private subnets do not',
           'Public and private subnets have different pricing',
           'Private subnets are faster',
-          'No practical difference — just organizational preference',
+          'No practical difference, just organizational preference',
         ],
         correct: 0,
         explanation: 'A public subnet routes 0.0.0.0/0 to an Internet Gateway (IGW). A private subnet routes 0.0.0.0/0 to a NAT gateway or instance. Instances in private subnets cannot be directly accessed from the internet.',
@@ -225,7 +225,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'Your app tier in private subnets needs to reach an external API. You create a NAT gateway in the public subnet.',
         question: 'Why can the app tier reach the internet OUTBOUND through NAT, but nothing from the internet can initiate inbound to the app?',
         options: [
-          'NAT is bidirectional — both inbound and outbound work',
+          'NAT is bidirectional, both inbound and outbound work',
           'NAT translates outbound source IP; return traffic is automatically SNATed back. Inbound connections must originate from outside, which NAT does not allow without explicit port forwarding (rare on AWS)',
           'The private subnet routes block inbound',
           'Security groups block inbound',
@@ -238,7 +238,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'Admins need SSH access to app instances for troubleshooting. You place a bastion host in the public subnet.',
         question: 'Why not give app instances elastic IPs and SSH them directly?',
         options: [
-          'Bastion is just a preference — direct access is equally secure',
+          'Bastion is just a preference, direct access is equally secure',
           'Bastion funnels all admin access through one controlled entry point; you audit SSH connections in one place and avoid exposing app instances directly to the internet',
           'Elastic IPs are expensive',
           'App instances cannot use elastic IPs if they are in private subnets',
@@ -249,7 +249,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 2 (Infrastructure Security) — Drill 2: Network ACLs & security groups
+  // ── Domain 2 (Infrastructure Security), Drill 2: Network ACLs & security groups
   {
     id: 'aws-drill-nacls-sg',
     portal: D2,
@@ -276,8 +276,8 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'i-1111\'s SG allows outbound to all (0.0.0.0/0) on all ports, but inbound is restricted to SSH (port 22) from 10.0.0.0/8.',
         question: 'Does i-1111\'s SG allow it to send ping (ICMP) to i-2222?',
         options: [
-          'No — ICMP is not explicitly allowed in the outbound rules',
-          'Yes — outbound allows "all" on all ports, which includes ICMP',
+          'No: ICMP is not explicitly allowed in the outbound rules',
+          'Yes, outbound allows "all" on all ports, which includes ICMP',
           'Only if i-2222\'s SG echoes back',
           'Depends on the NACL',
         ],
@@ -289,9 +289,9 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'i-2222\'s SG has: inbound allows ICMP from 10.0.0.0/8; outbound allows all.',
         question: 'With both SGs configured above, can i-1111 successfully ping i-2222?',
         options: [
-          'Yes — both allow ICMP',
-          'No — NACLs will still block it',
-          'Yes — SGs are sufficient (assuming NACLs are default allow-all)',
+          'Yes, both allow ICMP',
+          'No: NACLs will still block it',
+          'Yes: SGs are sufficient (assuming NACLs are default allow-all)',
           'Cannot determine without seeing NACLs',
         ],
         correct: 2,
@@ -302,9 +302,9 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'You check subnet-aaa\'s NACL. Rule 100 (lowest priority) allows 0.0.0.0/0 on all ports outbound. Rule 110 explicitly denies ICMP (protocol 58) outbound to 10.0.0.0/8.',
         question: 'Will ping from i-1111 leave subnet-aaa?',
         options: [
-          'Yes — rule 100 allows all',
-          'No — rule 110 denies ICMP before rule 100 is evaluated',
-          'Yes — outbound is checked before inbound',
+          'Yes, rule 100 allows all',
+          'No, rule 110 denies ICMP before rule 100 is evaluated',
+          'Yes, outbound is checked before inbound',
           'Depends on the destination security group',
         ],
         correct: 1,
@@ -339,7 +339,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 3 (Data Protection) — Drill 1: KMS key policy + IAM ──────────────
+  // ── Domain 3 (Data Protection), Drill 1: KMS key policy + IAM ──────────────
   {
     id: 'aws-drill-kms-policy',
     portal: D3,
@@ -366,9 +366,9 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'You examine the key policy. The Sid "Enable IAM User Permissions" allows root (account principal) all KMS actions. The Sid "Allow Secrets Manager to use the key" allows secretsmanager.amazonaws.com kms:Decrypt and kms:GenerateDataKey on the key.',
         question: 'Can your EC2 role decrypt the secret if its IAM policy grants kms:Decrypt on this key?',
         options: [
-          'Yes — IAM policy is enough',
-          'No — the key policy allows only Secrets Manager and root, not the EC2 role',
-          'Yes — because Secrets Manager is authorized, the role can use it transitively',
+          'Yes: IAM policy is enough',
+          'No, the key policy allows only Secrets Manager and root, not the EC2 role',
+          'Yes, because Secrets Manager is authorized, the role can use it transitively',
           'Only if the role is in the account root',
         ],
         correct: 1,
@@ -416,7 +416,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 3 (Data Protection) — Drill 2: Encryption at rest & transit ─────
+  // ── Domain 3 (Data Protection), Drill 2: Encryption at rest & transit ─────
   {
     id: 'aws-drill-encryption-strategy',
     portal: D3,
@@ -433,7 +433,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           'Only SSE-KMS; S3-managed keys don\'t count as "encryption"',
           'Both satisfy encryption at rest; SSE-KMS adds key rotation, granular access control, and audit logging via CloudTrail',
           'Only SSE-S3; KMS adds unnecessary latency',
-          'Neither — you must use client-side encryption before uploading',
+          'Neither, you must use client-side encryption before uploading',
         ],
         correct: 1,
         explanation: 'Both are "at rest" encryption. SSE-KMS is stricter: you control the key, can audit access, and can disable/rotate independently. SSE-S3 is simpler but you cannot revoke encryption if AWS account is compromised.',
@@ -459,7 +459,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           'TLS 1.0 (legacy support)',
           'TLS 1.2 or higher (industry best practice; TLS 1.0/1.1 are deprecated)',
           'TLS 2.0',
-          'No version requirement — encryption is encryption',
+          'No version requirement, encryption is encryption',
         ],
         correct: 1,
         explanation: 'TLS 1.0 and 1.1 are deprecated and have known vulnerabilities. Enforce TLS 1.2 minimum. If the third party only supports TLS 1.0, negotiate an upgrade or use an intermediary proxy with TLS termination.',
@@ -469,7 +469,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'You also enable "Block all public access" on the bucket to prevent accidental exposure of encrypted data.',
         question: 'Why is this important even though the data is encrypted?',
         options: [
-          'Encryption is only protection — if the bucket is public, an attacker can download encrypted objects and brute-force the keys',
+          'Encryption is only protection, if the bucket is public, an attacker can download encrypted objects and brute-force the keys',
           'Encryption is the PRIMARY protection; blocking public access is a secondary control (defense in depth)',
           'Public S3 buckets automatically disable encryption',
           'It prevents CloudFront from accessing the bucket',
@@ -493,7 +493,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 4 (Security Logging & Monitoring) — Drill 1: CloudTrail ─────────
+  // ── Domain 4 (Security Logging & Monitoring), Drill 1: CloudTrail ─────────
   {
     id: 'aws-drill-cloudtrail',
     portal: D4,
@@ -520,9 +520,9 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'You query the S3 logs with Athena using the CloudTrail database. You find the full event: eventName = "AttachUserPolicy", eventSource = "iam.amazonaws.com", errorCode = "AccessDenied", errorMessage = "User: ... is not authorized".',
         question: 'Did the API call succeed or fail?',
         options: [
-          'Succeeded — the policy was attached',
-          'Failed — errorCode "AccessDenied" means the action was denied by the IAM policy or key policy',
-          'Unclear — need to check the response body',
+          'Succeeded, the policy was attached',
+          'Failed, errorCode "AccessDenied" means the action was denied by the IAM policy or key policy',
+          'Unclear, need to check the response body',
           'Succeeded, but returned a warning',
         ],
         correct: 1,
@@ -536,7 +536,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           'The IP of the attacker',
           'The IP from which the API call originated (the developer\'s machine or corporate proxy); useful for tracking insider threat or IP spoofing',
           'The IP of the IAM API endpoint',
-          'Nothing useful — all IPs are logged equally',
+          'Nothing useful, all IPs are logged equally',
         ],
         correct: 1,
         explanation: 'sourceIPAddress is the origin of the request. If it\'s an unexpected/foreign IP or outside business hours, it may indicate account compromise. Compare against expected corporate proxies or VPN endpoints.',
@@ -556,7 +556,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
       },
       {
         screen: 'CloudTrail · Data events (optional advanced logging)',
-        prompt: 'You also enable CloudTrail Data events for S3 to log object-level access (GetObject, PutObject) — useful for detecting data exfiltration.',
+        prompt: 'You also enable CloudTrail Data events for S3 to log object-level access (GetObject, PutObject), useful for detecting data exfiltration.',
         question: 'Why might you enable Data events in addition to Management events?',
         options: [
           'Management events are enough; Data events add cost without value',
@@ -570,7 +570,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 4 (Security Logging & Monitoring) — Drill 2: Security Lake ──────
+  // ── Domain 4 (Security Logging & Monitoring), Drill 2: Security Lake ──────
   {
     id: 'aws-drill-security-lake',
     portal: D4,
@@ -585,7 +585,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         question: 'What normalized schema does Security Lake use?',
         options: [
           'Raw CloudTrail JSON (each source has its own schema)',
-          'OCSF (Open Cybersecurity Schema Framework) — a vendor-neutral normalized format',
+          'OCSF (Open Cybersecurity Schema Framework), a vendor-neutral normalized format',
           'Splunk\'s internal format',
           'Parquet files with no schema',
         ],
@@ -647,7 +647,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 5 (Threat Detection & Incident Response) — Drill 1: GuardDuty ─────
+  // ── Domain 5 (Threat Detection & Incident Response), Drill 1: GuardDuty ─────
   {
     id: 'aws-drill-guardduty',
     portal: D5,
@@ -690,7 +690,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
           'ps aux | grep ssh (find SSH processes); netstat -tuln (find listening sockets); history (check command history for clues)',
           'ifconfig only',
           'aws guardduty get-findings (run inside the instance)',
-          'Nothing — just terminate and restore from backup',
+          'Nothing, just terminate and restore from backup',
         ],
         correct: 0,
         explanation: 'Live forensics: check running processes (ps), network connections (netstat), and command history. Look for unusual process names, high CPU/network, recent edits to SSH configs.',
@@ -724,7 +724,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 5 (Threat Detection & Incident Response) — Drill 2: Security Hub
+  // ── Domain 5 (Threat Detection & Incident Response), Drill 2: Security Hub
   {
     id: 'aws-drill-security-hub',
     portal: D5,
@@ -801,7 +801,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 6 (Management & Governance) — Drill 1: AWS Config ─────────────────
+  // ── Domain 6 (Management & Governance), Drill 1: AWS Config ─────────────────
   {
     id: 'aws-drill-aws-config',
     portal: D6,
@@ -841,7 +841,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'The rule evaluates 15 S3 buckets. 12 are COMPLIANT (versioning enabled), 3 are NON_COMPLIANT.',
         question: 'What can you do next?',
         options: [
-          'Nothing — the rule just reports',
+          'Nothing, the rule just reports',
           'Manually enable versioning on the 3 buckets, or use a Remediation action (automated fix) if Config provides one',
           'Delete the non-compliant buckets',
           'Disable the rule',
@@ -878,7 +878,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Domain 6 (Management & Governance) — Drill 2: IAM Access Analyzer ────────
+  // ── Domain 6 (Management & Governance), Drill 2: IAM Access Analyzer ────────
   {
     id: 'aws-drill-iam-access-analyzer',
     portal: D6,
@@ -905,9 +905,9 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         prompt: 'You review the bucket policy. It grants s3:GetObject and s3:ListBucket to Principal: 123456789012:root on Resource: arn:aws:s3:::MyData/*.',
         question: 'Is this oversharing, and should you fix it?',
         options: [
-          'Yes — remove the external account entirely',
+          'Yes, remove the external account entirely',
           'Depends: if the external account is a trusted partner or subsidiary, this might be intentional; if not, fix it by removing the statement or tightening the principal to a specific role',
-          'No — external accounts can always access S3',
+          'No, external accounts can always access S3',
           'Cannot determine without knowing the external account',
         ],
         correct: 1,
@@ -920,7 +920,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         options: [
           'Just delete the policy',
           're-run the Analyzer or wait for the next scan; the finding should clear',
-          'Nothing — deletion is instant',
+          'Nothing, deletion is instant',
           'The bucket is now private',
         ],
         correct: 1,
@@ -946,7 +946,7 @@ export const AWS_SCSC03_DRILLS: Drill[] = [
         options: [
           'Suppressed findings stop appearing; you maintain a record of approved sharing',
           'Suppressed findings are deleted',
-          'No difference — suppression and ignore are the same',
+          'No difference, suppression and ignore are the same',
           'Suppression only works for S3',
         ],
         correct: 0,

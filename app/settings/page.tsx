@@ -149,7 +149,7 @@ export default function SettingsPage() {
         <SectionHeading eyebrow="Runtime" title="Model backend" />
         <p className="mt-3 text-[13px] leading-relaxed text-slate-400">
           The platform runs fully in deterministic <span className="font-medium text-slate-200">stub mode</span> with no
-          API key required — every Dojo 1 outcome and score is reproducible. To enable free-form AI replies in the
+          API key required, every Dojo 1 outcome and score is reproducible. To enable free-form AI replies in the
           SOC and GRC disciplines, set an <code className="rounded bg-surface-raised px-1.5 py-0.5 text-brand-300">OPENAI_API_KEY</code> in
           your deployment environment. Keys are read server-side only and never reach the browser.
         </p>

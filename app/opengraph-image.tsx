@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'Securing AI — Enterprise AI Security Training';
+export const alt = 'Securing AI: Enterprise AI Security Training';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -21,7 +21,7 @@ export default async function OpengraphImage() {
           fontFamily: 'system-ui, sans-serif',
         }}
       >
-        {/* TOP ROW — brand */}
+        {/* TOP ROW, brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <div
             style={{
@@ -69,7 +69,7 @@ export default async function OpengraphImage() {
         {/* SPACER */}
         <div style={{ flex: 1, display: 'flex' }} />
 
-        {/* MIDDLE — headline */}
+        {/* MIDDLE, headline */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div
             style={{
@@ -132,7 +132,7 @@ export default async function OpengraphImage() {
         {/* SPACER */}
         <div style={{ flex: 1, display: 'flex' }} />
 
-        {/* BOTTOM — cert chips */}
+        {/* BOTTOM, cert chips */}
         <div
           style={{
             display: 'flex',

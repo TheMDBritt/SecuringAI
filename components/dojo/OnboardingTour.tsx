@@ -10,7 +10,7 @@ const STEPS: { title: string; body: string; accent: AccentName }[] = [
     title: '1 · Pick a scenario',
     accent: 'red',
     body:
-      'The left column lists scenarios for the active dojo. Click one to load it — Dojo 1 starts the attack/defence loop, Dojo 2 starts a SOC analyst workflow, Dojo 3 starts a defender workflow.',
+      'The left column lists scenarios for the active dojo. Click one to load it, Dojo 1 starts the attack/defence loop, Dojo 2 starts a SOC analyst workflow, Dojo 3 starts a defender workflow.',
   },
   {
     title: '2 · Toggle controls',
@@ -47,7 +47,7 @@ export function OnboardingTour() {
     try {
       localStorage.setItem(STORAGE_KEY, 'done');
     } catch {
-      // Ignore — same-session dismissal still works.
+      // Ignore, same-session dismissal still works.
     }
   }, []);
 

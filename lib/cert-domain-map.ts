@@ -119,29 +119,29 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
     domains: [
       {
         name:       'Plan & Manage Azure AI Solutions',
-        weight:     '25–30%',
+        weight: '25-30%',
         categories: ['Cloud AI Platforms'],
         topics:     ['Azure AI Engineer'],
       },
       {
         name:       'AI App and Agent Development',
-        weight:     '25–30%',
+        weight: '25-30%',
         topics:     ['Agentic AI', 'RAG', 'Fine-Tuning', 'Language Models'],
         categories: ['Generative AI & LLMs'],
       },
       {
         name:       'Generative AI Solutions',
-        weight:     '20–25%',
+        weight: '20-25%',
         topics:     ['Transformer Architecture', 'LoRA & Quantization'],
       },
       {
         name:       'NLP Solutions',
-        weight:     '15–20%',
+        weight: '15-20%',
         categories: ['NLP'],
       },
       {
         name:       'Responsible AI & Monitoring',
-        weight:     '10–15%',
+        weight: '10-15%',
         categories: ['MLOps', 'Data Engineering'],
         topics:     ['Model Monitoring', 'CI/CD for ML'],
       },
@@ -154,7 +154,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
     domains: [
       {
         name:    'Manage Identity & Access (Entra ID, PIM, CA)',
-        weight:  '20–25%',
+        weight: '20-25%',
         categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Entra ID', 'Privileged Identity Management', 'Identity Protection',
@@ -165,19 +165,19 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       },
       {
         name:    'Secure Networking & Infrastructure',
-        weight:  '15–20%',
+        weight: '15-20%',
         categories: ['Microsoft Cloud & AI Security'],
         topics:  ['Azure Policy', 'Azure Firewall', 'Azure DDoS', 'Network Security Groups', 'Private Endpoints'],
       },
       {
         name:    'Secure Compute, Storage, Data',
-        weight:  '15–20%',
+        weight: '15-20%',
         categories: ['Microsoft Cloud & AI Security'],
         topics:  ['Azure Key Vault', 'Storage Security', 'VM Security', 'Container Security'],
       },
       {
         name:    'Manage Security Operations (Defender XDR, Sentinel, Copilot)',
-        weight:  '20–25%',
+        weight: '20-25%',
         categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Defender XDR', 'Microsoft Sentinel', 'KQL', 'Advanced Hunting',
@@ -187,7 +187,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
       },
       {
         name:    'Secure AI Workloads & Govern Data with Purview',
-        weight:  '20–25%',
+        weight: '20-25%',
         categories: ['Microsoft Cloud & AI Security'],
         topics:  [
           'Microsoft Purview', 'Azure OpenAI Service', 'Azure AI Content Safety',
@@ -359,7 +359,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
 
   {
     id:   'SCS-C03',
-    name: 'AWS Certified Security – Specialty',
+    name: 'AWS Certified Security: Specialty',
     domains: [
       {
         name:       'Threat Detection & Incident Response',

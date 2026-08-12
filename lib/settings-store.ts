@@ -1,6 +1,6 @@
 'use client';
 
-// User preferences, persisted locally. Small and honest — every setting here
+// User preferences, persisted locally. Small and honest, every setting here
 // actually changes behaviour.
 
 const KEY = 'securingai:settings:v1';

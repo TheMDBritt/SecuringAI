@@ -48,7 +48,7 @@ export default function PlaybookView() {
     if (nextSession) setDeepLinkSession(nextSession);
   }, [params]);
 
-  // Retake / drill launch — Progress-tab review view hands us a resolved
+  // Retake / drill launch, Progress-tab review view hands us a resolved
   // QuizQuestion[]; we flip to the Quiz section and hand the list to
   // QuizEngine via its preloadedQuestions prop. Cleared after the quiz
   // completes (QuizEngine calls onSessionEnd).

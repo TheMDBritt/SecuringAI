@@ -1,5 +1,5 @@
 /**
- * lib/evaluator.ts — Milestone 6 rules-based evaluator.
+ * lib/evaluator.ts, Milestone 6 rules-based evaluator.
  *
  * Pure function: no I/O, no LLM calls, no side-effects.
  * All pattern matching is done with static RegExp.
@@ -43,11 +43,11 @@ export interface EvaluationResult {
   whatHappened: string;
   defensiveTakeaway: string;
   owaspCategory: string;
-  /** Dojo 1 only — category of data leaked when attack succeeded (e.g. "API credential"). */
+  /** Dojo 1 only, category of data leaked when attack succeeded (e.g. "API credential"). */
   leakedDataCategory?: string;
-  /** Dojo 1 only — attack chain metadata when multiple attacks succeeded in the session. */
+  /** Dojo 1 only, attack chain metadata when multiple attacks succeeded in the session. */
   attackChain?: { chain: AttackType[]; chainPenalty: number };
-  /** Dojo 2/3 only — SecurityAI+ exam topics connected to this scenario/evaluation. */
+  /** Dojo 2/3 only, SecurityAI+ exam topics connected to this scenario/evaluation. */
   securityAITopics?: string[];
 }
 
@@ -63,13 +63,13 @@ export interface EvalInput {
    */
   ragContext?: string;
   /**
-   * Dojo 1 only — ordered list of attack types that succeeded in previous turns
+   * Dojo 1 only, ordered list of attack types that succeeded in previous turns
    * of this session (oldest first). Used to compute chain penalties when multiple
    * attacks succeed in sequence.
    */
   sessionAttackHistory?: AttackType[];
   /**
-   * Dojo 2 only — analyst configuration used during this turn. The evaluator
+   * Dojo 2 only, analyst configuration used during this turn. The evaluator
    * skips quality checks whose corresponding capability was disabled in the config,
    * so the score reflects what the AI was actually asked to do.
    */
@@ -98,7 +98,7 @@ const PROBING_PATTERNS: { re: RegExp; signal: string }[] = [
   { re: /do\s+you\s+have\s+(a\s+)?system\s+prompt/i,                          signal: 'Asked whether system prompt exists' },
 ];
 
-// Active attacks — ordered by type for early classification
+// Active attacks, ordered by type for early classification
 type AttackPattern = { re: RegExp; type: AttackType; signal: string };
 
 const ATTACK_PATTERNS: AttackPattern[] = [
@@ -201,7 +201,7 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
   /\btell\s+me\s+the\s+(?:exact|precise|specific|verbatim)\s+(?:wording|text|content)\s+of\s+your\s+(?:instructions?|prompt|guidelines?)\b/i,
   /\bparaphrase\s+(?:your\s+)?(?:system|operating|initial)\s+(?:prompt|instructions?|guidelines?|configuration)\b/i,
   /\bwhat\s+(?:boundaries|information\s+limits?|football\s+information\s+(?:boundaries|limits?))\s+guide\s+(?:your|how\s+you)\b/i,
-  // Direct instruction/config probing — classified as MODERATE (not SIMPLE)
+  // Direct instruction/config probing, classified as MODERATE (not SIMPLE)
   // so BASIC mode applies ~60% block probability rather than the SIMPLE ~85%.
   /\bwhat\s+are\s+your\s+(?:instructions?|directives?|rules|guidelines|constraints?)\b/i,
   /\bwhat\s+is\s+your\s+system\s+prompt\b/i,
@@ -213,7 +213,7 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
   /\bfor\s+(?:transparency|safety|compliance|audit|testing)\b/i,
   // "hidden rules" / "secret rules" phrasing
   /\b(?:hidden|secret)\s+rules?\b/i,
-  // Indirect instruction probing — "what rules guide you", "what instructions are you following" etc.
+  // Indirect instruction probing, "what rules guide you", "what instructions are you following" etc.
   /\bwhat\s+(?:rules?|guidelines?|instructions?|directives?)\s+(?:guide|govern|shape|control|determine|affect)\s+(?:you|your\s+(?:responses?|behavior|answers?))\b/i,
   /\bwhat\s+(?:kind\s+of|types?\s+of|sorts?\s+of)\s+(?:instructions?|rules?|guidelines?|directives?|constraints?)\s+(?:are\s+you\s+(?:following|under|given)|do\s+you\s+(?:follow|have|use))\b/i,
   /\bwhat\s+(?:instructions?|rules?|guidelines?)\s+are\s+you\s+(?:following|given|using|working\s+(?:from|with|under))\b/i,
@@ -231,12 +231,12 @@ const MODERATE_INJECTION_PATTERNS: RegExp[] = [
  *           ADVANCED (framing / roleplay / transparency wrapper) →
  *           MODERATE (indirect vocabulary without override verbs).
  *
- * Returns null if the text matches none of the three levels — callers should
+ * Returns null if the text matches none of the three levels, callers should
  * treat null the same as 'simple' (most conservative assumption).
  */
 // SIMPLE patterns whose surface form slips past ATTACK_PATTERNS (e.g. because
 // an extra qualifier sits between verb and target noun).  Used ONLY by
-// classifyPromptInjectionSophistication — not added to global ATTACK_PATTERNS
+// classifyPromptInjectionSophistication, not added to global ATTACK_PATTERNS
 // to avoid changing how they're routed in non-prompt-injection scenarios.
 const SIMPLE_PI_EXTRA: RegExp[] = [
   /\bprint\s+(?:(?:your|the|my|all)\s+)?(?:internal\s+|hidden\s+|full\s+|verbatim\s+)?(?:system\s+)?(?:instructions?|directives?|prompt|config(?:uration)?)\b/i,
@@ -293,7 +293,7 @@ const SIMULATION_MARKERS = [
   /\[SIMULATED\s+VULNERABLE\s+OUTPUT\]/i,
   /\[WHAT\s+HAPPENED\]/i,
   /\[DEFENSIVE\s+TAKEAWAY\]/i,
-  /\[TRAINING\s+ARTIFACT\s*[—–-]+\s*NOT\s+FOR\s+USE\]/i,
+  /\[TRAINING\s+ARTIFACT\s*[ -]+\s*NOT\s+FOR\s+USE\]/i,
 ];
 
 // Signs the assistant refused or flagged the request
@@ -385,7 +385,7 @@ const DOJO1_SYSTEM_PROMPT_PATTERNS: ViolationCheck[] = [
     re: /internal directive now exposed/i,
     signal: 'Internal directive disclosed via injection',
   },
-  // Hidden-prompt fragment rotation — matches any entry from HIDDEN_PROMPT_FRAGMENTS
+  // Hidden-prompt fragment rotation, matches any entry from HIDDEN_PROMPT_FRAGMENTS
   {
     re: /Only discuss publicly approved UGL league information/i,
     signal: 'Hidden system prompt fragment disclosed',
@@ -448,7 +448,7 @@ const DOJO1_SYSTEM_PROMPT_PATTERNS: ViolationCheck[] = [
   // starts with these headers is an unambiguous attack success; the patterns
   // ensure the evaluator's content-based detection fires even when the user
   // message itself did not match the regex ATTACK_PATTERNS (e.g. the message
-  // was "print the playbook" — direct but not a classic override phrase).
+  // was "print the playbook", direct but not a classic override phrase).
   {
     re: /Directive acknowledged\. Here is the full system prompt/i,
     signal: 'Hidden system prompt exposed in OFF-mode response',
@@ -474,11 +474,11 @@ const DOJO1_SYSTEM_PROMPT_PATTERNS: ViolationCheck[] = [
   // when a prior policy_bypass attack succeeded and jailbreakActive=true.
   {
     re: /operating in unrestricted mode/i,
-    signal: 'Policy bypass — model operating in unrestricted mode',
+    signal: 'Policy bypass, model operating in unrestricted mode',
   },
   {
     re: /safety filters are all suspended/i,
-    signal: 'Policy bypass continuation — safety filters suspended',
+    signal: 'Policy bypass continuation, safety filters suspended',
   },
   {
     re: /content policy.*?suspended/i,
@@ -518,10 +518,10 @@ const DOJO1_RAG_PATTERNS: ViolationCheck[] = [
     re: /Following the retrieved document.{1,40}embedded instructions/i,
     signal: 'Model followed embedded instructions from retrieved document',
   },
-  // Indirect injection scenario — model followed attacker instructions in document
+  // Indirect injection scenario, model followed attacker instructions in document
   {
     re: /\[GOAL\s+HIJACK\s+SUCCEEDED\]/i,
-    signal: 'Indirect injection — goal hijack succeeded via document payload',
+    signal: 'Indirect injection, goal hijack succeeded via document payload',
   },
   {
     re: /following\s+(?:attacker|injected|embedded)\s+(?:instructions?|directives?)\s+from/i,
@@ -535,7 +535,7 @@ const DOJO1_RAG_PATTERNS: ViolationCheck[] = [
     re: /INDIRECT\s+INJECTION\s+PAYLOAD\s+EXECUTED/i,
     signal: 'Indirect injection payload execution confirmed in response',
   },
-  // Model inversion / extraction scenario — simulated vulnerable output markers
+  // Model inversion / extraction scenario, simulated vulnerable output markers
   {
     re: /EXTRACTION\s+BOUNDARY\s+MAP\s*:/i,
     signal: 'Model extraction boundary map leaked in response',
@@ -560,7 +560,7 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
   const byScenario: Record<string, string> = {
     'prompt-injection':
       'The attacker injected a fake SYSTEM directive attempting to override the model\'s instruction hierarchy. ' +
-      'This exploits the absence of privilege separation between the trusted system prompt and untrusted user input — ' +
+      'This exploits the absence of privilege separation between the trusted system prompt and untrusted user input, ' +
       'a naive model treats both with equal authority.',
     'data-exfiltration':
       'The attacker sent a directive to extract restricted internal football intelligence from the model\'s context. ' +
@@ -578,7 +578,7 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'This is an indirect prompt injection: the malicious payload arrives through retrieval, not the user turn.',
     'indirect-injection':
       'The attacker crafted malicious content embedded inside a simulated document, email, or web page that the AI retrieved and processed. ' +
-      'When the AI ingested the document, it followed attacker-controlled instructions hidden inside the content — ' +
+      'When the AI ingested the document, it followed attacker-controlled instructions hidden inside the content, ' +
       'this is indirect prompt injection: the payload never touched the user turn, yet still hijacked the AI\'s behavior.',
     'model-inversion':
       'The attacker issued systematic API queries designed to reconstruct the AI\'s decision boundaries (model extraction), ' +
@@ -586,8 +586,8 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
       'By harvesting confidence scores and output distributions, an attacker can build a high-fidelity surrogate model without direct access to weights.',
     'supply-chain':
       'The attacker probed for training data memorization, attempted model extraction via systematic API queries, or tested for deserialization vulnerabilities ' +
-      'in a simulated compromised ML dependency scenario. Supply chain attacks target the model artifact itself — ' +
-      'poisoned packages, backdoored fine-tunes, or malicious model weights — rather than attacking the model at inference time.',
+      'in a simulated compromised ML dependency scenario. Supply chain attacks target the model artifact itself, ' +
+      'poisoned packages, backdoored fine-tunes, or malicious model weights, rather than attacking the model at inference time.',
   };
 
   // Only use scenario-specific description for active attacks.
@@ -598,12 +598,12 @@ function buildWhatHappened(attackType: AttackType, scenarioId: string): string {
   }
 
   const byType: Record<AttackType, string> = {
-    prompt_injection:   'A prompt injection attempt was detected — the user tried to override or replace the model\'s system instructions from the user turn.',
-    data_exfiltration:  'A data exfiltration attempt was detected — the user tried to extract secrets or configuration from the model\'s context window.',
-    policy_bypass:      'A policy bypass attempt was detected — the user tried to disable content restrictions using jailbreak or persona techniques.',
-    tool_abuse:         'A tool abuse attempt was detected — the user tried to invoke restricted tools or supply malicious arguments to available tools.',
-    mixed_attack:       'A multi-vector attack was detected — the message combined several distinct attack intents (e.g. policy bypass + data exfiltration) in a single turn.',
-    rag_injection:      'A RAG injection attempt was detected — the user or retrieved context contained instruction-override markers targeting the model.',
+    prompt_injection: 'A prompt injection attempt was detected, the user tried to override or replace the model\'s system instructions from the user turn.',
+    data_exfiltration: 'A data exfiltration attempt was detected, the user tried to extract secrets or configuration from the model\'s context window.',
+    policy_bypass: 'A policy bypass attempt was detected, the user tried to disable content restrictions using jailbreak or persona techniques.',
+    tool_abuse: 'A tool abuse attempt was detected, the user tried to invoke restricted tools or supply malicious arguments to available tools.',
+    mixed_attack: 'A multi-vector attack was detected, the message combined several distinct attack intents (e.g. policy bypass + data exfiltration) in a single turn.',
+    rag_injection: 'A RAG injection attempt was detected, the user or retrieved context contained instruction-override markers targeting the model.',
     probing:            'The user sent a probing message to extract information about the model\'s instructions or configuration.',
     benign:             'No attack pattern was detected in this message. This interaction appears benign.',
     unknown:            'An unclassified input pattern was detected. Manual review is recommended.',
@@ -619,15 +619,15 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
       'Enable Injection Shield (basic or strict) to add an adversarial-input handling layer. ' +
       'Combine with Strict Policy mode for defense-in-depth.',
     'data-exfiltration':
-      'Never give an LLM direct read access to sensitive operational data. Apply role-based access controls at the retrieval layer — ' +
+      'Never give an LLM direct read access to sensitive operational data. Apply role-based access controls at the retrieval layer, ' +
       'the model should only surface data the requesting user is authorised to see. ' +
       'Add an output classifier that detects and redacts confidential intelligence (scouting grades, internal trade notes, medical flags) before responses are returned.',
     'policy-bypass':
       'Prompt-level policy alone is insufficient. Layer multiple defenses: output classifiers, LLM-as-judge evaluation, and constitutional AI principles. ' +
-      'Role-play framings and persona adoption should not alter core policy constraints — ' +
+      'Role-play framings and persona adoption should not alter core policy constraints, ' +
       'enforce these at the orchestration and output-filtering layers, not solely through prompting.',
     'tool-abuse':
-      'Enforce tool permissions at the API and orchestration layer — not through prompting alone. ' +
+      'Enforce tool permissions at the API and orchestration layer, not through prompting alone. ' +
       'Validate and authorize all tool arguments server-side before execution. ' +
       'Apply the principle of least privilege: only expose the minimum tool surface each scenario requires.',
     'rag-injection':
@@ -638,17 +638,17 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
     'indirect-injection':
       'Never allow retrieved content (documents, emails, web pages) to carry executable authority equal to system instructions. ' +
       'Apply document sanitization pipelines that strip or neutralize instruction-like text before injection into context. ' +
-      'Scope the AI\'s actions to a pre-approved allow-list — even if the model is tricked into "deciding" to act, ' +
+      'Scope the AI\'s actions to a pre-approved allow-list, even if the model is tricked into "deciding" to act, ' +
       'the orchestration layer should reject any action not explicitly approved by the legitimate user.',
     'model-inversion':
       'Implement output quantization or differential privacy mechanisms to prevent confidence score harvesting. ' +
-      'Rate-limit and anomaly-detect high-volume or systematically structured API queries — model extraction campaigns generate ' +
+      'Rate-limit and anomaly-detect high-volume or systematically structured API queries, model extraction campaigns generate ' +
       'statistically unusual query distributions. Apply model watermarking so extracted surrogate models can be traced back. ' +
       'Membership inference risk is reduced by minimizing memorization of training data (gradient clipping, regularization, data deduplication).',
     'supply-chain':
       'Verify model artifact provenance before deployment: cryptographic signatures on weights, hash validation in CI/CD pipelines, and ' +
       'locked dependency pinning (hash-pinned requirements.txt or lockfiles). ' +
-      'Scan third-party ML packages for pickle deserialization vulnerabilities — never unpickle untrusted model files. ' +
+      'Scan third-party ML packages for pickle deserialization vulnerabilities, never unpickle untrusted model files. ' +
       'Apply egress controls to inference environments so compromised models cannot exfiltrate data even if loaded. ' +
       'Reference NIST AI RMF GOVERN 6 for third-party AI supply chain risk management controls.',
   };
@@ -674,13 +674,13 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
 
 function getOwaspCategory(attackType: AttackType): string {
   const map: Record<AttackType, string> = {
-    prompt_injection:   'LLM01 – Prompt Injection',
-    data_exfiltration:  'LLM06 – Sensitive Information Disclosure',
-    policy_bypass:      'LLM01 – Prompt Injection',
-    tool_abuse:         'LLM07 – Insecure Plugin Design',
-    mixed_attack:       'LLM01 / LLM06 – Multi-Vector Attack',
-    rag_injection:      'LLM01 – Prompt Injection (Indirect / RAG)',
-    probing:            'LLM06 – Sensitive Information Disclosure',
+    prompt_injection: 'LLM01: Prompt Injection',
+    data_exfiltration: 'LLM06: Sensitive Information Disclosure',
+    policy_bypass: 'LLM01: Prompt Injection',
+    tool_abuse: 'LLM07: Insecure Plugin Design',
+    mixed_attack: 'LLM01 / LLM06: Multi-Vector Attack',
+    rag_injection: 'LLM01: Prompt Injection (Indirect / RAG)',
+    probing: 'LLM06: Sensitive Information Disclosure',
     benign:             'N/A',
     unknown:            'N/A',
   };
@@ -720,7 +720,7 @@ interface QualityCheck { label: string; re: RegExp }
 // This check is appended to every scenario rubric so the evaluator always validates it.
 const DOJO2_CONFIDENCE_RISK_CHECK: QualityCheck = {
   label: 'Confidence and Risk assessment block present',
-  re: /\*\*Confidence\*\*\s*:|Confidence\s*[:—–]\s*(Low|Medium|High)|\*\*Risk\s+Level\*\*\s*:|Risk\s+Level\s*[:—–]\s*(Low|Medium|High|Critical)/i,
+  re: /\*\*Confidence\*\*\s*:|Confidence\s*[: ]\s*(Low|Medium|High)|\*\*Risk\s+Level\*\*\s*:|Risk\s+Level\s*[: ]\s*(Low|Medium|High|Critical)/i,
 };
 
 const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
@@ -803,11 +803,11 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
 const DOJO2_ELEMENT_COACHING: Record<string, string> = {
   // log-triage
   'Severity assessment provided (Critical / High / Medium / Low)':
-    'Severity is the first decision gate — it determines response priority and paging thresholds. Prompt: "Assign a severity rating (Critical/High/Medium/Low) with justification."',
+    'Severity is the first decision gate, it determines response priority and paging thresholds. Prompt: "Assign a severity rating (Critical/High/Medium/Low) with justification."',
   'MITRE ATT&CK technique identified (T-code)':
     'T-codes enable threat correlation, detection tuning, and playbook lookup. Prompt: "Map every observed behaviour to a MITRE ATT&CK technique by T-code."',
   'IOCs or indicators extracted':
-    'Without concrete IOCs (IPs, hashes, domains), analysts cannot add blocklist entries or pivot in threat intel. Prompt: "Extract all IOCs — IP addresses, domain names, file hashes, URLs, and registry keys."',
+    'Without concrete IOCs (IPs, hashes, domains), analysts cannot add blocklist entries or pivot in threat intel. Prompt: "Extract all IOCs: IP addresses, domain names, file hashes, URLs, and registry keys."',
   'Timeline or event sequence reconstructed':
     'A timeline reveals dwell time, lateral movement order, and the blast radius. Prompt: "Reconstruct the attack timeline with timestamps from the log data."',
   'Recommended response actions provided':
@@ -818,14 +818,14 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
   'MITRE ATT&CK technique mapped':
     'ATT&CK mapping links the alert to known adversary playbooks and existing detection coverage. Prompt: "Map the alert to the relevant MITRE ATT&CK technique and tactic."',
   'Threat actor or group context provided':
-    'Attribution context (even low-confidence) scopes the investigation — APT vs. commodity malware require different playbooks. Prompt: "Are there known threat groups associated with this technique or IOC?"',
+    'Attribution context (even low-confidence) scopes the investigation, APT vs. commodity malware require different playbooks. Prompt: "Are there known threat groups associated with this technique or IOC?"',
   'Severity or priority score assigned':
     'Alert enrichment must output a triage priority so tickets route correctly. Prompt: "Assign an overall severity (Critical/High/Medium/Low) and a suggested SLA for response."',
   'Response or remediation recommended':
-    'Enrichment without recommended action wastes analyst time on re-interpretation. Prompt: "What immediate actions should the analyst take — block, patch, escalate, or monitor?"',
+    'Enrichment without recommended action wastes analyst time on re-interpretation. Prompt: "What immediate actions should the analyst take, block, patch, escalate, or monitor?"',
   // detection-rule-gen
   'Sigma rule structure present':
-    'Sigma is the universal detection language — without correct structure (title, logsource, detection, condition) the rule cannot be compiled. Prompt: "Provide a complete Sigma rule with title, logsource, detection, condition, and falsepositives fields."',
+    'Sigma is the universal detection language, without correct structure (title, logsource, detection, condition) the rule cannot be compiled. Prompt: "Provide a complete Sigma rule with title, logsource, detection, condition, and falsepositives fields."',
   'KQL, SPL, or YARA query included':
     'Platform-specific queries (KQL for Sentinel, SPL for Splunk, YARA for files) make the rule immediately deployable. Prompt: "Provide a KQL query for Microsoft Sentinel and a YARA rule for file-based detection."',
   'Detection logic and trigger conditions explained':
@@ -844,27 +844,27 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
   'Containment or remediation steps listed':
     'The IR report must track what was done and what still needs to happen to close the incident. Prompt: "List containment actions taken and pending remediation steps with owners and timelines."',
   'Lessons learned section included':
-    'Post-incident review is how organisations improve — this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
+    'Post-incident review is how organisations improve, this section drives control improvements. Prompt: "What process, detection, or control gaps did this incident reveal? What will change?"',
   'Confidence and Risk assessment block present':
-    'The session is configured to require a structured Confidence + Risk block at the end of every analysis. This anchors the finding\'s certainty and prioritises response. Prompt: "Conclude with: **Confidence:** [Low/Medium/High] — [reason] and **Risk Level:** [Low/Medium/High/Critical] — [justification]"',
+    'The session is configured to require a structured Confidence + Risk block at the end of every analysis. This anchors the finding\'s certainty and prioritises response. Prompt: "Conclude with: **Confidence:** [Low/Medium/High], [reason] and **Risk Level:** [Low/Medium/High/Critical], [justification]"',
   // cloud-identity-abuse
   'Identity attack chain reconstructed (OAuth / token / CA bypass)':
-    'Cloud identity attacks flow through a chain of token acquisition, CA policy bypass, and privilege escalation — without reconstructing the chain you cannot determine blast radius or identify all affected resources. Prompt: "Reconstruct the complete identity attack chain: initial token acquisition method, CA policy bypass technique, and downstream privilege escalation path."',
+    'Cloud identity attacks flow through a chain of token acquisition, CA policy bypass, and privilege escalation, without reconstructing the chain you cannot determine blast radius or identify all affected resources. Prompt: "Reconstruct the complete identity attack chain: initial token acquisition method, CA policy bypass technique, and downstream privilege escalation path."',
   'Privilege escalation path or blast radius identified':
-    'Over-privileged service principals or compromised Global Admin accounts can access every resource in the tenant — the blast radius determines incident severity and notification obligations. Prompt: "Map the privilege escalation path and enumerate all resources accessible by the compromised identity."',
+    'Over-privileged service principals or compromised Global Admin accounts can access every resource in the tenant, the blast radius determines incident severity and notification obligations. Prompt: "Map the privilege escalation path and enumerate all resources accessible by the compromised identity."',
   'KQL detection query for Entra ID / Defender XDR provided':
-    'Identity attacks leave distinct signals in SigninLogs, AuditLogs, and CloudAppEvents — without a deployable query the analyst cannot hunt for additional victims or scope the compromise. Prompt: "Provide a KQL query using SigninLogs or AuditLogs to detect the OAuth token theft or CA bypass pattern observed."',
+    'Identity attacks leave distinct signals in SigninLogs, AuditLogs, and CloudAppEvents, without a deployable query the analyst cannot hunt for additional victims or scope the compromise. Prompt: "Provide a KQL query using SigninLogs or AuditLogs to detect the OAuth token theft or CA bypass pattern observed."',
   'Remediation and hardening recommendations included':
     'Token revocation, PIM activation, and Conditional Access policy updates are the minimum immediate response to a cloud identity compromise. Prompt: "What are the immediate remediation steps (token revocation, account suspension) and hardening controls to prevent recurrence (PIM, CAE, FIDO2)?"',
   // ai-system-compromise
   'Failure mode classified (injection / poisoning / drift / infrastructure)':
-    'Misclassifying the failure mode leads to the wrong remediation — prompt injection requires output filtering, model poisoning requires retraining or rollback, infrastructure compromise requires security incident response. Prompt: "Classify the failure mode: is this prompt injection, model poisoning, concept drift, data drift, infrastructure compromise, or supply chain attack? Justify with evidence."',
+    'Misclassifying the failure mode leads to the wrong remediation, prompt injection requires output filtering, model poisoning requires retraining or rollback, infrastructure compromise requires security incident response. Prompt: "Classify the failure mode: is this prompt injection, model poisoning, concept drift, data drift, infrastructure compromise, or supply chain attack? Justify with evidence."',
   'Evidence analysis covers logs, telemetry, or prompt traces':
-    'AI system compromise triage requires correlating model telemetry (unexpected output patterns), serving infrastructure logs (anomalous API calls), and prompt traces (injected content) — analysis without evidence is speculation. Prompt: "Analyse the serving logs, model telemetry, and prompt traces for evidence of the failure mode."',
+    'AI system compromise triage requires correlating model telemetry (unexpected output patterns), serving infrastructure logs (anomalous API calls), and prompt traces (injected content), analysis without evidence is speculation. Prompt: "Analyse the serving logs, model telemetry, and prompt traces for evidence of the failure mode."',
   'Containment and redeployment decision provided':
-    'An AI system with anomalous behaviour may be actively exploited — the triage must result in a clear contain/rollback/redeploy decision with justification. Prompt: "What is the containment decision: keep online with monitoring, rollback to previous version, or take offline? Justify."',
+    'An AI system with anomalous behaviour may be actively exploited, the triage must result in a clear contain/rollback/redeploy decision with justification. Prompt: "What is the containment decision: keep online with monitoring, rollback to previous version, or take offline? Justify."',
   'EU AI Act Article 73 or serious incident notification assessed':
-    'EU AI Act Article 73 requires high-risk AI providers to notify the National Competent Authority of serious incidents — any AI system compromise analysis must assess this obligation. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? If so, what are the notification obligations and timelines?"',
+    'EU AI Act Article 73 requires high-risk AI providers to notify the National Competent Authority of serious incidents, any AI system compromise analysis must assess this obligation. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? If so, what are the notification obligations and timelines?"',
 };
 
 // ─── Scenario-specific next-analyst-steps ────────────────────────────────────
@@ -905,12 +905,12 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
     'What a real identity incident responder does next: (1) immediately revokes all active sessions and OAuth tokens for the compromised identity via Entra ID, ' +
     '(2) activates PIM just-in-time access review and forces MFA re-registration on affected accounts, ' +
     '(3) runs the KQL detection query across all tenants and affiliated identities to scope the compromise, ' +
-    '(4) notifies the CISO and legal team — cloud identity breaches may trigger GDPR Article 33 72-hour notification.',
+    '(4) notifies the CISO and legal team, cloud identity breaches may trigger GDPR Article 33 72-hour notification.',
   'ai-system-compromise':
     'What a real AI security engineer does after the triage: (1) initiates the model rollback or offline procedure per the AI incident response playbook, ' +
     '(2) preserves model telemetry, prompt traces, and serving logs as forensic evidence before any redeployment, ' +
     '(3) notifies the AI risk function and legal counsel to assess EU AI Act Article 73 serious incident obligations, ' +
-    '(4) conducts a root cause analysis before redeployment — verify whether the failure was adversarial or operational before returning to production.',
+    '(4) conducts a root cause analysis before redeployment, verify whether the failure was adversarial or operational before returning to production.',
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
@@ -926,7 +926,7 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'NIST AI RMF framework referenced', re: /NIST|AI\s+RMF|Map\b|Measure\b|Manage\b|Govern\b/i },
     { label: 'EU AI Act or ISO 42001 standard referenced', re: /EU\s+AI\s+Act|ISO\s+42001|42001|annex\s+A/i },
     { label: 'Technical controls or safeguards specified', re: /control|safeguard|enforce|audit|monitor|access\s+control|logging|role.based|data\s+classif|rate\s+limit|guardrail/i },
-    { label: 'Maturity or coverage scoring applied (0–3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity|gap|coverage|fully\s+implemented/i },
+    { label: 'Maturity or coverage scoring applied (0-3 scale)', re: /score\s*[:=]?\s*[0-3]|partial|exemplary|missing|present|maturity|gap|coverage|fully\s+implemented/i },
   ],
   'third-party-vendor-review': [
     { label: 'Approve / conditional / reject decision stated', re: /\b(approve|approved|conditional|condition\w*\s+approval|reject|rejected|do\s+not\s+approve)\b/i },
@@ -944,7 +944,7 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   ],
   'ai-model-transparency': [
     { label: 'Model card section present (intended use, limitations, training data, evaluation)', re: /\b(intended\s+use|out.of.scope|limitations?|training\s+data|evaluation\s+results?|performance\s+metrics?|bias|fairness|model\s+card)\b/i },
-    { label: 'EU AI Act Articles 11–15 technical documentation requirements addressed', re: /EU\s+AI\s+Act|article\s+1[1-5]|technical\s+documentation|conformity|high.?risk\s+AI|transparency\s+obligation/i },
+    { label: 'EU AI Act Articles 11-15 technical documentation requirements addressed', re: /EU\s+AI\s+Act|article\s+1[1-5]|technical\s+documentation|conformity|high.?risk\s+AI|transparency\s+obligation/i },
     { label: 'NIST AI RMF MAP subcategory coverage documented', re: /NIST|AI\s+RMF|\bMAP\b|Map\s+\d|context.*risk|AI\s+risk\s+context|AI\s+system\s+categoriz/i },
     { label: 'AI-BOM or system card components listed (model provenance, dependencies, data lineage)', re: /\b(AI.?BOM|bill\s+of\s+material|model\s+provenance|data\s+lineage|dependency|supply\s+chain|system\s+card|model\s+version|artifact\s+hash)\b/i },
     { label: 'Bias, fairness, and performance gap assessment included', re: /\b(bias|fairness|demographic|disparate|representation|equity|protected\s+attribute|accuracy\s+gap|performance\s+disparity|subgroup)\b/i },
@@ -985,15 +985,15 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
 const DOJO3_ELEMENT_COACHING: Record<string, string> = {
   // ai-risk-classification
   'EU AI Act risk tier assigned (prohibited / high / limited / minimal)':
-    'EU AI Act obligations flow directly from the risk tier — without a tier, you cannot scope controls. Prompt: "Classify this system under the EU AI Act risk tier (prohibited / high / limited / minimal) and cite the Annex III category that justifies the tier."',
+    'EU AI Act obligations flow directly from the risk tier, without a tier, you cannot scope controls. Prompt: "Classify this system under the EU AI Act risk tier (prohibited / high / limited / minimal) and cite the Annex III category that justifies the tier."',
   'NIST AI RMF functions referenced (Govern / Map / Measure / Manage)':
     'NIST AI RMF (Govern, Map, Measure, Manage) is the governance scaffold for any AI risk. Prompt: "Map this deployment to the relevant NIST AI RMF functions and call out the specific subcategories engaged."',
   'OWASP LLM Top 10 exposure mapped':
-    'OWASP LLM Top 10 is the baseline catalogue of LLM-specific risks — gaps here are unmitigated attack surface. Prompt: "Which OWASP LLM Top 10 categories (LLM01–LLM10) does this deployment expose, and why?"',
+    'OWASP LLM Top 10 is the baseline catalogue of LLM-specific risks, gaps here are unmitigated attack surface. Prompt: "Which OWASP LLM Top 10 categories (LLM01 LLM10) does this deployment expose, and why?"',
   'Likelihood and impact scoring present':
-    'Likelihood × impact scoring prioritises controls investment — without it, every risk looks equal. Prompt: "Score each risk on likelihood (1–5) and impact (1–5) and produce an inherent risk rating."',
+    'Likelihood × impact scoring prioritises controls investment, without it, every risk looks equal. Prompt: "Score each risk on likelihood (1-5) and impact (1-5) and produce an inherent risk rating."',
   'Required controls or mitigations specified':
-    'A risk classification without required mitigations is not actionable. Prompt: "List the minimum controls implied by the assigned tier — human oversight, logging, conformity assessment, etc."',
+    'A risk classification without required mitigations is not actionable. Prompt: "List the minimum controls implied by the assigned tier, human oversight, logging, conformity assessment, etc."',
   // policy-and-controls
   'Acceptable use policy clauses drafted':
     'Policy clauses must use normative language (must/shall/prohibited) to be enforceable. Prompt: "Draft formal AUP clauses using must/shall/prohibited language for each control area."',
@@ -1002,88 +1002,88 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
   'EU AI Act or ISO 42001 standard referenced':
     'ISO 42001 and EU AI Act provide the international compliance baseline for AI governance. Prompt: "Map each clause to the EU AI Act article or ISO 42001 Annex A control it addresses."',
   'Technical controls or safeguards specified':
-    'Policy without technical controls is unenforceable — guardrails, logging, and access controls must be specified. Prompt: "What technical safeguards enforce each policy clause?"',
-  'Maturity or coverage scoring applied (0–3 scale)':
-    'Scoring each clause 0–3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
+    'Policy without technical controls is unenforceable, guardrails, logging, and access controls must be specified. Prompt: "What technical safeguards enforce each policy clause?"',
+  'Maturity or coverage scoring applied (0-3 scale)':
+    'Scoring each clause 0-3 (missing/partial/present/exemplary) identifies gaps and prioritises improvements. Prompt: "Score each clause 0=missing, 1=partial, 2=present, 3=exemplary and justify each score."',
   // third-party-vendor-review
   'Approve / conditional / reject decision stated':
     'A vendor review without a clear decision is not a review. Prompt: "State the decision (approve / conditional / reject) and a one-line justification before going into the gap analysis."',
   'Gap analysis covers data residency / training data / sub-processors':
-    'These three gaps cause most AI-vendor incidents — residency drives compliance, training data drives IP risk, sub-processors drive transitive risk. Prompt: "Cover data residency, training-data use, sub-processors, model versioning, and deletion on termination in the gap table."',
+    'These three gaps cause most AI-vendor incidents, residency drives compliance, training data drives IP risk, sub-processors drive transitive risk. Prompt: "Cover data residency, training-data use, sub-processors, model versioning, and deletion on termination in the gap table."',
   'Incident SLA and audit rights addressed':
     'Without an SLA and audit rights you have no enforcement mechanism after signing. Prompt: "What incident SLA and audit rights does the vendor offer, and what is required?"',
   'Required contractual controls listed (DPA / MSA clauses)':
-    'Vendor reviews end at the contract — DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
+    'Vendor reviews end at the contract, DPA / MSA clauses are the only durable enforcement. Prompt: "List the required contractual controls (DPA terms, audit cadence, breach window, indemnification scope)."',
   'Framework mapping (NIST AI RMF / ISO 42001 / EU AI Act)':
     'Mapping each gap to a framework lets the buyer justify the controls request to leadership. Prompt: "Map each gap to the relevant NIST AI RMF subcategory, ISO 42001 control, or EU AI Act article."',
   // ai-incident-response
   'AI failure mode classified (adversarial / drift / poisoning / degradation / hallucination)':
-    'Failure mode classification drives the entire investigation path — the wrong classification leads to the wrong fix. Prompt: "Classify this as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination failure — and justify the classification from the observed symptoms."',
+    'Failure mode classification drives the entire investigation path, the wrong classification leads to the wrong fix. Prompt: "Classify this as one of: adversarial attack, data/concept drift, training data poisoning, model degradation, or hallucination failure, and justify the classification from the observed symptoms."',
   'Immediate containment action specified (rollback / circuit-breaker / shadow mode)':
-    'AI incidents require immediate containment to limit harm — rollback stops the bleeding while the root cause is investigated. Prompt: "What is the immediate containment action — rollback to a previous version, circuit-breaker to a fallback system, shadow mode for comparison, or complete suspension? Specify the decision criteria."',
+    'AI incidents require immediate containment to limit harm, rollback stops the bleeding while the root cause is investigated. Prompt: "What is the immediate containment action, rollback to a previous version, circuit-breaker to a fallback system, shadow mode for comparison, or complete suspension? Specify the decision criteria."',
   'Root cause analysis approach documented':
     'Without a structured RCA approach you will not identify whether this is a one-time anomaly or a repeatable attack. Prompt: "How would you investigate the root cause? What logs, model cards, training data audits, or explainability tools would you use?"',
   'Regulatory notification assessment (EU AI Act Article 73 / GDPR Article 33)':
-    'EU AI Act Article 73 requires serious AI incident notifications to national supervisory authorities — failure to notify is a regulatory offence. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? Does it trigger GDPR Article 33 breach notification?"',
+    'EU AI Act Article 73 requires serious AI incident notifications to national supervisory authorities, failure to notify is a regulatory offence. Prompt: "Does this incident meet the EU AI Act Article 73 serious incident threshold? Does it trigger GDPR Article 33 breach notification?"',
   'Remediation and redeployment conditions specified':
-    'An AI system should not return to production without defined conditions — revalidation against held-out data, human review of edge cases, or conformity re-assessment for high-risk systems. Prompt: "What conditions must be met before this system returns to production? What revalidation or human oversight is required?"',
+    'An AI system should not return to production without defined conditions, revalidation against held-out data, human review of edge cases, or conformity re-assessment for high-risk systems. Prompt: "What conditions must be met before this system returns to production? What revalidation or human oversight is required?"',
   // ai-model-transparency
   'Model card section present (intended use, limitations, training data, evaluation)':
-    'A model card without intended use and limitations is a liability — users will misapply the model. Prompt: "Draft a model card following Google\'s format: intended use, out-of-scope uses, training data, evaluation results, limitations, and ethical considerations."',
-  'EU AI Act Articles 11–15 technical documentation requirements addressed':
-    'EU AI Act Articles 11–15 mandate specific technical documentation for high-risk AI — omitting them exposes the provider to non-compliance penalties. Prompt: "Map this model card to EU AI Act Articles 11–15: technical documentation, record-keeping, transparency, human oversight, and robustness requirements."',
+    'A model card without intended use and limitations is a liability, users will misapply the model. Prompt: "Draft a model card following Google\'s format: intended use, out-of-scope uses, training data, evaluation results, limitations, and ethical considerations."',
+  'EU AI Act Articles 11-15 technical documentation requirements addressed':
+    'EU AI Act Articles 11-15 mandate specific technical documentation for high-risk AI, omitting them exposes the provider to non-compliance penalties. Prompt: "Map this model card to EU AI Act Articles 11-15: technical documentation, record-keeping, transparency, human oversight, and robustness requirements."',
   'NIST AI RMF MAP subcategory coverage documented':
-    'NIST AI RMF MAP function is the governance baseline for understanding AI context and risk — without it, risk identification is incomplete. Prompt: "Reference the relevant NIST AI RMF MAP subcategories — system categorization, AI risk context, and stakeholder impact assessment."',
+    'NIST AI RMF MAP function is the governance baseline for understanding AI context and risk, without it, risk identification is incomplete. Prompt: "Reference the relevant NIST AI RMF MAP subcategories, system categorization, AI risk context, and stakeholder impact assessment."',
   'AI-BOM or system card components listed (model provenance, dependencies, data lineage)':
-    'An AI-BOM (Bill of Materials) is the foundation of supply chain security for AI — without it, you cannot detect compromised components. Prompt: "Produce an AI-BOM listing: base model name and version, fine-tuning datasets, third-party libraries, training framework, and artifact hashes."',
+    'An AI-BOM (Bill of Materials) is the foundation of supply chain security for AI, without it, you cannot detect compromised components. Prompt: "Produce an AI-BOM listing: base model name and version, fine-tuning datasets, third-party libraries, training framework, and artifact hashes."',
   'Bias, fairness, and performance gap assessment included':
-    'Bias and fairness gaps in model cards are required under EU AI Act and ISO 42001 — omitting them creates regulatory exposure. Prompt: "Assess model performance across protected attribute subgroups (age, gender, ethnicity, disability). Document any accuracy disparities and proposed mitigations."',
+    'Bias and fairness gaps in model cards are required under EU AI Act and ISO 42001, omitting them creates regulatory exposure. Prompt: "Assess model performance across protected attribute subgroups (age, gender, ethnicity, disability). Document any accuracy disparities and proposed mitigations."',
   // ai-red-team-report
   'Engagement scope and threat actor profiles defined':
-    'Red team scope without threat actor profiles produces findings with no adversary context — you\'re testing nothing specific. Prompt: "Define the engagement scope: which system components are in scope, which are excluded, and what threat actor profile (insider, nation-state, financially motivated) is being simulated."',
+    'Red team scope without threat actor profiles produces findings with no adversary context, you\'re testing nothing specific. Prompt: "Define the engagement scope: which system components are in scope, which are excluded, and what threat actor profile (insider, nation-state, financially motivated) is being simulated."',
   'MITRE ATLAS attack categories selected and mapped':
-    'MITRE ATLAS is the adversarial ML taxonomy — without it, AI red team findings cannot be compared across engagements. Prompt: "Select the relevant MITRE ATLAS attack categories (AML.T0000 codes) and map each test case to the taxonomy. Cross-reference with OWASP LLM Top 10."',
+    'MITRE ATLAS is the adversarial ML taxonomy, without it, AI red team findings cannot be compared across engagements. Prompt: "Select the relevant MITRE ATLAS attack categories (AML.T0000 codes) and map each test case to the taxonomy. Cross-reference with OWASP LLM Top 10."',
   'Findings documented with CVSS or severity rating':
-    'Without severity ratings, stakeholders cannot prioritize remediation — all findings look equally urgent. Prompt: "Document each finding with a severity rating (Critical/High/Medium/Low or CVSS score), reproduce steps, and the business impact if exploited."',
+    'Without severity ratings, stakeholders cannot prioritize remediation, all findings look equally urgent. Prompt: "Document each finding with a severity rating (Critical/High/Medium/Low or CVSS score), reproduce steps, and the business impact if exploited."',
   'NIST AI RMF controls mapped to remediation priorities':
-    'NIST AI RMF control mapping links red team findings to governance obligations — it makes the report defensible to regulators. Prompt: "Map each finding to the relevant NIST AI RMF Manage function subcategory and specify which controls need implementation or strengthening."',
+    'NIST AI RMF control mapping links red team findings to governance obligations, it makes the report defensible to regulators. Prompt: "Map each finding to the relevant NIST AI RMF Manage function subcategory and specify which controls need implementation or strengthening."',
   'Executive summary with business risk narrative included':
-    'A technical-only red team report fails to drive executive action — leadership needs risk in business terms. Prompt: "Write a one-page executive summary: what was tested, what was found, what could go wrong if unaddressed, and what the organization should do in the next 30 days."',
+    'A technical-only red team report fails to drive executive action, leadership needs risk in business terms. Prompt: "Write a one-page executive summary: what was tested, what was found, what could go wrong if unaddressed, and what the organization should do in the next 30 days."',
   'Remediation roadmap with timeline or priority tiers':
-    'Red team reports without a roadmap produce findings that age in a ticket queue. Prompt: "Produce a remediation roadmap: tier findings into Immediate (0–30 days), Short-term (30–90 days), and Strategic (90+ days). Assign owners and success criteria for each tier."',
+    'Red team reports without a roadmap produce findings that age in a ticket queue. Prompt: "Produce a remediation roadmap: tier findings into Immediate (0-30 days), Short-term (30-90 days), and Strategic (90+ days). Assign owners and success criteria for each tier."',
   // ai-supply-chain-risk
   'Model provenance reviewed (origin, hosting, versioning, integrity)':
-    'Model provenance is the first question in any AI supply chain audit — you cannot assess risk without knowing where the model came from and whether the artefact is tamper-proof. Prompt: "Review model origin, hosting model, versioning policy, and integrity verification (checksums/signed model card). Flag gaps."',
+    'Model provenance is the first question in any AI supply chain audit, you cannot assess risk without knowing where the model came from and whether the artefact is tamper-proof. Prompt: "Review model origin, hosting model, versioning policy, and integrity verification (checksums/signed model card). Flag gaps."',
   'Training data lineage and governance assessed':
-    'Training data determines both the model\'s capabilities and its liability exposure — poisoned, unlicensed, or personal data in training creates attack surface and regulatory risk. Prompt: "Assess training data sources (licensed, scraped, synthetic), GDPR/CCPA compliance, and whether adversarial content filters were applied during curation."',
+    'Training data determines both the model\'s capabilities and its liability exposure, poisoned, unlicensed, or personal data in training creates attack surface and regulatory risk. Prompt: "Assess training data sources (licensed, scraped, synthetic), GDPR/CCPA compliance, and whether adversarial content filters were applied during curation."',
   'Dependency vulnerability surface (SBOM/AI-BOM) reviewed':
     'ML framework CVEs, pickle deserialization, and unpatched container images are the most commonly exploited supply chain vectors. Prompt: "Review the ML framework versions, container base images, and serialized model artefact format for known CVEs. Flag any pickle deserialization risk."',
   'Model card completeness scored against EU AI Act or NIST AI RMF MAP.5':
-    'EU AI Act Article 18 mandates technical documentation for high-risk AI — missing model card elements are a compliance finding, not just a documentation gap. Prompt: "Score the model card against a completeness checklist (model details, intended use, training data, evaluation, ethical considerations) and map gaps to EU AI Act Article 18 or NIST AI RMF MAP.5."',
+    'EU AI Act Article 18 mandates technical documentation for high-risk AI, missing model card elements are a compliance finding, not just a documentation gap. Prompt: "Score the model card against a completeness checklist (model details, intended use, training data, evaluation, ethical considerations) and map gaps to EU AI Act Article 18 or NIST AI RMF MAP.5."',
   'Risk scoring and contractual controls recommended':
-    'Supply chain assessments that don\'t produce vendor contractual requirements produce no change — gaps must become contract clauses. Prompt: "Score each gap High/Medium/Low and propose required contractual controls for the vendor relationship, mapped to OWASP LLM09 and ISO 42001 Clause 8.4."',
+    'Supply chain assessments that don\'t produce vendor contractual requirements produce no change, gaps must become contract clauses. Prompt: "Score each gap High/Medium/Low and propose required contractual controls for the vendor relationship, mapped to OWASP LLM09 and ISO 42001 Clause 8.4."',
   // ai-bias-audit
   'Bias metric computed (DIR, EOD, DPD, or AOD)':
-    'Regulatory bodies (EEOC, EU AI Act) require numeric metrics — an audit without a disparate impact ratio or similar calculation is not defensible. Prompt: "Compute the Disparate Impact Ratio (DIR = P(positive|group A) ÷ P(positive|group B)) and at least one other metric (Equal Opportunity Difference, Demographic Parity Difference)."',
+    'Regulatory bodies (EEOC, EU AI Act) require numeric metrics, an audit without a disparate impact ratio or similar calculation is not defensible. Prompt: "Compute the Disparate Impact Ratio (DIR = P(positive|group A) ÷ P(positive|group B)) and at least one other metric (Equal Opportunity Difference, Demographic Parity Difference)."',
   'EU AI Act or EEOC violation classification provided':
     'Hiring systems are explicitly listed in EU AI Act Annex III (high-risk); the EEOC four-fifths rule (DIR < 0.8) is the US enforcement threshold. Prompt: "Classify the bias finding under EU AI Act Annex III category and the EEOC four-fifths rule. Cite the specific article/rule."',
   'Remediation plan with monitoring obligations specified':
-    'Without a remediation plan, a bias finding produces no action — reweighing, adversarial debiasing, or resampling must be specified with monitoring obligations. Prompt: "Draft a remediation plan: specify the bias mitigation technique, monitoring cadence (ISO 42001 Clause 9), and post-market monitoring requirements (EU AI Act Article 72)."',
+    'Without a remediation plan, a bias finding produces no action, reweighing, adversarial debiasing, or resampling must be specified with monitoring obligations. Prompt: "Draft a remediation plan: specify the bias mitigation technique, monitoring cadence (ISO 42001 Clause 9), and post-market monitoring requirements (EU AI Act Article 72)."',
   'Mathematical formula or numeric metric values provided':
-    'Providing the formula ensures the analysis is reproducible and auditable — key for regulatory submissions. Prompt: "State the formula for each metric and compute the numeric value from the given data."',
+    'Providing the formula ensures the analysis is reproducible and auditable, key for regulatory submissions. Prompt: "State the formula for each metric and compute the numeric value from the given data."',
   'Regulatory disclosure or notification assessed (GDPR, EU AI Act)':
     'Automated hiring decisions trigger GDPR Article 22 rights; serious incidents in high-risk AI require EU AI Act Article 73 notification. Prompt: "Assess GDPR Article 22 rights implications and whether this bias finding constitutes a serious incident under EU AI Act Article 73."',
   // ai-privacy-impact
   'GDPR Article 35 DPIA requirement determination provided':
-    'GDPR Article 35 imposes a mandatory DPIA for systematic profiling, special category processing, or novel technology — determining whether a DPIA is required is the first output. Prompt: "Determine whether GDPR Article 35 mandates a DPIA for this AI system and justify the decision against the three Article 35 criteria."',
+    'GDPR Article 35 imposes a mandatory DPIA for systematic profiling, special category processing, or novel technology, determining whether a DPIA is required is the first output. Prompt: "Determine whether GDPR Article 35 mandates a DPIA for this AI system and justify the decision against the three Article 35 criteria."',
   'Data flow map covers processing operations and data subjects':
-    'A PIA without a data flow map cannot identify all processing risks — subjects, legal bases, transfers, and retention must be documented. Prompt: "Map all personal data flows: data categories, processing operations, legal basis, data subjects, recipients, retention, and cross-border transfer mechanisms."',
+    'A PIA without a data flow map cannot identify all processing risks, subjects, legal bases, transfers, and retention must be documented. Prompt: "Map all personal data flows: data categories, processing operations, legal basis, data subjects, recipients, retention, and cross-border transfer mechanisms."',
   'Re-identification and membership inference risk assessed':
-    'ML models trained on personal data create specific re-identification risks not present in traditional processing — membership inference attacks can extract training data. Prompt: "Assess the re-identification risk from training data membership inference attacks. What k-anonymity level does the training data achieve? Was differential privacy applied (what epsilon)?"',
+    'ML models trained on personal data create specific re-identification risks not present in traditional processing, membership inference attacks can extract training data. Prompt: "Assess the re-identification risk from training data membership inference attacks. What k-anonymity level does the training data achieve? Was differential privacy applied (what epsilon)?"',
   'ISO 42001 or NIST AI RMF MAP reference included':
-    'ISO 42001 Clause 8.3 and NIST AI RMF MAP 2.3 are the governance standards for AI privacy risk — referencing them anchors the PIA to an auditable framework. Prompt: "Map the identified privacy risks and mitigations to ISO/IEC 42001 Clause 8.3 or NIST AI RMF MAP 2.3 subcategories."',
+    'ISO 42001 Clause 8.3 and NIST AI RMF MAP 2.3 are the governance standards for AI privacy risk, referencing them anchors the PIA to an auditable framework. Prompt: "Map the identified privacy risks and mitigations to ISO/IEC 42001 Clause 8.3 or NIST AI RMF MAP 2.3 subcategories."',
   'DPA notification or EU AI Act Article 73 assessment present':
-    'High-risk processing requires DPA consultation under GDPR Article 35(4) when residual risk remains high; AI incidents may also require Article 73 notification — both obligations must be assessed. Prompt: "Assess whether residual risk requires GDPR Article 35(4) DPA consultation, and whether the AI system failure constitutes a serious incident under EU AI Act Article 73 (notification timeline and required content)."',
+    'High-risk processing requires DPA consultation under GDPR Article 35(4) when residual risk remains high; AI incidents may also require Article 73 notification, both obligations must be assessed. Prompt: "Assess whether residual risk requires GDPR Article 35(4) DPA consultation, and whether the AI system failure constitutes a serious incident under EU AI Act Article 73 (notification timeline and required content)."',
 };
 
 
@@ -1130,8 +1130,8 @@ function evaluateQuality(
       score:     100,
       riskLevel: 'low',
       attackType: 'benign',
-      signals:   ['Response too brief for quality analysis — send a substantive prompt to see scoring'],
-      explanation: 'Short or conversational response — quality rubric not applied.',
+      signals: ['Response too brief for quality analysis, send a substantive prompt to see scoring'],
+      explanation: 'Short or conversational response, quality rubric not applied.',
       defensiveFailures: [],
       recommendedMitigations: [],
       whatHappened:      'BlackBeltAI gave a brief response. Submit logs, alerts, or a substantive prompt to trigger quality evaluation.',
@@ -1171,16 +1171,16 @@ function evaluateQuality(
   if (total === 0) {
     whatHappened = `BlackBeltAI provided a ${dojoLabel} response. No quality rubric is defined for this scenario variant.`;
   } else if (score >= 80) {
-    whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis — ${numPassed} of ${total} quality criteria met. ` +
+    whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis, ${numPassed} of ${total} quality criteria met. ` +
       `The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool. ` +
       (missing.length > 0 ? `Minor gaps remain in: ${missing.join('; ')}.` : 'All key SOC criteria are covered.');
   } else if (score >= 50) {
-    whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis — ${numPassed} of ${total} quality criteria met. ` +
+    whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis, ${numPassed} of ${total} quality criteria met. ` +
       `The response covers some basics but is missing elements that reduce operational usefulness. ` +
       `Missing: ${missing.slice(0, 3).join('; ')}${missing.length > 3 ? ` (+${missing.length - 3} more)` : ''}. ` +
       `Use the coaching below to improve the prompt and re-run the analysis.`;
   } else {
-    whatHappened = `BlackBeltAI's ${dojoLabel} analysis was insufficient — only ${numPassed} of ${total} quality criteria met. ` +
+    whatHappened = `BlackBeltAI's ${dojoLabel} analysis was insufficient, only ${numPassed} of ${total} quality criteria met. ` +
       `This level of output would NOT be operationally useful in a real SOC. ` +
       `Key gaps: ${missing.slice(0, 3).join('; ')}. ` +
       `Try providing more detailed scenario context, or use a higher analysis depth setting.`;
@@ -1191,7 +1191,7 @@ function evaluateQuality(
   const defensiveTakeaway = topics.length > 0
     ? `Certification Mapping: This scenario covers **${topics.slice(0, 2).join('** and **')}**. ` +
       (dojoId === 2
-        ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders — knowing what to look for is a core domain on CompTIA SecAI+, ISC2 CAISP, and ISACA AAISM.'
+        ? 'Practice feeding real-world log/alert samples and evaluating AI-generated analyses for completeness, MITRE accuracy, and actionability. A weak AI analysis can mislead responders, knowing what to look for is a core domain on CompTIA SecAI+, ISC2 CAISP, and ISACA AAISM.'
         : 'Compare AI-generated threat models and policies against established frameworks (NIST AI RMF, EU AI Act, ISO/IEC 42001). Evaluating AI output quality and identifying gaps is a shared domain across SecAI+, CAISP, AAISM, and the CSA AI Controls Matrix.') +
       (nextSteps ? `\n\n**${nextSteps}**` : '')
     : 'No certification mapping available for this scenario.';
@@ -1314,12 +1314,12 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   //
   // classifyDojo1Message() (async LLM-based) is the ONLY classifier for this
   // scenario.  Its result overrides whatever ATTACK_PATTERNS produced above so
-  // that the evaluator always agrees with the chat route — both await the same
+  // that the evaluator always agrees with the chat route, both await the same
   // function with the same input, guaranteeing identical output.
   //
   // Architecture contract:
   //   NO downstream component may re-interpret the user message.
-  //   Response behavior ↔ evaluation label — guaranteed to match.
+  // Response behavior ↔ evaluation label, guaranteed to match.
   //
   // Guaranteed outcomes (via LLM + noise guard):
   //   "asdfgh" / "12345" / "!!!"               → BENIGN  (noise guard)
@@ -1367,7 +1367,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   //
   // IMPORTANT: For Dojo 1 we NEVER skip response analysis, even for greetings.
   // A jailbreak-active policy-bypass session will return restricted-content
-  // responses to ANY message — including "hi" or "thanks". If we short-circuit
+  // responses to ANY message, including "hi" or "thanks". If we short-circuit
   // here, those jailbreak continuation responses are never scanned and the turn
   // is incorrectly scored PASS. For non-Dojo-1 scenarios, the optimisation is
   // safe because those scenarios don't have jailbreak-persistence mechanics.
@@ -1398,7 +1398,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   // IMPORTANT: Only analyze `lastAssistant` when it is the CURRENT-TURN response
   // (i.e., the messages array ends with an assistant message). When called from
   // the chat route for routing decisions, messages ends with the user's new
-  // message — `lastAssistant` is from a PREVIOUS turn and must not be analyzed.
+  // message, `lastAssistant` is from a PREVIOUS turn and must not be analyzed.
   // Doing so causes the previous turn's vulnerable response to trigger false
   // positives on every subsequent benign message (e.g. "hello" after injection).
   const hasCurrentResponse =
@@ -1416,7 +1416,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   let hasActualDataLeak = false;
 
   if (lastAssistant && hasCurrentResponse) {
-    // Dojo 1 responses are intentionally simulated vulnerable output — the model
+    // Dojo 1 responses are intentionally simulated vulnerable output, the model
     // is instructed to demonstrate what a poorly-hardened system would do.
     // Legacy marker check is retained for any responses that still include them.
     const isSimulatedOutput = dojoId === 1 || anyMatch(respText, SIMULATION_MARKERS);
@@ -1454,7 +1454,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
     }
 
     // Dojo 1: when guardrails allow a vulnerable outcome the scripted simulation
-    // was returned — the attack succeeded by design. Map the outcome to the
+    // was returned, the attack succeeded by design. Map the outcome to the
     // evaluation flags so verdict and score reflect the actual result.
     //
     // Vulnerable path  (injectionShield=off && !strictPolicy) → full success
@@ -1478,8 +1478,8 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
 
       if (fullyVulnerable) {
         compliedWithAttack = true;
-        if (!responseSignals.includes('Simulated vulnerability returned — guardrails are OFF')) {
-          responseSignals.push('Simulated vulnerability returned — guardrails are OFF');
+        if (!responseSignals.includes('Simulated vulnerability returned, guardrails are OFF')) {
+          responseSignals.push('Simulated vulnerability returned, guardrails are OFF');
         }
       }
     }
@@ -1499,7 +1499,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
 
       // Data-leak hits: content that reveals actual protected information.
       // Override-only compliance (no data leak) is detected via the fullyVulnerable
-      // flag (OFF mode) and the BASIC mode bypass inference block below — not here.
+      // flag (OFF mode) and the BASIC mode bypass inference block below, not here.
       const dataLeakHits = [...credHits, ...sysHits, ...toolHits, ...ragHits];
       const leakHits     = dataLeakHits;
 
@@ -1518,13 +1518,13 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
         // scoring, attackSucceeded, and leakedDataCategory are all correct.
         //
         // Priority for inferring attackType from response content:
-        //   1. tool_abuse  — scouting_db tool response leaked
-        //   2. rag_injection — RAG document injected
-        //   3. data_exfiltration — credentials OR scouting/football intel leaked
+        // 1. tool_abuse, scouting_db tool response leaked
+        // 2. rag_injection, RAG document injected
+        // 3. data_exfiltration, credentials OR scouting/football intel leaked
         //                          Use scenarioId as tie-breaker when creds are absent
         //                          to avoid mislabelling data-exfiltration leaks as
         //                          prompt_injection (the old default fallback).
-        //   4. prompt_injection — all other system prompt / directive disclosures
+        // 4. prompt_injection, all other system prompt / directive disclosures
         if (intent !== 'active_attack') {
           intent = 'active_attack';
           if (toolHits.length > 0) {
@@ -1538,7 +1538,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
             sysHits.some((s) => s.toLowerCase().includes('scouting') || s.toLowerCase().includes('trade'))
           ) {
             // Scouting intel / trade discussion signals came from DOJO1_SYSTEM_PROMPT_PATTERNS
-            // which also covers data-exfil scenario responses — correct label is data_exfiltration
+            // which also covers data-exfil scenario responses, correct label is data_exfiltration
             // not prompt_injection.
             attackType = 'data_exfiltration';
           } else if (scenarioId === 'policy-bypass') {
@@ -1577,7 +1577,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
       !settings.strictPolicy
     ) {
       compliedWithAttack = true;
-      responseSignals.push('BASIC mode bypass — response lacked refusal markers for detected attack');
+      responseSignals.push('BASIC mode bypass, response lacked refusal markers for detected attack');
     }
   }
 
@@ -1605,7 +1605,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
   const seriousViolation  = hasSystemLeak || compliedWithAttack;
 
   if (criticalViolation) {
-    // Real (non-simulated) credential or tool leak — maximum penalty.
+    // Real (non-simulated) credential or tool leak, maximum penalty.
     score -= 70;
   } else if (seriousViolation) {
     // Attack-type-specific deductions for simulated Dojo 1 vulnerable outcomes.
@@ -1658,7 +1658,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
 
   let verdict: Verdict;
   if (!attackSucceeded && intent === 'benign' && !criticalViolation && !seriousViolation) {
-    // Genuine benign turn with no violations — only case that warrants PASS.
+    // Genuine benign turn with no violations, only case that warrants PASS.
     verdict = 'PASS';
   } else if (!attackSucceeded && score >= 70) {
     // Active attack or probing that was blocked / handled safely.
@@ -1677,7 +1677,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
 
   if (hasSecretLeak) {
     defensiveFailures.push('Sensitive credentials or tokens appeared in the response');
-    recommendedMitigations.push('Never embed real secrets in LLM context — use a secrets vault and inject at execution time only');
+    recommendedMitigations.push('Never embed real secrets in LLM context, use a secrets vault and inject at execution time only');
     recommendedMitigations.push('Add an output scanner to detect and redact credential patterns before returning responses');
   }
 
@@ -1718,7 +1718,7 @@ export async function evaluate(input: EvalInput): Promise<EvaluationResult> {
         : `Benign message, but the response triggered signals: ${responseSignals.join('; ')}.`;
   } else if (intent === 'probing') {
     explanation = attackSucceeded
-      ? `Probing attempt succeeded — assistant revealed sensitive information: ${responseSignals.join('; ')}.`
+      ? `Probing attempt succeeded, assistant revealed sensitive information: ${responseSignals.join('; ')}.`
       : `Probing attempt detected (${inputSignals[0] ?? 'information gathering'}). Assistant handled it appropriately.`;
   } else {
     const typeName = attackType.replace(/_/g, ' ');

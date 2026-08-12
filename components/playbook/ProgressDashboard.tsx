@@ -82,7 +82,7 @@ const Q_CATEGORY_LOOKUP: Record<string, string> = (() => {
   return m;
 })();
 
-// Full QuizQuestion by id — used by the per-Q table row expansion so we can
+// Full QuizQuestion by id, used by the per-Q table row expansion so we can
 // render the four options + correct-answer highlight + explanation without a
 // second lookup pass.
 const Q_LOOKUP_FULL: Record<string, QuizQuestion> = (() => {
@@ -98,7 +98,7 @@ type SortKey = 'accuracy' | 'seen' | 'last';
 interface ProgressDashboardProps {
   /** When set, dashboard mounts with this session already open in the review view. */
   initialSessionId?: string | null;
-  /** Bubble up a preloaded quiz launch — parent hands the array to QuizEngine. */
+  /** Bubble up a preloaded quiz launch, parent hands the array to QuizEngine. */
   onLaunchQuiz?: (questions: QuizQuestion[], label: string) => void;
 }
 
@@ -134,7 +134,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
   const summary = useMemo(() => summarizeCert(data, cert), [data, cert]);
   const topics  = useMemo(() => topicAccuracy(data, cert, Q_CATEGORY_LOOKUP), [data, cert]);
 
-  // Readiness — only meaningful for a specific cert (not 'All'). Uses the
+  // Readiness, only meaningful for a specific cert (not 'All'). Uses the
   // real question pool size for the cert and the passing score from the
   // cert catalog. Falls back to 67% if a cert is unlisted.
   const readiness = useMemo<Readiness | null>(() => {
@@ -153,7 +153,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
       : data.sessions.filter((s) => s.cert === cert);
   }, [data, cert]);
 
-  // Per-question table rows — only for questions the user has actually seen
+  // Per-question table rows, only for questions the user has actually seen
   // in this cert scope.
   const perQRows = useMemo(() => {
     const seenQIds = new Set<string>();
@@ -202,7 +202,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
     <div className="h-full overflow-y-auto">
       <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">
 
-        {/* Header — cert switcher + reset */}
+        {/* Header, cert switcher + reset */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Progress</h2>
@@ -249,26 +249,26 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
           <div className="border border-slate-800 rounded-lg p-8 text-center">
             <p className="text-sm text-slate-300 mb-1">No quiz sessions yet.</p>
             <p className="text-[11px] font-mono text-slate-600">
-              Take a quiz — your progress will appear here.
+              Take a quiz, your progress will appear here.
             </p>
           </div>
         ) : (
           <>
-            {/* Readiness card — only shown for a specific cert */}
+            {/* Readiness card, only shown for a specific cert */}
             {readiness && <ReadinessCard cert={cert} r={readiness} />}
 
             {/* All-time stats row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <StatCell label="All-time" value={`${summary.overallPct}%`} sub={`${summary.totalCorrect}/${summary.totalQuestions}`} color={pctColor(summary.overallPct)} />
               <StatCell label="Best session" value={`${summary.bestSessionPct}%`} sub={summary.totalSessions === 1 ? 'first attempt' : `over ${summary.totalSessions} sessions`} color={pctColor(summary.bestSessionPct)} />
-              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%` : '—'} sub={summary.lastSessionPct === null ? '—' : formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct ?? 0)} />
+              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%`: ' '} sub={summary.lastSessionPct === null ? ' ': formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct ?? 0)} />
               <StatCell label="Sessions" value={String(summary.totalSessions)} sub="90-day window" color="text-slate-200" />
             </div>
 
             {/* Trend sparkline */}
             <div className="border border-slate-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Trend — last 10 sessions</p>
+                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Trend, last 10 sessions</p>
                 <p className="text-[10px] font-mono text-slate-600">oldest → newest</p>
               </div>
               <Sparkline points={summary.trend} />
@@ -297,7 +297,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                         key={s.id}
                         onClick={() => setViewingSessionId(s.id)}
                         className="w-full text-left flex items-center justify-between px-4 py-2 text-xs hover:bg-slate-800/40 transition-colors focus:outline-none focus:bg-slate-800/60"
-                        aria-label={`Review session from ${formatDate(s.startedAt)} — ${pct}%`}
+                        aria-label={`Review session from ${formatDate(s.startedAt)}, ${pct}%`}
                       >
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
@@ -352,7 +352,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             <div className="border border-slate-800 rounded-lg">
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-800">
                 <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">
-                  Per-question stats — {perQRows.length} question{perQRows.length === 1 ? '' : 's'} you've seen
+                  Per-question stats, {perQRows.length} question{perQRows.length === 1 ? '': 's'} you've seen
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-mono text-slate-700 mr-1">sort</span>
@@ -483,7 +483,7 @@ function ReadinessCard({ cert, r }: { cert: string; r: Readiness }) {
     <div className={`border rounded-lg p-4 ${border}`}>
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="min-w-0">
-          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wide">Readiness — {cert}</p>
+          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wide">Readiness, {cert}</p>
           <div className="flex items-baseline gap-3 mt-1">
             <span className={`text-4xl font-bold font-mono ${textColor}`}>{r.score}%</span>
             <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${textColor} border-current/40`}>{label}</span>

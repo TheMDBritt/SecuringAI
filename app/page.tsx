@@ -7,7 +7,7 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
 import type { DojoId } from '@/types';
 
-// ── Live counts — computed from source data at build time ─────────────────────
+// ── Live counts, computed from source data at build time ─────────────────────
 const STATS = {
   scenarios:  SCENARIOS.length,
   quizQs:    QUIZ_QUESTIONS.length,
@@ -31,7 +31,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 37 scenarios — prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, chain-of-thought hijacking, alignment exploitation, function name confusion, system prompt reflection leaks, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 37 scenarios, prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, chain-of-thought hijacking, alignment exploitation, function name confusion, system prompt reflection leaks, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -39,7 +39,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 12 workflow types with 47 prebuilt incidents — log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, AI model abuse investigation, and ransomware incident response with AI-assisted triage.',
+    summary: 'Operate as an AI SOC analyst across 12 workflow types with 47 prebuilt incidents, log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, AI model abuse investigation, and ransomware incident response with AI-assisted triage.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -157,7 +157,7 @@ const SOURCED_FROM = [
   'EC-Council C|AI Security Outline',
   'Microsoft SC-500 / AI-103 Study Guide',
   'AWS AI Practitioner Exam Guide',
-  'AWS Certified Security – Specialty (SCS-C03) Exam Guide',
+  'AWS Certified Security: Specialty (SCS-C03) Exam Guide',
   'Google Professional ML Engineer Guide',
   'CAISP Exam Domains (Practical DevSecOps)',
 ];
@@ -182,7 +182,7 @@ const SCORING_ROWS = [
     dojo: 'Dojo 3',
     color: 'text-emerald-400',
     engine: 'Framework rubric',
-    how: 'Evaluator checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001 control citations, and vendor gap coverage — returns per-element coaching on missing criteria.',
+    how: 'Evaluator checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001 control citations, and vendor gap coverage, returns per-element coaching on missing criteria.',
     maps: 'EU AI Act · ISO 42001 · NIST AI RMF',
   },
 ];
@@ -197,7 +197,7 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute inset-0 bg-grid-faint [background-size:44px_44px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" aria-hidden="true" />
         <div className="relative max-w-6xl mx-auto px-6 py-14 md:py-20">
           <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
-            {/* Left — headline */}
+            {/* Left, headline */}
             <div className="md:col-span-3">
               <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-brand-500/25 bg-brand-500/10">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
@@ -210,7 +210,7 @@ export default function LandingPage() {
               </h1>
               <p className="mt-6 text-[16px] text-slate-300 max-w-[520px] leading-relaxed">
                 Three practice disciplines. Attack a live LLM under configurable guardrails, triage
-                AI-augmented SOC incidents, and classify EU AI Act risk scenarios — every turn scored
+                AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
                 and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
                 {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
@@ -244,14 +244,14 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Right — stats + terminal */}
+            {/* Right, stats + terminal */}
             <div className="md:col-span-2">
               {/* Stats grid */}
               <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden mb-3">
                 {[
                   { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `${STATS.certs} certs mapped` },
                   { n: STATS.scenarios,               label: 'dojo scenarios',  sub: '3 disciplines' },
-                  { n: STATS.glossary,                label: 'glossary terms',  sub: 'A–Z, cert-filtered' },
+                  { n: STATS.glossary, label: 'glossary terms', sub: 'A Z, cert-filtered' },
                   { n: STATS.articles,                label: 'topic articles',  sub: 'code + tables' },
                   { n: STATS.incidents,               label: 'SOC incidents',   sub: 'Dojo 2 prebuilt' },
                   { n: STATS.certs,                   label: 'certs mapped',    sub: 'official domains' },
@@ -460,7 +460,7 @@ export default function LandingPage() {
               </div>
               <p className="mt-4 text-xs text-slate-600 leading-relaxed">
                 Sourced from OWASP LLM Top 10 (2025), MITRE ATT&amp;CK + ATLAS, and official exam study guides.
-                Each tag maps to the framework reference — type the attack and see which guardrail decides the outcome.
+                Each tag maps to the framework reference, type the attack and see which guardrail decides the outcome.
               </p>
             </div>
 
@@ -482,7 +482,7 @@ export default function LandingPage() {
               <p className="mt-4 text-xs text-slate-600 leading-relaxed">
                 Every dojo turn maps to exam domains. Quiz: select a cert,
                 drill by domain, track weak areas. {STATS.quizQs.toLocaleString()} questions, {STATS.glossary} glossary terms,
-                {' '}{STATS.articles} articles — all cross-referenced by cert.
+                {' '}{STATS.articles} articles, all cross-referenced by cert.
               </p>
             </div>
           </div>
@@ -502,11 +502,11 @@ export default function LandingPage() {
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-4">
                 Every article, quiz question, and glossary term is tagged to its cert exam domain.
-                Select a cert, choose which domains to drill, set difficulty and question count —
+                Select a cert, choose which domains to drill, set difficulty and question count 
                 results show per-domain breakdown so you know exactly where to focus.
               </p>
               <div className="p-3.5 rounded-lg border border-slate-800 bg-slate-900/40 mb-5">
-                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow — exam first</p>
+                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow, exam first</p>
                 <ol className="text-xs text-slate-400 space-y-1 leading-relaxed">
                   <li><span className="font-mono text-slate-700 mr-2">01</span>Select a cert (SecAI+, SC-500, GIAC-GOAA…)</li>
                   <li><span className="font-mono text-slate-700 mr-2">02</span>Pick domains from that exam&apos;s official objectives</li>
@@ -525,7 +525,7 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 gap-3">
               {[
                 { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs, mapped to exam domains` },
-                { n: STATS.glossary,                label: 'glossary terms',  sub: 'cert-tagged, A–Z filterable by cert' },
+                { n: STATS.glossary, label: 'glossary terms', sub: 'cert-tagged, A Z filterable by cert' },
                 { n: STATS.articles,                label: 'topic articles',  sub: 'with code examples and comparison tables' },
                 { n: STATS.certs,                   label: 'cert maps',       sub: 'official exam objectives + domain weights' },
               ].map(({ n, label, sub }) => (
@@ -567,8 +567,8 @@ export default function LandingPage() {
                 </h2>
                 <p className="text-slate-400 mt-2 text-sm leading-relaxed">
                   Load a scenario, submit an attack, read the score. Guardrail configuration
-                  decides the outcome — same payload, same config, same result every time.
-                  Free and open — no signup, no tracking.
+                  decides the outcome, same payload, same config, same result every time.
+                  Free and open, no signup, no tracking.
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[

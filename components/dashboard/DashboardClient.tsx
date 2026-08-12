@@ -92,7 +92,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       <PageHeader
         eyebrow="Security Operations"
         title="Training Dashboard"
-        description="Your live view across all three disciplines — attack defense, SOC operations, and AI governance — with completion, accuracy, and a recommended next lab."
+        description="Your live view across all three disciplines, attack defense, SOC operations, and AI governance, with completion, accuracy, and a recommended next lab."
         actions={
           <>
             <ButtonLink href="/playbook" variant="secondary" size="md">
@@ -108,11 +108,11 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Overall completion" value={`${hydrated ? completion : 0}%`} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
-        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="cyan" icon={ICONS.check} />
+        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="cyan" icon={ICONS.check} />
         <StatCard label="Lab attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="violet" icon={ICONS.target} />
       </div>
 
-      {/* Main grid — current dojo progress full width now */}
+      {/* Main grid, current dojo progress full width now */}
       <div className="mt-6 grid grid-cols-1 gap-4">
         {/* Current dojo progress */}
         <Card className="p-5">
@@ -139,7 +139,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         </Card>
       </div>
 
-      {/* Second grid — difficulty mix + next lab */}
+      {/* Second grid, difficulty mix + next lab */}
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Difficulty distribution */}
         <Card className="p-5">
@@ -212,7 +212,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                       <Link
                         href={`/playbook?section=progress&session=${encodeURIComponent(r.sessionId)}`}
                         className="flex items-center gap-3 py-3 rounded hover:bg-white/5 -mx-2 px-2 transition-colors"
-                        aria-label={`Review ${r.label} — ${r.detail}`}
+                        aria-label={`Review ${r.label}, ${r.detail}`}
                       >
                         {body}
                       </Link>

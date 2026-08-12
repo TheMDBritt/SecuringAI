@@ -13,7 +13,7 @@ import { DEFAULT_DOJO2_CONFIG } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { encodeShare } from '@/lib/share-url';
 
-// ─── Imperative handle — exposed to DojoTabs via ref ─────────────────────────
+// ─── Imperative handle, exposed to DojoTabs via ref ─────────────────────────
 
 export interface ChatConsoleHandle {
   /** Insert payload text into input AND immediately send it (auto-run ON). */
@@ -40,9 +40,9 @@ interface ChatConsoleProps {
   dojoId: DojoId;
   controlConfig: ControlConfig;
   onEvaluation: (result: EvaluationResult) => void;
-  /** Live RAG context — injected into /api/chat when ragEnabled is ON. */
+  /** Live RAG context, injected into /api/chat when ragEnabled is ON. */
   ragContext: string;
-  /** Simulated tool response — appended to model context. */
+  /** Simulated tool response, appended to model context. */
   toolForgeResponse: string;
   /** Fires whenever the internal loading state changes (for ControlPanel). */
   onLoadingChange: (loading: boolean) => void;
@@ -52,19 +52,19 @@ interface ChatConsoleProps {
    * continuation response regardless of content.
    */
   jailbreakActive?: boolean;
-  /** Dojo 1 only — prior successful attack types in this session (oldest first). */
+  /** Dojo 1 only, prior successful attack types in this session (oldest first). */
   sessionAttackHistory?: AttackType[];
   /**
    * Called when the user clicks Clear. The parent (DojoTabs) uses this to
    * reset cumulative session state (score, attack chain, jailbreak flag).
    */
   onSessionClear?: () => void;
-  /** Dojo 2 analyst persona + output format — forwarded to /api/chat. */
+  /** Dojo 2 analyst persona + output format, forwarded to /api/chat. */
   dojo2Config?: Dojo2Config;
-  /** Dojo 2 only — the currently active incident loaded from the right panel.
+  /** Dojo 2 only, the currently active incident loaded from the right panel.
    *  Used to build the per-scenario chat seed and placeholder text. */
   activeDojo2Scenario?: Dojo2IncidentScenario | null;
-  /** Dojo 3 detection rule + selected clauses — forwarded to /api/chat. */
+  /** Dojo 3 detection rule + selected clauses, forwarded to /api/chat. */
   dojo3Config?: Dojo3Config;
 }
 
@@ -99,40 +99,40 @@ const DOJO1_SCENARIO_PLACEHOLDERS: Record<string, string> = {
 
 // ─── Dojo 2 per-scenario seeds ────────────────────────────────────────────────
 // Each entry drives:
-//  • seed    — system message shown immediately when the scenario/incident is loaded
-//  • placeholder — textarea hint tailored to the expected input for that workflow
+// • seed, system message shown immediately when the scenario/incident is loaded
+// • placeholder, textarea hint tailored to the expected input for that workflow
 
 const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }> = {
   'log-triage': {
-    seed: 'Log Triage — paste raw log data below (SYSLOG, Windows Event, Zeek, EDR, or cloud trail logs).\nBlackBeltAI will: assign severity · extract IOCs · map MITRE T-codes · reconstruct the event timeline · recommend containment actions.',
-    placeholder: 'Paste raw log data here — SYSLOG, Windows Event Log, Zeek, EDR, or cloud trail logs…',
+    seed: 'Log Triage, paste raw log data below (SYSLOG, Windows Event, Zeek, EDR, or cloud trail logs).\nBlackBeltAI will: assign severity · extract IOCs · map MITRE T-codes · reconstruct the event timeline · recommend containment actions.',
+    placeholder: 'Paste raw log data here, SYSLOG, Windows Event Log, Zeek, EDR, or cloud trail logs…',
   },
   'alert-enrichment': {
-    seed: 'Alert Enrichment — paste alert data, an IOC, or a CVE indicator below.\nBlackBeltAI will: enrich CVE context · map ATT&CK technique · surface threat actor or campaign · assign triage priority · recommend response and remediation.',
+    seed: 'Alert Enrichment, paste alert data, an IOC, or a CVE indicator below.\nBlackBeltAI will: enrich CVE context · map ATT&CK technique · surface threat actor or campaign · assign triage priority · recommend response and remediation.',
     placeholder: 'Paste alert data, IOC, or CVE indicator here (SIEM alert, EDR hit, threat intel entry)…',
   },
   'detection-rule-gen': {
-    seed: 'Detection Rule Generation — describe the threat behavior, paste an IOC, or load a scenario from the Incident Library.\nBlackBeltAI will generate: Sigma rule · KQL / SPL / YARA query · trigger conditions · false positive guidance · ATT&CK alignment.',
+    seed: 'Detection Rule Generation, describe the threat behavior, paste an IOC, or load a scenario from the Incident Library.\nBlackBeltAI will generate: Sigma rule · KQL / SPL / YARA query · trigger conditions · false positive guidance · ATT&CK alignment.',
     placeholder: 'Describe the threat behavior or paste IOCs to generate detection rules from…',
   },
   'incident-report-draft': {
-    seed: 'Incident Report — paste evidence below: timeline, affected systems, scope, IOCs, and response actions taken.\nBlackBeltAI will draft: executive summary with business impact · technical timeline · root cause analysis · containment & remediation steps · lessons learned.',
-    placeholder: 'Paste incident evidence — timeline, affected systems, scope, IOCs, and response actions taken…',
+    seed: 'Incident Report, paste evidence below: timeline, affected systems, scope, IOCs, and response actions taken.\nBlackBeltAI will draft: executive summary with business impact · technical timeline · root cause analysis · containment & remediation steps · lessons learned.',
+    placeholder: 'Paste incident evidence, timeline, affected systems, scope, IOCs, and response actions taken…',
   },
   'threat-hunt': {
-    seed: 'Threat Hunt Query — provide a threat actor name, ATT&CK technique ID, TTP description, or minimal IOC seed.\nBlackBeltAI will generate: falsifiable hunting hypothesis · KQL query (Sentinel/Defender XDR) · Sigma rule · MITRE ATT&CK tactic chain · false positive tuning guidance.',
+    seed: 'Threat Hunt Query, provide a threat actor name, ATT&CK technique ID, TTP description, or minimal IOC seed.\nBlackBeltAI will generate: falsifiable hunting hypothesis · KQL query (Sentinel/Defender XDR) · Sigma rule · MITRE ATT&CK tactic chain · false positive tuning guidance.',
     placeholder: 'Enter a threat actor, ATT&CK TTP (e.g. T1071.001), or IOC seed to begin hunting…',
   },
   'malware-behavior': {
-    seed: 'Malware Behavior Analysis — paste a sandbox report, behavioral telemetry, or EDR alert bundle.\nBlackBeltAI will produce: malware family classification · ATT&CK technique mapping table · capability summary (persistence, C2, evasion) · extracted IOCs · detection rules (KQL + Sigma) · containment playbook.',
+    seed: 'Malware Behavior Analysis, paste a sandbox report, behavioral telemetry, or EDR alert bundle.\nBlackBeltAI will produce: malware family classification · ATT&CK technique mapping table · capability summary (persistence, C2, evasion) · extracted IOCs · detection rules (KQL + Sigma) · containment playbook.',
     placeholder: 'Paste sandbox output, EDR telemetry, or behavioral indicators for analysis…',
   },
   'cloud-identity-abuse': {
-    seed: 'Cloud Identity Abuse Detection — paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity below.\nBlackBeltAI will: reconstruct the identity attack chain · map MITRE T-codes (T1528, T1078.004, T1550.001) · identify Conditional Access policy gaps · recommend remediation steps · generate KQL hunting queries for Sentinel/Defender XDR.',
+    seed: 'Cloud Identity Abuse Detection, paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity below.\nBlackBeltAI will: reconstruct the identity attack chain · map MITRE T-codes (T1528, T1078.004, T1550.001) · identify Conditional Access policy gaps · recommend remediation steps · generate KQL hunting queries for Sentinel/Defender XDR.',
     placeholder: 'Paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity…',
   },
   'ai-system-compromise': {
-    seed: 'AI System Compromise Triage — paste model serving logs, prompt traces, output anomalies, or infrastructure alerts below.\nBlackBeltAI will: classify the failure mode (prompt injection / model poisoning / infrastructure compromise / concept drift) · assess blast radius · recommend containment actions · draft redeployment criteria and post-incident monitoring plan.',
+    seed: 'AI System Compromise Triage, paste model serving logs, prompt traces, output anomalies, or infrastructure alerts below.\nBlackBeltAI will: classify the failure mode (prompt injection / model poisoning / infrastructure compromise / concept drift) · assess blast radius · recommend containment actions · draft redeployment criteria and post-incident monitoring plan.',
     placeholder: 'Paste model serving logs, prompt traces, output anomalies, or infrastructure alerts…',
   },
 };
@@ -161,7 +161,7 @@ const PERSONA_LABEL: Record<string, string> = {
 function getAssistantLabel(dojoId: DojoId, dojo2Config?: Dojo2Config): string {
   if (dojoId === 2 && dojo2Config) {
     const label = PERSONA_LABEL[dojo2Config.persona];
-    if (!label) console.warn(`[ChatConsole] Unknown Dojo 2 persona "${dojo2Config.persona}" — falling back to generic label.`);
+    if (!label) console.warn(`[ChatConsole] Unknown Dojo 2 persona "${dojo2Config.persona}", falling back to generic label.`);
     return label ?? 'BlackBeltAI';
   }
   return 'BlackBeltAI';
@@ -201,7 +201,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [shareCopied, setShareCopied] = useState(false);
-    /** Last N user messages — used for replay. */
+    /** Last N user messages, used for replay. */
     const [attackHistory, setAttackHistory] = useState<string[]>([]);
     const bottomRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -219,7 +219,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     }, [messages]);
 
     // Reset chat + seed when scenario type or dojo changes.
-    // Runs on scenario?.id / dojoId — NOT on activeDojo2Scenario so that
+    // Runs on scenario?.id / dojoId, NOT on activeDojo2Scenario so that
     // loading a new incident within the same workflow doesn't wipe the chat.
     useEffect(() => {
       setMessages([]);
@@ -233,7 +233,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         seedText = DOJO2_SCENARIO_SEEDS[scenario.id].seed;
       } else {
         if (dojoId === 2) {
-          console.warn(`[Dojo2] No seed message found for scenario ID "${scenario.id}" — using generic fallback.`);
+          console.warn(`[Dojo2] No seed message found for scenario ID "${scenario.id}", using generic fallback.`);
         }
         seedText = `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`;
       }
@@ -248,7 +248,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       if (dojoId !== 2 || !activeDojo2Scenario) return;
       const notice =
         `Loaded: "${activeDojo2Scenario.title}" · ${activeDojo2Scenario.attackCategory} · ${activeDojo2Scenario.difficulty}\n` +
-        `Incident data pre-loaded below — review and press Send to run the analysis.`;
+        `Incident data pre-loaded below, review and press Send to run the analysis.`;
       setMessages((prev) => [...prev, makeSystemMsg(notice)]);
       setInput(activeDojo2Scenario.incidentData);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -308,8 +308,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           const chatData = await chatRes.json();
           if (!chatRes.ok) {
             const detail = chatData.error ?? `HTTP ${chatRes.status}`;
-            if (chatRes.status === 429) throw new Error('Rate limit reached — wait a moment and try again.');
-            if (chatRes.status >= 500) throw new Error(`Service error (${chatRes.status}) — try again in a few seconds.`);
+            if (chatRes.status === 429) throw new Error('Rate limit reached, wait a moment and try again.');
+            if (chatRes.status >= 500) throw new Error(`Service error (${chatRes.status}), try again in a few seconds.`);
             throw new Error(detail);
           }
 
@@ -358,7 +358,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           const raw = err instanceof Error ? err.message : 'Unknown error';
           // Network failures (no internet, server down) produce TypeError: Failed to fetch
           const msg = raw === 'Failed to fetch'
-            ? 'Network error — check your connection and try again.'
+            ? 'Network error, check your connection and try again.'
             : raw;
           setError(msg);
           setMessages((prev) => [
@@ -442,7 +442,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         setShareCopied(true);
         window.setTimeout(() => setShareCopied(false), 2000);
       } catch {
-        // Clipboard API blocked (insecure origin / permission denied) — fall
+        // Clipboard API blocked (insecure origin / permission denied), fall
         // back to a prompt so the user can still copy the link by hand.
         window.prompt('Copy this share link:', url);
       }

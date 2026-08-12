@@ -14,9 +14,9 @@ type SetupStep = 1 | 2 | 3;
 
 /**
  * User's experience with a question, computed from perQ stats:
- *  - unseen — timesSeen === 0
- *  - weak   — timesSeen > 0 AND accuracy < WEAK_THRESHOLD (0.7)
- *  - strong — timesSeen > 0 AND accuracy >= WEAK_THRESHOLD
+ * - unseen, timesSeen === 0
+ * - weak, timesSeen > 0 AND accuracy < WEAK_THRESHOLD (0.7)
+ * - strong, timesSeen > 0 AND accuracy >= WEAK_THRESHOLD
  * Multi-select in setup; empty array or full set = no filter.
  */
 export type QuizExperience = 'unseen' | 'weak' | 'strong';
@@ -136,7 +136,7 @@ function pickByDomainWeight(
 }
 
 // Walks the quiz list and re-shuffles any question whose correct-answer index
-// matches both the previous two — guarantees no 3-in-a-row positional streak.
+// matches both the previous two, guarantees no 3-in-a-row positional streak.
 function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
   const out = [...qs];
   for (let i = 2; i < out.length; i++) {
@@ -189,7 +189,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
         </div>
       ))}
       <span className="ml-1 text-[10px] font-mono text-slate-600">
-        Step {step} of 3 —{' '}
+        Step {step} of 3 {' '}
         {step === 1 ? 'Select Exam' : step === 2 ? 'Select Domains' : 'Options'}
       </span>
     </div>
@@ -369,7 +369,7 @@ function Step2SelectDomains({
           className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
         >
           {totalSelected > 0
-            ? `Continue — ${totalSelected} questions available`
+            ? `Continue, ${totalSelected} questions available`
             : 'Select at least one domain'}
         </button>
       </div>
@@ -544,7 +544,7 @@ function Step3Options({
           </div>
         </div>
 
-        {/* Experience filter — multi-select, mix and match */}
+        {/* Experience filter, multi-select, mix and match */}
         <div>
           <div className="flex items-baseline justify-between mb-1.5">
             <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Experience</label>
@@ -680,7 +680,7 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
     );
   }
 
-  // Fallback — should not normally be reached.
+  // Fallback, should not normally be reached.
   return null;
 }
 
@@ -794,7 +794,7 @@ function QuestionScreen({
           disabled={chosen !== null}
           className="mt-3 w-full py-1.5 rounded text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
         >
-          Skip — leave unanswered
+          Skip, leave unanswered
         </button>
       )}
     </div>
@@ -959,7 +959,7 @@ function SummaryScreen({
         )}
       </div>
 
-      {/* Domain breakdown — shown when cert is selected */}
+      {/* Domain breakdown, shown when cert is selected */}
       {byDomain && byDomain.length > 0 && (
         <div className="mb-5">
           <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
@@ -997,7 +997,7 @@ function SummaryScreen({
         </div>
       )}
 
-      {/* Category breakdown — shown when no cert selected */}
+      {/* Category breakdown, shown when no cert selected */}
       {(!byDomain || byDomain.length === 0) && (
         <div className="mb-5">
           <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Category Breakdown</p>
@@ -1078,7 +1078,7 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   const [genError,      setGenError]      = useState('');
   const preloadHandledRef = useRef<QuizQuestion[] | null>(null);
 
-  // Preloaded launch — skip SetupScreen when parent hands us a question list.
+  // Preloaded launch, skip SetupScreen when parent hands us a question list.
   // We track the exact list reference we handled so a re-render doesn't
   // re-launch; parent must swap in a new array to trigger a new preloaded
   // session.
@@ -1086,7 +1086,7 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     if (!preloadedQuestions || preloadedQuestions.length === 0) return;
     if (preloadHandledRef.current === preloadedQuestions) return;
     preloadHandledRef.current = preloadedQuestions;
-    // Retakes preserve original option order — do NOT shuffle. This is the
+    // Retakes preserve original option order, do NOT shuffle. This is the
     // "same questions, same order" contract of retake-entire-session, and it
     // makes retake-missed easy to compare against the original attempt.
     setSettings({
@@ -1113,13 +1113,13 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     const pool = QUIZ_QUESTIONS.filter((q) => {
       // Always filter by cert tag when an exam is selected.
       if (s.certFilter !== 'All' && !q.certTags.includes(s.certFilter)) return false;
-      // Domain filter — only applied when domains are explicitly selected.
+      // Domain filter, only applied when domains are explicitly selected.
       if (selectedDomains.length > 0) {
         const inDomain = selectedDomains.some((d) => questionMatchesDomain(q, d));
         if (!inDomain) return false;
       }
       if (s.difficulty !== 'all' && q.difficulty !== s.difficulty) return false;
-      // Experience filter — empty = include all, otherwise intersect with
+      // Experience filter, empty = include all, otherwise intersect with
       // perQ-derived bucket (unseen / weak / strong).
       if (experience.length > 0) {
         const st = perQ[q.id];
@@ -1132,7 +1132,7 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     });
 
     // Weighted pick biases toward questions the user has missed or hasn't
-    // seen yet — Anki-style spaced repetition without ever fully retiring a Q.
+    // seen yet, Anki-style spaced repetition without ever fully retiring a Q.
     //
     // In exam mode the draw is additionally stratified by exam domain so the
     // mock matches the published blueprint (e.g. SecAI+ 17/40/24/19) rather
@@ -1195,7 +1195,7 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     const skipped = results.filter((r) => r.skipped).length;
     const cert = settings?.selectedCert;
     // Record detailed progression FIRST so we can correlate the aggregate
-    // QuizRun to the SessionRecord id — the dashboard/progress recent
+    // QuizRun to the SessionRecord id, the dashboard/progress recent
     // activity rows become linkable to the session review view.
     const session = recordSession({
       cert:       cert?.id ?? (settings?.certFilter && settings.certFilter !== 'All' ? settings.certFilter : 'All'),
@@ -1218,12 +1218,12 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
       skipped,
       examMode: settings?.examMode,
     });
-    // Tell parent the preloaded run is over so it can clear the preload —
+    // Tell parent the preloaded run is over so it can clear the preload 
     // otherwise clicking "New Quiz" would re-launch the same set on remount.
     onSessionEnd?.();
   }, [mode, results, settings, onSessionEnd]);
 
-  // ── Exam countdown tick — auto-submit unanswered remainder when timer hits 0 ──
+  // ── Exam countdown tick, auto-submit unanswered remainder when timer hits 0 ──
   useEffect(() => {
     if (!examEndAt) return;
     const id = setInterval(() => setNowMs(Date.now()), 1000);

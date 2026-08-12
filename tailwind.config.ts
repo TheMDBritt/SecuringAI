@@ -18,7 +18,7 @@ const config: Config = {
           800: '#131d33',
           700: '#1c2942',
         },
-        // Cyber blue — primary brand accent
+        // Cyber blue, primary brand accent
         brand: {
           50:  '#eff6ff',
           100: '#dbeafe',

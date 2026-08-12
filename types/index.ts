@@ -16,7 +16,7 @@ export interface QuizQuestion {
   options: [string, string, string, string];
   correct: 0 | 1 | 2 | 3;
   explanation: string;
-  /** Per-option explanations shown after answering — index-matched to options[]. Optional. */
+  /** Per-option explanations shown after answering, index-matched to options[]. Optional. */
   optionExplanations?: [string, string, string, string];
 }
 
@@ -217,23 +217,23 @@ export interface EvaluationResult {
   whatHappened: string;
   /** Concrete mitigation paragraph (shown in DEFENSIVE TAKEAWAY panel). */
   defensiveTakeaway: string;
-  /** OWASP LLM Top 10 category, e.g. "LLM01 – Prompt Injection". */
+  /** OWASP LLM Top 10 category, e.g. "LLM01: Prompt Injection". */
   owaspCategory: string;
   /**
-   * Dojo 1 only — human-readable label for the data category that was leaked
+   * Dojo 1 only, human-readable label for the data category that was leaked
    * when the attack succeeded, e.g. "API credential + internal system config".
    * Undefined for benign/probing turns or when defenses held.
    */
   leakedDataCategory?: string;
   /**
-   * Dojo 1 only — attack chain metadata when multiple attacks succeeded in the
+   * Dojo 1 only, attack chain metadata when multiple attacks succeeded in the
    * same session. `chain` lists attack types oldest-to-newest (including the
    * current turn). `chainPenalty` is the additional score deduction applied
    * on top of the per-turn deduction.
    */
   attackChain?: { chain: AttackType[]; chainPenalty: number };
   /**
-   * Dojo 2/3 only — SecurityAI+ exam topics connected to this scenario/evaluation.
+   * Dojo 2/3 only, SecurityAI+ exam topics connected to this scenario/evaluation.
    * Displayed in the scoring pane to map hands-on practice to certification domains.
    */
   securityAITopics?: string[];

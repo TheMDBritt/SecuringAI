@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 
-const TITLE = 'Securing AI — Enterprise AI Security Training Platform';
+const TITLE = 'Securing AI: Enterprise AI Security Training Platform';
 const DESCRIPTION =
   'Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,800 quiz questions · 940 glossary terms · scenario labs across 11 AI & cloud security certifications including CompTIA SecAI+, SC-500, AWS Security Specialty (SCS-C03), GIAC GOAA, EC-Council CAIS, and CAISP.';
 

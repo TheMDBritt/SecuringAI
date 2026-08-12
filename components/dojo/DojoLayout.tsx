@@ -45,7 +45,7 @@ export function DojoLayout({
     <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
       {/* 3-column main area */}
       <div className="flex flex-1 min-h-0 overflow-hidden">
-        {/* Left — Scenario Picker */}
+        {/* Left: Scenario Picker */}
         <aside
           className="w-72 shrink-0 border-r border-slate-700 overflow-y-auto bg-slate-900"
           aria-label="Scenario picker"
@@ -53,7 +53,7 @@ export function DojoLayout({
           {scenarioPicker}
         </aside>
 
-        {/* Center — Chat Console */}
+        {/* Center: Chat Console */}
         <section
           className="flex-1 min-w-0 flex flex-col border-r border-slate-700 bg-slate-950"
           aria-label="Chat console"
@@ -61,7 +61,7 @@ export function DojoLayout({
           {chatConsole}
         </section>
 
-        {/* Right — Control Panel */}
+        {/* Right: Control Panel */}
         <aside
           className="w-80 shrink-0 overflow-y-auto bg-slate-900"
           aria-label="Control panel"
@@ -81,7 +81,7 @@ export function DojoLayout({
         <div className="w-10 h-[3px] rounded-full bg-slate-700 group-hover:bg-slate-500 transition-colors duration-150" />
       </div>
 
-      {/* Bottom — Scoring + Explanation */}
+      {/* Bottom: Scoring + Explanation */}
       <div
         className="shrink-0 border-t border-slate-700/60 bg-slate-900 overflow-y-auto"
         style={{ height: scoringH }}

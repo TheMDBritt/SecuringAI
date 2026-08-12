@@ -1,7 +1,7 @@
 /**
  * Client-side helper for the Playbook quiz generator.
  * Calls POST /api/quiz-gen and returns validated QuizQuestion objects.
- * Throws on failure — callers should catch and fall back to the static bank.
+ * Throws on failure, callers should catch and fall back to the static bank.
  */
 import type { QuizQuestion, QuizDifficulty } from '@/types';
 
@@ -10,7 +10,7 @@ export interface QuizGenRequest {
   category:   string;
   difficulty: QuizDifficulty;
   count:      number;
-  /** Optional cert tag — generated questions inherit this in their certTags[]. */
+  /** Optional cert tag, generated questions inherit this in their certTags[]. */
   certTag?:   string;
 }
 

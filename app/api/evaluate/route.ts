@@ -1,7 +1,7 @@
 /**
  * POST /api/evaluate
  *
- * Rules-based evaluator — Milestone 6.
+ * Rules-based evaluator, Milestone 6.
  * IMPORTANT: This route NEVER calls the chat model or any external service.
  * All logic is pure pattern matching inside lib/evaluator.ts.
  */
@@ -37,9 +37,9 @@ const EvaluateRequestSchema = z.object({
   messages: z.array(MessageSchema).min(1).max(60),
   /** Forwarded from the chat turn so rag_injection attacks can be detected. */
   ragContext: z.string().max(4000).optional(),
-  /** Dojo 1 only — ordered list of attack types that succeeded in prior turns of this session. */
+  /** Dojo 1 only, ordered list of attack types that succeeded in prior turns of this session. */
   sessionAttackHistory: z.array(AttackTypeEnum).max(20).optional(),
-  /** Dojo 2 only — analyst config used during this turn; evaluator skips checks for disabled capabilities. */
+  /** Dojo 2 only, analyst config used during this turn; evaluator skips checks for disabled capabilities. */
   dojo2Config: z.object({
     persona:          z.enum(['analyst', 'ciso', 'ir-lead']),
     outputFormat:     z.enum(['markdown', 'json', 'report']),

@@ -8,7 +8,7 @@ type Mode = 'list' | 'run' | 'done';
 
 // Randomizes each step's option order (and remaps `correct`) so the answer
 // isn't memorizable at a fixed position across retries. Step ORDER is left
-// alone — steps are a guided narrative sequence (e.g. "Incident #1/#2/#3",
+// alone, steps are a guided narrative sequence (e.g. "Incident #1/#2/#3",
 // or a portal click-path), not an interchangeable question set.
 function shuffleStepOptions(step: DrillStep): DrillStep {
   const order = step.options.map((_, i) => i);
@@ -123,7 +123,7 @@ export default function PortalDrills() {
           </div>
         </div>
 
-        {/* Bucket filter — labels vary per cert (SC-500: portals; SecAI+: domains) */}
+        {/* Bucket filter, labels vary per cert (SC-500: portals; SecAI+: domains) */}
         <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => setPortalFilter('All')}
@@ -322,8 +322,8 @@ export default function PortalDrills() {
           <p className="text-slate-400 text-sm">{correct} of {total} steps correct</p>
           <p className={`text-sm font-semibold mt-1 ${color}`}>
             {pct === 100 ? 'Perfect path! You know this portal cold.'
-              : pct >= 80 ? 'Strong — re-do once to lock the path in.'
-              : pct >= 60 ? 'Solid foundation — review the missed steps below.'
+: pct >= 80 ? 'Strong, re-do once to lock the path in.'
+: pct >= 60 ? 'Solid foundation, review the missed steps below.'
               : 'Run this drill again after re-reading the related Topic.'}
           </p>
         </div>
@@ -350,7 +350,7 @@ export default function PortalDrills() {
                 <p className="text-slate-300 leading-relaxed">{s.question}</p>
                 {!ok && (
                   <p className="text-[11px] text-emerald-300/80 mt-1.5">
-                    Correct: <span className="font-mono">{String.fromCharCode(65 + s.correct)}</span> — {s.options[s.correct]}
+                    Correct: <span className="font-mono">{String.fromCharCode(65 + s.correct)}</span>, {s.options[s.correct]}
                   </p>
                 )}
               </div>

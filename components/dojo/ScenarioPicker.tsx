@@ -22,7 +22,7 @@ const DOJO_ACCENT: Record<DojoId, { selected: string; dot: string; label: string
 };
 
 const DOJO_HEADER_DESC: Record<DojoId, string> = {
-  1: 'Configure guardrails on the right, pick a scenario, then attack. Outcomes are deterministic — guardrail state decides every result.',
+  1: 'Configure guardrails on the right, pick a scenario, then attack. Outcomes are deterministic, guardrail state decides every result.',
   2: 'Choose a SOC workflow, load an incident from the right panel, configure analyst depth and persona before submitting.',
   3: 'Pick a GRC scenario. Use the framework toolkit on the right to build your response.',
 };

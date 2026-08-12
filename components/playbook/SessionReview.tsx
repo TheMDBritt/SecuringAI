@@ -4,7 +4,7 @@ import type { QuizQuestion } from '@/types';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import type { SessionRecord, QuestionResult } from '@/lib/quiz-progress';
 
-// Cheap lookup — module-scope so it builds once, reused across mounts.
+// Cheap lookup, module-scope so it builds once, reused across mounts.
 const Q_BY_ID: Record<string, QuizQuestion> = (() => {
   const m: Record<string, QuizQuestion> = {};
   for (const q of QUIZ_QUESTIONS) m[q.id] = q;
@@ -28,7 +28,7 @@ function formatDate(ms: number): string {
 /**
  * Full read-only breakdown of a past quiz session, with two retake buttons.
  * Retake buttons hand up a resolved QuizQuestion[] to the parent so the parent
- * can launch QuizEngine with a preloaded list — this component stays purely
+ * can launch QuizEngine with a preloaded list, this component stays purely
  * presentational.
  */
 export default function SessionReview({ session, onBack, onRetakeMissed, onRetakeAll }: SessionReviewProps) {
@@ -85,7 +85,7 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
           </p>
           {notFound > 0 && (
             <p className="text-[10px] font-mono text-amber-500 mt-2">
-              ⚠ {notFound} question{notFound === 1 ? '' : 's'} no longer in the bank — likely renamed or removed since this session.
+              ⚠ {notFound} question{notFound === 1 ? '': 's'} no longer in the bank, likely renamed or removed since this session.
             </p>
           )}
         </div>
@@ -107,7 +107,7 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
             ↻ Retake entire session ({allQs.length})
           </button>
           <span className="text-[10px] font-mono text-slate-600 ml-auto">
-            options in their stored order — no re-shuffle for a like-for-like retry
+            options in their stored order, no re-shuffle for a like-for-like retry
           </span>
         </div>
 

@@ -13,15 +13,15 @@ export const metadata = {
 const PRINCIPLES = [
   {
     label: 'Open access',
-    body: 'No accounts, no paywall, no tracking. The barrier to entry is a browser tab. Everything runs client-side or through stateless server routes — no data is stored.',
+    body: 'No accounts, no paywall, no tracking. The barrier to entry is a browser tab. Everything runs client-side or through stateless server routes, no data is stored.',
   },
   {
     label: 'Hands-on, not theoretical',
-    body: 'Every concept is something you can type into the chat console. Read about prompt injection, then run one and watch the guardrails decide the outcome. The scenario, the payload, the result — all of it is in your hands.',
+    body: 'Every concept is something you can type into the chat console. Read about prompt injection, then run one and watch the guardrails decide the outcome. The scenario, the payload, the result, all of it is in your hands.',
   },
   {
     label: 'Deterministic scoring',
-    body: 'Dojo 1 outcomes are decided by guardrail configuration alone — the same payload with the same config always produces the same result. The score is a function of security decisions, not model temperature.',
+    body: 'Dojo 1 outcomes are decided by guardrail configuration alone, the same payload with the same config always produces the same result. The score is a function of security decisions, not model temperature.',
   },
   {
     label: 'Conceptual payloads only',
@@ -40,7 +40,7 @@ const SCORING_DETAIL = [
       'Each scenario maps attack types (prompt_injection, data_exfiltration, policy_bypass, tool_abuse, rag_injection) to outcome tiers: VULNERABLE, PARTIAL, BLOCKED.',
       'Session score starts at 100. Each successful attack deducts (100 − turn_score). Chained attacks add a compounding penalty on top of the base deduction.',
       'Benign and probing turns do not change the session score. Only successful attacks deduct points.',
-      'Score ≥90 = low risk. 70–89 = medium. 40–69 = high. <40 = critical.',
+      'Score ≥90 = low risk. 70-89 = medium. 40-69 = high. <40 = critical.',
     ],
   },
   {
@@ -51,8 +51,8 @@ const SCORING_DETAIL = [
     detail: [
       'Each of the 9 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
       'Rubrics check for: IOC extraction (IPs, domains, hashes), MITRE T-code citation, executive summary presence, confidence assessment, detection rule syntax, and threat correlation.',
-      'Analyst persona affects output style only — capability toggles (IOC Extraction, MITRE Mapping, Threat Correlation) gate whether the evaluator checks those elements.',
-      'Quality is scored 0–100 and mapped to STRONG / ADEQUATE / WEAK / INCOMPLETE. The evaluator lists missing criteria and improvement guidance.',
+      'Analyst persona affects output style only, capability toggles (IOC Extraction, MITRE Mapping, Threat Correlation) gate whether the evaluator checks those elements.',
+      'Quality is scored 0-100 and mapped to STRONG / ADEQUATE / WEAK / INCOMPLETE. The evaluator lists missing criteria and improvement guidance.',
     ],
   },
   {
@@ -61,9 +61,9 @@ const SCORING_DETAIL = [
     border: 'border-emerald-500/20',
     engine: 'Framework rubric evaluator',
     detail: [
-      'Rubrics check framework-specific citations: EU AI Act tier assignment (I/II/III/IV), NIST AI RMF function references (GOVERN/MAP/MEASURE/MANAGE), ISO 42001 clause citations (4–10), and vendor gap coverage.',
+      'Rubrics check framework-specific citations: EU AI Act tier assignment (I/II/III/IV), NIST AI RMF function references (GOVERN/MAP/MEASURE/MANAGE), ISO 42001 clause citations (4-10), and vendor gap coverage.',
       'GRC scenario scoring looks for: risk tier justification, control specificity, evidence gaps, and remediation prioritization.',
-      'The evaluator returns per-element coaching — not just a binary pass/fail — explaining which framework criteria were met and which need work.',
+      'The evaluator returns per-element coaching, not just a binary pass/fail, explaining which framework criteria were met and which need work.',
     ],
   },
 ];
@@ -71,7 +71,7 @@ const SCORING_DETAIL = [
 const CREDITS = [
   'OWASP Top 10 for LLM Applications (2025)',
   'NIST AI Risk Management Framework 1.0',
-  'ISO/IEC 42001:2023 — AI Management System',
+  'ISO/IEC 42001:2023, AI Management System',
   'EU AI Act (2024)',
   'MITRE ATT&CK + ATLAS',
   'Cloud Security Alliance AI Controls Matrix',
@@ -101,7 +101,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   2: {
     title: 'AI-Assisted SOC',
     color: 'text-cyan-400',
-    body: `Operate as an AI SOC analyst across 12 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, Adversarial Prompt Forensics, and Ransomware IR with AI Assistance. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled — disabled capabilities are excluded from quality scoring.`,
+    body: `Operate as an AI SOC analyst across 12 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, Adversarial Prompt Forensics, and Ransomware IR with AI Assistance. Each workflow loads from a library of 47 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled, disabled capabilities are excluded from quality scoring.`,
   },
   3: {
     title: 'AI GRC',
@@ -133,7 +133,7 @@ export default function AboutPage() {
               </h1>
               <p className="mt-5 text-[15px] text-slate-400 leading-relaxed max-w-xl">
                 Securing AI exists because there is no shortage of slide decks explaining prompt injection
-                and almost no way to actually run one. The goal is a hands-on environment — realistic
+                and almost no way to actually run one. The goal is a hands-on environment, realistic
                 scenarios, live guardrail toggles, and per-turn scoring mapped to the certifications
                 the field is converging on.
               </p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
                 { n: QUIZ_QUESTIONS.length.toLocaleString(), label: 'quiz questions', sub: '11 certs mapped' },
-                { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+                { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
@@ -257,7 +257,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-6 items-start">
             <div className="text-sm text-slate-400 leading-relaxed space-y-3">
               <p>
-                The quiz starts with selecting a cert — SecAI+, SC-500, GIAC GOAA, CAIS, and 6 more.
+                The quiz starts with selecting a cert, SecAI+, SC-500, GIAC GOAA, CAIS, and 6 more.
                 From the cert you pick which exam domains to drill. One cert at a time, one or many domains.
               </p>
               <p>

@@ -4,7 +4,7 @@ import { Card, PageHeader, SectionHeading, Badge, ButtonLink } from '@/component
 export const metadata = {
   title: 'Help',
   description:
-    'How Securing AI works — the three disciplines, how scoring is calculated, certification mapping, privacy, and getting started.',
+    'How Securing AI works, the three disciplines, how scoring is calculated, certification mapping, privacy, and getting started.',
 };
 
 const QUICK_LINKS = [
@@ -25,7 +25,7 @@ const DISCIPLINES = [
     tone: 'cyan' as const,
     tag: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    body: 'Operate as an AI-augmented analyst across log triage, alert enrichment, detection-rule generation, and incident reporting. Responses are scored against a quality rubric — IOC extraction, MITRE ATT&CK mapping, and executive summaries.',
+    body: 'Operate as an AI-augmented analyst across log triage, alert enrichment, detection-rule generation, and incident reporting. Responses are scored against a quality rubric, IOC extraction, MITRE ATT&CK mapping, and executive summaries.',
   },
   {
     tone: 'emerald' as const,
@@ -46,7 +46,7 @@ const FAQ = [
   },
   {
     q: 'Which certifications are covered?',
-    a: 'Eleven AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security – Specialty (SCS-C03), the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Every question is tagged to its official exam domains.',
+    a: 'Eleven AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security: Specialty (SCS-C03), the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Every question is tagged to its official exam domains.',
   },
   {
     q: 'Do I need an API key?',
@@ -64,7 +64,7 @@ export default function HelpPage() {
       <PageHeader
         eyebrow="Documentation"
         title="Help & Guides"
-        description="Everything you need to get the most out of the platform — the disciplines, how scoring works, and answers to common questions."
+        description="Everything you need to get the most out of the platform, the disciplines, how scoring works, and answers to common questions."
       />
 
       {/* Quick links */}

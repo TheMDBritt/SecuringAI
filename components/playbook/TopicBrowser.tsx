@@ -20,12 +20,12 @@ const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
 
 // Inline markdown renderer: headings, bold, inline code, fenced code blocks, tables, lists, paragraphs
 function renderMarkdown(md: string): string {
-  // 1. Fenced code blocks (``` ... ```) — must run before inline code
+  // 1. Fenced code blocks (```... ```), must run before inline code
   md = md.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) =>
     `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-[11px] font-mono text-violet-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
   );
 
-  // 2. Tables — | col | col | rows
+  // 2. Tables, | col | col | rows
   md = md.replace(/((?:^\|.+\|\n?)+)/gm, (block) => {
     const rows = block.trim().split('\n').filter((r) => !/^\s*\|[-| :]+\|\s*$/.test(r));
     const toCell = (row: string, tag: string) =>
@@ -55,7 +55,7 @@ function renderMarkdown(md: string): string {
     .replace(/^(\d+)\. (.+)$/gm, '<li class="text-sm text-slate-300 leading-relaxed ml-4 list-decimal">$2</li>')
     .replace(/(<li[\s\S]*?<\/li>\n?)+/g, '<ul class="space-y-0.5 my-2">$&</ul>');
 
-  // 7. Paragraphs — wrap non-tag lines
+  // 7. Paragraphs, wrap non-tag lines
   md = md
     .replace(/\n\n/g, '\n')
     .replace(/^(?!<[htupd])(.+)$/gm, '<p class="text-sm text-slate-300 leading-relaxed my-2">$1</p>');

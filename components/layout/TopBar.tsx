@@ -32,7 +32,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
         </svg>
       </button>
 
-      <Link href="/" className="flex items-center gap-2 lg:hidden" aria-label="Securing AI — home">
+      <Link href="/" className="flex items-center gap-2 lg:hidden" aria-label="Securing AI, home">
         <BrandMark className="h-6 w-6" />
         <span className="text-[13px] font-bold tracking-tight text-slate-50">Securing AI</span>
       </Link>

@@ -23,7 +23,7 @@ export default function GlobalError({
         That wasn&apos;t supposed to happen.
       </h1>
       <p className="text-slate-400 max-w-md mb-2 leading-relaxed">
-        The app hit an unexpected error. Try the action again — most failures
+        The app hit an unexpected error. Try the action again, most failures
         are transient. If it keeps happening, refresh or head home.
       </p>
       {error.digest && (

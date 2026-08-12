@@ -9,7 +9,7 @@ import {
 } from '@/types';
 
 /**
- * URL-shareable subset of session config — defaults are omitted to keep links
+ * URL-shareable subset of session config, defaults are omitted to keep links
  * short. Big free-form fields (Dojo 3 detection rule, RAG context, tool-forge
  * text) are intentionally excluded; the share use case is "configuration, not
  * full state".

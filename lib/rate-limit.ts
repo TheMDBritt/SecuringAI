@@ -1,5 +1,5 @@
 // Simple in-memory per-IP rate limiter.
-// NOTE: resets on serverless cold start — swap for Vercel KV in M9.
+// NOTE: resets on serverless cold start, swap for Vercel KV in M9.
 
 const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQUESTS = 20;

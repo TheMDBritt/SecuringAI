@@ -23,7 +23,7 @@ export interface ExamCert {
   /** Tailwind utility classes applied to the cert badge. */
   badgeClass: string;
   domains: ExamDomain[];
-  /** Official passing score percentage (0–100). Shown on result screen. */
+  /** Official passing score percentage (0-100). Shown on result screen. */
   passingScore?: number;
   /** If set, a mock exam preset button is shown with these params. */
   mockExam?: { questions: number; durationMin: number };
@@ -642,10 +642,10 @@ export const EXAM_CERTS: ExamCert[] = [
     ],
   },
 
-  // ── AWS Certified Security – Specialty (SCS-C03) ──────────────────────────
+  // ── AWS Certified Security: Specialty (SCS-C03) ──────────────────────────
   {
     id: 'SCS-C03',
-    name: 'AWS Certified Security – Specialty',
+    name: 'AWS Certified Security: Specialty',
     provider: 'Amazon Web Services',
     badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
     passingScore: 75,
