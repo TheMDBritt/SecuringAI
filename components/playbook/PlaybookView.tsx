@@ -2,30 +2,52 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { PlaybookSection, QuizQuestion } from '@/types';
-import TopicBrowser      from './TopicBrowser';
-import GlossaryPanel     from './GlossaryPanel';
-import CertMap           from './CertMap';
-import QuizEngine        from './QuizEngine';
-import PortalDrills      from './PortalDrills';
-import ProgressDashboard from './ProgressDashboard';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
-import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import dynamic from 'next/dynamic';
 
-const Q_COUNT = QUIZ_QUESTIONS.length.toLocaleString();
-const G_COUNT = GLOSSARY_TERMS.length.toLocaleString();
+// Each section owns a multi-megabyte data module: the quiz bank alone is 2.2 MB
+// of source. Importing them statically put every one of them in the first
+// chunk for /playbook, so opening the page downloaded and parsed the whole
+// library before the reader had picked a tab. Loading them on demand means a
+// visit costs only the section actually opened.
+//
+// ssr is left on so each section still server-renders when linked directly.
+const loading = () => (
+  <div className="flex h-full items-center justify-center p-8">
+    <p className="text-xs font-mono text-slate-600" role="status" aria-live="polite">
+      Loading section...
+    </p>
+  </div>
+);
 
-const SECTIONS: { id: PlaybookSection; label: string; count?: string; desc: string }[] = [
-  { id: 'topics',   label: 'Topics',   count: '76',      desc: '76 articles' },
-  { id: 'glossary', label: 'Glossary', count: G_COUNT,   desc: `${G_COUNT} terms` },
-  { id: 'certs',    label: 'Certs',    count: '11',      desc: '11 exams' },
-  { id: 'quiz',     label: 'Quiz',     count: Q_COUNT,   desc: `${Q_COUNT} questions` },
-  { id: 'progress', label: 'Progress',                   desc: 'Your quiz history' },
-  { id: 'drills',   label: 'Drills',                     desc: 'Scenario drills' },
-];
+const TopicBrowser      = dynamic(() => import('./TopicBrowser'),      { loading });
+const GlossaryPanel     = dynamic(() => import('./GlossaryPanel'),     { loading });
+const CertMap           = dynamic(() => import('./CertMap'),           { loading });
+const QuizEngine        = dynamic(() => import('./QuizEngine'),        { loading });
+const PortalDrills      = dynamic(() => import('./PortalDrills'),      { loading });
+const ProgressDashboard = dynamic(() => import('./ProgressDashboard'), { loading });
+
+export interface PlaybookCounts {
+  questions: number;
+  glossary: number;
+  articles: number;
+  certs: number;
+}
+
+function buildSections(c: PlaybookCounts): { id: PlaybookSection; label: string; count?: string; desc: string }[] {
+  return [
+    { id: 'topics',   label: 'Topics',   count: String(c.articles),                desc: `${c.articles} articles` },
+    { id: 'glossary', label: 'Glossary', count: c.glossary.toLocaleString(),       desc: `${c.glossary.toLocaleString()} terms` },
+    { id: 'certs',    label: 'Certs',    count: String(c.certs),                   desc: `${c.certs} exams` },
+    { id: 'quiz',     label: 'Quiz',     count: c.questions.toLocaleString(),      desc: `${c.questions.toLocaleString()} questions` },
+    { id: 'progress', label: 'Progress',                                           desc: 'Your quiz history' },
+    { id: 'drills',   label: 'Drills',                                             desc: 'Scenario drills' },
+  ];
+}
 
 const VALID_SECTIONS: readonly PlaybookSection[] = ['topics', 'glossary', 'certs', 'quiz', 'progress', 'drills'];
 
-export default function PlaybookView() {
+export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
+  const SECTIONS = buildSections(counts);
   const params  = useSearchParams();
   const initialSection: PlaybookSection = (() => {
     const raw = params?.get('section');

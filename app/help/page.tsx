@@ -10,7 +10,7 @@ export const metadata = {
 const QUICK_LINKS = [
   { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next lab.' },
   { href: '/dojo', label: 'Labs', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
-  { href: '/playbook', label: 'Playbook', desc: '1,800+ questions, glossary, cert maps, and topic articles.' },
+  { href: '/playbook', label: 'Playbook', desc: '1,876 questions, 775 glossary terms, cert maps and 98 topic articles.' },
   { href: '/progress', label: 'Progress', desc: 'Per-discipline and per-certification analytics.' },
 ];
 

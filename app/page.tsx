@@ -2,19 +2,19 @@ import Link from 'next/link';
 import { getScenariosByDojo, SCENARIOS } from '@/lib/scenarios';
 import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 import { Footer } from '@/components/layout/Footer';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
-import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
 import type { DojoId } from '@/types';
 
 // ── Live counts, computed from source data at build time ─────────────────────
 const STATS = {
-  scenarios:  SCENARIOS.length,
-  quizQs:    QUIZ_QUESTIONS.length,
-  glossary:  GLOSSARY_TERMS.length,
-  articles:   76,
-  certs:      11,
-  incidents:  DOJO2_PREBUILT_SCENARIOS.length,
+  scenarios: SCENARIOS.length,
+  quizQs:    CONTENT_COUNTS.quizQuestions,
+  glossary:  CONTENT_COUNTS.glossaryTerms,
+  articles:  CONTENT_COUNTS.topicArticles,
+  certs:     CONTENT_COUNTS.certs,
+  incidents: DOJO2_PREBUILT_SCENARIOS.length,
+  drills:    CONTENT_COUNTS.drills,
 };
 
 interface DojoCard {
@@ -31,7 +31,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 37 scenarios, prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, chain-of-thought hijacking, alignment exploitation, function name confusion, system prompt reflection leaks, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live LLM under configurable guardrails across 70 scenarios, prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, chain-of-thought hijacking, alignment exploitation, function name confusion, system prompt reflection leaks, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },

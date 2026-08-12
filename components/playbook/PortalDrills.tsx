@@ -264,24 +264,41 @@ export default function PortalDrills() {
           </div>
         </div>
 
-        {/* Options */}
+        {/* Options.
+            Correct and chosen-wrong were signalled by colour alone, which a
+            colour-blind user cannot read. Each answered state now also carries
+            a glyph and a visually-hidden label. */}
         <div className="space-y-2 mb-4">
           {step.options.map((opt, i) => {
             let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
+            let mark: string | null = null;
+            let srLabel: string | null = null;
             if (pick !== null) {
-              if (i === step.correct)      style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
-              else if (i === pick)         style = 'border-red-500 bg-red-500/10 text-red-300';
-              else                         style = 'border-slate-700/50 text-slate-600 opacity-60';
+              if (i === step.correct) {
+                style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
+                mark = '\u2713';
+                srLabel = 'Correct answer.';
+              } else if (i === pick) {
+                style = 'border-red-500 bg-red-500/10 text-red-300';
+                mark = '\u2717';
+                srLabel = 'Your answer, incorrect.';
+              } else {
+                style = 'border-slate-700/50 text-slate-600 opacity-60';
+              }
             }
             return (
               <button
                 key={i}
                 onClick={() => handlePick(i)}
-                disabled={pick !== null}
+                // Answered options stay focusable so a keyboard user can still
+                // read back the whole set; aria-disabled conveys the state.
+                aria-disabled={pick !== null}
                 className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all text-sm ${style}`}
               >
                 <span className="font-mono text-[10px] mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
                 {opt}
+                {mark && <span aria-hidden="true" className="ml-2 font-bold">{mark}</span>}
+                {srLabel && <span className="sr-only"> {srLabel}</span>}
               </button>
             );
           })}

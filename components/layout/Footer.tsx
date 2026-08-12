@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
-import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { SCENARIOS } from '@/lib/scenarios';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
 
-const Q  = QUIZ_QUESTIONS.length.toLocaleString();
-const G  = GLOSSARY_TERMS.length.toLocaleString();
+const Q  = CONTENT_COUNTS.quizQuestions.toLocaleString();
+const G  = CONTENT_COUNTS.glossaryTerms.toLocaleString();
 const S  = SCENARIOS.length;
 const I  = DOJO2_PREBUILT_SCENARIOS.length;
 

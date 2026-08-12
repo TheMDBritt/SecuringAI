@@ -812,8 +812,14 @@ function ResultScreen({
 }) {
   return (
     <div className="flex flex-col h-full px-6 py-5">
-      <div className={`flex items-center gap-2 mb-4 p-3 rounded-lg border ${result.correct ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
-        <span className={`text-lg ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
+      {/* role=status so the verdict is announced. Without it the result was
+          conveyed only by colour and a bare glyph. */}
+      <div
+        role="status"
+        aria-live="polite"
+        className={`flex items-center gap-2 mb-4 p-3 rounded-lg border ${result.correct ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}
+      >
+        <span aria-hidden="true" className={`text-lg ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
           {result.correct ? '✓' : '✗'}
         </span>
         <span className={`text-sm font-semibold ${result.correct ? 'text-emerald-300' : 'text-red-300'}`}>
@@ -1290,14 +1296,16 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
         </div>
       )}
       {generating && (
-        <div className="px-4 py-2 border-b border-violet-500/20 bg-violet-500/5 flex items-center gap-2">
-          <div className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[11px] font-mono text-violet-400">Generating new questions…</span>
+        <div role="status" aria-live="polite" className="px-4 py-2 border-b border-violet-500/20 bg-violet-500/5 flex items-center gap-2">
+          <div aria-hidden="true" className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[11px] font-mono text-violet-400">Generating new questions...</span>
         </div>
       )}
       {genError && (
-        <div className="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
-          <span className="text-[11px] font-mono text-red-400">⚠ {genError}</span>
+        <div role="alert" className="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
+          <span className="text-[11px] font-mono text-red-400">
+            <span aria-hidden="true">&#9888; </span>{genError}
+          </span>
         </div>
       )}
       <div className="flex-1 overflow-y-auto">

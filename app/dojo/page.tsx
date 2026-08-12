@@ -4,7 +4,7 @@ import { OnboardingTour } from '@/components/dojo/OnboardingTour';
 export const metadata = {
   title: 'Dojo',
   description:
-    '59 scenarios across Dojo 1 (32 LLM attack/defense), Dojo 2 (12 SOC workflows, 47 prebuilt incidents), and Dojo 3 (15 AI GRC). Every turn is scored deterministically and mapped to OWASP LLM Top 10, MITRE ATLAS, and 11 AI & cloud security certifications.',
+    '70 scenarios across Dojo 1 (LLM attack and defense), Dojo 2 (SOC workflows with 56 prebuilt incidents), and Dojo 3 (AI GRC). Every turn is scored deterministically and mapped to OWASP LLM Top 10, MITRE ATLAS, and 11 AI & cloud security certifications.',
 };
 
 export default function DojoPage() {
