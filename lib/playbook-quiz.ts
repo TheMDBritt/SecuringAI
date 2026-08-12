@@ -325,10 +325,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is few-shot prompting?',
     options: [
       'Using a subset of the model\'s parameters for inference',
-      'Training a model on a small dataset',
-      'Limiting the model to short responses',
-      'Including a small number of input-output examples in the prompt to guide the model'],
-    correct: 3,
+      'Training a model on a deliberately small dataset',
+      'Including a few input-output examples in the prompt',
+      'Limiting the model to producing short responses'
+    ],
+    correct: 2,
     explanation: 'Few-shot prompting provides 2–5 examples of the desired input-output format within the prompt itself, helping the model understand the expected pattern without fine-tuning.',
   },
 {
@@ -2148,7 +2149,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI', 'GIAC-GOAA', 'CAISP'],
     question: 'A tester encodes a harmful request in Base64, pastes it into the prompt, and instructs the model to decode and answer it. The model complies. What does this exploit?',
-    options: [ 'Encoding-based guardrail bypass', 'Vector DB injection', 'Membership inference','Model poisoning'],
+    options: [
+      'Encoding-based bypass',
+      'Vector DB injection',
+      'Membership inference',
+      'Model poisoning'
+    ],
     correct: 0,
     explanation: 'Encoding-based bypass (Base64, ROT13, hex, etc.) obfuscates harmful content to evade keyword-based content filters. Robust guardrails must decode and evaluate content at the semantic level, not just string-match.',
   },
@@ -3567,10 +3573,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Historical bias in an AI training dataset most commonly originates from:',
     options: [
       'Insufficient computational resources during model training',
-      'Using too many features in the model',
-      'Random noise introduced during data collection',
-      'Past human decisions that reflected societal discrimination encoded into the training data'],
-    correct: 3,
+      'Using too many correlated features in the model',
+      'Past human decisions reflecting societal discrimination',
+      'Random noise introduced during data collection'
+    ],
+    correct: 2,
     explanation: 'Historical bias occurs when training data reflects past discriminatory human decisions — e.g., a hiring model trained on historical hires where women were underrepresented will perpetuate and amplify that bias. The model learns what happened, not what should happen.',
   },
 {
@@ -4438,9 +4445,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Data cleansing (data cleaning) in ML preparation involves:',
     options: [
       'Reducing dataset size by randomly dropping 20% of records',
-      'Identifying and correcting errors, inconsistencies, duplicates, and missing values in raw data',
-      'Converting all data to a standardized file format (e.g., CSV)',
-      'Encrypting sensitive fields in the training dataset'],
+      'Identifying and correcting errors, duplicates, and missing values',
+      'Converting all data to a standardized file format such as CSV',
+      'Encrypting sensitive fields within the training dataset'
+    ],
     correct: 1,
     explanation: 'Data cleansing removes or corrects: duplicate records, missing values (imputation or removal), outliers, inconsistent formatting, incorrect labels, and structural errors. Clean data is fundamental to model quality — "garbage in, garbage out" directly applies to ML systems.',
   },
@@ -4545,9 +4553,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Anomalously high token consumption from a single user session is most likely an indicator of:',
     options: [
       'The user has a slow internet connection causing retransmits',
-      'A prompt injection attack generating extremely long responses or a DoS attempt exhausting token quotas',
+      'A prompt injection generating long responses, or a token-quota DoS',
       'The user is accessing the system from a different time zone',
-      'The model version was recently upgraded with improved capabilities',
+      'The model version was recently upgraded with new capabilities'
     ],
     correct: 1,
     explanation: 'Runaway token consumption is a key signal of prompt injection attacks that bypass output length guardrails and generate extremely long responses, or deliberate DoS attacks designed to exhaust per-account token quotas and increase costs. Cost monitoring and rate alerts should trigger on significant deviations from baseline.',
@@ -7491,10 +7499,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
     question: 'When deploying an ML model as a containerised microservice, which control most directly reduces the risk of model theft via API enumeration?',
     options: [
-      'Storing model weights in a read-only filesystem',
-      'Rate limiting prediction API calls per authenticated client and returning only the top-1 label',
+      'Storing the model weights on a read-only filesystem',
+      'Rate limiting predictions per client and returning only the top-1 label',
       'Encrypting model weights at rest with AES-256',
-      'Using mTLS between the inference server and upstream services'],
+      'Using mTLS between the inference server and upstream services'
+    ],
     correct: 1,
     explanation: 'Model extraction/stealing attacks reconstruct a functionally equivalent model by querying the target API many times and training a surrogate on the query–response pairs. Rate limiting caps the number of queries an attacker can make, making large-scale extraction computationally expensive. Returning only the top-1 label (without full confidence/probability vectors) removes the rich gradient information that makes surrogate training efficient. Encrypting weights at rest and mTLS address different threat vectors (storage and transit respectively) but do not limit the information returned by live predictions.',
   },
@@ -9250,10 +9259,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A prompt injection attack against an AI agent that reads emails and takes calendar actions causes the agent to schedule unauthorized meetings and forward sensitive emails. This scenario best illustrates which OWASP LLM risk?',
     options: [
       'LLM06 Sensitive Information Disclosure',
+      'LLM01 Prompt Injection with LLM08 Excessive Agency',
       'LLM04 Model Denial of Service',
-      'LLM01 Prompt Injection combined with LLM08 Excessive Agency',
-      'LLM03 Training Data Poisoning'],
-    correct: 2,
+      'LLM03 Training Data Poisoning'
+    ],
+    correct: 1,
     explanation: 'This scenario demonstrates the most dangerous combination in agentic systems: LLM01 (Prompt Injection) delivers the attack vector through untrusted content (the malicious email), and LLM08 (Excessive Agency) is the amplifier — the agent has write access to calendar and email with no human confirmation required. The blast radius is determined by what tools the agent can access. Defense: minimal tool permissions, human-in-the-loop confirmation for sensitive actions, prompt injection detection at the input boundary, and output action validation before execution. Source: OWASP LLM Top 10 2025 LLM01/LLM08.',
   },
 {
@@ -12109,11 +12119,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['GIAC-GOAA', 'SecAI', 'CAIS'],
   question: 'How does "virtual context injection" (fictional framing) evade safety filters that are trained on direct harmful requests?',
   options: [
-    'It overloads the context window causing the model to forget safety guidelines',
-    'It triggers a creative mode that disables safety alignment',
-    'It uses retrieval to pull pre-safety-training data',
-    'Safety classifiers trained on direct requests fail to detect harmful content embedded in extensive fictional narratives'],
-  correct: 3,
+      'It overloads the context window so the model forgets safety guidelines',
+      'It triggers a creative mode that disables safety alignment entirely',
+      'Classifiers trained on direct requests miss harm inside fiction',
+      'It uses retrieval to pull in pre-safety-training data'
+    ],
+  correct: 2,
   explanation: 'Virtual context injection (roleplay/fictional framing) works because safety classifiers trained on direct harmful requests often fail to detect requests embedded in extensive fictional context. The adversarial content appears as character dialogue in a story. Defenses: train classifiers on fictional-context attacks; use semantic intent classifiers; implement per-turn harm scoring on outputs. Source: OWASP LLM01; ATLAS AML.T0054.001.',
 },
 {
@@ -12359,10 +12370,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
   question: 'What does "alert fatigue amplification" mean in the context of AI-assisted SIEM pipelines?',
   options: [
-    'The SIEM AI model fails because it was trained on a different network topology',
-    'The AI model is miscalibrated to be over-sensitive, generating high false-positive alert volumes that cause analysts to ignore legitimate alerts',
-    'The AI model hallucinates threat intel and inserts false indicators into SIEM correlation rules',
-    'An attacker floods the SIEM with low-quality events to degrade AI model performance'],
+      'The SIEM model fails because it trained on a different topology',
+      'An over-sensitive model floods analysts with false positives',
+      'The model hallucinates threat intel into SIEM correlation rules',
+      'An attacker floods the SIEM to degrade model performance'
+    ],
   correct: 1,
   explanation: 'Alert fatigue amplification: an AI-assisted SIEM generates high volumes of false-positive alerts, causing analysts to desensitize and ignore alerts — including real ones. This is paradoxical: AI was deployed to reduce noise, but miscalibration increases it. Mitigation: tune precision/recall thresholds, implement tiered routing, measure analyst response rates. Source: CompTIA SecAI+ exam guide — AI-Assisted Security Operations.',
 },
@@ -17722,10 +17734,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP', 'GIAC-GOAA', 'SCS-C03'],
     question: 'A backdoor poisoning attack embeds a trigger pattern in training data so the model behaves normally on clean inputs but misclassifies when the trigger is present at inference. Which detection technique identifies neurons that activate anomalously on triggered inputs by analyzing internal activation distributions?',
     options: [
-      'Neural Cleanse — reverse-engineers potential trigger patterns by solving an optimization problem',
-      'Activation Clustering (AC) — clusters internal layer activations and identifies poisoned samples as a separable cluster with anomalous activation patterns',
-      'STRIP — applies strong perturbations to test inputs and measures entropy of predictions',
-      'Spectral signatures — projects activations onto top singular vectors of the feature covariance matrix'],
+      'Neural Cleanse — reverse-engineers candidate trigger patterns',
+      'Activation Clustering — poisoned samples form a separable cluster',
+      'STRIP — perturbs inputs and measures prediction entropy',
+      'Spectral signatures — projects activations onto top singular vectors'
+    ],
     correct: 1,
     explanation: 'Activation Clustering (Chen et al., 2018) exploits the fact that backdoor triggers produce fundamentally different internal representations. Steps: (1) collect penultimate-layer activations; (2) apply dimensionality reduction; (3) k-means cluster; (4) a separable anomalous cluster in a target class indicates poisoned samples. Neural Cleanse reverses triggers; Spectral Signatures uses SVD; STRIP tests inference robustness.',
   },
