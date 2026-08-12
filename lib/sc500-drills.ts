@@ -69,7 +69,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Create a CA policy: require phishing-resistant MFA for Global Admins',
     scenario: 'You are a Security Administrator. The CISO requires that all Global Administrators sign in with phishing-resistant MFA (FIDO2 / Windows Hello / Passkey). Build the Conditional Access policy.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 1: Securing Access and Identity'],
+    objectives: ['SC-500 Domain 1: Manage identity, access, and governance'],
     steps: [
       {
         screen: 'entra.microsoft.com',
@@ -155,7 +155,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Activate an eligible Global Reader role in PIM',
     scenario: 'You hold an Eligible assignment for the Global Reader role. You need to activate it for a 4-hour audit.',
     difficulty: 'beginner',
-    objectives: ['SC-500 Domain 1: Securing Access and Identity'],
+    objectives: ['SC-500 Domain 1: Manage identity, access, and governance'],
     steps: [
       {
         screen: 'entra.microsoft.com',
@@ -227,7 +227,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Triage a suspected AiTM phishing incident',
     scenario: 'You are an L2 SOC analyst. A new High-severity incident "Suspected AiTM phishing attack" appeared. Walk through the triage.',
     difficulty: 'advanced',
-    objectives: ['SC-500 Domain 5: Managing and Monitoring Security Posture'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'security.microsoft.com',
@@ -312,7 +312,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Design a hub-and-spoke network with Azure Firewall + NSGs',
     scenario: 'You are securing a multi-tier application. Design network segmentation using hub-and-spoke topology with Azure Firewall for centralized filtering and NSGs for subnet-level controls.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 2: Secure Networking & Infrastructure'],
+    objectives: ['SC-500 Domain 2: Secure storage, databases, and networking'],
     steps: [
       {
         screen: 'Azure Portal · Defender for Cloud',
@@ -372,7 +372,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Configure Purview Data Lifecycle Management + encryption for PII',
     scenario: 'Your organization handles credit card and health records. Use Purview to classify PII data, apply retention policies, and enforce encryption at rest.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 3: Secure Compute, Storage & Data'],
+    objectives: ['SC-500 Domain 2: Secure storage, databases, and networking'],
     steps: [
       {
         screen: 'Purview governance portal',
@@ -432,7 +432,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Author a Scheduled analytics rule for password spray',
     scenario: 'You want Sentinel to create an incident when an IP source has > 20 failed sign-ins against > 5 distinct UPNs in 1 hour.',
     difficulty: 'advanced',
-    objectives: ['SC-500 Domain 5: Managing and Monitoring Security Posture'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'Microsoft Sentinel · Workspace',
@@ -516,7 +516,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Enable Defender for AI workloads + AI-SPM',
     scenario: 'You have an Azure OpenAI resource. Enable the right Defender for Cloud plans to get prompt-injection alerts and AI attack-path analysis.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 4: Securing AI Solutions and Governance'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'portal.azure.com · Defender for Cloud',
@@ -588,7 +588,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Roll out DSPM for AI starter policies',
     scenario: 'Your CISO wants visibility into Copilot prompts and DLP enforcement on labeled content. Onboard DSPM for AI.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 4: Securing AI Solutions and Governance'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'purview.microsoft.com',
@@ -660,7 +660,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Harden a new Azure OpenAI resource for HIPAA workload',
     scenario: 'You\'re deploying GPT-4o for a HIPAA-bound RAG chatbot. Walk through the configuration choices.',
     difficulty: 'advanced',
-    objectives: ['SC-500 Domain 4: Securing AI Solutions and Governance'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'Create · Azure OpenAI · Networking',
@@ -756,7 +756,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Provision Security Copilot capacity and govern plugins',
     scenario: 'Your tenant is new to Security Copilot. Set up capacity, roles, and decide which plugins your SOC can use.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 5: Managing and Monitoring Security Posture'],
+    objectives: ['SC-500 Domain 4: Manage and monitor security posture'],
     steps: [
       {
         screen: 'portal.azure.com · Create resource',
