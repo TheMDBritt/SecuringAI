@@ -174,6 +174,18 @@ export default function PortalDrills() {
               </div>
               <h3 className="text-sm font-semibold text-slate-100 mb-1.5 leading-snug">{d.title}</h3>
               <p className="text-[11px] text-slate-400 leading-relaxed mb-3">{d.scenario}</p>
+              {d.objectives && d.objectives.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {d.objectives.map((o) => (
+                    <span
+                      key={o}
+                      className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
+                    >
+                      {o}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-600">
                 <span>{d.steps.length} steps</span>
                 <span className="text-violet-400">Start drill →</span>
@@ -200,6 +212,18 @@ export default function PortalDrills() {
               {activeDrill.portal}
             </span>
             <h3 className="text-sm font-semibold text-slate-100 mt-1.5">{activeDrill.title}</h3>
+            {activeDrill.objectives && activeDrill.objectives.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {activeDrill.objectives.map((o) => (
+                  <span
+                    key={o}
+                    className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
+                  >
+                    {o}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <button
             onClick={restart}

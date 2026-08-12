@@ -516,7 +516,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Enable Defender for AI workloads + AI-SPM',
     scenario: 'You have an Azure OpenAI resource. Enable the right Defender for Cloud plans to get prompt-injection alerts and AI attack-path analysis.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 4: Manage and monitor security posture (20-25%)'],
+    objectives: ['SC-500 Domain 3: Secure compute (20-25%)'],
     steps: [
       {
         screen: 'portal.azure.com · Defender for Cloud',
@@ -588,7 +588,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Roll out DSPM for AI starter policies',
     scenario: 'Your CISO wants visibility into Copilot prompts and DLP enforcement on labeled content. Onboard DSPM for AI.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 4: Manage and monitor security posture (20-25%)'],
+    objectives: ['SC-500 Domain 2: Secure storage, databases, and networking (25-30%)'],
     steps: [
       {
         screen: 'purview.microsoft.com',
@@ -660,7 +660,7 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Harden a new Azure OpenAI resource for HIPAA workload',
     scenario: 'You\'re deploying GPT-4o for a HIPAA-bound RAG chatbot. Walk through the configuration choices.',
     difficulty: 'advanced',
-    objectives: ['SC-500 Domain 4: Manage and monitor security posture (20-25%)'],
+    objectives: ['SC-500 Domain 3: Secure compute (20-25%)'],
     steps: [
       {
         screen: 'Create · Azure OpenAI · Networking',
