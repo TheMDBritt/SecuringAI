@@ -1,9 +1,30 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { SC500_DRILL_SET, type Drill, type DrillSet } from '@/lib/sc500-drills';
+import { SC500_DRILL_SET, type Drill, type DrillSet, type DrillStep } from '@/lib/sc500-drills';
 import { SECAI_DRILL_SET } from '@/lib/secai-drills';
 
 type Mode = 'list' | 'run' | 'done';
+
+// Randomizes each step's option order (and remaps `correct`) so the answer
+// isn't memorizable at a fixed position across retries. Step ORDER is left
+// alone — steps are a guided narrative sequence (e.g. "Incident #1/#2/#3",
+// or a portal click-path), not an interchangeable question set.
+function shuffleStepOptions(step: DrillStep): DrillStep {
+  const order = step.options.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return {
+    ...step,
+    options: order.map((i) => step.options[i]),
+    correct: order.indexOf(step.correct),
+  };
+}
+
+function shuffleDrill(d: Drill): Drill {
+  return { ...d, steps: d.steps.map(shuffleStepOptions) };
+}
 
 const DIFFICULTY_STYLE: Record<Drill['difficulty'], string> = {
   beginner:     'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
@@ -39,7 +60,7 @@ export default function PortalDrills() {
   );
 
   const startDrill = (d: Drill) => {
-    setActiveDrill(d);
+    setActiveDrill(shuffleDrill(d));
     setStepIdx(0);
     setPicks(new Array(d.steps.length).fill(null));
     setMode('run');
