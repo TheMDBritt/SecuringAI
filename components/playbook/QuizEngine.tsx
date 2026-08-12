@@ -86,6 +86,55 @@ function shuffleOptions(q: QuizQuestion): QuizQuestion {
   };
 }
 
+// Draws a question set stratified by the cert's published domain weights, so a
+// mock exam mirrors the real blueprint instead of the pool's own domain mix.
+// Each domain gets round(weight x count) questions, picked with the same
+// spaced-repetition weighting used elsewhere. Any shortfall (a thin domain) or
+// rounding remainder is topped up from the questions not already selected.
+function pickByDomainWeight(
+  pool: QuizQuestion[],
+  count: number,
+  perQ: ReturnType<typeof loadProgress>['perQ'],
+  cert: ExamCert,
+): QuizQuestion[] {
+  // "17%" / "20-25%" -> a numeric share; ranges use their midpoint.
+  const parseWeight = (w?: string): number | null => {
+    if (!w) return null;
+    const nums = w.match(/\d+(?:\.\d+)?/g);
+    if (!nums || nums.length === 0) return null;
+    const vals = nums.map(Number);
+    return vals.reduce((a, b) => a + b, 0) / vals.length;
+  };
+
+  const domains = cert.domains
+    .map((d) => ({ domain: d, weight: parseWeight(d.weight) }))
+    .filter((d): d is { domain: typeof cert.domains[number]; weight: number } => d.weight !== null);
+
+  const totalWeight = domains.reduce((sum, d) => sum + d.weight, 0);
+  if (domains.length === 0 || totalWeight <= 0) return pickWeighted(pool, count, perQ);
+
+  const taken = new Set<string>();
+  const out: QuizQuestion[] = [];
+
+  for (const { domain, weight } of domains) {
+    const want = Math.round((weight / totalWeight) * count);
+    if (want <= 0) continue;
+    const bucket = pool.filter((q) => questionMatchesDomain(q, domain) && !taken.has(q.id));
+    for (const q of pickWeighted(bucket, want, perQ)) {
+      taken.add(q.id);
+      out.push(q);
+    }
+  }
+
+  // Top up from anything not yet drawn (covers rounding and thin domains).
+  if (out.length < count) {
+    const rest = pool.filter((q) => !taken.has(q.id));
+    out.push(...pickWeighted(rest, count - out.length, perQ));
+  }
+
+  return out.slice(0, count);
+}
+
 // Walks the quiz list and re-shuffles any question whose correct-answer index
 // matches both the previous two — guarantees no 3-in-a-row positional streak.
 function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
@@ -1084,7 +1133,13 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
 
     // Weighted pick biases toward questions the user has missed or hasn't
     // seen yet — Anki-style spaced repetition without ever fully retiring a Q.
-    const weighted = pickWeighted(pool, s.count, perQ);
+    //
+    // In exam mode the draw is additionally stratified by exam domain so the
+    // mock matches the published blueprint (e.g. SecAI+ 17/40/24/19) rather
+    // than inheriting whatever domain mix the question pool happens to have.
+    const weighted = s.examMode && s.selectedCert && selectedDomains.length === 0
+      ? pickByDomainWeight(pool, s.count, perQ, s.selectedCert)
+      : pickWeighted(pool, s.count, perQ);
     const selected = breakAnswerStreaks(weighted.map(shuffleOptions));
     setSettings(s);
     setQuestions(selected);
