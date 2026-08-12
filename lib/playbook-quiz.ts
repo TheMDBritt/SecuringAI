@@ -1379,11 +1379,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'GIAC-GOAA', 'SCS-C03'],
     question: 'A developer hardcodes "You are a helpful customer service bot" in the system prompt. Why is this insufficient as a security control?',
     options: [
-      'System prompts are publicly visible in API responses',
-      'Customer service bots do not need security controls',
-      'System prompts only apply to the first message',
-      'Prompt injection and jailbreaking can override or bypass system prompt instructions'],
-    correct: 3,
+      'System prompts are publicly visible in all API responses',
+      'Customer service bots do not need any security controls',
+      'Prompt injection can override or bypass system prompt instructions',
+      'System prompts only apply to the first message in a session'
+    ],
+    correct: 2,
     explanation: 'System prompts set default behavior but are not a security boundary. Prompt injection, jailbreaking, and multi-turn manipulation can override them. Defense-in-depth is required.',
   },
 {
@@ -1704,9 +1705,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'The AI RMF replaces the CSF for organizations deploying AI',
       'They are completely separate frameworks with no relationship',
-      'The CSF is a subset of the AI RMF',
-      'The AI RMF complements and integrates with the CSF, extending risk management to AI-specific risks'],
-    correct: 3,
+      'The AI RMF complements the CSF, extending it to AI-specific risks',
+      'The CSF is a strict subset of the AI RMF'
+    ],
+    correct: 2,
     explanation: 'The NIST AI RMF is designed to complement existing risk frameworks including the CSF. Organizations already using CSF can extend their program with AI-specific considerations rather than starting over.',
   },
 {
@@ -2115,8 +2117,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI', 'GIAC-GOAA'],
     question: 'A malware sample is modified by adding carefully chosen bytes so that an AI-based antivirus no longer classifies it as malicious, while remaining functionally identical. This is:',
-    options: [ 'Data poisoning', 'Model inversion', 'Trojan insertion','Adversarial evasion attack'],
-    correct: 3,
+    options: [
+      'Data poisoning',
+      'Model inversion',
+      'Adversarial evasion',
+      'Trojan insertion'
+    ],
+    correct: 2,
     explanation: 'Adversarial evasion attacks add perturbations to malicious inputs to fool AI classifiers at inference time. In security, this is used to bypass AI-powered malware detectors, spam filters, and intrusion detection systems.',
   },
 {
@@ -2454,10 +2461,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Azure-AI103', 'SecAI', 'SCS-C03'],
     question: 'When deploying an LLM-powered application on a cloud provider, which control is most important for preventing prompt injection attacks from reaching the model?',
     options: [
-      'Input validation and prompt guardrails that sanitize user input before it reaches the model',
-      'Encrypting the model weights at rest',
+      'Input validation and guardrails that sanitize input before the model',
+      'Encrypting the model weights at rest in storage',
       'Enabling multi-factor authentication on the cloud account',
-      'Using private VPC endpoints for the model API'],
+      'Using private VPC endpoints for the model API'
+    ],
     correct: 0,
     explanation: 'Prompt injection defenses require validating and sanitizing inputs before they reach the model. Guardrails that detect injection patterns, separate system/user context, and apply content filtering are the frontline controls.',
   },
@@ -9085,11 +9093,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
     question: 'An AI-assisted security tool generates a Sigma rule for detecting PowerShell-based credential dumping. Which property makes a Sigma rule MOST portable across different SIEM platforms?',
     options: [
-      'Requiring the security analyst to manually convert it to the target SIEM format',
-      'Including only Windows Event IDs without any field-specific conditions',
-      'Being written in Python for compatibility with all scripting environments',
-      'Using the Sigma generic field names and log source definitions that SIEM-specific backends translate to platform-native queries'],
-    correct: 3,
+      'Requiring the analyst to manually convert it to the target SIEM format',
+      'Including only Windows Event IDs without field-specific conditions',
+      'Using generic field names that SIEM backends translate to native queries',
+      'Being written in Python for compatibility with scripting environments'
+    ],
+    correct: 2,
     explanation: 'Sigma is a vendor-neutral YAML-based detection rule format. Sigma rules use generic field names (CommandLine, ParentImage, EventID) that sigmac/pySigma backends translate to platform-specific syntax. A single Sigma rule can compile to: Microsoft Sentinel KQL, Splunk SPL, Elastic EQL, QRadar AQL, etc. This portability is critical for AI-generated detection rules — the AI generates Sigma, humans validate logic, then it\'s deployed to any SIEM. Source: github.com/SigmaHQ/sigma, SANS GIAC curriculum.',
   },
 {
@@ -10952,10 +10961,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'SCS-C03'],
     question: 'When conducting a CAISP-style AI security assessment, which artifact provides the most direct evidence of whether a model supplier has implemented adequate security testing?',
     options: [
-      'The model\'s benchmark scores on publicly available leaderboards (MMLU, HellaSwag, etc.)',
-      'A signed attestation from the supplier\'s CISO confirming security reviews were conducted',
-      'The model\'s system card / red team report disclosing attack surface analysis, jailbreak resistance evaluations, hazard category testing results',
-      'The supplier\'s SOC 2 Type II report covering the data center operating the model'],
+      'Benchmark scores on public leaderboards such as MMLU or HellaSwag',
+      'A signed attestation from the supplier\'s CISO confirming security reviews',
+      'The system card / red team report disclosing jailbreak resistance testing',
+      'The supplier\'s SOC 2 Type II report covering the hosting data center'
+    ],
     correct: 2,
     explanation: 'For AI security assessment, the system card or red team report is the primary technical artifact: it documents the specific attacks tested, the model\'s response to jailbreak techniques, hazard categories evaluated (CSAM, bioweapons, cyberweapons), threshold behaviors, and residual risks the supplier acknowledges. CAISP practical exams require candidates to evaluate AI systems — a system card provides testable, specific claims about security properties that can be verified through independent testing. SOC 2 covers the operational environment but not model-level security. Benchmark scores measure capability, not safety. Source: Practical DevSecOps CAISP curriculum, NIST AI RMF GOVERN function.',
   },
@@ -11380,9 +11390,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An attacker encodes a prompt injection payload in an image as invisible white text on a white background, then uploads it to an AI system that processes images alongside text. The model follows the hidden instructions. What attack category does this represent?',
     options: [
       'Adversarial example',
-      'Steganographic prompt injection',
+      'Steganographic injection',
       'Data poisoning',
-      'Model inversion'],
+      'Model inversion'
+    ],
     correct: 1,
     explanation: 'Steganographic prompt injection hides adversarial text within images in ways imperceptible to human reviewers: white text on white background (OCR-visible), low-contrast text (subthreshold for humans, detectable by vision models), text in image metadata, or within QR codes embedded in images. As vision-language models (GPT-4V, Claude 3, Gemini) process both the image content and any text within images, they can follow injected instructions embedded in images without users or reviewers noticing. This extends indirect prompt injection to multimodal attack surfaces. Defense: image content scanning for embedded text, restricting which image sources are processed, output anomaly detection. Source: Riley Goodside adversarial prompting research, GIAC GOAA curriculum.',
   },
@@ -17723,9 +17734,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Model watermarking',
       'Output truncation',
-      'Federated learning',
-      'Differential privacy (DP-SGD)'],
-    correct: 3,
+      'Differential privacy',
+      'Federated learning'
+    ],
+    correct: 2,
     explanation: 'DP-SGD (Abadi et al. 2016) provides the theoretical guarantee: with privacy budget ε, the model\'s output distribution changes by at most e^ε when any single training record is added or removed. DP-SGD clips per-sample gradients to bound sensitivity, then adds Gaussian noise. Trade-off: lower ε (stronger privacy) reduces model utility. Federated learning prevents raw data exposure but does not stop reconstruction from model parameters.',
   },
   {
@@ -18461,9 +18473,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An organization wants to document the security properties and limitations of an AI security automation system for internal stakeholders and regulators. Which documentation format is most appropriate?',
     options: [
       'A penetration testing report summarizing the model\'s vulnerabilities',
-      'A model card (following Google\'s model card framework or EU AI Act system documentation requirements) documenting',
-      'A JIRA ticket backlog of known model issues',
-      'README.md in the model repository with installation instructions'],
+      'A model card documenting intended use, limitations, and evaluation results',
+      'A JIRA ticket backlog listing all known model issues',
+      'A README.md in the model repository with installation instructions'
+    ],
     correct: 1,
     explanation: 'Model cards for AI governance: The model card format (Mitchell et al. 2019, Google) provides structured documentation of: (1) Intended use and primary stakeholders; (2) Out-of-scope uses (e.g., "not for autonomous blocking decisions without human review"); (3) Performance metrics across subgroups; (4) Evaluation environment and dataset; (5) Ethical considerations and bias; (6) Caveats and recommendations. EU AI Act Article 11 requires technical documentation for high-risk AI including performance, robustness, and limitation information. ISO 42001 Clause 7.5 requires documentation of AI system management.',
   },
@@ -21504,10 +21517,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'A security team uses an LLM to auto-generate YARA rules from malware descriptions. What validation step is essential before deploying generated rules to production endpoint agents?',
     options: [
-      'Deploying immediately to maximize time-to-detection for new malware variants',
-      'Checking whether the YARA rule file is under 4 KB',
-      'Running the generated rule against a corpus of known-good and known-malicious files to measure false positive rate and detection coverage',
-      'Having a researcher manually review the LLM\'s reasoning about why it created the rule'],
+      'Deploying immediately to maximize time-to-detection for new variants',
+      'Checking whether the generated YARA rule file is under 4 KB',
+      'Running the rule against known-good and known-malicious corpora',
+      'Having a researcher review the LLM\'s reasoning for the rule'
+    ],
     correct: 2,
     explanation: 'LLM-generated detection rules (YARA, Sigma, KQL) require validation against representative corpora before production deployment. Risks: overly broad patterns trigger high FP rates; syntax errors cause compilation failures; LLM may hallucinate non-existent YARA functions. Validation pipeline: syntax check → FP rate test → detection rate test → staged rollout. GIAC GASAE Domain 2.',
   },
@@ -24007,10 +24021,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SecAI', 'Azure-AI901', 'SCS-C03'],
     question: 'Amazon Bedrock Model Evaluation allows practitioners to do what?',
     options: [
-      'Evaluate the security vulnerabilities in foundation model weights before deploying them',
-      'Run load tests to evaluate the latency and throughput of Bedrock endpoints under production traffic',
-      'Run automatic evaluations (using LLM-as-judge or pre-defined metrics) and human evaluations against foundation models using the organization\'s own test datasets',
-      'Evaluate the AWS bill for Bedrock API calls to identify cost optimization opportunities'],
+      'Evaluate security vulnerabilities in foundation model weights before deploying',
+      'Run load tests for latency and throughput of Bedrock endpoints',
+      'Run automatic and human evaluations against your own test datasets',
+      'Evaluate the AWS bill for Bedrock API calls to find cost savings'
+    ],
     correct: 2,
     explanation: 'Bedrock Model Evaluation is a pre-deployment evaluation service: automatic evaluation (predefined metrics or custom LLM-as-judge rubrics) and human evaluation (internal or SageMaker Ground Truth labelers). Results identify whether the model meets quality and safety thresholds before production deployment. Financial cost analysis (A) is AWS Cost Management. Billing analysis (C) and load testing (D) are separate operational concerns.',
   },
