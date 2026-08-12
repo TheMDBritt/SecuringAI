@@ -356,7 +356,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What problem does Retrieval-Augmented Generation (RAG) primarily solve?',
     options: [
       'The model produces outputs in the wrong format',
-      'The model lacks access to current, private, or domain-specific knowledge',
+      'The model lacks access to current or private knowledge',
       'The model generates output text too slowly',
       'The model requires too much compute at inference'
     ],
@@ -445,11 +445,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GOAA', 'CAISP'],
     question: 'What is an indirect prompt injection attack in the context of a RAG system?',
     options: [
-      'An attacker directly modifying the system prompt via the user interface',
-      'Injecting extra tokens into the query embedding',
-      'Overloading the vector database with adversarial documents',
-      'Malicious instructions embedded in documents that the RAG system retrieves, hijacking the LLM\'s behavior'],
-    correct: 3,
+      'An attacker directly modifying the system prompt via the interface',
+      'Injecting extra tokens into the query embedding vector',
+      'Malicious instructions embedded in retrieved documents',
+      'Overloading the vector database with adversarial documents'
+    ],
+    correct: 2,
     explanation: 'Indirect prompt injection (LLM01) occurs when malicious instructions are hidden in external data (web pages, documents) that the RAG system retrieves. The LLM then executes those instructions as if they were legitimate.',
   },
 {
@@ -646,11 +647,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'SCS-C03'],
     question: 'Which of the following best mitigates indirect prompt injection in a RAG-based application?',
     options: [
-      'Encrypting the vector database',
-      'Using a larger language model',
-      'Rate limiting user queries',
-      'Treating retrieved content as untrusted input'],
-    correct: 3,
+      'Encrypting the vector database at rest',
+      'Using a larger, better-aligned language model',
+      'Treating retrieved content as untrusted input',
+      'Rate limiting queries per authenticated user'
+    ],
+    correct: 2,
     explanation: 'The core defense is architectural: treat retrieved content as untrusted user-level input, separate it clearly from trusted system instructions, and validate tool actions before execution.',
   },
 {
@@ -1510,10 +1512,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GOAA', 'SCS-C03'],
     question: 'What is a "jailbreak" in the context of LLM security?',
     options: [
-      'Extracting a model\'s weights from its API',
-      'Gaining unauthorized access to the model\'s training pipeline',
-      'A crafted input that bypasses the model\'s safety guidelines to produce prohibited content',
-      'Injecting malicious code into the model\'s inference server'],
+      'Extracting a model\'s weights through its public API',
+      'Gaining unauthorized access to the model training pipeline',
+      'A crafted input that bypasses the model\'s safety guidelines',
+      'Injecting malicious code into the model inference server'
+    ],
     correct: 2,
     explanation: 'A jailbreak uses crafted prompts (role-play, fictional framing, adversarial suffixes) to bypass an LLM\'s safety guidelines. Unlike prompt injection which hijacks actions, jailbreaks focus on bypassing content policies.',
   },
@@ -1587,9 +1590,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A loan approval model has equal accuracy for majority and minority groups but 85% vs 55% approval rates. Which fairness criterion is violated?',
     options: [
       'Equal opportunity (equal true positive rates)',
-      'Demographic parity (equal positive prediction rates across groups)',
+      'Demographic parity (equal positive rates)',
       'Equalized odds (equal TPR and FPR)',
-      'Predictive parity (equal precision)'],
+      'Predictive parity (equal precision)'
+    ],
     correct: 1,
     explanation: 'Demographic parity requires equal positive prediction rates across groups. 85% vs 55% approval rates violate this regardless of equal accuracy, because the base rates differ.',
   },
@@ -1939,10 +1943,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In a multi-agent system, what is the purpose of a "human-in-the-loop" checkpoint?',
     options: [
       'To verify the agent\'s reasoning before each tool call',
-      'To slow down the agent to prevent excessive API calls',
-      'To allow humans to provide training labels in real time',
-      'To require human approval before the agent takes irreversible or high-risk actions'],
-    correct: 3,
+      'To slow the agent down and prevent excessive API calls',
+      'To require approval before irreversible or high-risk actions',
+      'To let humans provide training labels in real time'
+    ],
+    correct: 2,
     explanation: 'Human-in-the-loop checkpoints pause agent execution and require explicit human approval before irreversible actions (file deletion, email sending, database writes). This is the primary mitigation for LLM08 Excessive Agency.',
   },
 {
@@ -4250,9 +4255,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'The C2PA (Coalition for Content Provenance and Authenticity) standard addresses AI ethics by:',
     options: [
       'Requiring AI companies to publish their training datasets publicly',
-      'Preventing AI models from generating harmful content using output filters',
-      'Providing a cryptographic provenance standard to trace whether content was AI-generated and track its history',
-      'Defining criminal penalties for creating deepfakes without consent'],
+      'Preventing models from generating harmful content via output filters',
+      'A cryptographic provenance standard tracing AI-generated content',
+      'Defining criminal penalties for creating deepfakes without consent'
+    ],
     correct: 2,
     explanation: 'C2PA embeds cryptographically signed metadata into media files recording their origin, creation tool, and edit history. This allows consumers, platforms, and fact-checkers to verify whether content was AI-generated and trace its provenance chain — addressing misinformation and deepfake attribution.',
   },
@@ -6628,10 +6634,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'A threat actor gains write access to the training pipeline and injects 2,000 mislabeled samples so that the model systematically misclassifies certain malware as benign. Which attack does this describe?',
     options: [
-      'Data poisoning (availability attack)',
+      'Data poisoning (availability)',
       'Model inversion',
-      'Backdoor (trojan) attack',
-      'Membership inference'],
+      'Backdoor (trojan)',
+      'Membership inference'
+    ],
     correct: 0,
     explanation: 'Availability poisoning degrades model accuracy for specific inputs by corrupting training labels. Backdoor/trojan attacks plant a hidden trigger so the model behaves normally on clean inputs but misfires when the trigger is present — a subtler poisoning variant. Model inversion and membership inference are inference-time attacks against the model, not training pipeline attacks.',
   },
@@ -9277,10 +9284,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'CAIS', 'SecAI'],
     question: 'An attacker queries an MLaaS classifier API 50,000 times with systematically varied inputs and records the confidence scores. What attack are they executing and what is the primary defense?',
     options: [
-      'Model extraction (model stealing) attack; defended by output quantization, rate limiting, and anomaly detection on query patterns',
-      'Adversarial example generation; defended by adversarial training and input preprocessing',
-      'Training data poisoning; defended by input validation and dataset provenance tracking',
-      'Membership inference attack; defended by differential privacy in model training'],
+      'Model extraction; defend with output quantization and rate limiting',
+      'Adversarial example generation; defend with adversarial training',
+      'Training data poisoning; defend with dataset provenance tracking',
+      'Membership inference; defend with differential privacy in training'
+    ],
     correct: 0,
     explanation: 'Model extraction (also called model stealing or model cloning) uses systematic API queries with confidence scores to reconstruct a surrogate model that approximates the victim model\'s decision boundary. With enough queries, attackers can recreate proprietary models without access to weights or training data. Primary defenses: (1) Output quantization — return only class labels, not confidence scores; (2) Rate limiting and per-API-key query caps; (3) Anomaly detection — flag statistically unusual query distributions (low input variance, feature-sweep patterns); (4) Model watermarking — embed detectable signatures so extracted surrogates can be traced; (5) Differential privacy during training reduces information leakage per query. Source: GIAC GOAA, MITRE ATLAS AML.T0040.',
   },
@@ -12108,10 +12116,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SecAI', 'CAISP', 'CAIS', 'SCS-C03'],
   question: 'Which two controls MOST directly mitigate the risk of downloading a malicious pre-trained model from a public repository?',
   options: [
-    'Code signing for training scripts + RBAC on the model registry',
-    'Network egress filtering + private VPN for the training cluster',
-    'Cryptographic hash verification of downloaded weights + ML security scanning (e.g., ModelScan)',
-    'Input validation at inference + output content filtering'],
+      'Code signing for training scripts + RBAC on the model registry',
+      'Network egress filtering + private VPN for the training cluster',
+      'Hash verification of weights + ML security scanning',
+      'Input validation at inference + output content filtering'
+    ],
   correct: 2,
   explanation: 'Model weight supply chain risk is mitigated by: (1) verifying the cryptographic hash of downloaded weights against the published checksum; and (2) scanning weight files with ML security tools like ModelScan that detect malicious payloads in pickle/safetensors files. Source: OWASP LLM05; NIST SP 800-218A ML SSDF.',
 },
@@ -16588,10 +16597,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'SC-500', 'SCS-C03'],
     question: 'An organization\'s AI Security Posture Management (AI-SPM) solution reports that a production LLM deployment has three critical misconfigurations. Which combination represents the highest immediate risk?',
     options: [
-      'Public inference endpoint with no network access control, service identity with broad Azure subscription write permissions, content filtering disabled on the production deployment',
-      'Missing model versioning, no performance monitoring, lack of A/B testing capability',
-      'No GPU memory encryption, model weights stored in unencrypted S3 bucket, no hardware security module for key management',
-      'Missing model card documentation, no bias evaluation metrics, lack of explainability tooling'],
+      'Public inference endpoint, over-broad service identity, filtering disabled',
+      'Missing model versioning, no performance monitoring, no A/B testing',
+      'No GPU memory encryption, unencrypted weight storage, no HSM for keys',
+      'Missing model card, no bias evaluation metrics, no explainability tooling'
+    ],
     correct: 0,
     explanation: 'AI-SPM critical risk ranking: (1) Public inference endpoint (no NSG/Private Link) = internet-exposed attack surface for prompt injection and abuse; (2) Over-permissioned identity (subscription write) = compromise of the AI service leads to full subscription takeover; (3) Disabled content filtering = no defense layer against harmful outputs or prompt injection. These three together create a complete attack chain: attacker reaches the model → injects instructions → uses the over-permissioned identity to execute lateral movement. Model versioning and GPU encryption are important but not immediately exploitable. Source: CompTIA SecurityAI+ Domain 2; Microsoft Defender for Cloud AI recommendations.',
   },
@@ -21034,11 +21044,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP'],
     question: 'What is "clean-label poisoning" and why is it particularly dangerous?',
     options: [
-      'Clean-label poisoning attacks only work against image classification models',
-      'Clean-label poisoning is a defensive technique that removes mislabeled training examples',
-      'Clean-label poisoning only affects models trained on sanitized datasets',
-      'Clean-label poisoning adds subtly crafted training examples with correct labels that nonetheless shift the model\'s decision boundary'],
-    correct: 3,
+      'Clean-label poisoning only works against image classification models',
+      'Clean-label poisoning is a defence that removes mislabeled examples',
+      'Correctly labeled samples that still shift the decision boundary',
+      'Clean-label poisoning only affects models trained on sanitized data'
+    ],
+    correct: 2,
     explanation: 'Traditional poisoning attacks use mislabeled examples that can be caught by label review. Clean-label attacks craft inputs with the correct label that subtly modify the feature space, causing the model to associate a target class incorrectly without obvious mislabeling. The attacker needs only to contribute correctly labeled data to the training set — a realistic threat in collaborative learning. CAIS Domain 2.',
   },
   {
@@ -24322,10 +24333,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'SecAI', 'SCS-C03'],
     question: 'Differential privacy in ML training provides which formal guarantee?',
     options: [
-      'That the model produces identical predictions for semantically equivalent inputs from different individuals',
-      'That no individual\'s data can be reconstructed from the trained model weights',
-      'That the model\'s output distribution changes by at most a bounded factor ε (privacy budget) whether or not any specific individual\'s data is included in training',
-      'That training data is encrypted during the gradient computation phase'],
+      'Identical predictions for semantically equivalent inputs across individuals',
+      'No individual\'s data can be reconstructed from the trained weights',
+      'Output distribution changes by at most epsilon if one record is included',
+      'Training data is encrypted during the gradient computation phase'
+    ],
     correct: 2,
     explanation: 'Differential privacy (Dwork et al. 2006): a mechanism M is (ε, δ)-differentially private if for any pair of adjacent datasets D and D\' (differing by one individual\'s data) and any output subset S: Pr[M(D) ∈ S] ≤ e^ε × Pr[M(D\') ∈ S] + δ. Applied to ML training (DP-SGD): gradient clipping bounds each individual\'s contribution, then Gaussian noise is added calibrated to the clipping bound. Tradeoff: smaller ε (stronger privacy) requires more noise → reduced model accuracy.',
   },
@@ -27087,10 +27099,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
     question: 'What is Microsoft Copilot for Security and what are its primary SOC-analyst capabilities?',
     options: [
-      'GPT-4-based AI security analyst with plugins — NL threat investigation, KQL/SPL generation, incident summarization, script explanation, integrations across Defender/Sentinel/Entra',
-      'A SOAR platform designed to replace manual playbook execution and orchestration across the security stack in the tenant',
-      'Microsoft\'s antivirus product enhanced with AI-based signature detection replacing the classic Defender for Endpoint agent',
-      'A system that automatically remediates every detected security incident end-to-end without any human analyst involvement',
+      'An AI security analyst with NL investigation, KQL generation, and summarization',
+      'A SOAR platform replacing manual playbook execution across the stack',
+      'Microsoft antivirus enhanced with AI-based signature detection',
+      'A system that remediates every incident without analyst involvement'
     ],
     correct: 0,
     explanation: 'Microsoft Copilot for Security: (1) Natural language queries — "show me all alerts for this user this week"; (2) KQL generation — "write a query to find PowerShell downloading from external URLs"; (3) Incident summarization — automatic summary of alert chain with attack story; (4) Threat actor profiles — query Defender Threat Intelligence for known actor TTPs; (5) Script analysis — explain malicious scripts in plain language; (6) Guided response — step-by-step investigation guidance; (7) Custom plugins — extend with organizational data. Priced per Security Compute Unit (SCU). Source: GASAE, SC-500, Copilot for Security documentation.',
@@ -27429,7 +27441,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI'],
     question: 'A model returns answers with a score indicating how certain it is about each response. Which monitoring signal is this?',
-    options: ['Rate monitoring', 'Prompt monitoring', 'Response confidence level', 'Log sanitization'],
+    options: [
+      'Rate monitoring',
+      'Prompt monitoring',
+      'Response confidence',
+      'Log sanitization'
+    ],
     correct: 2,
     explanation: 'Response confidence level is a per-response numeric score (or calibrated probability) indicating the model\'s certainty. Low confidence should trigger human review, escalation, or refusal. It\'s a distinct SecAI+ monitoring objective.',
   },
@@ -27486,8 +27503,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI'],
     question: 'A SOC wants an LLM to query multiple internal security tools (SIEM, EDR, TIP, ticketing) through a standardized interface. Which technology should be used?',
-    options: [ 'Vector database', 'RAG pipeline','SIEM connector', 'Model Context Protocol'],
-    correct: 3,
+    options: [
+      'Vector database',
+      'RAG pipeline',
+      'Model Context Protocol',
+      'SIEM connector'
+    ],
+    correct: 2,
     explanation: 'MCP (Model Context Protocol) is Anthropic\'s open protocol that gives LLMs a standard way to invoke tools and access data sources — a distinct SecAI+ 3.1 objective. SIEM connectors move data between security tools; RAG retrieves documents; vector DBs store embeddings.',
   },
   {
@@ -27580,7 +27602,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI'],
     question: 'Which AI-related role is responsible for designing the security architecture of AI systems, including threat models, guardrails, and secure deployment patterns?',
-    options: [ 'AI auditor','Data scientist', 'AI security architect', 'MLOps engineer'],
+    options: [
+      'AI auditor',
+      'Data scientist',
+      'AI security architect',
+      'MLOps engineer'
+    ],
     correct: 2,
     explanation: 'AI security architect designs the security architecture. Data scientists build models; MLOps engineers operationalize deployment and monitoring; AI auditors provide independent assurance (must not build what they audit). All are listed SecAI+ 4.1 roles.',
   },
