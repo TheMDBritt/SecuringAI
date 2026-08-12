@@ -17,6 +17,119 @@ const D4 = 'Domain 4 · AI GRC';
 
 export const SECAI_DRILLS: Drill[] = [
 
+  // ── D1.1 AI types & prompting techniques ─────────────────────────────────
+  {
+    id: 'secai-drill-ai-types-prompting',
+    portal: D1,
+    title: 'Differentiate AI types and prompting techniques',
+    scenario: 'A junior analyst keeps mixing up core AI vocabulary. Straighten out three mix-ups using the exact CY0-001 obj 1.1 terms.',
+    difficulty: 'beginner',
+    steps: [
+      {
+        screen: 'Mix-up 1 — training approach',
+        prompt: 'A fraud model is trained on transactions that are each already labeled "fraud" or "not fraud", and it learns to predict the label on new transactions.',
+        question: 'Which model training technique is this?',
+        options: [
+          'Unsupervised learning',
+          'Supervised learning',
+          'Reinforcement learning',
+          'Federated learning',
+        ],
+        correct: 1,
+        explanation: 'Learning a mapping from labeled examples to a known output = supervised learning (CY0-001 obj 1.1). Unsupervised learning finds structure in unlabeled data; reinforcement learning learns from reward signals, not labels.',
+      },
+      {
+        screen: 'Mix-up 2 — prompting technique',
+        prompt: 'A prompt engineer includes two worked examples of the desired input/output format before asking the model to do the same on a new input.',
+        question: 'Which prompting technique is this?',
+        options: [
+          'Zero-shot prompting',
+          'One-shot prompting',
+          'Multi-shot prompting',
+          'System prompting',
+        ],
+        correct: 2,
+        explanation: 'Two or more examples in the prompt = multi-shot prompting (CY0-001 obj 1.1). One example would be one-shot; zero examples (just the instruction) would be zero-shot.',
+      },
+      {
+        screen: 'Mix-up 3 — fine-tuning technique',
+        prompt: 'To fit a model onto an edge device, the team reduces the numeric precision of its weights (e.g., 32-bit floats down to 8-bit integers) after training.',
+        question: 'Which fine-tuning technique is this?',
+        options: [
+          'Pruning',
+          'Quantization',
+          'Epoch adjustment',
+          'Federated learning',
+        ],
+        correct: 1,
+        explanation: 'Reducing numeric precision of weights = quantization (CY0-001 obj 1.1). Pruning removes weights/connections entirely rather than shrinking their precision; an epoch is one full pass over the training set, not a compression technique.',
+      },
+    ],
+  },
+
+  // ── D1.2 Data processing & RAG vocabulary ────────────────────────────────
+  {
+    id: 'secai-drill-data-rag-vocab',
+    portal: D1,
+    title: 'RAG pipeline and data-processing vocabulary',
+    scenario: 'You are documenting a new retrieval-augmented generation (RAG) chatbot for an internal audit. Use the precise CY0-001 obj 1.2 terms for each finding.',
+    difficulty: 'beginner',
+    steps: [
+      {
+        screen: 'Finding 1 — architecture question',
+        prompt: 'The chatbot converts a user question into a numeric vector, searches a vector database for the closest matching document chunks, and stuffs those chunks into the prompt before calling the LLM.',
+        question: 'What is the name of this overall architecture?',
+        options: [
+          'Fine-tuning',
+          'Retrieval-augmented generation (RAG)',
+          'Federated learning',
+          'Transfer learning',
+        ],
+        correct: 1,
+        explanation: 'Retrieving external documents and injecting them into the prompt at query time = RAG (CY0-001 obj 1.2). It supplements a model with fresh/external knowledge without retraining it.',
+      },
+      {
+        screen: 'Finding 2 — the numeric vector',
+        prompt: 'The auditor asks what those numeric vectors representing each document chunk are called.',
+        question: 'What is the correct term?',
+        options: [
+          'Embeddings',
+          'Weights',
+          'Tokens',
+          'Gradients',
+        ],
+        correct: 0,
+        explanation: 'Numeric vector representations of text (or other data) that capture semantic meaning for similarity search = embeddings (CY0-001 obj 1.2), stored in the vector storage.',
+      },
+      {
+        screen: 'Finding 3 — provenance vs lineage',
+        prompt: 'The auditor wants to know WHERE a specific training document originally came from (source system, author, collection date) — not the sequence of transformations it went through afterward.',
+        question: 'Which data-processing concept answers that question?',
+        options: [
+          'Data lineage',
+          'Data provenance',
+          'Data integrity',
+          'Data augmentation',
+        ],
+        correct: 1,
+        explanation: 'Origin/source-of-record for a piece of data = data provenance (CY0-001 obj 1.2). Data lineage is the broader trail of transformations a piece of data underwent as it moved through the pipeline — a related but distinct term the exam tests as a pair.',
+      },
+      {
+        screen: 'Finding 4 — protecting model outputs',
+        prompt: 'The team wants a way to embed an invisible, detectable marker in AI-generated images so they can later prove the images came from their model.',
+        question: 'Which technique is this?',
+        options: [
+          'Data masking',
+          'Watermarking',
+          'Data redaction',
+          'Data anonymization',
+        ],
+        correct: 1,
+        explanation: 'Embedding a detectable marker in generated content for provenance/attribution = watermarking (CY0-001 obj 1.2). Masking, redaction, and anonymization all protect sensitive input data — a different goal (privacy, not attribution).',
+      },
+    ],
+  },
+
   // ── D2.6 Attacks — Backdoor vs Prompt Injection ──────────────────────────
   {
     id: 'secai-drill-attack-triage',
