@@ -1,5 +1,6 @@
 import { DojoTabs } from '@/components/dojo/DojoTabs';
 import { OnboardingTour } from '@/components/dojo/OnboardingTour';
+import { TrademarkNoticeCompact } from '@/components/layout/TrademarkNotice';
 
 export const metadata = {
   title: 'Dojo',
@@ -9,8 +10,11 @@ export const metadata = {
 
 export default function DojoPage() {
   return (
-    <div className="flex flex-col h-[calc(100vh-56px)]">
-      <DojoTabs />
+    <div className="flex h-[calc(100vh-56px)] flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
+        <DojoTabs />
+      </div>
+      <TrademarkNoticeCompact />
       <OnboardingTour />
     </div>
   );

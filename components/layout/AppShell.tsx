@@ -11,9 +11,17 @@ import { loadSettings, applySettings } from '@/lib/settings-store';
  * Enterprise application shell: persistent sidebar rail + sticky top bar,
  * wrapping every route. Close the mobile drawer automatically on navigation.
  */
+/**
+ * Routes that fill the viewport and manage their own internal scrolling.
+ * Anything appended after <main> on these would be pushed off-screen and would
+ * shrink the scroll container, so they are excluded from the shell footer.
+ */
+const APP_ROUTES = ['/dojo', '/playbook'];
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
+  const isAppRoute = APP_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
 
   useEffect(() => {
     setMobileOpen(false);
@@ -50,7 +58,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <main id="main-content" tabIndex={-1} className="flex flex-1 flex-col">
           {children}
         </main>
-        <TrademarkNotice />
+        {/* App routes own the full viewport height and scroll internally, so a
+            block appended after <main> steals space from their scroll
+            container. Those routes carry the notice in their own footer chrome
+            instead; document-style routes get it here. */}
+        {!isAppRoute && <TrademarkNotice />}
       </div>
     </div>
   );

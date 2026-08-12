@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import PlaybookView from '@/components/playbook/PlaybookView';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
+import { TrademarkNoticeCompact } from '@/components/layout/TrademarkNotice';
 
 const { quizQuestions, glossaryTerms, topicArticles, certs } = CONTENT_COUNTS;
 
@@ -26,16 +27,19 @@ export const metadata = {
 export default function PlaybookPage() {
   return (
     <div className="flex h-[calc(100vh-56px)] flex-col">
-      <Suspense fallback={null}>
-        <PlaybookView
-          counts={{
-            questions: quizQuestions,
-            glossary: glossaryTerms,
-            articles: topicArticles,
-            certs,
-          }}
-        />
-      </Suspense>
+      <div className="flex min-h-0 flex-1 flex-col">
+        <Suspense fallback={null}>
+          <PlaybookView
+            counts={{
+              questions: quizQuestions,
+              glossary: glossaryTerms,
+              articles: topicArticles,
+              certs,
+            }}
+          />
+        </Suspense>
+      </div>
+      <TrademarkNoticeCompact />
     </div>
   );
 }

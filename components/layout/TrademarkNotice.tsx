@@ -1,3 +1,29 @@
+import Link from 'next/link';
+
+/**
+ * One-line version for full-height app routes.
+ *
+ * The full notice is a block of prose and would steal height from a scroll
+ * container. This is a single fixed-height strip that states the essential
+ * claim and links to the full text on /terms.
+ */
+export function TrademarkNoticeCompact() {
+  return (
+    <div className="flex shrink-0 items-center justify-center gap-2 border-t border-slate-800 bg-slate-950/80 px-3 py-1.5 text-center">
+      <p className="text-[11px] leading-none text-slate-500">
+        Independent study project, not affiliated with or endorsed by any
+        certification provider.{' '}
+        <Link
+          href="/terms"
+          className="text-slate-400 underline underline-offset-2 hover:text-slate-200"
+        >
+          Trademarks and terms
+        </Link>
+      </p>
+    </div>
+  );
+}
+
 /**
  * Trademark and affiliation notice.
  *
