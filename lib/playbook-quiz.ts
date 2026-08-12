@@ -87,10 +87,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is the purpose of an activation function in a neural network?',
     options: [
-      'To normalize the input features',
+      'To normalize the input feature values',
       'To initialize the model weights',
-      'To prevent gradient vanishing',
-      'To introduce non-linearity so the network can learn complex patterns'],
+      'To prevent vanishing gradients',
+      'To introduce non-linearity into the network'
+    ],
     correct: 3,
     explanation: 'Without activation functions, a neural network is just a linear transformation regardless of depth. Activation functions introduce non-linearity, enabling the network to learn complex patterns.',
   },
@@ -369,9 +370,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In a RAG pipeline, what is stored in the vector database?',
     options: [
       'The raw text of all documents',
-      'Numerical vector embeddings representing semantic meaning of document chunks',
+      'Vector embeddings of document chunks',
       'The compressed model weights',
-      'SQL queries for document retrieval'],
+      'SQL queries for document retrieval'
+    ],
     correct: 1,
     explanation: 'Vector databases store dense vector embeddings — numerical representations of text chunks that capture semantic meaning. At query time, the query is embedded and compared via cosine similarity.',
   },
@@ -881,7 +883,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
     question: 'Which responsible AI principle requires that AI systems and their decision-making processes can be understood by humans?',
-    options: [ 'Reliability', 'Inclusivity', 'Transparency and Explainability','Fairness'],
+    options: [
+      'Reliability and Safety',
+      'Fairness and Inclusiveness',
+      'Transparency and Explainability',
+      'Privacy and Security'
+    ],
     correct: 2,
     explanation: 'Transparency and Explainability require that AI systems be interpretable — users and stakeholders can understand how decisions are made, enabling trust and accountability.',
   },
@@ -1316,10 +1323,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP'],
     question: 'What is the "least privilege" principle applied to AI agents?',
     options: [
-      'Limiting the agent\'s tool permissions to only what is required for the specific task, reducing blast radius from successful attacks',
+      'Limiting the agent\'s tool permissions to only what the task requires',
       'Using a smaller, less capable model to minimize costs',
       'Preventing users from giving the agent additional instructions',
-      'Running the agent in read-only mode by default'],
+      'Running the agent in read-only mode by default'
+    ],
     correct: 0,
     explanation: 'Applying least privilege to AI agents means granting only the specific tools and permissions needed for each task. This limits the damage an attacker can cause through prompt injection or jailbreaking.',
   },
@@ -1461,10 +1469,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'SCS-C03'],
     question: 'Which property does certified robustness provide that adversarial training alone does not?',
     options: [
-      'Provable guarantees that no perturbation within a defined radius can change the model\'s prediction',
-      'Better accuracy on clean test data',
-      'Immunity to all adversarial attacks',
-      'Faster inference speed'],
+      'Provable guarantees within a defined perturbation radius',
+      'Higher accuracy on clean, unperturbed test data',
+      'Complete immunity to all adversarial attacks',
+      'Faster inference at prediction time'
+    ],
     correct: 0,
     explanation: 'Certified defenses provide mathematical proofs that no adversarial perturbation within a defined L-norm ball can flip the model\'s prediction. Adversarial training is empirically effective but provides no such guarantee.',
   },
@@ -1885,10 +1894,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GOAA'],
     question: 'What is the primary security risk of agentic AI compared to a standard chatbot?',
     options: [
-      'Agent tool access means a successful prompt injection can trigger real-world consequences like file deletion',
-      'Agents produce lower quality outputs',
-      'Agents consume more compute',
-      'Agents are more likely to hallucinate'],
+      'Tool access lets a prompt injection cause real-world consequences',
+      'Agents produce lower quality outputs than chatbots',
+      'Agents consume more compute per request',
+      'Agents are more likely to hallucinate facts'
+    ],
     correct: 0,
     explanation: 'With tools, a successful attack can go beyond generating harmful text — it can delete files, send unauthorized emails, exfiltrate data, or make API calls. The blast radius of prompt injection is dramatically larger.',
   },
@@ -2961,7 +2971,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In Azure AI Foundry, what is an "evaluation" used for?',
     options: [
       'Security scanning of prompt templates',
-      'Assessing LLM response quality using metrics like groundedness',
+      'Assessing LLM response quality using metrics',
       'Billing analysis of API usage',
       'Performance testing the API endpoint latency'],
     correct: 1,
@@ -3036,7 +3046,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What does a convolutional layer in a CNN do?',
     options: [
       'Flattens the image into a 1D vector for classification',
-      'Slides learned filters across the input to detect local features like edges and textures',
+      'Slides learned filters across the input to detect local features',
       'Randomly drops pixels during training to prevent overfitting',
       'Normalizes pixel values to zero mean and unit variance',
     ],
@@ -3751,7 +3761,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The serving infrastructure is slower than the training infrastructure',
       'The model is trained on more data than it can serve in production',
       'The model is updated too frequently, causing version conflicts',
-      'Feature values are computed differently at training time versus serving time, causing performance degradation'],
+      'Feature values are computed differently at training time versus serving time'],
     correct: 3,
     explanation: 'Training-serving skew is one of the most common ML production failures. It happens when the feature pipeline at training time uses different logic, data types, or aggregation windows than at serving time. The model was never tested on the actual serving distribution. A Feature Store (single source of truth) prevents this.',
   },
@@ -3961,7 +3971,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01'],
     question: 'Historical bias in AI training data refers to:',
     options: [
-      'Training data that reflects past societal discrimination, causing models to perpetuate it',
+      'Training data that reflects past societal discrimination',
       'Using data that is more than 5 years old',
       'Biases introduced during model architecture design',
       'Differences in model performance across hardware platforms'],
@@ -4131,7 +4141,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The same image appears multiple times in the training set',
       'Training images have inconsistent resolution or compression quality',
       'The model architecture has too few parameters to represent complex patterns',
-      'Certain demographic groups are underrepresented in training images, leading to worse performance for those groups'],
+      'Certain demographic groups are underrepresented in training images'],
     correct: 3,
     explanation: 'Representation bias results from underrepresentation of certain groups in training data. For example, a face recognition dataset with 80% lighter-skinned subjects will have significantly worse accuracy on darker-skinned subjects (as demonstrated in the Gender Shades audit of commercial face recognition APIs).',
   },
@@ -4206,7 +4216,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Using a larger batch size at inference than at training',
       'Deploying a model to a different cloud provider than where it was trained',
       'Using a different programming language for training vs. serving code',
-      'Feature values computed differently during training vs. at inference time, causing distribution mismatch'],
+      'Feature values computed differently during training vs. at inference time'],
     correct: 3,
     explanation: 'Training-serving skew occurs when the feature computation logic differs between training and serving — e.g., training uses a batch-computed mean while serving recomputes it differently, or data types differ (float64 vs float32). The model sees different feature distributions than it was trained on, degrading predictions.',
   },
@@ -6006,7 +6016,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A new Foundry agent is granted SQL execute rights. A prompt-injection attack tries to get it to DROP TABLE Customers. Which control is most effective at preventing the action?',
-    options: ['Customer-managed keys', 'Disable the agent', 'Tool-level safety policy requiring human approval for destructive SQL operations + scoped DB role with no DDL rights', 'Larger context window'],
+    options: ['Customer-managed keys', 'Disable the agent', 'Tool-level safety policy requiring human approval for destructive SQL operations + scoped DB role', 'Larger context window'],
     correct: 2,
     explanation: 'Layered defense: (1) Foundry safety policy / approval gate for destructive tool actions, (2) DB-side least privilege (revoke DDL/DROP), (3) Prompt Shields, (4) audit. The DB role is the last line of defense even if Copilot/Agent is jailbroken.',
   },
@@ -6676,9 +6686,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which control best reduces the risk of a compromised CI/CD pipeline injecting backdoored code into model training runs?',
     options: [
       'Adding input validation to the inference API',
-      'Encrypting model weights at rest',
-      'Cryptographic signing and pinning of training scripts and dependency hashes in the pipeline',
-      'Using differential privacy during training'],
+      'Encrypting model weights at rest in storage',
+      'Signing and pinning of training scripts and dependencies',
+      'Using differential privacy during training'
+    ],
     correct: 2,
     explanation: 'Cryptographically signing training scripts and pinning dependency hashes (requirements.txt SHA256 locks, Pipfile.lock) ensures that even a compromised runner cannot silently substitute malicious code. This is analogous to Software Bill of Materials (SBOM) practices extended to AI pipelines — SLSA level 3+ for ML workloads. Encrypting weights at rest protects against storage theft, not pipeline tampering.',
   },
@@ -6783,7 +6794,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Increasing the model\'s context window to reduce ambiguity',
       'Using a larger language model with better instruction following',
       'Disabling the agent\'s ability to write to any external storage',
-      'Applying a sandboxed content-sanitisation layer to strip instruction-like patterns from retrieved HTML before it enters the model context'],
+      'Sandboxed sanitisation stripping instruction-like patterns from retrieved HTML'
+    ],
     correct: 3,
     explanation: 'Indirect prompt injection via web content is defeated at the retrieval layer — before malicious instructions ever reach the model context. A sandboxed sanitisation layer that strips or neutralises instruction-like patterns (overrides, role-play directives, markdown injections) from untrusted HTML/text is the architectural control. Larger models are not inherently more resistant — many state-of-the-art models remain susceptible to well-crafted indirect injection. Disabling write access reduces impact but does not prevent the injection itself.',
   },
@@ -6900,7 +6912,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SCS-C03'],
     question: 'When performing a black-box LLM security assessment, which of the following best reveals whether a model has been hardened against many-shot jailbreaking?',
     options: [
-      'Sending a long context with many examples of compliant harmful responses before the final request',
+      'Sending a long context with many examples of compliant harmful responses',
       'Sending a single direct instruction to produce harmful content',
       'Testing the API rate limit enforcement',
       'Probing the model\'s knowledge of its training cutoff date'],
@@ -6932,7 +6944,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Male candidates may exploit the bias to game the system',
       'Historical data is always accurate and this is expected behavior',
-      'It perpetuates discriminatory patterns as an automated decision at scale, creating regulatory and reputational risk',
+      'It perpetuates discriminatory patterns as an automated decision at scale',
       'The model may produce SQL injection payloads targeting the HR database'],
     correct: 2,
     explanation: 'Algorithmic bias in automated hiring decisions constitutes a systemic risk: it amplifies historical discrimination at machine speed and scale, creates liability under EU AI Act (automated employment decisions are high-risk), EEOC (US), and GDPR Art. 22. Amazon famously abandoned a hiring algorithm for exactly this reason in 2018. Mitigation: fairness audits, diverse training data, counterfactual fairness testing, and human-in-the-loop review for protected-class edge cases.',
@@ -6975,10 +6987,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'Which combination of API controls provides the strongest per-user rate limiting for an LLM API exposed to the internet?',
     options: [
-      'API key + token-budget-per-key + IP-based sliding window with anomaly spike detection',
-      'API key rate limiting only',
-      'CAPTCHA on every API call',
-      'IP-based rate limiting only'],
+      'API key, per-key token budget, and IP sliding window',
+      'API key rate limiting with no token budget',
+      'A CAPTCHA challenge on every API call',
+      'IP-based rate limiting with no per-key control'
+    ],
     correct: 0,
     explanation: 'Layered rate limiting is required because individual controls are bypassable: IP rate limiting alone is defeated by rotating IPs (Tor, residential proxy); API key limiting alone is defeated by key rotation and multi-account attacks. Combining API key limits (hard ceiling), token budget per key (penalises expensive jailbreak attempts), and IP sliding-window anomaly detection (catches burst patterns) provides defense-in-depth. Token budgets are especially important for LLMs since jailbreak attempts often consume large context windows.',
   },
@@ -7130,7 +7143,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'The AI crashes due to conflicting instructions',
       'The AI leaks other customer reviews',
-      'The AI approves refunds autonomously for all subsequent customers who ask, causing financial loss at scale',
+      'The AI approves refunds autonomously for all subsequent customers who ask',
       'The AI discloses the review database schema'],
     correct: 2,
     explanation: 'This is an indirect prompt injection attack (OWASP LLM01 indirect variant) combined with Excessive Agency (LLM06). If the AI has tool access to process refunds and no human-in-the-loop gate, a single poisoned review in the database can cause the AI to approve all subsequent refund requests — amplifying the attacker\'s financial impact to every customer interaction until the attack is discovered. This exact attack pattern has been demonstrated against real production AI customer service systems.',
@@ -7877,10 +7890,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'GIAC-GOAA', 'SCS-C03'],
     question: 'A security assessor is evaluating an LLM-powered API for insecure output handling (OWASP LLM02). Which test scenario most directly targets this vulnerability?',
     options: [
-      'Providing prompts that cause the LLM to output HTML/JavaScript, then passing that output to a web browser rendering engine to test for Cross-Site Scripting',
+      'Prompting the LLM to emit HTML/JavaScript, then rendering it to test for XSS',
       'Testing whether the model produces harmful content in its text responses',
       'Testing the API authentication mechanism for credential stuffing',
-      'Sending oversized inputs to test for buffer overflow vulnerabilities'],
+      'Sending oversized inputs to test for buffer overflow vulnerabilities'
+    ],
     correct: 0,
     explanation: 'OWASP LLM02 (Insecure Output Handling): Unlike LLM01 (input-side injection), LLM02 concerns unsanitised output from the LLM being processed by downstream systems. Attack scenarios: (1) LLM output rendered in browser → XSS if output contains <script>alert(1)</script>; (2) LLM output interpreted as SQL → SQL injection if passed to a database query; (3) LLM output executed as shell command → OS injection; (4) LLM output used in SSRF-vulnerable URL construction. Assessment methodology: prompt the LLM to include HTML tags, JavaScript, SQL metacharacters, or shell metacharacters in its response, then trace how that output flows through the application. Defense: output encoding/escaping appropriate to the downstream context (HTML encode for browser, parameterise for SQL, etc.); treat all LLM output as untrusted user input in downstream processing. Source: OWASP LLM Top 10 v2025 LLM02.',
   },
@@ -8090,9 +8104,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'You are hardening an LLM application for production. The application allows the LLM to execute Python code. Which combination of controls provides defence in depth for this capability?',
     options: [
       'Allow code execution only for authenticated users',
-      'Encrypt all code before execution',
-      'Containerised code execution with seccomp syscall filtering, no network access, read-only filesystem except for a designated temp directory, CPU/memory limits, 10-second execution timeout, pre/post execution output scanning, and privilege dropped to non-root',
-      'Add "do not execute malicious code" to the system prompt'],
+      'Encrypt all code before passing it to the interpreter',
+      'Containerised execution with seccomp filtering, no network, and CPU/memory limits',
+      'Add "do not execute malicious code" to the system prompt'
+    ],
     correct: 2,
     explanation: 'Defence in depth for LLM code execution capabilities: (1) Container isolation — code runs in a fresh container per execution, destroyed after; (2) seccomp filtering — allows only required syscalls (read/write temp files), blocks dangerous ones (network, fork, exec of binaries); (3) Network isolation — no outbound network prevents C2 communication, data exfiltration; (4) Read-only filesystem except temp dir — prevents persistence of malicious files; (5) Resource limits — CPU/memory caps prevent resource exhaustion/escape attempts; (6) Execution timeout — prevents infinite loops; (7) Output scanning — scan execution output for sensitive data patterns before returning to user; (8) Drop to non-root — limits privilege if container escape is achieved. System prompt instructions ("don\'t run malicious code") have zero security value as a control — they can be bypassed by the same prompt injection techniques the attacker is using to drive code execution. Source: CAISP exam objectives, OWASP LLM08 Excessive Agency.',
   },
@@ -8855,7 +8870,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is "multi-turn jailbreaking" and why is it harder to defend against than single-turn attacks?',
     options: [
       'Using multiple separate accounts to bypass rate limits on jailbreak attempts',
-      'Gradually escalating from benign conversation to harmful requests over multiple turns, exploiting the model\'s tendency to maintain conversational context and not re-evaluate earlier turns\' compliance implications',
+      'Gradually escalating from benign conversation to harmful requests over multiple turns',
       'Sending the same harmful request simultaneously from multiple IP addresses',
       'Combining multiple jailbreak techniques (role-play, hypothetical, base64) in a single prompt',
     ],
@@ -9202,7 +9217,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'SecAI'],
     question: 'Anthropic\'s 2024 research on "many-shot jailbreaking" demonstrated that as context windows grow larger, LLMs become more susceptible to certain attacks. What is the mechanism?',
     options: [
-      'Prefilling the context with hundreds of fake Q&A examples of the model complying with harmful requests exploits in-context learning to override safety training for that session',
+      'Prefilling the context with hundreds of fake Q&A examples of the model complying with harmful requests exploits in-context learning',
       'Long prompts exceed the model\'s attention capacity, causing the safety-related tokens to be forgotten',
       'Larger context windows increase hallucination rates',
       'Large contexts enable attackers to insert training data that permanently modifies the model weights'],
@@ -10597,7 +10612,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Many-shot targets multimodal models; few-shot targets text-only models',
       'Many-shot uses multiple jailbreak accounts; few-shot uses a single attacker account',
       'Many-shot uses adversarial suffixes; few-shot uses role-play framing',
-      'Many-shot embeds dozens to hundreds of fake Q&A pairs demonstrating the target behavior before the actual malicious query, exploiting the model\'s in-context learning to override safety training'],
+      'Many-shot embeds dozens to hundreds of fake Q&A pairs demonstrating the target behavior'],
     correct: 3,
     explanation: 'Many-shot jailbreaking (Anthropic research, 2024): LLMs with large context windows can be exploited by prepending many (dozens to hundreds) of fake Q&A pairs that demonstrate the model "helpfully" answering harmful questions. By the time the actual malicious query appears, the model has been conditioned in-context to follow the demonstrated pattern — overriding safety training that operates primarily on the final query. The attack scales with context length: 256-shot is significantly more effective than 32-shot. Defense: context length limits, in-context instruction following monitoring, system prompt reinforcement. Source: Anthropic many-shot jailbreaking paper.',
   },
@@ -11966,10 +11981,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SecAI', 'CAISP', 'SCS-C03'],
   question: "An attacker uses a multi-turn conversation to gradually escalate an LLM's responses toward harmful content. Each individual message appears benign. Which guardrail design MOST directly detects this crescendo attack?",
   options: [
-    'System prompt anchoring',
-    'Per-turn input classifier',
-    'Rate limiting per IP',
-    'Stateful output classifier tracking conversation context across turns'],
+      'System prompt anchoring on every turn',
+      'Per-turn input classifier with no memory',
+      'Rate limiting per source IP address',
+      'Stateful output classifier tracking conversation context'
+    ],
   correct: 3,
   explanation: 'Crescendo attacks bypass per-turn classifiers because each individual message is benign. A stateful output classifier that maintains conversation context across turns — tracking cumulative drift in topics or sentiment — is the most direct defense. This requires session-level context analysis. Source: NIST AI 100-1; OWASP LLM01/LLM08.',
 },
@@ -12275,10 +12291,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SecAI', 'GIAC-GASAE', 'SC-500', 'SCS-C03'],
   question: 'An AI tool generates a syntactically valid SIGMA detection rule from a threat report. Before deploying to production, which validation step is MOST critical?',
   options: [
-    'Confirm the rule uses SIGMA specification 2.0',
-    'Check SIGMA YAML syntax is valid',
-    'Verify the detection logic maps accurately to the described ATT&CK technique and test against benign and malicious historical traffic',
-    'Ensure the model that generated the rule has >90% accuracy score'],
+      'Confirm the rule uses SIGMA specification 2.0',
+      'Check that the SIGMA YAML syntax is valid',
+      'Verify the detection logic maps to the described ATT&CK technique',
+      'Ensure the generating model has a >90% accuracy score'
+    ],
   correct: 2,
   explanation: 'Syntactic validation catches format errors but not logical errors. Critical validation: (1) test against known-bad samples — does the rule fire? (2) test against benign logs — what is the false positive rate? (3) verify the ATT&CK mapping matches the detection logic. AI-generated rules can be syntactically perfect but logically wrong. Source: CompTIA SecAI+ exam guide; GIAC GASAE.',
 },
@@ -13120,7 +13137,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Many-shot jailbreaking differs from few-shot jailbreaking primarily because:',
     options: [
       'Many-shot uses multiple AI models simultaneously; few-shot uses a single model',
-      'Many-shot floods the context window with hundreds of faux-Q&A examples normalizing harmful outputs before the target prompt',
+      'Many-shot floods the context window with hundreds of faux-Q&A examples normalizing harmful outputs',
       'Many-shot requires API access while few-shot works only through the chat UI',
       'Many-shot targets multimodal models; few-shot targets text-only models',
     ],
@@ -17496,7 +17513,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: `MITRE ATLAS technique AML.T0054 is classified as "LLM Jailbreak." According to ATLAS, what is the adversary's objective in executing this technique?`,
     options: [
       'A. To exfiltrate the model training dataset via the inference API',
-      'B. To craft prompts that bypass the LLM safety guidelines and content filters, causing it to produce outputs that violate its alignment constraints',
+      'B. To craft prompts that bypass the LLM safety guidelines and content filters',
       'C. To cause denial of service by flooding the LLM API with requests',
       'D. To inject malicious code into the LLM model weights via the inference endpoint',
     ],
@@ -17711,7 +17728,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Microsoft\'s PyRIT (Python Risk Identification Toolkit for Generative AI) automates LLM red teaming. Which attack strategy does PyRIT\'s "crescendo" orchestrator implement?',
     options: [
       'Random fuzzing — sends randomly generated token sequences to probe for unexpected outputs',
-      'Multi-turn escalation — begins with benign conversation turns and gradually escalates to policy-violating requests, exploiting the model\'s tendency to maintain conversational consistency',
+      'Multi-turn escalation — begins with benign conversation turns and gradually escalates to policy-violating requests',
       'Adversarial suffix optimization — appends GCG-generated gibberish tokens to bypass safety classifiers',
       'Parallel jailbreak voting — runs 10+ jailbreak variants simultaneously and selects the most effective one'],
     correct: 1,
@@ -18237,7 +18254,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The LLM will refuse to classify CVEs related to AI systems due to safety training',
       'The LLM may hallucinate CVE identifiers that do not exist in the NVD',
       'LLM-based triage will consume excessive GPU resources',
-      'The LLM may confidently mis-classify a critical zero-day as low severity due to training data cutoff or ambiguous CVSS context, leading to delayed patching and unaddressed exposure'],
+      'The LLM may confidently mis-classify a critical zero-day as low severity due to training data cutoff or ambiguous CVSS context'],
     correct: 3,
     explanation: 'AI triage automation risk: LLMs can hallucinate severity assessments — CVSS v3 scores have contextual nuance (scope:changed, AV:network, AC:low, PR:none) that models trained before a CVE existed cannot reliably interpret. An AI classifying a 9.8 CVSS as "low impact" because it pattern-matches to a similar benign CVE description is a concrete failure mode. Control: human-in-the-loop for Critical/High classifications; AI-only automation for Low/Informational. Maps to NIST AI RMF MANAGE 2.2.',
   },
@@ -18751,9 +18768,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'The Fast Gradient Sign Method (FGSM) generates adversarial examples by taking one gradient step in the direction of the loss gradient. What property of this attack makes it categorized as a "white-box" attack?',
     options: [
       'FGSM requires physical access to the target model\'s hardware',
-      'FGSM requires knowledge of the model\'s architecture and parameters to compute the gradient of the loss with respect to the input',
+      'FGSM requires knowledge of the model\'s architecture and parameters',
       'FGSM only works against models trained with gradient descent',
-      'FGSM requires access to the model\'s training dataset',
+      'FGSM requires access to the model\'s training dataset'
     ],
     correct: 1,
     explanation: 'White-box attacks assume full access to the model: architecture, weights, and gradient computation. FGSM computes ∇_x L(x, y) — the gradient of the loss with respect to the input — which requires backpropagating through the model with known parameters. Black-box attacks query the model as an oracle without accessing its internals.',
@@ -20155,7 +20172,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is the key limitation of automated LLM-based vulnerability discovery that prevents it from replacing human security researchers?',
     options: [
       'LLMs are too expensive to use for security research at scale',
-      'LLMs are constrained to reasoning about patterns in their training data and cannot actively probe running systems for dynamic vulnerabilities like timing attacks',
+      'LLMs are constrained to reasoning about patterns in their training data and cannot actively probe running systems for dynamic vulnerabilities',
       'LLMs cannot read or analyze source code at all',
       'LLMs are limited to finding only injection-class vulnerabilities',
     ],
@@ -20936,10 +20953,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP'],
     question: 'How does differential privacy (DP-SGD) protect against membership inference attacks during model training?',
     options: [
-      'DP-SGD is only effective when combined with federated learning architectures',
-      'DP-SGD prevents all forms of adversarial attack, not just membership inference',
-      'DP-SGD clips per-sample gradients and adds calibrated Gaussian noise before aggregation, bounding the influence of any single training record on the model parameters',
-      'DP-SGD encrypts training data before gradient computation'],
+      'DP-SGD is only effective when combined with federated learning',
+      'DP-SGD prevents all adversarial attacks, not just membership inference',
+      'DP-SGD clips per-sample gradients and adds calibrated Gaussian noise',
+      'DP-SGD encrypts training data before gradient computation'
+    ],
     correct: 2,
     explanation: 'DP-SGD (Abadi et al. 2016) provides formal differential privacy guarantees: (1) clip per-sample gradients to bound sensitivity, (2) add Gaussian noise scaled to the clipping bound divided by the batch size. The resulting (ε, δ)-DP guarantee mathematically limits how much the trained model reveals about any individual training record, directly mitigating membership inference. CAIS Domain 2.',
   },
@@ -21283,7 +21301,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An attacker poisons a text embedding model used for semantic search by submitting thousands of document pairs labeled as "similar" that are actually dissimilar. What is the intended effect?',
     options: [
       'The embedding model will assign random vectors to all inputs',
-      'Fine-tuning on poisoned similarity pairs shifts the embedding space, causing the model to retrieve irrelevant or attacker-chosen documents for victim queries',
+      'Fine-tuning on poisoned similarity pairs shifts the embedding space',
       'The embedding model will refuse to encode the poisoned documents',
       'The attack degrades vector database index performance, causing denial of service',
     ],
@@ -21331,7 +21349,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Sending the same jailbreak prompt many times to increase statistical success probability',
       'Using many different jailbreak templates in sequence to find one that works',
-      'Prefilling the context with 100+ compliant-response demonstration pairs that normalize target behavior before the actual harmful request',
+      'Prefilling the context with 100+ compliant-response demonstration pairs that normalize target behavior',
       'Using concurrent API sessions to bypass per-session safety filtering'],
     correct: 2,
     explanation: 'Many-shot jailbreaking (Anil et al., 2024) exploits long context windows: 100+ demonstration pairs showing progressively sensitive compliance shift the model\'s in-context behavior norm. Alignment training does not fully generalize to the in-context few-shot setting at high example volumes. Longer context windows increase exposure. GIAC GOAA Domain 4.',
@@ -21622,10 +21640,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SecAI', 'SCS-C03'],
     question: 'Why is Projected Gradient Descent (PGD) considered stronger than FGSM for evaluating adversarial robustness?',
     options: [
-      'PGD works on black-box models without any access to model gradients',
-      'PGD is more compute-efficient than FGSM',
-      'PGD uses a larger perturbation budget',
-      'PGD is a multi-step iterative attack that applies projected gradient updates repeatedly, constraining perturbations to an ε-ball at each step'],
+      'PGD works on black-box models without access to model gradients',
+      'PGD is more compute-efficient than FGSM at equal budget',
+      'PGD uses a larger perturbation budget than FGSM',
+      'PGD is a multi-step iterative attack constrained to an ε-ball'
+    ],
     correct: 3,
     explanation: 'PGD (Madry et al., 2018) iteratively applies constrained gradient steps within the perturbation budget, finding the worst-case perturbation within the constraint set. FGSM\'s single large step is less precise. PGD-adversarial training is the standard empirical robustness baseline — a model resistant to FGSM but not PGD is not truly robust. CAIS Domain 2.',
   },
@@ -22059,7 +22078,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAIS', 'CAISP', 'SCS-C03'],
     question: 'What is a "confused deputy" attack in the context of agentic AI systems?',
     options: [
-      'A security violation where an AI agent with elevated permissions is manipulated via prompt injection into performing actions on behalf of an attacker that the attacker could not perform directly',
+      'A security violation where an AI agent with elevated permissions is manipulated via prompt injection',
       'Confused deputy is a hardware security concept that does not apply to AI systems',
       'When multiple AI agents disagree about the correct interpretation of a task',
       'When an AI agent is confused by contradictory instructions in its system prompt'],
@@ -22703,7 +22722,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'PAIR cannot evaluate jailbreak success without a human judge',
       'PAIR requires access to the model\'s logit outputs',
-      'PAIR\'s sequential refinement wastes query budget on unproductive branches with no pruning',
+      'PAIR\'s sequential refinement wastes query budget on unproductive branches',
       'PAIR can only jailbreak open-source models'],
     correct: 2,
     explanation: 'PAIR (Prompt Automatic Iterative Refinement) uses a single linear chain of refinements: generate, query target, evaluate, refine. When an attempt is on an unproductive track, PAIR continues refining it rather than exploring alternatives. TAP (Tree of Attacks with Pruning) addresses this by branching (exploring multiple attack variants in parallel) and pruning (eliminating low-quality branches early based on evaluator scoring), focusing the query budget on the most promising attack paths. Neither PAIR nor TAP requires gradient access — both are black-box. PAIR does not require logit outputs. PAIR uses an LLM judge (not human) for evaluation.',
@@ -24080,7 +24099,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'CAIS', 'SCS-C03'],
     question: 'Under the EU AI Act, which AI system category is prohibited outright (cannot be deployed regardless of safeguards)?',
     options: [
-      'AI systems that deploy subliminal techniques beyond human perception to materially distort behavior causing harm',
+      'AI systems that deploy subliminal techniques beyond human perception to materially distort behavior',
       'AI systems with a training compute budget exceeding 10^26 FLOPs',
       'All AI systems used in law enforcement applications',
       'All AI systems processing personal data of EU citizens'],
@@ -27389,7 +27408,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI'],
     question: 'A CI/CD pipeline uses an AI tool to check third-party open-source libraries for known CVEs. Which SecAI+ CI/CD activity is this?',
-    options: [ 'Model testing', 'Software composition analysis', 'Unit testing','Code scanning'],
+    options: [
+      'Model behaviour testing',
+      'Software composition analysis',
+      'Application unit testing',
+      'Static code scanning'
+    ],
     correct: 1,
     explanation: 'SCA scans third-party components (dependencies) for known vulnerabilities and license issues. Code scanning inspects the project\'s own source (SAST); unit testing verifies functions; model testing evaluates ML models. All are SecAI+ CI/CD sub-objectives.',
   },
@@ -27400,7 +27424,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SecAI'],
     question: 'A SecOps team is expanding AI use into change management. Which activity best matches "AI-assisted approvals"?',
-    options: [ 'AI generates all firewall rules without human review', 'An AI reviewer flags high-risk changes for human approval and auto-approves low-risk changes matching policy','Automatically deleting rejected change requests', 'AI silently rolls back every deployment'],
+    options: [
+      'AI generates all firewall rules without human review',
+      'An AI reviewer flags high-risk changes for human approval',
+      'Automatically deleting rejected change requests',
+      'AI silently rolls back every deployment attempt'
+    ],
     correct: 1,
     explanation: 'AI-assisted approvals in change management use policy + risk scoring to auto-approve low-risk changes and escalate high-risk ones to a human — reducing analyst load while preserving oversight. A SecAI+ 3.3 objective.',
   },
