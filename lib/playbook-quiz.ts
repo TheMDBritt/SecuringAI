@@ -46,11 +46,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'AWS-AIF-C01'],
     question: 'A model detects cancer with 95% accuracy on a dataset where 95% of samples are healthy. What is the main problem?',
     options: [
-      'The features are not normalized',
-      'The training set is too small',
-      'The model is overfitting',
-      'Accuracy is misleading on imbalanced datasets'],
-    correct: 3,
+      'The input features are not normalized',
+      'The training set is too small to learn',
+      'Accuracy is misleading on imbalanced data',
+      'The model is overfitting the training set'
+    ],
+    correct: 2,
     explanation: 'On imbalanced data, a model that always predicts the majority class achieves high accuracy without learning anything useful. Precision/recall/F1 are better metrics.',
   },
 {
@@ -1371,8 +1372,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'What does MITRE ATLAS document?',
-    options: [ 'Software supply chain risks', 'Network intrusion detection signatures', 'AI and ML adversary TTPs observed in real-world attacks','Cloud infrastructure vulnerabilities'],
-    correct: 2,
+    options: [
+      'Software supply chain risks',
+      'AI and ML adversary TTPs seen in the wild',
+      'Network intrusion detection signatures',
+      'Cloud infrastructure vulnerabilities'
+    ],
+    correct: 1,
     explanation: 'MITRE ATLAS (Adversarial Threat Landscape for AI Systems) documents adversary tactics, techniques, and procedures targeting AI/ML systems — analogous to MITRE ATT&CK for traditional cybersecurity.',
   },
 {
@@ -1401,9 +1407,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Increasing the model\'s training epochs',
       'Using a larger model architecture',
-      'Applying L2 regularization during training',
-      'Verifying data provenance, anomaly detection on training data'],
-    correct: 3,
+      'Data provenance checks and anomaly detection',
+      'Applying L2 regularization during training'
+    ],
+    correct: 2,
     explanation: 'Defending against poisoning requires verifying data provenance, detecting statistical anomalies in labeled data, and probing the trained model for unexpected behavior on potential trigger inputs.',
   },
 {
@@ -2226,9 +2233,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'What is the primary benefit of integrating LLMs into SOAR (Security Orchestration, Automation and Response) platforms?',
     options: [
-      'LLMs perform packet-level network analysis',
-      'LLMs generate dynamic playbook steps and summarize incident context',
-      'LLMs replace the need for playbooks entirely',
+      'LLMs perform packet-level network traffic analysis',
+      'LLMs draft playbook steps and summarize incident context',
+      'LLMs remove the need for written playbooks entirely',
       'LLMs manage firewall rule updates autonomously'
     ],
     correct: 1,
@@ -4422,9 +4429,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Data provenance in AI systems refers to:',
     options: [
       'The percentage of the dataset that has been manually verified',
-      'The documented origin, collection method, transformations, and consent chain of a dataset',
+      'The origin, collection method, and consent chain of a dataset',
       'The geographic location where training data is stored',
-      'Encryption keys used to protect training data at rest'],
+      'Encryption keys used to protect training data at rest'
+    ],
     correct: 1,
     explanation: 'Data provenance documents the complete history of a dataset: where it came from, how it was collected, what consents were obtained, what transformations were applied, and who had access. It is critical for compliance (GDPR, EU AI Act), reproducibility, and trust in AI system outputs.',
   },
@@ -6634,9 +6642,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'A threat actor gains write access to the training pipeline and injects 2,000 mislabeled samples so that the model systematically misclassifies certain malware as benign. Which attack does this describe?',
     options: [
-      'Data poisoning (availability)',
+      'Data poisoning',
       'Model inversion',
-      'Backdoor (trojan)',
+      'Backdoor trojan',
       'Membership inference'
     ],
     correct: 0,
@@ -8199,7 +8207,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Allow code execution only for authenticated users',
       'Encrypt all code before passing it to the interpreter',
-      'Containerised execution with seccomp filtering, no network, and CPU/memory limits',
+      'Containerised execution with seccomp and resource limits',
       'Add "do not execute malicious code" to the system prompt'
     ],
     correct: 2,
@@ -12508,7 +12516,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A SOAR playbook automatically blocks an IP address when an alert fires. The next day, analysts discover this blocked a legitimate business partner. Which SOAR design principle was violated?',
     options: [
       'The playbook lacked a trigger condition on the alert',
-      'The automated action had no human-in-the-loop gate for high-impact decisions',
+      'The action had no human gate for a high-impact decision',
       'The SOAR platform was not integrated with the SIEM',
       'The IP address enrichment step was skipped entirely'
     ],
@@ -19025,10 +19033,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'Randomized smoothing provides certified robustness against adversarial examples. What certification does it provide?',
     options: [
-      'For a given input, it certifies a radius r around that input in ℓ₂-space within which no adversarial perturbation can change the predicted class',
-      'It certifies that the model is robust against all white-box attacks with known gradient information',
-      'It guarantees 100% accuracy on all inputs within a certified radius',
-      'It provides a certificate that the training data contained no adversarial examples'],
+      'A certified radius in L2-space within which the class cannot change',
+      'Robustness against all white-box attacks with known gradients',
+      '100% accuracy on all inputs within the certified radius',
+      'A certificate that training data contained no adversarial examples'
+    ],
     correct: 0,
     explanation: 'Randomized smoothing (Cohen et al., 2019): the "smoothed classifier" g(x) = argmax_c Pr[f(x+ε) = c] where ε ~ N(0, σ²I). For each test input, it certifies a radius r = σ × Φ⁻¹(p_A) where p_A is the probability of the top class under noise. Within this radius, no ℓ₂-bounded perturbation can change the prediction. Advantage over adversarial training: provable guarantee instead of empirical; scales to ImageNet-size models. Limitation: accuracy on clean inputs decreases with σ; certification is input-specific (some inputs get small certified radii).',
   },
@@ -19425,10 +19434,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'GIAC-GOAA', 'GIAC-GASAE', 'SecAI'],
     question: 'Why must an AI red-team engagement scope authorized attack categories in ways that traditional pentest RoEs do not?',
     options: [
-      'The team may generate genuinely harmful output (malware, synthesis instructions, CSAM); RoE must draw ethical + legal lines around what output may be produced or documented',
-      'To make sure every OWASP LLM Top 10 category is covered evenly by the team during the engagement window',
-      'To prevent the red team from accidentally breaking the model itself through excessive adversarial testing volume',
-      'To limit the red team\'s liability by clearly documenting what areas of the system they were not responsible for testing',
+      'The team may generate genuinely harmful output, needing ethical limits',
+      'To ensure every OWASP LLM Top 10 category is covered evenly',
+      'To stop the red team breaking the model through testing volume',
+      'To limit liability by documenting untested areas of the system'
     ],
     correct: 0,
     explanation: 'AI red team scoping specificity: traditional pentesting RoE covers what systems can be attacked and what data can be accessed. AI red team RoE must additionally address: (1) Output authorization: "if we discover a jailbreak that produces functional malware, are we authorized to document the malware code itself or only the technique?"; (2) Novel technique disclosure: if we discover a zero-day jailbreak class not in MITRE ATLAS, what is our disclosure obligation before publishing?; (3) Data handling: if the model leaks PII from training data, what are our obligations under GDPR/CCPA?; (4) Scope of completeness vs. stopping criteria: do we continue until we find a successful attack, or until we\'ve covered the authorized attack surface? These questions have no parallel in traditional penetration testing.',
@@ -24487,10 +24496,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI'],
     question: 'A user asks an AI coding assistant to "write a function to validate email addresses." The AI produces code containing a subtle off-by-one error in the regex that allows invalid emails to pass. What OWASP LLM category captures this risk and what process control mitigates it?',
     options: [
-      'LLM07 — System Prompt Leakage; mitigated by keeping system prompts confidential',
-      'LLM09 — Overreliance; mitigated by mandatory code review and testing of all AI-generated code before production use',
-      'LLM01 — Prompt Injection; mitigated by sandboxing the coding assistant',
-      'LLM04 — Model DoS; mitigated by rate limiting code generation requests'],
+      'LLM07 — System Prompt Leakage; keep system prompts confidential',
+      'LLM09 — Overreliance; mandate review and testing of generated code',
+      'LLM01 — Prompt Injection; sandbox the coding assistant',
+      'LLM04 — Model DoS; rate limit code generation requests'
+    ],
     correct: 1,
     explanation: 'OWASP LLM09 (Overreliance) covers uncritical acceptance of AI-generated outputs including code, analysis, and decisions. LLMs generate plausible-looking code that may contain subtle bugs, security vulnerabilities, or logic errors. The risk scales with code complexity. Controls: (1) Mandatory human code review for all AI-generated code; (2) Automated SAST/DAST on AI output; (3) Test-driven development — write tests before accepting AI code; (4) Developer AI literacy training to critically evaluate outputs; (5) AI output disclaimers in tooling. Source: OWASP LLM09:2025, SecAI+ Domain 2.',
   },
@@ -27504,12 +27514,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI'],
     question: 'A SOC wants an LLM to query multiple internal security tools (SIEM, EDR, TIP, ticketing) through a standardized interface. Which technology should be used?',
     options: [
-      'Vector database',
-      'RAG pipeline',
+      'Vector database index',
       'Model Context Protocol',
-      'SIEM connector'
+      'Direct SIEM connector',
+      'RAG retrieval pipeline'
     ],
-    correct: 2,
+    correct: 1,
     explanation: 'MCP (Model Context Protocol) is Anthropic\'s open protocol that gives LLMs a standard way to invoke tools and access data sources — a distinct SecAI+ 3.1 objective. SIEM connectors move data between security tools; RAG retrieves documents; vector DBs store embeddings.',
   },
   {
@@ -27603,10 +27613,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI'],
     question: 'Which AI-related role is responsible for designing the security architecture of AI systems, including threat models, guardrails, and secure deployment patterns?',
     options: [
-      'AI auditor',
-      'Data scientist',
+      'AI compliance auditor',
+      'Applied data scientist',
       'AI security architect',
-      'MLOps engineer'
+      'Platform MLOps engineer'
     ],
     correct: 2,
     explanation: 'AI security architect designs the security architecture. Data scientists build models; MLOps engineers operationalize deployment and monitoring; AI auditors provide independent assurance (must not build what they audit). All are listed SecAI+ 4.1 roles.',
