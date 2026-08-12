@@ -928,7 +928,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Perfectly fair AI is theoretically achievable with enough data',
       'All AI systems eventually become biased through use',
-      'Bias in AI systems can never be detected',
+      'Bias is detectable only after a model reaches production',
       'Multiple fairness metrics'],
     correct: 3,
     explanation: 'The impossibility theorem (Chouldechova, Corbett-Davies et al.) proves that common fairness criteria are mathematically incompatible when base rates differ across groups. Organizations must choose which definition of fairness to prioritize.',
@@ -1244,7 +1244,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'What is the primary benefit of AI/ML in SIEM compared to traditional rule-based detection?',
     options: [
-      'AI eliminates the need for security analysts',
+      'AI shifts analyst effort from triage to tuning',
       'AI can process logs faster than rule engines',
       'AI automatically generates incident reports',
       'AI can detect unknown/novel threats'],
@@ -1492,7 +1492,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Provable guarantees within a defined perturbation radius',
       'Higher accuracy on clean, unperturbed test data',
-      'Complete immunity to all adversarial attacks',
+      'Empirical resistance to the attacks tested during training',
       'Faster inference at prediction time'
     ],
     correct: 0,
@@ -1719,7 +1719,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'How does the NIST AI RMF relate to the NIST Cybersecurity Framework (CSF)?',
     options: [
       'The AI RMF replaces the CSF for organizations deploying AI',
-      'They are completely separate frameworks with no relationship',
+      'The CSF governs AI risk and the AI RMF governs network risk',
       'The AI RMF complements the CSF, extending it to AI-specific risks',
       'The CSF is a strict subset of the AI RMF'
     ],
@@ -1895,7 +1895,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Agents do not require a system prompt',
       'Agents use larger models than chatbots',
-      'Agents are always more accurate than chatbots',
+      'Agents produce more accurate answers than chatbots',
       'Agents can take real-world actions'],
     correct: 3,
     explanation: 'A chatbot generates text responses. An agent uses tools (web search, code execution, APIs), maintains memory, and can plan and execute multi-step tasks autonomously to achieve a goal.',
@@ -2238,7 +2238,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'LLMs perform packet-level network traffic analysis',
       'LLMs draft playbook steps and summarize incident context',
-      'LLMs remove the need for written playbooks entirely',
+      'LLMs execute playbook steps in place of the SOAR engine',
       'LLMs manage firewall rule updates autonomously'
     ],
     correct: 1,
@@ -3791,7 +3791,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'A human approves AI outputs before actions are taken',
       'HITL systems cannot use neural networks, only rules',
-      'HITL systems are always slower and less accurate',
+      'HITL systems trade throughput for reviewable decisions',
       'HITL requires the human to do the task without AI'
     ],
     correct: 0,
@@ -4663,7 +4663,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'Model skewing differs from data poisoning in that:',
     options: [
-      'Data poisoning is detectable; model skewing is always covert',
+      'Data poisoning targets labels; model skewing targets weights',
       'Model skewing targets the model architecture; data poisoning targets training data',
       'Model skewing only affects classification models; data poisoning affects all model types',
       'Data poisoning corrupts training data before training; model skewing gradually shifts a deployed model\'s behavior'],
@@ -7044,7 +7044,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A hiring algorithm trained on historical data from 2005–2020 systematically ranks male candidates higher because men held the majority of the roles during that period. This is a security concern because:',
     options: [
       'Male candidates may exploit the bias to game the system',
-      'Historical data is always accurate and this is expected behavior',
+      'Historical data reflects the true base rate for each group',
       'It perpetuates discriminatory patterns as an automated decision at scale',
       'The model may produce SQL injection payloads targeting the HR database'],
     correct: 2,
@@ -7076,7 +7076,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'It makes the model weight files smaller and faster to distribute',
       'It reduces the attack surface from manipulable human labelers',
       'It guarantees the model cannot produce any harmful output',
-      'It eliminates the risk of prompt injection entirely'
+      'It narrows the range of prompts the model will act on'
     ],
     correct: 1,
     explanation: 'Standard RLHF relies on human preference labelers, who can introduce inconsistency, cultural bias, or — in adversarial settings — be deliberately manipulated to approve harmful outputs (a form of training pipeline attack). Constitutional AI replaces human labelers for the critique phase with model-driven self-revision against explicit principles, reducing this attack surface. CAI does not eliminate prompt injection or guarantee zero-harmful-output — it shifts the harm reduction mechanism from human judgment to principle adherence.',
@@ -8275,7 +8275,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In an AI-driven phishing SOAR playbook, at which decision point must human approval be enforced before automation?',
     options: [
       'Before irreversible or high-impact actions — user block, domain-wide email quarantine, or firewall rule changes with broad scope',
-      'Approval is not needed once the AI classifier reaches ≥95% accuracy on the validation set for phishing detection',
+      'Approval can be waived once the classifier passes validation',
       'When the AI decides whether to label the email as phishing in the first place, before any downstream action fires',
       'Only when the email\'s sender is an executive of the organization; other users are handled fully autonomously by SOAR',
     ],
@@ -9150,7 +9150,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Automated responses can cause unintended business disruption if triggered on false positives',
       'Automated playbooks are too slow for high-severity threat response scenarios',
-      'Fully automated responses are always preferred as they eliminate human error',
+      'Fully automated response is preferred for its lower dwell time',
       'Automated responses reduce compliance audit trails'],
     correct: 0,
     explanation: 'Fully automated response (auto-blocking, auto-isolation) is high-risk without human validation: false positives can block legitimate employees, disable critical services, or trigger cascading failures. Best practice: automate investigation (enrichment, threat intel lookups, asset tagging) and low-risk containment (blocking single IPs), but require human approval for high-impact actions (isolating servers, disabling accounts). Microsoft Sentinel and SOAR platforms support this tiered automation model. Source: GIAC GASAE curriculum, MITRE D3FEND.',
@@ -13379,7 +13379,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A model satisfies demographic parity (equal selection rates) but violates equalized odds. What does this tell you about the model\'s behavior?',
     options: [
       'The model\'s overall approval rates are equal across groups, but true positive rates or false positive rates differ',
-      'Demographic parity is always sufficient for regulatory compliance; equalized odds is optional',
+      'Demographic parity satisfies most regulators; equalized odds is supplementary',
       'The model is biased across all possible fairness definitions',
       'The model passes all fairness requirements'],
     correct: 0,
@@ -13441,7 +13441,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Local explanations identify which features drove a specific prediction',
       'Local explanations are only useful for debugging neural network layer weights',
-      'Local explanations replace the need for model cards in regulatory submissions',
+      'Local explanations satisfy the documentation requirement on their own',
       'Local explanations retrain the model on a per-user basis for personalized predictions'],
     correct: 0,
     explanation: 'Local explainability (LIME, SHAP, Integrated Gradients) security audit applications: (1) Proxy detection — verify "zip code" or "university name" is not driving decisions in a CV model (protected attribute proxies); (2) Poisoning detection — if a trigger feature appears as a top contributor for backdoor-targeted inputs, it signals training data poisoning; (3) Regulatory compliance — GDPR Article 22 requires meaningful explanations for purely automated decisions; EU AI Act Annex IV requires explainability for high-risk AI. Source: Ribeiro et al. (2016) LIME; Lundberg & Lee (2017) SHAP; GDPR Article 22.',
@@ -13952,7 +13952,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Verify schema against your workspace tables, back-test on 30-90 days, size query cost, and tune exclusions for admin/service-account benign use',
       'Only deploy rules that produced more than 100 historical matches; anything below that threshold is too immature for production',
-      'Require formal CISO sign-off — AI-generated detection rules can never be self-approved by the authoring engineer or team',
+      'Require formal CISO sign-off before any AI-generated rule ships',
       'Deploy as-is; Copilot for Security already validates KQL against the Microsoft data schema before returning the query',
     ],
     correct: 0,
@@ -14472,7 +14472,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Defense in depth — deploy multiple LLM safety classifiers in sequence, each with different training, before any tool call executes',
       'Output sanitization — strip all HTML and code from the model\'s text outputs before executing any action derived from the response',
-      'Prompt separation — maintain the attacker-controlled data in a completely separate context window from the system prompt using dual-LLM architecture',
+      'Prompt separation, holding untrusted data in a second context',
       'Least privilege + explicit human confirmation gates: grant the agent minimum necessary tool permissions'],
     correct: 3,
     explanation: 'Securing agentic AI (OWASP LLM08, CAIS Domain 3): (1) Least privilege — agents should request only permissions needed for the current task, prefer read-only where write isn\'t needed; (2) Human-in-the-loop — irreversible or high-impact actions require explicit confirmation (defense against compromised agent following attacker instructions); (3) Audit logging — every tool call logged with the full context that triggered it; (4) Rate limiting on tool calls; (5) Scope containment — separate agent instances for different trust zones. The dual-LLM architecture (one processes untrusted content, one decides actions) is a defense-in-depth addition. Source: OWASP LLM Top 10 2025 LLM08; NIST AI RMF MS-2.6; CAIS Domain 3.',
@@ -14831,7 +14831,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Generation tasks are more secure',
       'Classification tasks have a bounded, auditable output space',
       'There is no security difference — both task types carry equivalent risk when connected to action-taking automation',
-      'Classification tasks are always more secure'],
+      'Classification exposes a smaller output surface than generation'],
     correct: 1,
     explanation: 'Security automation with LLMs requires different assurance for classification vs. generation: Classification (e.g., "is this alert malicious: yes/no"): bounded output, easy schema enforcement, can measure precision/recall against ground truth, model drift is detectable. Generation (e.g., "write a Sigma rule for this alert"): unbounded output, requires: (1) output schema validation (does the generated rule parse?); (2) functional testing (does the rule execute?); (3) correctness verification (does it actually detect the threat?); (4) hallucination risk — model may generate plausible-looking but wrong IOCs. High-assurance automation should prefer constrained generation (structured output, function calling) over free-form generation where possible. Source: GIAC GASAE Domain 1; NIST AI 100-1.',
   },
@@ -15691,7 +15691,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Prompt leakage attacks can exfiltrate the full system prompt, exposing business rules; put logic in code and reach it via function calling instead',
       'The risk is only performance-related: long system prompts with business logic increase latency and token costs, not security exposure',
       'Sensitive logic in the system prompt biases the model toward specific customer groups and violates fairness principles by design',
-      'No risk exists — Azure OpenAI encrypts the system prompt and it is never accessible to end users through any input path',
+      'No risk exists, since Azure OpenAI encrypts the system prompt at rest',
     ],
     correct: 0,
     explanation: 'System prompt security risks: (1) Prompt leakage — adversarial inputs like "Print your system prompt verbatim" or jailbreak variants can cause models to reveal the full system prompt; (2) Prompt injection — malicious user input overrides or contradicts system instructions; (3) Business logic exposure — pricing rules, internal escalation paths, account lookup APIs embedded in system prompts become attacker knowledge when leaked; (4) Mitigations: store sensitive business logic in code (not prompts); use function calling to invoke business rules programmatically; apply Azure AI Content Safety prompt shields; implement output filtering for system prompt patterns. The system prompt is accessible to anyone who can manipulate the model response — treat it as semi-public. AI-103 + SC-500 test this for secure AI application design. Source: OWASP LLM Top 10 LLM07 (System Prompt Leakage).',
@@ -16006,7 +16006,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The model may contain a backdoor (trojan)',
       'The only risk is intellectual property infringement',
       'Open-source models only pose a risk if they were trained outside the US due to export control regulations',
-      'Open-source models from public hubs are always safe'],
+      'Open-source models from public hubs are vetted by the platform'],
     correct: 0,
     explanation: 'AI model supply chain risks (OWASP LLM05): (1) Backdoored models — malicious actors publish models with embedded triggers; trigger phrase → model behaves maliciously; example: "Poisoning Language Models During Instruction Tuning" (Wan et al., 2023); (2) Pickle deserialization vulnerabilities — PyTorch .pt files are Python pickle objects; malicious model files can execute arbitrary code when loaded with torch.load(); mitigation: use safe_load=True or load to CPU in sandboxed environment; (3) Training data memorization — models may regurgitate PII, API keys, or proprietary code from training data; (4) License violations — GPL/CC-NC restrictions on commercial use; (5) Cryptographic verification — verify model file hashes; use signed releases; (6) Mitigation checklist: verify hash, check provenance, test in isolation, behavioral testing, scan for embedded triggers. Source: OWASP LLM Top 10 LLM05; CompTIA SecAI+ exam objectives.',
   },
@@ -16069,7 +16069,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Gradual precision decline matching no distribution shift may indicate adversarial evasion',
       'This is a routine infrastructure issue caused by Vertex AI prediction node autoscaling affecting model computation precision',
       'The model has likely overfitted to training data, which causes precision decline regardless of adversarial activity',
-      'This pattern is always caused by concept drift — fraudsters naturally evolve tactics, and model retraining is the only appropriate response'],
+      'Concept drift explains the pattern, since fraud tactics evolve'],
     correct: 0,
     explanation: 'Adversarial evasion in production ML: (1) Concept drift vs. adversarial drift — organic concept drift shows broad distribution shift; adversarial evasion shows clustering near the decision boundary with no broad distribution change; (2) Boundary probing — adversaries submit many low-cost transactions and observe outcomes (accept/reject) to map the decision boundary without direct model access (black-box attack); (3) Gradual precision decline — fraud slipping through that was previously caught; recall may remain high (still catching easy fraud) while precision drops (more adversarially crafted fraud evades); (4) Detection: monitor score distribution for clustering at decision threshold; anomaly detection on feature distributions of near-threshold predictions; compare current near-boundary examples to historical patterns; (5) Response: adversarial retraining (include near-boundary examples in training); feature perturbation robustness testing; ensemble with complementary models; (6) Vertex AI Model Monitoring supports skew/drift detection and can be configured with custom metrics. Source: Google MLE certification; adversarial ML research.',
   },
@@ -16081,7 +16081,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'CAISP', 'SecAI'],
     question: 'Your ML platform uses Vertex AI Feature Store to share features across multiple training jobs and online prediction services. What integrity risk is unique to a shared feature store compared to per-pipeline feature computation?',
     options: [
-      'Shared feature stores are always slower than per-pipeline computation, introducing latency-based denial of service risks',
+      'Shared feature stores add lookup latency versus local computation',
       'A shared feature store creates a high-value poisoning target',
       'The only risk is data duplication — feature stores copy data unnecessarily, creating extra PII exposure',
       'Feature stores enforce strict read-only access, so there is no integrity risk compared to per-pipeline computation'],
@@ -17908,7 +17908,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SecAI'],
     question: 'Many-shot jailbreaking (MSJ) prepends dozens of fake compliant Q&A examples before a harmful request. Why does effectiveness scale with context window size?',
     options: [
-      'Safety fine-tuning uses fixed-length training sequences, so attacks beyond training context length are never represented in safety training',
+      'Safety fine-tuning uses fixed-length sequences, limiting long-context coverage',
       'Larger windows reduce the model\'s entropy',
       'Larger windows allow more computational steps that break safety training',
       'In-context learning (ICL) is a strong inductive bias'],
@@ -19064,7 +19064,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP'],
     question: 'Constitutional AI (CAI, Anthropic 2022) aligns LLMs through a self-critique loop instead of human labelers for harmful content. What security property does this alignment approach improve over RLHF alone?',
     options: [
-      'Constitutional AI produces models completely immune to jailbreaks',
+      'CAI shifts the safety check from output filtering to training',
       'CAI trains the model to detect injection patterns in its input',
       'CAI uses a written constitution to guide automated critique and revision',
       'CAI trains the model to refuse requests it cannot verify as legitimate'
@@ -20206,7 +20206,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'In AI security automation, what is the primary advantage of using LLMs for alert triage over static signature-based rules?',
     options: [
-      'LLMs fully replace the need for human security analysts in the SOC',
+      'LLMs handle tier-1 triage end to end without analyst review',
       'LLMs are significantly cheaper to operate than signature rule engines',
       'LLMs never produce false positives, unlike rule-based systems',
       'LLMs perform contextual analysis'],
@@ -20451,8 +20451,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'What is the primary benefit of LLM-generated detection rules (KQL, Sigma) during incident response?',
     options: [
-      'LLM-generated queries are always more accurate than analyst-written ones',
-      'LLMs replace the need for experienced SOC analysts writing detection logic',
+      'LLM-generated queries outperform analyst-written ones on recall',
+      'LLMs remove detection engineering from the analyst workload',
       'LLM-generated rules eliminate false positives by design',
       'Analysts describe detection intent in natural language and get executable queries'
     ],
@@ -20623,7 +20623,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Model alignment is the process of training AI models to behave according to human values and intentions.',
       'Model alignment refers to GPU memory layout optimization for faster inference',
-      'Well-aligned models are completely immune to adversarial attacks by definition',
+      'Alignment training closes the gap that adversarial inputs exploit',
       'Model alignment refers exclusively to the labeling process for training data'],
     correct: 0,
     explanation: 'Alignment techniques (RLHF, Constitutional AI, DPO) improve default model behavior but provide probabilistic, not absolute, safety guarantees. Adversarial inputs exploit: the training distribution gap, instruction hierarchy confusion, and optimization pressure that pits helpfulness against safety. CAISP Domain 1 covers alignment limitations as foundational security knowledge.',
@@ -20777,8 +20777,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SecAI'],
     question: 'What risk does consuming pre-trained model weights from public repositories (HuggingFace, GitHub) introduce without verification?',
     options: [
-      'Open-source models are always lower quality than proprietary models',
-      'Open-source model weights are free and therefore carry no security risk',
+      'Open-source models trail proprietary models on capability benchmarks',
+      'Open-source weights are reviewable, so risk is limited to licensing',
       'Supply chain risk',
       'Model weight files cannot be tampered with after publication'],
     correct: 2,
@@ -20990,7 +20990,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which of the following correctly classifies ML attacks by the adversary\'s access level and attack goal?',
     options: [
       'Evasion and poisoning attacks are the same category targeting the same phase of the ML lifecycle',
-      'Black-box attacks are always less effective than white-box attacks on production systems',
+      'Black-box attacks need far more queries to match white-box success',
       'White-box attacks assume full model knowledge (weights, architecture, training data)',
       'White-box attacks require physical access to the GPU running inference'],
     correct: 2,
@@ -21351,7 +21351,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'GDPR Article 22 (automated decision-making) and data minimization principles apply',
       'Privacy regulations only apply to data collected directly from individuals, not AI-inferred data',
-      'GDPR does not apply to AI systems because they were not contemplated when the regulation was drafted',
+      'GDPR applies only to the training phase, not to inference',
       'AI systems generating inferred personal data are exempt from existing privacy law'],
     correct: 0,
     explanation: 'GDPR applies to any processing of personal data, including inferred data. Article 22 grants individuals rights regarding automated decision-making with significant legal or similar effects (credit scoring, hiring, etc.). AI-inferred attributes (e.g., health status inferred from purchasing behavior) are personal data subject to accuracy, minimization, and purpose limitation requirements. CAIS Domain 5.',
@@ -22135,7 +22135,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'When does an LLM hallucination cross from a quality issue into a security risk?',
     options: [
       'When it drives real action — fabricated legal/medical advice, laundered fake RAG citations, false vuln findings, or acted-on contract terms',
-      'Hallucination indicates the model has been poisoned by an attacker and is always evidence of a supply-chain compromise event',
+      'Hallucination indicates the model has been poisoned by an attacker',
       'Hallucination is only ever a security risk in image-generation models; text-based language models do not carry this exposure',
       'Hallucination only causes user frustration in practice and does not rise to the level of an actual security concern',
     ],
@@ -22231,7 +22231,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is a "confused deputy" attack in the context of agentic AI systems?',
     options: [
       'A security violation where an AI agent with elevated permissions is manipulated via prompt injection',
-      'Confused deputy is a hardware security concept that does not apply to AI systems',
+      'Confused deputy describes an agent misreading its own instructions',
       'When multiple AI agents disagree about the correct interpretation of a task',
       'When an AI agent is confused by contradictory instructions in its system prompt'],
     correct: 0,
@@ -23696,7 +23696,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'CAIS', 'SCS-C03'],
     question: 'An AI model in a SOAR pipeline rates threat intelligence confidence on a 0–1 scale. When should automated IP blocking be triggered WITHOUT human review?',
     options: [
-      'Always — automated blocking is always preferable to manual review for speed',
+      'Yes, because automated blocking shortens time to containment',
       'Never — all blocking decisions require analyst approval to prevent business impact',
       'When confidence exceeds a defined high-confidence threshold',
       'When the IP appears in any public threat feed, regardless of the model\'s confidence score',
@@ -24591,7 +24591,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Long contexts cause model hallucinations that must be filtered by output classifiers',
       'Persistent context creates cross-session data leakage risk',
       'Unbounded context causes model performance degradation that triggers DoS conditions',
-      'Context accumulation increases API costs but poses no security risk'],
+      'Context accumulation is a cost concern handled by token budgeting'],
     correct: 1,
     explanation: 'Context window hygiene (AAISM): LLM conversation history is a data store with retention and isolation requirements. Risks: (1) PII accumulation — sensitive data mentioned early persists across the entire conversation and all logs; (2) Cross-tenant leakage — shared model instances with improper session isolation; (3) Information persistence beyond user intent — users assume data is transient. Controls: rolling context windows with summarization, explicit data retention policies, conversation-level isolation guarantees, PII detection and masking in conversation storage. Source: SecAI+ Domain 2, CAISP context security.',
   },
@@ -24730,7 +24730,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Precision-vs-recall: lower threshold → more FPs blocking real users; higher threshold → more FNs letting attacks through',
       'Higher classifier accuracy thresholds strictly improve security with no operational or user-experience cost at all',
-      'The threshold affects only indirect injection detection and has no impact on direct jailbreak-attempt detection',
+      'The threshold governs indirect injection detection specifically',
       'The threshold only changes model inference latency; it does not affect detection or false-positive rates',
     ],
     correct: 0,
@@ -24842,7 +24842,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Scale + regression coverage: thousands of variants across the full harm taxonomy in hours, and repeatable runs before/after each model update',
       'Automated tools are consistently more accurate than human red teamers at surfacing novel and creative safety failures in modern LLMs',
-      'Automated tools eliminate the need for human red teamers on the AI safety program entirely once they are deployed in the pipeline',
+      'Automated tools reproduce human red team findings once tuned',
       'Automated tools work only on simple rule-based chatbots; they cannot be pointed at production LLMs with tool-use enabled at all',
     ],
     correct: 0,
@@ -25152,7 +25152,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'SecAI'],
     question: 'An organization uses an LLM to generate synthetic training data for a specialized security model. What security risk arises from this approach?',
     options: [
-      'Synthetic data is always more secure than real data',
+      'Synthetic data carries no re-identification risk once generated',
       'Synthetic data cannot be used for security-related models due to export restrictions',
       'The generation LLM may introduce its own biases, errors, or even adversarially shaped content into synthetic data',
       'Synthetic data generation using LLMs is prohibited by all AI governance frameworks'],
@@ -25186,7 +25186,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Unvalidated external data may carry prompt injection payloads',
       'CVE enrichment is only relevant to vulnerability management',
-      'External threat intel feeds are always accurate and can be trusted',
+      'External feeds are curated, so enrichment data needs no validation',
       'Enrichment will slow the SIEM by consuming too many API calls'
     ],
     correct: 0,
@@ -25262,7 +25262,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An analyst asks an LLM to analyze a malware sample\'s behavior based on its decompiled source code. What is the primary limitation of this approach compared to dynamic analysis?',
     options: [
       'LLMs cannot process decompiled code — they only work with natural language',
-      'Decompiled code is always identical to original source code, making both analyses equivalent',
+      'Decompiled code preserves enough structure to make the analyses equivalent',
       'Static LLM analysis of decompiled code cannot observe runtime behavior',
       'Dynamic analysis is slower and less accurate than LLM analysis in all cases'],
     correct: 2,
@@ -25278,7 +25278,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'YARA rules generated by AI are automatically optimal and require no validation',
       'Specificity (low false positive rate against known-good files)',
-      'Rule length in bytes — longer rules are always better',
+      'Rule length in bytes, since longer rules match more variants',
       'Rules must be generated by the same model that generated the malware'],
     correct: 1,
     explanation: 'YARA rule quality validation for AI-generated rules: (1) False positive rate — test against large benign file corpus (Windows system files, popular applications); (2) Detection rate — verify against known members of the target malware family and variants; (3) Performance — YARA rules with expensive string conditions or complex logic can degrade scan performance; (4) Maintainability — human-readable, documented rules are easier to update as malware evolves; (5) String quality — check that matched strings are meaningful and specific, not generic byte sequences from benign code. Tools: YARA community test sets, VirusTotal integration. Source: GIAC-GASAE detection engineering.',
@@ -25706,7 +25706,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Legal-basis review, PII redaction, data minimization, right-to-erasure handling on the trained model',
       'IT department approval — internal data belongs to the organization, no further review is needed',
-      'None — customer support transcripts can never be used for AI training under any privacy regime',
+      'None, since support transcripts fall outside permitted training data',
       'Purchase a commercial-use license from the customers whose transcripts appear in the dataset',
     ],
     correct: 0,
