@@ -297,7 +297,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'What is the primary innovation of the Transformer architecture over RNNs?',
     options: [
-      'Transformers process all tokens in parallel using attention instead of sequentially',
+      'Transformers process all tokens in parallel using attention',
       'Transformers use fewer parameters',
       'Transformers require less training data',
       'Transformers only work for text generation'],
@@ -643,7 +643,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Encrypting the vector database',
       'Using a larger language model',
       'Rate limiting user queries',
-      'Treating retrieved content as untrusted input and using privilege separation between content and instructions'],
+      'Treating retrieved content as untrusted input'],
     correct: 3,
     explanation: 'The core defense is architectural: treat retrieved content as untrusted user-level input, separate it clearly from trusted system instructions, and validate tool actions before execution.',
   },
@@ -1227,7 +1227,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'AI eliminates the need for security analysts',
       'AI can process logs faster than rule engines',
       'AI automatically generates incident reports',
-      'AI can detect unknown/novel threats through behavioral anomaly detection without requiring predefined rules'],
+      'AI can detect unknown/novel threats through behavioral anomaly detection'],
     correct: 3,
     explanation: 'Rules only catch known threats. ML-based anomaly detection can identify novel attacks by flagging deviations from learned normal behavior — even for threat patterns not seen before.',
   },
@@ -1446,7 +1446,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'SCS-C03'],
     question: 'LLM03 (Training Data Poisoning) risk is highest when:',
     options: [
-      'Training data is sourced from untrusted or public sources without verification',
+      'Training data is sourced from untrusted or public sources',
       'The model is deployed on cloud infrastructure',
       'The model uses transformer architecture',
       'The model is fine-tuned using RLHF'],
@@ -1828,7 +1828,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is the primary advantage of shadow deployment over canary deployment?',
     options: [
       'Shadow deployment is faster to implement',
-      'Shadow deployment runs the new model in parallel without affecting production traffic',
+      'Shadow deployment runs the new model in parallel',
       'Shadow deployment requires less compute',
       'Shadow deployment provides faster feedback on model quality',
     ],
@@ -2276,7 +2276,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'AWS\'s container orchestration platform for ML workloads',
       'A data labeling service for supervised learning',
       'A service for training custom ML models from scratch on AWS',
-      'A fully managed service for accessing foundation models via API without managing infrastructure'],
+      'A fully managed service for accessing foundation models via API'],
     correct: 3,
     explanation: 'Amazon Bedrock provides serverless API access to foundation models from Anthropic, Meta, Mistral, AI21, and Amazon. You do not manage compute — Bedrock handles scaling, availability, and model versioning.',
   },
@@ -2541,7 +2541,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'To generate images from text prompts',
       'To transcribe speech into text',
-      'To train custom image classification and object detection models without ML expertise',
+      'To train custom image classification and object detection models',
       'To detect and recognize specific individuals by face'],
     correct: 2,
     explanation: "Azure Custom Vision lets you train custom image classifiers and object detectors using your own labeled images — no ML expertise required. It's part of Azure AI Services.",
@@ -3568,7 +3568,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01'],
     question: 'What is the primary purpose of a Model Card?',
     options: [
-      'Structured documentation describing a model\'s intended use, limitations, performance by subgroup, and ethical considerations',
+      'Structured documentation describing a model\'s intended use, limitations, performance by subgroup',
       'A license agreement that users must accept before using a model',
       'A benchmark scorecard comparing the model against competitors',
       'A configuration file that specifies model hyperparameters for deployment'],
@@ -4101,7 +4101,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The right to know the model\'s source code',
       'The right to retrain the model on their own data',
       'The right to delete the model weights if their data was used in training',
-      'The right not to be subject to solely automated decisions with significant legal effects, and to request human review'],
+      'The right not to be subject to solely automated decisions with significant legal effects'],
     correct: 3,
     explanation: 'GDPR Article 22 gives individuals the right not to be subject to solely automated decisions (including profiling) that produce significant legal or similarly significant effects. They can request human review of automated decisions and receive an explanation of the logic involved.',
   },
@@ -4836,7 +4836,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Replace all manual security processes with fully autonomous AI agents',
       'Deploy AI models without any infrastructure or cloud accounts',
-      'Build AI-powered security workflows and automations without writing code, using visual interfaces',
+      'Build AI-powered security workflows and automations',
       'Conduct penetration tests with zero knowledge of hacking techniques'],
     correct: 2,
     explanation: 'Low-code/no-code platforms (Microsoft Copilot for Security, Splunk AI Assistant, Palo Alto XSIAM) let security analysts build automated workflows using natural language or visual drag-and-drop without programming. This democratizes AI security tooling — analysts can build alert enrichment, incident ticketing, and threat hunting workflows without data science expertise.',
@@ -4865,7 +4865,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'AI-generated malware with polymorphic capabilities poses a greater detection challenge because:',
     options: [
       'AI malware runs faster than traditionally coded malware',
-      'AI rewrites the malware\'s code structure with each iteration while preserving functionality, generating unique signatures that evade static detection',
+      'AI rewrites the malware\'s code structure with each iteration',
       'AI malware exploits zero-day vulnerabilities that are unknown to security vendors',
       'AI malware encrypts itself so strongly that analysis tools cannot decompile it',
     ],
@@ -7407,7 +7407,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'When deploying an ML model as a containerised microservice, which control most directly reduces the risk of model theft via API enumeration?',
     options: [
       'Storing model weights in a read-only filesystem',
-      'Rate limiting prediction API calls per authenticated client and returning only the top-1 label without confidence scores',
+      'Rate limiting prediction API calls per authenticated client and returning only the top-1 label',
       'Encrypting model weights at rest with AES-256',
       'Using mTLS between the inference server and upstream services'],
     correct: 1,
@@ -8322,7 +8322,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Azure OpenAI runs models on your own hardware rather than OpenAI\'s infrastructure',
       'Azure OpenAI is free while OpenAI API requires subscription',
-      'Azure OpenAI provides enterprise security, compliance, private networking, data residency controls, and integration with Azure RBAC',
+      'Azure OpenAI provides enterprise security, compliance, private networking, data residency controls',
       'Azure OpenAI supports older GPT-3 models while OpenAI only offers GPT-4'],
     correct: 2,
     explanation: 'Azure OpenAI Service provides the same OpenAI models (GPT-4, DALL-E, Whisper, Embeddings) but with enterprise features: private endpoints via VNet, Azure RBAC integration, data residency commitments, SOC2/ISO compliance, content filtering controls, and Microsoft\'s Customer Copyright Commitment. Your data is not used to train OpenAI models. Source: learn.microsoft.com/azure/ai-services/openai/overview',
@@ -8916,7 +8916,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In Azure AI Foundry, what is an "agent" and how does it differ from a standard chat completion?',
     options: [
       'An agent is simply a model with a different system prompt from a standard completion',
-      'An agent is an AI system that can autonomously plan multi-step tasks, call tools (functions, APIs, code execution), maintain state across turns, and take actions',
+      'An agent is an AI system that can autonomously plan multi-step tasks, call tools (functions, APIs, code execution), maintain state across turns',
       'An agent is a human supervisor who reviews AI model outputs for quality assurance',
       'An agent is a cloud service that automatically scales LLM deployments based on demand',
     ],
@@ -9159,7 +9159,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'LLM06 Sensitive Information Disclosure — emails are being disclosed to the attacker',
       'LLM04 Model Denial of Service — flooding the calendar API degrades service',
-      'LLM01 Prompt Injection combined with LLM08 Excessive Agency — the injection exploits the agent, and excessive permissions allow harmful real-world actions',
+      'LLM01 Prompt Injection combined with LLM08 Excessive Agency — the injection exploits the agent',
       'LLM03 Training Data Poisoning — the injected email corrupts the model\'s learned behavior'],
     correct: 2,
     explanation: 'This scenario demonstrates the most dangerous combination in agentic systems: LLM01 (Prompt Injection) delivers the attack vector through untrusted content (the malicious email), and LLM08 (Excessive Agency) is the amplifier — the agent has write access to calendar and email with no human confirmation required. The blast radius is determined by what tools the agent can access. Defense: minimal tool permissions, human-in-the-loop confirmation for sensitive actions, prompt injection detection at the input boundary, and output action validation before execution. Source: OWASP LLM Top 10 2025 LLM01/LLM08.',
@@ -9567,7 +9567,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'A performance SLA guaranteeing 99.9% uptime for the AI API endpoint',
       'A clause requiring the vendor to provide the full source code of their AI models under escrow',
-      'A data use clause explicitly prohibiting the vendor from using customer-submitted prompts or outputs to train or fine-tune their models without explicit customer consent, combined with data residency obligations and breach notification SLAs specific to AI incidents',
+      'A data use clause explicitly prohibiting the vendor from using customer-submitted prompts or outputs to train or fine-tune their models',
       'A clause requiring the vendor to use the latest GPU hardware for optimal performance'],
     correct: 2,
     explanation: 'The most critical AI-specific contractual clause addresses training data use: many AI vendors\' default terms permit them to use customer interactions to improve their models — this creates privacy risks (GDPR), IP risks (proprietary data in model weights), and competitive risks (your data trains models used by competitors). The data use clause must specify: (1) No use of customer data for model training without explicit opt-in; (2) Data retention limits — how long are prompts/responses stored? (3) Data residency — which geographic regions process and store data? (4) Sub-processor chain — who else handles the data? (5) AI-specific incident notification — what constitutes an AI incident (model compromise, data leak, behavioral deviation) and what is the notification window? Source: CISM, ISACA Third-Party Risk Management, GDPR Article 28, EU AI Act Articles 25-27.',
@@ -9674,7 +9674,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Use the default Compute Engine service account with no additional IAM bindings — it has sufficient permissions by default',
       'Assign the Owner role to the training service account for maximum flexibility during development',
       'Assign the Editor role so the training pipeline can create and modify all required GCP resources',
-      'Assign Vertex AI User role to the training SA (for submitting training jobs) and Storage Object Viewer on the specific GCS bucket containing training data — no project-wide storage access, no Vertex AI Admin role'],
+      'Assign Vertex AI User role to the training SA (for submitting training jobs) and Storage Object Viewer on the specific GCS bucket containing training data'],
     correct: 3,
     explanation: 'Least-privilege IAM for Vertex AI training pipelines: (1) Training service account should have: roles/aiplatform.user (submit jobs, not admin) and roles/storage.objectViewer on the specific GCS bucket (training data read access) — NOT project-wide storage; (2) Model Registry SA: roles/aiplatform.modelRegisterer (model push only); (3) Serving SA: roles/aiplatform.serviceAgent on the endpoint (inference only); (4) CI/CD SA: roles/aiplatform.trainingJobCreator (trigger jobs) only. Anti-patterns: Owner or Editor roles on service accounts; default Compute Engine SA (has broad project access); single SA for all pipeline stages (blast radius too large); project-wide storage access when only one bucket is needed. IAM conditions can further restrict to specific resources and time windows. Source: Google MLE Professional, Google Cloud IAM documentation, CIS Google Cloud Foundations Benchmark.',
   },
@@ -9690,7 +9690,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Token smuggling — replacing characters with Unicode homoglyphs so the tokenizer misreads the request as benign',
       'Many-shot jailbreaking — providing a long context window full of compliant examples that conditions the model toward compliance',
       'Gradient-based adversarial suffixes — appending computed token sequences that flip the model\'s refusal probability',
-      'DAN (Do Anything Now) / persona-based jailbreaking — instructing the model to adopt an unrestricted persona that ignores safety training, framing harmful output as a character speaking rather than the model'],
+      'DAN (Do Anything Now) / persona-based jailbreaking — instructing the model to adopt an unrestricted persona that ignores safety training, framing harmful output as a character speaking'],
     correct: 3,
     explanation: 'DAN-style / persona jailbreaks exploit the instruction-following behavior trained into LLMs: (1) Mechanism: the attacker prompts the model to act as a character with no restrictions; the model\'s role-play training causes it to generate harmful content attributed to the character rather than itself, bypassing safety filtering; (2) Variants: DAN, STAN, AIM — all follow the same persona adoption pattern; (3) Defenses: classifier on output intent, constitutional AI training, context-aware refusal that fires on roleplay frames, output filtering regardless of fictional framing; (4) Distinction: Token smuggling targets tokenization; gradient-based suffixes (GCG attack) require model-weight access; many-shot exploits long-context attention. Source: GIAC GOAA, Perez & Ribeiro (2022) Ignore Previous Prompt, Zou et al. (2023) Universal and Transferable Adversarial Attacks on Aligned Language Models.',
   },
@@ -10469,7 +10469,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Defender for Cloud CSPM shows a recommendation: "Azure OpenAI deployments should restrict public network access." The current deployment uses public endpoint with API key authentication. What is the secure architecture?',
     options: [
       'Migrate the application to Azure Container Apps and configure VNet integration with outbound traffic rules',
-      'Disable public network access → create a Private Endpoint in the application\'s VNet → configure Private DNS zone for cognitive services → update app to use private FQDN → use managed identity for authentication instead of API key',
+      'Disable public network access → create a Private Endpoint in the application\'s VNet → configure Private DNS zone for cognitive services → update app to use private FQDN → use managed identity for authentication',
       'Add IP allowlisting to the Azure OpenAI resource to limit which IPs can call the public endpoint',
       'Place Azure Front Door in front of the Azure OpenAI public endpoint with WAF policy enabled'],
     correct: 1,
@@ -10531,7 +10531,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Azure AI Search hybrid search combines vector search with keyword search. What is the recommended technique for merging their ranked result lists?',
     options: [
       'Simple average of vector score and BM25 score, normalized to 0–1',
-      'Reciprocal Rank Fusion (RRF) — combines rankings from multiple retrieval methods without requiring score normalization, producing a merged ranked list that outperforms either method alone',
+      'Reciprocal Rank Fusion (RRF) — combines rankings from multiple retrieval methods',
       'Always prefer the vector search ranking; keyword results are only used when no vector matches exceed 0.8 cosine similarity',
       'Cross-encoder re-ranking applied to the top-50 combined results using a fine-tuned BERT model',
     ],
@@ -10782,7 +10782,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Model outputs that violate copyright by reproducing training data verbatim',
       'AI-generated phishing emails that impersonate legitimate organizations',
-      'LLM-generated content that is factually incorrect due to model hallucination, which can cause harm when used in high-stakes decisions (medical, legal, financial)',
+      'LLM-generated content that is factually incorrect due to model hallucination',
       'Nation-state sponsored disinformation campaigns using LLMs to generate propaganda at scale'],
     correct: 2,
     explanation: 'LLM09 Misinformation (OWASP LLM Top 10 2025) addresses the security and safety risk of confident hallucination — the model generates factually incorrect information that appears credible. This is distinct from adversarial attacks: no attacker is required. Security implications include: medical advice that recommends dangerous treatments, legal opinions that misstate statutes, financial analysis based on fabricated data, technical documentation with incorrect code that contains vulnerabilities. Mitigations: RAG grounding to verifiable sources, groundedness evaluation, human review gates for high-stakes outputs, clear disclosure of model limitations. Source: OWASP LLM Top 10 2025 — LLM09.',
@@ -10874,7 +10874,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'The model\'s benchmark scores on publicly available leaderboards (MMLU, HellaSwag, etc.)',
       'A signed attestation from the supplier\'s CISO confirming security reviews were conducted',
-      'The model\'s system card / red team report disclosing attack surface analysis, jailbreak resistance evaluations, hazard category testing results, and identified failure modes',
+      'The model\'s system card / red team report disclosing attack surface analysis, jailbreak resistance evaluations, hazard category testing results',
       'The supplier\'s SOC 2 Type II report covering the data center operating the model'],
     correct: 2,
     explanation: 'For AI security assessment, the system card or red team report is the primary technical artifact: it documents the specific attacks tested, the model\'s response to jailbreak techniques, hazard categories evaluated (CSAM, bioweapons, cyberweapons), threshold behaviors, and residual risks the supplier acknowledges. CAISP practical exams require candidates to evaluate AI systems — a system card provides testable, specific claims about security properties that can be verified through independent testing. SOC 2 covers the operational environment but not model-level security. Benchmark scores measure capability, not safety. Source: Practical DevSecOps CAISP curriculum, NIST AI RMF GOVERN function.',
@@ -11081,7 +11081,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Azure AD Conditional Access blocked the user due to high sign-in risk score from Identity Protection',
       'The endpoint protection agent on the affected device autonomously decided to lock the user account after detecting ransomware encryption behavior',
       'A human SOC analyst approved the suspension via the Security Copilot approval workflow within 2 minutes',
-      'Defender XDR ML models correlate signals across Defender for Endpoint, Defender for Identity, and Defender for Office 365 to identify attack chains with high confidence, then take automatic contain-and-disrupt actions'],
+      'Defender XDR ML models correlate signals across Defender for Endpoint, Defender for Identity'],
     correct: 3,
     explanation: 'Automatic Attack Disruption is a Defender XDR capability that automatically contains active attacks — specifically human-operated ransomware, business email compromise, and adversary-in-the-middle — without waiting for human SOC approval. The system correlates signals across all Defender workloads, identifies the attack chain pattern with high confidence, and acts within seconds: suspending compromised users, isolating devices, blocking malicious OAuth apps. The disruption actions are reversible and documented in the Defender XDR incident timeline. Source: Microsoft Defender XDR Automatic Attack Disruption documentation, SC-500.',
   },
@@ -11585,7 +11585,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Google\'s MLOps maturity model describes three levels. What distinguishes MLOps Level 2 (CI/CD pipeline automation) from Level 1 (ML pipeline automation)?',
     options: [
       'Level 2 adds automated data validation; Level 1 only validates model metrics',
-      'Level 2 automates the pipeline update-build-deploy cycle so new pipeline code is tested and deployed without manual steps',
+      'Level 2 automates the pipeline update-build-deploy cycle so new pipeline code is tested and deployed',
       'Level 2 introduces human-in-the-loop approval; Level 1 is fully autonomous',
       'Level 2 uses Kubernetes; Level 1 uses managed notebooks',
     ],
@@ -12520,7 +12520,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An automated IR playbook triggers host isolation when EDR detects Mimikatz execution. During a red team exercise, the playbook isolates a critical production database server, causing a 2-hour outage. Which design control prevents this?',
     options: [
       'Disable host isolation for all automated playbooks',
-      'Maintain an asset criticality registry and add a pre-action check that routes critical assets to human-approval queues instead of auto-isolating',
+      'Maintain an asset criticality registry and add a pre-action check that routes critical assets to human-approval queues',
       'Require red team exercises to be conducted on non-production systems',
       'Add a 30-minute delay before executing isolation to allow for manual review',
     ],
@@ -12675,7 +12675,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A storage account that hosts training data for Azure AI Foundry needs to prevent public internet access while allowing access only from the AI Foundry project workspace. Which combination of controls is correct?',
     options: [
       'Enable shared access signature (SAS) tokens with 24-hour expiry as the only access method',
-      'Disable public network access, add the AI Foundry managed VNet to the storage account firewall, and enable a private endpoint for blob storage',
+      'Disable public network access, add the AI Foundry managed VNet to the storage account firewall',
       'Restrict access by IP address range of the Azure datacenter region',
       'Enable "Allow Azure services" trusted services exception and set public access to disabled'],
     correct: 1,
@@ -13505,7 +13505,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Use a smaller embedding model — large models overfit to semantic similarity and ignore temporal signals',
       'Switch from cosine similarity to dot product distance — this better handles temporal relevance',
       'Increase the number of retrieved chunks from 5 to 20 — more context always improves accuracy',
-      'Add metadata filtering to Azure AI Search queries — filter by document date, source system, or category before vector search, so only temporally or contextually relevant chunks are retrieved'],
+      'Add metadata filtering to Azure AI Search queries — filter by document date, source system, or category before vector search'],
     correct: 3,
     explanation: 'Metadata pre-filtering in RAG: Azure AI Search supports hybrid search with pre-filter (applied before retrieval) or post-filter (applied after). Pre-filter on metadata fields (date_published, document_type, product_version) restricts the search space before vector comparison — ensuring retrieved chunks are from the correct time window or source. Implementation: pass filter expression in the search query (e.g., "date_published ge 2024-01-01"). This prevents stale or irrelevant chunks from competing with current ones regardless of semantic similarity score. Source: Microsoft Learn — Filtering in Azure AI Search; RAG best practices.',
   },
@@ -13890,7 +13890,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Amazon Rekognition custom labels for training, API Gateway for deployment, and Lambda for retraining',
       'SageMaker Autopilot for training, Elastic Inference for deployment, and SageMaker Canvas for retraining',
       'SageMaker Ground Truth for training, SageMaker Studio for deployment, and SageMaker Experiments for retraining',
-      'SageMaker Training Jobs (managed distributed training with GPU instances) for training, SageMaker Real-Time Inference Endpoints for deployment, and SageMaker Pipelines (ML workflow automation) for scheduled retraining'],
+      'SageMaker Training Jobs (managed distributed training with GPU instances) for training, SageMaker Real-Time Inference Endpoints for deployment'],
     correct: 3,
     explanation: 'SageMaker workflow: (1) Training Jobs — runs your training script in managed containers on ML instances (ml.p3.2xlarge for GPU); S3 as data source and model artifact destination; (2) Real-Time Inference Endpoints — deploy trained model, auto-scaling, A/B testing via traffic routing; (3) SageMaker Pipelines — DAG workflow orchestrating preprocessing, training, evaluation, and deployment steps; can be scheduled via EventBridge; (4) Model Monitor — detects data quality drift and model quality degradation, triggers retraining pipeline via CloudWatch Alarms. Source: AWS SageMaker documentation; AIF-C01 Domain 3.',
   },
@@ -14234,7 +14234,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Model extraction attack — enabled by the model\'s linear separability of feature representations',
       'Data poisoning attack — enabled by the model\'s sensitivity to out-of-distribution inputs near decision boundaries',
-      'Model inversion attack — enabled by the model\'s learned correlation between class confidence and input features, which gradient descent exploits to reconstruct class-representative inputs',
+      'Model inversion attack — enabled by the model\'s learned correlation between class confidence and input features',
       'Adversarial example generation — enabled by the model\'s gradient accessibility through the white-box API'],
     correct: 2,
     explanation: 'Model inversion (Fredrikson et al. 2015) reconstructs private training data by: (1) Starting from random noise; (2) Computing gradients of the target class confidence w.r.t. the input; (3) Iteratively updating the input to maximize confidence (gradient ascent). The attack works because the model encodes statistical properties of training data in its weights. Defenses: output perturbation (add noise to confidence scores), API rate limiting, and monitoring for systematic repeated queries with small input variations. Source: Fredrikson et al. "Model Inversion Attacks that Exploit Confidence Information" (2015); CAIS Domain 2.',
@@ -14264,7 +14264,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Model extraction — the GAN generates probe inputs at decision boundaries to reconstruct the model\'s full decision surface',
       'Data poisoning — GANs inject synthetic poisoned samples that shift the classifier\'s decision boundary toward the target class',
-      'Deepfake-based model evasion — GAN-generated images sit in the generator\'s learned distribution which covers the real data manifold, making them statistically similar to genuine inputs while being entirely synthetic',
+      'Deepfake-based model evasion — GAN-generated images sit in the generator\'s learned distribution which covers the real data manifold, making them statistically similar to genuine inputs',
       'Membership inference — the GAN inverts the classifier to reconstruct training images that the model assigns high membership probability'],
     correct: 2,
     explanation: 'GANs trained on real face data learn the underlying data distribution. The generator produces synthetic faces that: (1) Match the statistical distribution of real faces (human-imperceptible differences); (2) Bypass liveness detection trained on GAN-naive datasets; (3) Can be specifically optimized (adversarial perturbation on top of GAN output) to maximize a target subject\'s confidence score. Defenses: liveness detection (blink/motion detection), adversarial training with GAN-generated examples, and analysis of image artifacts (GAN fingerprints). Source: EC-Council CAIS Domain 2; NIST AI RMF GOVERN 6.1.',
@@ -14370,7 +14370,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SecAI'],
     question: 'A "context window poisoning" attack floods the LLM\'s context with carefully crafted repetitive text to achieve which adversarial goal?',
     options: [
-      'Exploit attention weight dilution: flood the context with irrelevant or misleading text so the model assigns lower attention weight to the original system prompt and user instructions, effectively overriding them without explicit injection',
+      'Exploit attention weight dilution: flood the context with irrelevant or misleading text so the model assigns lower attention weight to the original system prompt and user instructions, effectively overriding them',
       'Cause catastrophic forgetting in the model\'s KV cache, erasing safety training from the model\'s operational weights',
       'Bypass rate limiting by distributing a single large injection across many smaller context windows that are later reconstructed by the model',
       'Exhaust the model\'s token budget to cause a context length error'],
@@ -15031,7 +15031,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'Why is a backdoor attack technically feasible when the attacker controls only 0.1% of a large LLM\'s training data?',
     options: [
-      'Unique trigger phrases are preferentially memorized; poisoned high-loss samples get outsized gradient updates, so a small consistent-target signal encodes a conditional backdoor pathway',
+      'Unique trigger phrases are preferentially memorized; poisoned high-loss samples get outsized gradient updates',
       'It is not feasible — practical backdoor attacks require the attacker to control 5–10% of the training data set',
       'It only works if the attacker also has post-training access to the model weights to verify the backdoor was successfully learned',
       'Standard model validation testing reliably detects 0.1% poisoning as a statistical anomaly before deployment to production',
@@ -15175,7 +15175,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
     question: 'A business analyst without ML engineering experience needs to build a customer churn prediction model. Their company uses Google Cloud. Which service best fits their skill level and requirements?',
     options: [
-      'Vertex AI AutoML Tabular: upload a CSV dataset with churn labels, configure the target column and feature types, and AutoML automatically performs feature engineering, model selection, hyperparameter tuning, and returns a deployable model with explainability',
+      'Vertex AI AutoML Tabular: upload a CSV dataset with churn labels, configure the target column and feature types',
       'BigQuery ML with logistic regression — simple SQL syntax is appropriate for non-engineers and the model trains in BigQuery where the data already lives',
       'Google Colab with scikit-learn — free, runs in the browser, and extensive tutorials are available for non-engineers',
       'Vertex AI Custom Training with a pre-built scikit-learn container — provides guided tutorials that walk non-engineers through the training process'],
@@ -16105,7 +16105,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'CAIS'],
     question: 'A researcher discovers a chatbot leaks its system prompt and can be induced to output CBRN synthesis instructions. What responsible-disclosure path should they take?',
     options: [
-      'Notify the vendor privately, set a 90-day remediation timeline, escalate to CISA if unresponsive, and publish without working exploit prompts',
+      'Notify the vendor privately, set a 90-day remediation timeline, escalate to CISA if unresponsive',
       'Publish on social media immediately to pressure the vendor and warn the public',
       'Report to law enforcement first because generating dangerous content is a criminal matter',
       'Skip disclosure since LLM outputs are non-deterministic and not covered by CVD norms',
@@ -16139,7 +16139,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'CAISP', 'GIAC-GASAE', 'SCS-C03'],
     question: 'An AI auditor is planning a first audit of an organization\'s fraud detection model used in loan underwriting. What should the audit scope document include to address both technical and governance dimensions?',
     options: [
-      'Audit scope should include: model documentation review (model card, training data provenance, known limitations); fairness and bias testing across protected classes (age, race, gender, national origin',
+      'Audit scope should include: model documentation review (model card, training data provenance, known limitations); fairness and bias testing across protected classes',
       'The audit scope should be limited to reviewing model accuracy metrics — governance documentation is outside the technical auditor\'s scope',
       'AI audits are only relevant for models that use deep learning — traditional ML models like gradient boosting do not require governance audits',
       'The audit should focus exclusively on whether the model was tested against a holdout set before deployment'],
@@ -16913,7 +16913,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A threat actor publishes a malicious Python package named "transformers-toolkit" to PyPI. The package contains a gradient exfiltration hook that fires during model fine-tuning. Which attack category does this represent and what is the primary defense?',
     options: [
       'Model poisoning — the attacker modifies the training process to insert backdoors; defense: audit all installed packages against known malware databases before training',
-      'ML supply chain compromise via malicious dependency — the package executes arbitrary code during the training pipeline; defense: pin exact package versions with hash verification in requirements files, use private artifact registries, and scan packages with static analysis tools (pip-audit, Snyk) in CI before training runs',
+      'ML supply chain compromise via malicious dependency — the package executes arbitrary code during the training pipeline; defense: pin exact package versions with hash verification in requirements files, use private artifact registries',
       'Model extraction — the gradient hook copies model weights to an attacker-controlled server; defense: encrypt model checkpoints during training to prevent unauthorized exfiltration',
       'Data poisoning — the package modifies training examples at data load time to bias the model toward attacker-specified behaviors; defense: validate training data checksums before each training run',
     ],
@@ -17085,7 +17085,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'MEASURE 2.2 — Scientific domain experts and end users test AI system performance and provide feedback',
       'MEASURE 1.1 — Approaches, methods, and metrics are identified and applied to AI risk measurement',
-      'MEASURE 2.5 — AI system to be deployed is demonstrated to be valid and reliable through evaluations of its performance, including performance across demographic groups',
+      'MEASURE 2.5 — AI system to be deployed is demonstrated to be valid and reliable through evaluations of its performance',
       'MEASURE 2.10 — Privacy risks of the AI system are characterized and prioritized'],
     correct: 2,
     explanation: 'NIST AI RMF MEASURE function: MEASURE 1.x — Risk measurement approaches identified; MEASURE 2.x — AI system risks quantified: 2.1 (test/evaluation methodology), 2.2 (scientific and expert evaluation), 2.3 (AI system performance documented), 2.4 (feedback from deployment context), 2.5 (AI system validity and reliability demonstrated including across demographic groups — this is the fairness evaluation subcategory), 2.6 (robustness testing), 2.7 (explainability), 2.8 (security testing), 2.9 (resilience), 2.10 (privacy risks); MEASURE 3.x — AI risk assessment reports; MEASURE 4.x — Risk response. MEASURE 2.5 is explicitly about evaluating performance across demographic groups — the primary fairness measurement subcategory. Source: NIST AI RMF 1.0 MEASURE function; CAISP Domain 2.',
@@ -17128,7 +17128,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'GIAC-GOAA', 'SCS-C03'],
     question: 'After completing an AI red team assessment, the team found that a customer service bot could be made to output competitor product recommendations through a multi-turn crescendo jailbreak with a 4/10 success rate. How should this finding be classified and what remediation should be recommended?',
     options: [
-      'Medium-High severity — 40% success rate on a multi-turn attack demonstrates a reproducible policy bypass; recommend adding a conversation-level content filter checking for competitor brand names, implementing turn-limit enforcement to disrupt multi-turn attacks, and red-team-testing the fix before re-deploying',
+      'Medium-High severity — 40% success rate on a multi-turn attack demonstrates a reproducible policy bypass; recommend adding a conversation-level content filter checking for competitor brand names, implementing turn-limit enforcement to disrupt multi-turn attacks',
       'Low severity — 40% success rate is too low to constitute a meaningful risk; document as informational and recommend monitoring for evidence of exploitation in production logs',
       'Critical severity — any policy bypass is critical regardless of success rate; recommend immediate system shutdown until the underlying model is replaced with a more safety-trained version',
       'Low severity — competitor recommendations are a business policy violation rather than a security finding; route to legal/compliance for review rather than including in the security assessment report'],
@@ -17880,7 +17880,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Add a staging environment that runs the model for 24 hours before production promotion',
       'Enable S3 versioning so previous model versions can be restored',
-      'Implement cryptographic signing of model artifacts using a key stored in AWS KMS, and verify the signature in the CI/CD pipeline before deployment',
+      'Implement cryptographic signing of model artifacts using a key stored in AWS KMS',
       'Enable CloudTrail logging for all S3 API calls to the model artifact bucket'],
     correct: 2,
     explanation: 'Model artifact signing addresses supply chain integrity: (1) Sign after training using a key in KMS/HSM; (2) Store the signature and expected hash in the model registry; (3) CI/CD verifies signature before deployment; (4) Threat mitigated: attacker with write access to S3 cannot replace the model without the signing key. This is NIST AI RMF MAP.5 and ISO 42001 Clause 8.4. S3 versioning helps recovery but does not prevent malicious deployment.',
@@ -19147,7 +19147,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An AI-powered fuzzer for REST APIs uses an LLM to generate test cases. Compared to template-based mutation fuzzing, what does the LLM-based fuzzer provide for API security testing?',
     options: [
       'LLM-based fuzzing is faster than mutation-based fuzzing due to parallel generation',
-      'Semantic mutation: the LLM understands the API\'s expected input schema and can generate plausible-but-malicious inputs that satisfy schema constraints while probing for business logic vulnerabilities',
+      'Semantic mutation: the LLM understands the API\'s expected input schema and can generate plausible-but-malicious inputs that satisfy schema constraints',
       'LLM-based fuzzing provides better code coverage',
       'LLM fuzzers can automatically detect all OWASP Top 10 vulnerabilities without human review',
     ],
@@ -19211,7 +19211,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'What distinguishes AI incident response from standard software IR when an AI causes measurable harm?',
     options: [
-      'Adds input reconstruction, model-version pinning, deterministic-vs-probabilistic failure classification, and root cause across training data + architecture + deployment + distribution shift',
+      'Adds input reconstruction, model-version pinning, deterministic-vs-probabilistic failure classification',
       'AI IR is identical to software IR — both boil down to identifying a failing code path and deploying a patch',
       'Rollback to a previous model version is the only remediation available for AI incidents (unlike software patches)',
       'AI outputs are probabilistic and non-reproducible, so no forensic analysis or root-cause investigation is possible',
@@ -19306,7 +19306,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SecAI', 'SC-500', 'GIAC-GASAE', 'SCS-C03'],
     question: 'What is the primary difference between AI-SPM and traditional CSPM?',
     options: [
-      'AI-SPM adds model-specific checks CSPM has no visibility into: prompt-injection exposure, training-to-inference data flow, model access governance, and output sensitivity',
+      'AI-SPM adds model-specific checks CSPM has no visibility into: prompt-injection exposure, training-to-inference data flow, model access governance',
       'AI-SPM is marketing rebranding of CSPM and delivers the same posture checks under a new product name',
       'AI-SPM replaces CSPM entirely — once AI-SPM is deployed, CSPM coverage becomes redundant for that account',
       'AI-SPM applies only to externally-facing AI APIs, while CSPM covers internal cloud infrastructure and workloads',
@@ -19753,7 +19753,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'It exploits memory corruption in the inference engine runtime',
       'It overflows the tokenizer buffer causing undefined behavior',
       'It directly bypasses the output classifier that screens final responses',
-      'In-context learning causes the model to pattern-match the established Q&A format and continue producing outputs in the demonstrated style, including policy-violating content'],
+      'In-context learning causes the model to pattern-match the established Q&A format'],
     correct: 3,
     explanation: 'LLMs are strong in-context learners. By providing 100+ (Q: harmful question, A: harmful answer) pairs before the actual request, the model treats the pattern as established context and generates a completion that follows it. This technique is most effective when context windows are large. Covered in GOAA Domain 4.',
   },
@@ -19828,7 +19828,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What makes zero-width Unicode characters (U+200B, U+FEFF, U+200D) effective for prompt injection evasion?',
     options: [
       'They cause the model to crash and restart with a clean context',
-      'They are invisible in user interfaces and bypass text-based content filters that inspect visible characters, while still being processed by the tokenizer',
+      'They are invisible in user interfaces and bypass text-based content filters that inspect visible characters',
       'They permanently change the model\'s output language setting',
       'They remove the system prompt from the model\'s context window',
     ],
@@ -21533,7 +21533,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Network-layer DDoS attacks against Azure OpenAI endpoints',
       'Insider threats from Microsoft engineers accessing Azure OpenAI infrastructure',
       'Traditional malware on Azure OpenAI Service virtual machine instances',
-      'AI-layer threats: jailbreak attempts, sensitive data disclosure probes, and anomalous Azure OpenAI API usage patterns'],
+      'AI-layer threats: jailbreak attempts, sensitive data disclosure probes'],
     correct: 3,
     explanation: 'Defender for AI Workloads provides application-layer threat detection for Azure OpenAI: analyzing prompt and response content to identify jailbreak attempts, sensitive data probes, and OWASP LLM Top 10 patterns. Traditional EDR/XDR operates at the OS/process layer and cannot inspect LLM API payloads. Alerts surface in Defender for Cloud and integrate with Sentinel. SC-500 Domain 5.',
   },
@@ -21699,7 +21699,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'DAN is a gradient-based attack modifying the model\'s internal activations',
       'DAN only works on GPT-3 and is ineffective against all GPT-4 class models',
-      'DAN asks the model to role-play as a version of itself without safety restrictions. Modern LLMs are specifically fine-tuned against persona-adoption jailbreaks through RLHF/DPO refusal data covering role-play bypass attempts',
+      'DAN asks the model to role-play as a version of itself',
       'DAN is a technical exploit bypassing the model\'s token generation limits'],
     correct: 2,
     explanation: 'DAN and variants exploit the model\'s tendency to follow role-play instructions. Modern alignment training includes extensive coverage of persona-adoption jailbreaks in RLHF refusal data — models are fine-tuned specifically to refuse to pretend to have no safety restrictions. DAN variants continue to evolve but have significantly lower success rates on aligned models like GPT-4, Claude 3+, and Gemini Ultra. CAIS Domain 3.',
@@ -22331,7 +22331,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An AI governance board is deciding between NIST AI RMF and ISO 42001 as their primary framework. Which statement ACCURATELY describes a key difference?',
     options: [
       'NIST AI RMF is a mandatory regulation, while ISO 42001 is voluntary guidance',
-      'ISO 42001 is a certifiable management system standard with audit-based conformity assessment, while NIST AI RMF is a voluntary risk management framework without certification',
+      'ISO 42001 is a certifiable management system standard with audit-based conformity assessment',
       'NIST AI RMF covers only US federal AI deployments, while ISO 42001 applies globally',
       'ISO 42001 focuses exclusively on AI bias and fairness, while NIST AI RMF addresses the full risk lifecycle',
     ],
@@ -22427,7 +22427,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What distinguishes "adversarial robustness" evaluation from standard model safety evaluation?',
     options: [
       'Adversarial robustness evaluation uses automated tools while safety evaluation uses human reviewers',
-      'Adversarial robustness evaluation tests model behavior under optimized worst-case inputs designed to maximize attack success, while safety evaluation tests behavior on policy-violating content using standard phrasing',
+      'Adversarial robustness evaluation tests model behavior under optimized worst-case inputs designed to maximize attack success',
       'Adversarial robustness evaluation is required for EU AI Act compliance while safety evaluation is voluntary',
       'Adversarial robustness evaluation applies only to computer vision models, not LLMs',
     ],
@@ -22460,7 +22460,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A data science team is deploying a SageMaker real-time inference endpoint for a high-sensitivity model. Which configuration MOST reduces the attack surface of the endpoint?',
     options: [
       'Enable SSL/TLS on the endpoint URL and use AWS WAF to block malicious inference requests',
-      'Deploy in a VPC with no public IP, use VPC endpoint for SageMaker API, and apply IAM endpoint invocation policies with condition keys',
+      'Deploy in a VPC with no public IP, use VPC endpoint for SageMaker API',
       'Enable SageMaker Model Monitor to detect data drift and send alerts to CloudWatch',
       'Store model artifacts in S3 with bucket versioning enabled and MFA delete'],
     correct: 1,
@@ -22620,7 +22620,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP'],
     question: 'An organization using a third-party AI API for content moderation is subject to ISO 42001 Clause 8.4. What is the PRIMARY obligation under this clause?',
     options: [
-      'The organization must establish processes to evaluate, select, and monitor externally provided AI systems, including risk assessment of the provider\'s AI practices',
+      'The organization must establish processes to evaluate, select, and monitor externally provided AI systems',
       'The organization must complete an ISO 27001 assessment of the AI provider before using their API',
       'The organization must implement a fallback to an internal AI system if the external provider has an outage',
       'The organization must negotiate a contractual prohibition on the provider using its data to train new models'],
@@ -22685,7 +22685,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A law enforcement agency wants to deploy a real-time facial recognition system in public spaces to identify terrorism suspects. Under the EU AI Act, this deployment is:',
     options: [
       'Permitted as high-risk AI (Annex III Category 6) subject to conformity assessment',
-      'Prohibited by Article 5 unless a narrow exception applies: a member state has authorized it by law, a judicial authority has approved it, and only listed serious crimes are in scope',
+      'Prohibited by Article 5 unless a narrow exception applies: a member state has authorized it by law, a judicial authority has approved it',
       'Prohibited unless the system achieves at least 99.5% accuracy on demographically balanced benchmark datasets',
       'Permitted as law enforcement AI for national security is fully exempt from the EU AI Act'],
     correct: 1,
@@ -22703,7 +22703,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'PAIR cannot evaluate jailbreak success without a human judge',
       'PAIR requires access to the model\'s logit outputs',
-      'PAIR\'s sequential refinement wastes query budget on unproductive branches with no pruning, whereas TAP uses tree-search with pruning to focus budget on the most promising attack paths',
+      'PAIR\'s sequential refinement wastes query budget on unproductive branches with no pruning',
       'PAIR can only jailbreak open-source models'],
     correct: 2,
     explanation: 'PAIR (Prompt Automatic Iterative Refinement) uses a single linear chain of refinements: generate, query target, evaluate, refine. When an attempt is on an unproductive track, PAIR continues refining it rather than exploring alternatives. TAP (Tree of Attacks with Pruning) addresses this by branching (exploring multiple attack variants in parallel) and pruning (eliminating low-quality branches early based on evaluator scoring), focusing the query budget on the most promising attack paths. Neither PAIR nor TAP requires gradient access — both are black-box. PAIR does not require logit outputs. PAIR uses an LLM judge (not human) for evaluation.',
@@ -22791,7 +22791,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'An attacker targets a multi-stage RAG pipeline: query is rewritten → documents retrieved → context assembled → response generated. At which injection point does an adversarial document have the HIGHEST impact with the LOWEST detectability?',
     options: [
-      'In the document corpus — a poisoned document retrieved for many semantically similar queries affects multiple users over time without real-time detection, and blends with legitimate context before reaching the LLM',
+      'In the document corpus — a poisoned document retrieved for many semantically similar queries affects multiple users over time',
       'At query rewriting — injecting before the retrieval stage corrupts all downstream results',
       'At context assembly — intercepting the assembled context just before LLM inference for maximum control',
       'At response generation — modifying the final response in transit to inject attacker content'],
@@ -25014,7 +25014,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A security engineer uses an LLM to generate a KQL query for Microsoft Sentinel that hunts for lateral movement. Before deploying to production, what is the most critical validation step?',
     options: [
       'Get approval from the vendor that sold the LLM',
-      'Test the query against a representative dataset to verify it returns expected results without excessive false positives',
+      'Test the query against a representative dataset to verify it returns expected results',
       'Ensure the query uses only operators beginning with the letter "S"',
       'Check that the query is exactly 140 characters long'],
     correct: 1,
@@ -25516,7 +25516,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'Before fine-tuning an LLM on internal customer support transcripts, which set of governance steps is required?',
     options: [
-      'Legal-basis review, PII redaction, data minimization, right-to-erasure handling on the trained model, and training-set quality assessment',
+      'Legal-basis review, PII redaction, data minimization, right-to-erasure handling on the trained model',
       'IT department approval — internal data belongs to the organization, no further review is needed',
       'None — customer support transcripts can never be used for AI training under any privacy regime',
       'Purchase a commercial-use license from the customers whose transcripts appear in the dataset',
@@ -25609,7 +25609,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'How does "AI safety" differ from "AI security" as fields of practice?',
     options: [
-      'Safety = preventing unintended harm (alignment, spec gaming, emergent risk); Security = protecting the AI from adversarial exploitation (injection, theft, poisoning)',
+      'Safety = preventing unintended harm (alignment, spec gaming, emergent risk); Security = protecting the AI from adversarial exploitation',
       'They are identical terms for the same discipline — the two names are used interchangeably in industry standards',
       'AI safety applies only to autonomous robots; AI security applies only to cloud-hosted AI services',
       'AI security is only relevant for large language models; AI safety applies broadly to all software systems',
@@ -25869,7 +25869,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'SCS-C03'],
     question: 'A security team audits a Google Cloud project used for ML workloads. Which Security Command Center findings specifically relate to Vertex AI security posture?',
     options: [
-      'Security Command Center includes findings for: Vertex AI datasets and models without customer-managed encryption keys',
+      'Security Command Center includes findings for: Vertex AI datasets and models',
       'Security Command Center does not cover Vertex AI workloads',
       'Security Command Center only covers GCE and GKE, not managed AI services',
       'Only network-level findings are relevant for Vertex AI security'],
@@ -26102,7 +26102,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is "grounding" in the context of generative AI applications?',
     options: [
       'Connecting AI services to electrical grounding for safety',
-      'Providing the AI model with specific, authoritative source documents or data so its responses are anchored to verifiable facts rather than solely its training data',
+      'Providing the AI model with specific, authoritative source documents or data so its responses are anchored to verifiable facts',
       'A technique for reducing AI model size through compression',
       'Setting the model\'s random seed for deterministic outputs',
     ],
