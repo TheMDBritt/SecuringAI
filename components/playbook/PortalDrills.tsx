@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react';
 import { SC500_DRILL_SET, type Drill, type DrillSet, type DrillStep } from '@/lib/sc500-drills';
 import { SECAI_DRILL_SET } from '@/lib/secai-drills';
+import { AWS_SCSC03_DRILL_SET } from '@/lib/aws-scsc03-drills';
 
 type Mode = 'list' | 'run' | 'done';
 
@@ -33,7 +34,7 @@ const DIFFICULTY_STYLE: Record<Drill['difficulty'], string> = {
 };
 
 // All drill sets registered here appear in the top-level cert switcher.
-const DRILL_SETS: DrillSet[] = [SC500_DRILL_SET, SECAI_DRILL_SET];
+const DRILL_SETS: DrillSet[] = [SC500_DRILL_SET, SECAI_DRILL_SET, AWS_SCSC03_DRILL_SET];
 
 export default function PortalDrills() {
   const [mode,         setMode]         = useState<Mode>('list');

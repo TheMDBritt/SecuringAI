@@ -8667,4 +8667,212 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
 
 **Sourced from:** AWS Free Tier page (\`aws.amazon.com/free\`), \`docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-managing-costs.html\`, plus the per-lab docs URLs listed inline above.`,
   },
+
+  // ─── SCS-C03 Glossary ───────────────────────────────────────────────────
+
+  {
+    id: 'aws-scsc03-glossary-domain-1',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 1 (IAM)',
+    certTags: ['SCS-C03'],
+    vocab: ['Identity-based policy', 'Resource-based policy', 'Permission boundary', 'SCP', 'Trust policy', 'Assume role', 'Temporary credentials', 'Access key', 'MFA', 'SAML', 'OIDC', 'Federation', 'IAM Identity Center', 'Cross-account access'],
+    content: `**Domain 1 vocabulary (Identity and Access Management)**
+
+**Identity-based policy** — An IAM policy attached to a user or role that grants permissions. Evaluated as part of the full policy evaluation: all of identity policy, resource policy, and SCPs must allow an action.
+
+**Resource-based policy** — A policy attached directly to a resource (S3 bucket, KMS key, SQS queue, etc.) that specifies which principals can perform actions on it.
+
+**Permission boundary** — An IAM policy that sets the maximum permissions a user or role can have, even if their identity policy grants more.
+
+**Service Control Policy (SCP)** — An organization-level policy that acts as a veto gate; if an SCP denies an action, all principals in that account/OU are denied, regardless of identity policies.
+
+**Trust policy** — A resource-based policy on an IAM role that specifies which principals are allowed to assume (use) the role.
+
+**Assume role** — The act of taking on an IAM role's permissions via sts:AssumeRole; requires both the role's trust policy and the caller's identity policy to allow it.
+
+**Temporary credentials** — Time-limited access key + secret key + session token issued by STS when a principal assumes a role.
+
+**Access key** — A pair of Access Key ID + Secret Access Key used to authenticate API calls programmatically (alternative to console password).
+
+**Multi-Factor Authentication (MFA)** — A second factor (TOTP, SMS, security key) required to authenticate; on AWS: console login, PIM activation, and CI/CD federation.
+
+**SAML** — Security Assertion Markup Language; an XML-based protocol for federated identity; used for AWS SSO with on-prem IdPs like Okta.
+
+**OpenID Connect (OIDC)** — A protocol for federated identity; AWS accepts OIDC tokens from external providers (GitHub Actions, Workiva, etc.) in place of stored credentials.
+
+**Federation** — Allowing external identity providers (Okta, Azure AD, GitHub) to authenticate users to AWS without creating separate IAM users.
+
+**IAM Identity Center** — AWS's managed federation hub; connects an external IdP (Okta, Entra ID) to AWS, vends temporary credentials, and manages permission sets.
+
+**Cross-account access** — Allowing principals in one AWS account to access resources in another; enabled by combining trust policy (on the target role) + identity policy (on the calling principal).`,
+  },
+
+  {
+    id: 'aws-scsc03-glossary-domain-2',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 2 (Infrastructure Security)',
+    certTags: ['SCS-C03'],
+    vocab: ['VPC', 'Subnet', 'CIDR', 'Internet Gateway', 'NAT Gateway', 'Security group', 'Network ACL', 'VPC endpoint', 'VPC Flow Logs', 'Route table', 'Bastion host', 'Session Manager', 'ELB', 'ALB'],
+    content: `**Domain 2 vocabulary (Infrastructure Security)**
+
+**VPC** — Virtual Private Cloud; an isolated network in AWS where you launch resources. Each VPC has a CIDR range and subnets.
+
+**Subnet** — A segment of a VPC's CIDR range within a single Availability Zone. Subnets are public (route 0.0.0.0/0 to IGW) or private (route 0.0.0.0/0 to NAT).
+
+**CIDR** — Classless Inter-Domain Routing notation (e.g., 10.0.0.0/16 = 65,536 addresses). Used to define VPC and subnet IP ranges.
+
+**Internet Gateway (IGW)** — A VPC attachment that allows public subnets to send/receive traffic to/from the internet (0.0.0.0/0).
+
+**NAT Gateway** — Placed in a public subnet; allows instances in private subnets to reach the internet outbound (via SNAT) without receiving unsolicited inbound.
+
+**Security Group** — A stateful firewall attached to EC2, RDS, Lambda, etc. Inbound rules control who can initiate; outbound rules control who the resource can reach. Default: all outbound allowed.
+
+**Network ACL (NACL)** — A stateless firewall at the subnet level. Must explicitly allow both inbound and outbound (plus ephemeral return-traffic range). Evaluated before security groups.
+
+**VPC Endpoint** — Allows private connectivity to AWS services (S3, DynamoDB, Secrets Manager, etc.) without traversing the internet. Gateway (S3, DynamoDB) or Interface (all others).
+
+**VPC Flow Logs** — Captures metadata about IP traffic in and out of network interfaces; stored in CloudWatch Logs or S3. Essential for forensic investigation.
+
+**Route table** — Associated with a subnet; determines where packets destined for a particular CIDR range are sent (IGW, NAT, VPN, peering, etc.).
+
+**Bastion host (Jump box)** — An EC2 in a public subnet used as a controlled entry point for SSH/RDP to instances in private subnets; centralizes audit logging.
+
+**Session Manager** — AWS Systems Manager tool that provides shell access to EC2/on-prem instances without SSH keys; all activity logged to CloudTrail/EventBridge.
+
+**Elastic Load Balancer (ELB)** — Distributes traffic across multiple targets. ALB (Application) inspects HTTP/HTTPS, NLB (Network) handles extreme throughput/low-latency.
+
+**Application Load Balancer (ALB)** — Layer 7 load balancer; routes based on hostname, path, query, HTTP header. Integrates with WAF, target groups, and listener rules.`,
+  },
+
+  {
+    id: 'aws-scsc03-glossary-domain-3',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 3 (Data Protection)',
+    certTags: ['SCS-C03'],
+    vocab: ['KMS', 'CMK', 'Data key', 'Envelope encryption', 'SSE-S3', 'SSE-KMS', 'S3 Bucket Key', 'EBS encryption', 'RDS encryption', 'TLS', 'Secrets Manager', 'Parameter Store', 'Macie', 'DLP'],
+    content: `**Domain 3 vocabulary (Data Protection)**
+
+**KMS (Key Management Service)** — AWS's centralized key management service. Stores master keys (customer-managed or AWS-managed) and vends data keys for encryption.
+
+**Customer-Managed Key (CMK)** — A KMS key you create and control; allows key rotation, audit logging via CloudTrail, and revocation. Costs ~$1/month per key.
+
+**Data key** — A symmetric key vended by KMS (via GenerateDataKey) that you use to encrypt application data locally; the data key itself is encrypted with the master key.
+
+**Envelope encryption** — The pattern: request GenerateDataKey → use returned plaintext key to encrypt data → store the encrypted data + encrypted data key together. Allows client-side encryption.
+
+**SSE-S3** — Server-side encryption with S3-managed keys (AES-256). Simple but AWS controls the keys; cannot be revoked or rotated per-object.
+
+**SSE-KMS** — Server-side encryption with customer-managed KMS keys. S3 calls KMS to decrypt on your behalf; provides audit trail and key control.
+
+**S3 Bucket Key** — An optimization: S3 caches a per-bucket data key so repeated PutObject/GetObject calls don't hit KMS for every API call; reduces KMS quota pressure.
+
+**EBS encryption** — All EBS volumes can be encrypted with KMS at launch; encryption is transparent and does not impact performance. Cannot be enabled/disabled post-launch.
+
+**RDS encryption** — Database encryption using KMS; applies to data at rest, automated backups, and replicas. Must enable at creation; cannot toggle afterward.
+
+**TLS (Transport Layer Security)** — Encryption in transit (formerly SSL). AWS enforces TLS 1.2+ for public APIs. TLS 1.0/1.1 are deprecated.
+
+**Secrets Manager** — Managed service for storing and rotating secrets (passwords, API keys, database credentials). Encrypts with KMS, offers automatic rotation, and audit logging.
+
+**Parameter Store** — Simpler secret storage than Secrets Manager; good for configuration (DB endpoints, API URLs). No automatic rotation, but free tier is generous.
+
+**Amazon Macie** — Automated PII and credential detection across S3. Scans buckets for managed data identifiers (SSN, credit card, API key, etc.) and custom patterns.
+
+**Data Loss Prevention (DLP)** — Policies that detect and block sensitive data (emails, cloud uploads, file copies). Microsoft/Symantec terminology; AWS equivalent is Macie + IAM policies.`,
+  },
+
+  {
+    id: 'aws-scsc03-glossary-domain-4',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 4 (Security Logging & Monitoring)',
+    certTags: ['SCS-C03'],
+    vocab: ['CloudTrail', 'Management event', 'Data event', 'CloudWatch Logs', 'CloudWatch Alarms', 'EventBridge', 'Security Lake', 'AWS Config', 'VPC Flow Logs', 'Athena', 'Metric filter'],
+    content: `**Domain 4 vocabulary (Security Logging & Monitoring)**
+
+**CloudTrail** — Records all AWS API calls (management events) and optionally data-level access (data events). Logs are immutable; integrity validated with digital signatures.
+
+**Management event** — An API call that modifies AWS resource configuration (PutBucket, CreateUser, ModifyDBInstance, etc.). Logged by default in CloudTrail.
+
+**Data event** — An API call that accesses data within a resource (S3 GetObject, DynamoDB Query, Lambda Invoke, etc.). Must be explicitly enabled; increases volume/cost.
+
+**CloudWatch Logs** — A log aggregation service. Applications, OS, AWS services (CloudTrail via subscription filter, Config) send logs here. Queryable via CloudWatch Insights.
+
+**CloudWatch Alarms** — Triggers notifications (SNS, Lambda) when a metric (CPU, network bytes, custom metric) breaches a threshold. Can trigger Auto Scaling, EC2 actions, etc.
+
+**Amazon EventBridge** — A serverless event routing service. Matches events from AWS services (GuardDuty findings, EC2 state changes, CloudTrail API calls) and routes to targets (Lambda, SNS, SQS, Step Functions, etc.).
+
+**AWS Security Lake** — Centralized, multi-region security data lake. Ingests logs from CloudTrail, VPC Flow Logs, GuardDuty findings, Route 53 Resolver, etc. in OCSF normalized format. Queryable via Athena.
+
+**AWS Config** — Continuous compliance auditing. Records resource configuration state (EC2 attributes, RDS encryption status, etc.) and evaluates against rules (e.g., s3-bucket-versioning-enabled).
+
+**VPC Flow Logs** — Captures metadata about network traffic on ENIs; stored in CloudWatch Logs or S3. Essential for forensic questions like "did this IP access that resource?"
+
+**Amazon Athena** — Serverless SQL query engine for S3-stored logs. Run queries against CloudTrail logs, VPC Flow Logs, Security Lake, and Application Load Balancer logs without setting up data warehouses.
+
+**Metric filter** — A pattern in CloudWatch Logs that extracts numeric values from log text and publishes them as CloudWatch metrics; basis for alarms on log patterns (e.g., "auth failures > 5/min").`,
+  },
+
+  {
+    id: 'aws-scsc03-glossary-domain-5',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 5 (Threat Detection & IR)',
+    certTags: ['SCS-C03'],
+    vocab: ['GuardDuty', 'Finding', 'Security Hub', 'ASFF', 'Amazon Detective', 'Incident response', 'SSM Automation', 'Runbook', 'Forensics', 'SIEM', 'SOAR'],
+    content: `**Domain 5 vocabulary (Threat Detection & Incident Response)**
+
+**GuardDuty** — Threat detection service using ML. Analyzes CloudTrail, VPC Flow Logs, and DNS logs for suspicious patterns (brute-force, crypto-mining, unusual API calls, data exfiltration).
+
+**Finding** — An alert raised by GuardDuty, Config, Inspector, Macie, or IAM Access Analyzer. Contains resource ID, severity, finding type, and evidence.
+
+**Security Hub** — Aggregates findings from all sources (GuardDuty, Config, Inspector, Macie, IAM Access Analyzer, third-party tools). Normalizes to ASFF and allows triage/suppression.
+
+**AWS Security Finding Format (ASFF)** — JSON schema for security findings. Includes severity, resource, types[], workflow status, compliance status, and remediation steps. Universal across AWS security services.
+
+**Amazon Detective** — Behavioral graph investigation tool. Ingests CloudTrail, VPC Flow Logs, and GuardDuty findings; lets you pivot across roles, resources, and IPs without writing SQL.
+
+**Incident response** — The process of detecting, investigating, containing, and remediating security incidents. SCS-C03 focuses on automation (EventBridge → Automation → response actions).
+
+**AWS Systems Manager Automation** — Serverless runbook execution service. Triggered by EventBridge on findings; can snapshot EBS, swap security groups, disable users, send notifications, etc.
+
+**Runbook** — A playbook (sequence of steps) that automates incident response. Example: GuardDuty finding → snapshot volume → isolate SG → notify SOC.
+
+**Forensics** — Post-incident investigation. Includes EBS snapshots, CloudTrail logs, VPC Flow Logs, and volatile memory captures for root-cause analysis.
+
+**SIEM (Security Information and Event Management)** — Centralized log collection + correlation + alerting. AWS native equivalent: Security Lake + Athena + EventBridge.
+
+**SOAR (Security Orchestration, Automation & Response)** — Platform for automating incident response playbooks. AWS equivalent: EventBridge + Lambda + SSM Automation.`,
+  },
+
+  {
+    id: 'aws-scsc03-glossary-domain-6',
+    category: 'Glossary',
+    title: 'AWS SCS-C03 Glossary — Domain 6 (Management & Governance)',
+    certTags: ['SCS-C03'],
+    vocab: ['AWS Config', 'Conformance Pack', 'SCPs', 'Organizations', 'IAM Access Analyzer', 'Unused access', 'Policy validation', 'Compliance', 'Audit', 'CIS Benchmark', 'PCI DSS'],
+    content: `**Domain 6 vocabulary (Management & Governance)**
+
+**AWS Config** — Configuration tracking and compliance auditing. Records resource state changes and evaluates against managed/custom rules.
+
+**Config Rule** — A predefined or custom rule that evaluates AWS resource configuration. Examples: s3-bucket-versioning-enabled, ec2-imdsv2-check, iam-policy-no-statements-with-admin-access.
+
+**Conformance Pack** — A curated bundle of Config Rules aligned to a compliance framework (CIS AWS Foundations, PCI-DSS, HIPAA). Deploy once; audit continuously.
+
+**Service Control Policies (SCPs)** — Organization-level permissions that set a veto gate across all accounts in an OU. Prevent certain actions (e.g., iam:DeleteUser) org-wide.
+
+**AWS Organizations** — Multi-account management service. Enable SCPs, CloudTrail org trail, Config delegated admin, and member-account tagging.
+
+**IAM Access Analyzer** — Three tools in one: (1) External Access Analyzer (find overshared resources), (2) Unused Access Analyzer (find unused roles/permissions), (3) Policy Validation (pre-deploy checks).
+
+**Unused access findings** — Access Analyzer detects roles not used in N days, access keys idle, or permissions never called. Basis for least-privilege remediation.
+
+**Policy validation** — Access Analyzer checks a policy for syntax errors, security warnings (admin access, wildcard resources), and custom policy checks (does it grant dangerous actions?).
+
+**Compliance** — Adherence to industry frameworks (PCI-DSS, HIPAA, SOC 2, CIS). AWS Config Conformance Packs map to these; Security Hub standards measure compliance posture.
+
+**Audit** — Independent verification of security controls. CloudTrail logs, Config snapshots, and AWS Organizations provide the evidence trail.
+
+**CIS AWS Foundations Benchmark** — Community standards for AWS security. Includes ~150 controls across Identity, Logging, Networking, and Compute. AWS Config Conformance Pack automates the check.
+
+**PCI DSS (Payment Card Industry Data Security Standard)** — Compliance requirement for systems handling credit cards. Requires encryption, access controls, logging, and regular testing.`,
+  },
 ];
