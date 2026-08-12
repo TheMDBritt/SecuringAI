@@ -305,7 +305,127 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 4 — Sentinel: Build a password-spray analytics rule ──────────────
+  // ── Drill 4 — Defender for Cloud: Configure network segmentation ──────────────
+  {
+    id: 'drill-mdc-network',
+    portal: 'Defender for Cloud',
+    title: 'Design a hub-and-spoke network with Azure Firewall + NSGs',
+    scenario: 'You are securing a multi-tier application. Design network segmentation using hub-and-spoke topology with Azure Firewall for centralized filtering and NSGs for subnet-level controls.',
+    difficulty: 'intermediate',
+    objectives: ['SC-500 Domain 2: Secure Networking & Infrastructure'],
+    steps: [
+      {
+        screen: 'Azure Portal · Defender for Cloud',
+        question: 'Which left-rail section shows network recommendations and topology visualization?',
+        options: [
+          'Regulatory Compliance',
+          'Security Posture Management',
+          'Cloud Security → Network Security',
+          'Workload protections',
+        ],
+        correct: 2,
+        explanation: 'Cloud Security → Network Security shows topology, exposure paths, and recommendations for NSGs, Azure Firewall, and WAF.',
+      },
+      {
+        screen: 'Network Security · Architecture',
+        question: 'In hub-and-spoke, which component typically enforces organization-wide egress policies?',
+        options: [
+          'Network Security Groups on each spoke',
+          'Azure Firewall in the hub with routing to forced-tunnel traffic',
+          'Route tables only',
+          'Virtual network peering settings',
+        ],
+        correct: 1,
+        explanation: 'Azure Firewall in the hub intercepts all cross-spoke and egress traffic. Hub RT directs traffic via firewall; spokes peer to hub. NSGs add defense-in-depth.',
+      },
+      {
+        screen: 'Azure Firewall · Policy',
+        question: 'You want to block all egress except approved destinations. Which rule collection processes first?',
+        options: [
+          'NAT rule collection (then Network, then Application)',
+          'Network rule collection',
+          'Application rule collection',
+          'They all run in parallel',
+        ],
+        correct: 0,
+        explanation: 'Processing order: NAT → Network → Application. NAT translates; Network filters at layer 4; Application (FQDN/HTTPS SNI) at layer 7.',
+      },
+      {
+        screen: 'NSG · Inbound rules',
+        question: 'An application VM in a spoke subnet needs RDP only from the hub jump-host. Which NSG rule is correct?',
+        options: [
+          'Source: Internet, Port: 3389, Action: Allow',
+          'Source: Hub subnet IP range, Port: 3389, Protocol: TCP, Action: Allow',
+          'Source: 10.0.0.0/8, Port: 22, Action: Allow',
+          'Source: Any, Port: Any, Action: Allow',
+        ],
+        correct: 1,
+        explanation: 'Principle of least privilege: restrict source to the hub subnet CIDR and only RDP (3389/TCP). Deny all else implicitly.',
+      },
+    ],
+  },
+
+  // ── Drill 5 — Purview: Classify and encrypt sensitive data ──────────────
+  {
+    id: 'drill-purview-dlp',
+    portal: 'Purview',
+    title: 'Configure Purview Data Lifecycle Management + encryption for PII',
+    scenario: 'Your organization handles credit card and health records. Use Purview to classify PII data, apply retention policies, and enforce encryption at rest.',
+    difficulty: 'intermediate',
+    objectives: ['SC-500 Domain 3: Secure Compute, Storage & Data'],
+    steps: [
+      {
+        screen: 'Purview governance portal',
+        question: 'Which feature auto-detects credit card numbers, SSNs, and health record identifiers?',
+        options: [
+          'Privacy management',
+          'Data minimization',
+          'Information Protection → Sensitive info types',
+          'Risk and compliance',
+        ],
+        correct: 2,
+        explanation: 'Sensitive Info Types (built-in: credit card, SSN, NIN, health record ID, regex patterns) auto-scan content and flag matches for classification.',
+      },
+      {
+        screen: 'Information Protection · Labels',
+        question: 'You want to enforce encryption + watermark for "Highly Confidential" label. Which setting applies encryption?',
+        options: [
+          'Auto-label only',
+          'Scope → Files & Emails',
+          'Encryption → Assign permissions (Encrypt)',
+          'Forwarding restrictions only',
+        ],
+        correct: 2,
+        explanation: 'Label encryption (AES-128 or AES-256) restricts file opens to authorized users. Watermark is a separate marking on document. Set encryption in the label settings.',
+      },
+      {
+        screen: 'Data lifecycle management · Retention policies',
+        question: 'You must retain health records for 7 years, then auto-delete. Which policy type enforces this?',
+        options: [
+          'Event-driven retention',
+          'Static retention label (7 years) with delete action',
+          'Disposal review only',
+          'Backup schedule',
+        ],
+        correct: 1,
+        explanation: 'Retention labels define hold period + action (delete or review). Once labeled, items auto-delete after 7 years (in this case) unless legal hold is placed.',
+      },
+      {
+        screen: 'Azure Key Vault · Encryption',
+        question: 'For Azure Storage encryption with customer-managed keys, which KV setting is required?',
+        options: [
+          'Key expiration only',
+          'Soft delete disabled',
+          'Enable purge protection and soft delete; set correct key access policies for the Storage account\'s managed identity',
+          'No special settings needed',
+        ],
+        correct: 2,
+        explanation: 'Storage account (managed identity) must have key permissions (Get, Wrap, Unwrap). Enable purge protection so key delete cannot be bypassed. Soft delete allows recovery.',
+      },
+    ],
+  },
+
+  // ── Drill 7 — Sentinel: Build a password-spray analytics rule ──────────────
   {
     id: 'drill-sentinel-rule',
     portal: 'Sentinel',
@@ -389,7 +509,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 5 — Defender for Cloud: Enable AI workload protection ────────────
+  // ── Drill 8 — Defender for Cloud: Enable AI workload protection ────────────
   {
     id: 'drill-mdc-ai',
     portal: 'Defender for Cloud',
@@ -461,7 +581,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 6 — Purview: Configure DSPM for AI policies ──────────────────────
+  // ── Drill 9 — Purview: Configure DSPM for AI policies ──────────────────────
   {
     id: 'drill-purview-dspm-ai',
     portal: 'Purview',
@@ -533,7 +653,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 7 — Azure OpenAI: Production hardening checklist ─────────────────
+  // ── Drill 10 — Azure OpenAI: Production hardening checklist ─────────────────
   {
     id: 'drill-aoai-hardening',
     portal: 'Azure OpenAI',
@@ -629,7 +749,7 @@ export const SC500_DRILLS: Drill[] = [
     ],
   },
 
-  // ── Drill 8 — Security Copilot: Provision and govern ───────────────────────
+  // ── Drill 11 — Security Copilot: Provision and govern ───────────────────────
   {
     id: 'drill-copilot-bootstrap',
     portal: 'Security Copilot',
