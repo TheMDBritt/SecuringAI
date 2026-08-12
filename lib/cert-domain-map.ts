@@ -359,7 +359,7 @@ export const CERT_DOMAIN_CONFIGS: CertDomainConfig[] = [
 
   {
     id:   'SCS-C03',
-    name: 'AWS Certified Security: Specialty',
+    name: 'AWS Certified Security - Specialty',
     domains: [
       {
         name:       'Threat Detection & Incident Response',

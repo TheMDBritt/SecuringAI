@@ -1,5 +1,5 @@
 /**
- * AWS Certified Security: Specialty (SCS-C03) Drills, scenario-based
+ * AWS Certified Security - Specialty drills, scenario-based
  * click-path simulations of AWS console workflows. Each drill walks through
  * a realistic security task spanning one or more SCS-C03 domains.
  *

@@ -53,7 +53,7 @@ const CERTS: CertInfo[] = [
   },
   {
     id: 'SCS-C03',
-    name: 'AWS Certified Security: Specialty',
+    name: 'AWS Certified Security - Specialty',
     provider: 'Amazon Web Services',
     tagColor: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
     difficulty: 'Specialty',

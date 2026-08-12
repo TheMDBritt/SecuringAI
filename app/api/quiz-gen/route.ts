@@ -53,7 +53,7 @@ Prefer identity + Zero Trust (Domain 1), infra hardening (D2), data protection (
 WORKED EXAMPLE:
 {"question":"You must ensure that a Microsoft 365 Copilot user cannot retrieve any SharePoint documents labeled 'Highly Confidential'. Which action achieves this with least admin effort?","options":["Disable Copilot for the user","Create a DLP policy with the 'Microsoft 365 Copilot' location and condition on the 'Highly Confidential' sensitivity label","Apply an Azure Firewall rule blocking Copilot traffic","Deploy a Conditional Access session policy on SharePoint"],"correct":1,"explanation":"Purview DLP added a 'Microsoft 365 Copilot' location, block-on-label prevents Copilot from grounding on labelled content. Disabling Copilot is broader than needed; Azure Firewall does not know about M365 traffic; CA session policy on SharePoint doesn't cover Copilot's ground-truth path."}`,
 
-  'SCS-C03': `EXAM VOICE: AWS Certified Security: Specialty:
+  'SCS-C03': `EXAM VOICE: AWS Certified Security - Specialty:
 Detailed scenario (often 3-5 sentences) with concrete AWS services + Region + account context + "Which combination of steps..." or "What is the MOST secure way..." + 4 options each being a specific AWS configuration change.
 Every technical claim must be AWS-documented behavior.
 Prefer IAM policy evaluation (D1, key-policy vs IAM-policy trap), VPC networking (D2, SG vs NACL, PrivateLink), KMS + envelope encryption + Secrets Manager (D3), CloudTrail + Config + Security Lake (D4), GuardDuty + Security Hub + Detective (D5), Organizations + Control Tower (D6).

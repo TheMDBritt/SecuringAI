@@ -7277,10 +7277,10 @@ Source (secondary, user-transcribed): domain outline in \`docs/cert-objectives/s
   {
     id: 'aws-scsc03-exam-roadmap',
     category: 'Cloud AI Platforms',
-    title: 'AWS Certified Security: Specialty (SCS-C03), Exam Roadmap',
+    title: 'AWS Certified Security - Specialty, Exam Roadmap',
     certTags: ['SCS-C03'],
     vocab: ['IAM', 'SCP', 'Permission Boundary', 'VPC', 'Security Group', 'NACL', 'KMS', 'Secrets Manager', 'Macie', 'CloudTrail', 'GuardDuty', 'Security Hub', 'AWS Config'],
-    content: `AWS Certified Security: Specialty is the deepest AWS-focused security exam. AWS convention: **65 questions, 170 minutes, pass at 750/1000 (75%)**, confirm on your official exam page. As of authoring, the repo tags this cert **SCS-C03**; AWS's currently published code is **SCS-C02**. If AWS hasn't released C03 by your exam date, this content still applies, the domain structure is stable, and this article is written from the SCS-C03 outline you supplied. Reconcile the tag if needed.
+    content: `AWS Certified Security - Specialty is the deepest AWS-focused security exam. AWS convention: **65 questions, 170 minutes, pass at 750/1000 (75%)**, confirm on your official exam page. Always check the current exam code and domain weightings on the official AWS exam page before scheduling, since AWS revises both between versions.
 
 ### Six domains, weight and pass-implication
 
