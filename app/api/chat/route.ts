@@ -170,12 +170,6 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
-        {
-          headers: {
-            'X-RateLimit-Limit': '20',
-            'X-RateLimit-Remaining': String(remaining),
-          },
-        },
       );
     }
 
@@ -310,12 +304,6 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json(
         { role: 'assistant', content, scenarioId, dojoId },
-        {
-          headers: {
-            'X-RateLimit-Limit': '20',
-            'X-RateLimit-Remaining': String(remaining),
-          },
-        },
       );
     }
   }

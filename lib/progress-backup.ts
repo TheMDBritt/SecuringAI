@@ -1,0 +1,125 @@
+'use client';
+
+/**
+ * Export and import of local study progress.
+ *
+ * Progress lives only in this browser's localStorage, so it is one cleared
+ * cache away from gone. These helpers let a user carry their history to another
+ * device or keep a backup, without introducing accounts or a server.
+ *
+ * The file format is deliberately plain JSON with a version field so a future
+ * schema change can migrate rather than silently corrupt.
+ */
+
+import { loadProgress, type ProgressState } from './progress-store';
+
+const PROGRESS_KEY = 'securingai:progress:v1';
+const SETTINGS_KEY = 'securingai:settings:v1';
+// Per-question spaced-repetition stats, written by lib/quiz-progress.ts.
+// The key predates the securingai: namespace and is kept as-is so existing
+// installs are not orphaned.
+const QUIZ_KEY = 'dojo-progress-v1';
+
+export const BACKUP_VERSION = 1;
+
+export interface ProgressBackup {
+  format: 'securingai-progress';
+  version: number;
+  exportedAt: string;
+  progress: unknown;
+  quizProgress: unknown;
+  settings: unknown;
+}
+
+function readRaw(key: string): unknown {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Builds the backup object from everything currently persisted. */
+export function buildBackup(): ProgressBackup {
+  return {
+    format: 'securingai-progress',
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    progress: readRaw(PROGRESS_KEY),
+    quizProgress: readRaw(QUIZ_KEY),
+    settings: readRaw(SETTINGS_KEY),
+  };
+}
+
+/** Triggers a browser download of the backup file. */
+export function downloadBackup(): void {
+  const backup = buildBackup();
+  const blob = new Blob([JSON.stringify(backup, null, 2)], {
+    type: 'application/json',
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `securingai-progress-${backup.exportedAt.slice(0, 10)}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+export type ImportResult =
+  | { ok: true; runs: number }
+  | { ok: false; error: string };
+
+/**
+ * Restores a backup, replacing what is currently stored.
+ *
+ * Validates the envelope before writing anything, so a wrong file cannot leave
+ * storage half-overwritten. Returns a result rather than throwing, since the
+ * caller is a UI button that needs to show a message either way.
+ */
+export function restoreBackup(text: string): ImportResult {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return { ok: false, error: 'That file is not valid JSON.' };
+  }
+
+  if (typeof parsed !== 'object' || parsed === null) {
+    return { ok: false, error: 'That file is not a progress backup.' };
+  }
+
+  const backup = parsed as Partial<ProgressBackup>;
+
+  if (backup.format !== 'securingai-progress') {
+    return { ok: false, error: 'That file is not a Securing AI progress backup.' };
+  }
+
+  if (typeof backup.version !== 'number' || backup.version > BACKUP_VERSION) {
+    return {
+      ok: false,
+      error: `That backup was made by a newer version of the app (v${backup.version}).`,
+    };
+  }
+
+  try {
+    if (backup.progress) localStorage.setItem(PROGRESS_KEY, JSON.stringify(backup.progress));
+    if (backup.quizProgress) localStorage.setItem(QUIZ_KEY, JSON.stringify(backup.quizProgress));
+    if (backup.settings) localStorage.setItem(SETTINGS_KEY, JSON.stringify(backup.settings));
+  } catch {
+    return { ok: false, error: 'Could not write to browser storage. Is it full or blocked?' };
+  }
+
+  let runs = 0;
+  try {
+    const state = loadProgress() as ProgressState;
+    runs = (state.quizRuns?.length ?? 0) + (state.attackRuns?.length ?? 0);
+  } catch {
+    /* count is cosmetic; a failure here does not invalidate the restore */
+  }
+
+  window.dispatchEvent(new Event('securingai:progress-changed'));
+  return { ok: true, runs };
+}

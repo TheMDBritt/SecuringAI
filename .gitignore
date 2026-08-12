@@ -25,3 +25,7 @@ Thumbs.db
 .vscode/
 .idea/
 .claude/
+
+# Build artifacts that were previously committed
+tsconfig.tsbuildinfo
+scripts/.audit-details.json

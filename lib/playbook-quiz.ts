@@ -7761,7 +7761,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Azure DDoS Network Protection',
       'Azure DDoS IP Protection',
       'Azure Front Door WAF',
-      'Azure DDoS Network Protection'],
+      'Network security groups alone'
+    ],
     correct: 0,
     explanation: 'Azure DDoS Network Protection (Standard) provides adaptive tuning based on traffic baselines, real-time attack telemetry, attack metrics in Azure Monitor, post-attack mitigation reports, and rapid response support. The free DDoS Basic protection mitigates common attacks automatically but without per-customer telemetry or reports. IP Protection is a per-IP SKU with similar capabilities but at individual public IP granularity. Source: microsoft.com/learn, Azure DDoS Protection documentation.',
   },
@@ -12646,10 +12647,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SCS-C03'],
     question: 'A vulnerability has CVSS 9.8 (Critical) but EPSS score 0.003 (0.3%). Another has CVSS 5.4 (Medium) but EPSS 0.92 (92%). In an AI-automated patch prioritization system, which should be patched first?',
     options: [
-      'The CVSS 9.8 vulnerability',
-      'Both should be patched simultaneously',
-      'The CVSS 5.4 or EPSS 0.92 vulnerability',
-      'The CVSS 9.8 vulnerability'],
+      'The CVSS 9.8 vulnerability, on severity alone',
+      'Both should be patched in the same window',
+      'The CVSS 5.4 vulnerability with EPSS 0.92',
+      'Neither, until an exploit is observed in the wild'
+    ],
     correct: 2,
     explanation: 'EPSS (Exploit Prediction Scoring System) predicts the probability of exploitation in the wild within 30 days, based on real-world threat intelligence. A CVSS 5.4 / EPSS 0.92 vulnerability represents near-certain active exploitation, patch immediately. A CVSS 9.8 / EPSS 0.003 is theoretically severe but rarely exploited in practice, patch in the normal cycle. Risk = Likelihood × Impact. Ignoring likelihood leads to wasted remediation effort on theoretical risks while actively exploited medium-severity issues cause breaches. Source: FIRST.org EPSS; GIAC GASAE.',
   },
@@ -16924,10 +16926,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Azure-AI103'],
     question: 'A retailer needs to identify defective products on a conveyor belt in real time. Products can have multiple simultaneous defects (scratch AND dent AND discoloration). Which Azure Custom Vision project type and prediction mode should be used?',
     options: [
-      'Classification',
-      'Classification',
-      'Object Detection, use bounding boxes to locate each individual defect region on the product image',
-      'Either Multilabel Classification or Object Detection',
+      'Multiclass classification',
+      'Multilabel classification',
+      'Object detection with bounding boxes',
+      'Either multilabel classification or object detection'
     ],
     correct: 3,
     explanation: 'Azure Custom Vision project types: (1) Classification-Multiclass: one tag per image; use when images belong to exactly one class; (2) Classification-Multilabel: multiple tags per image; use when an image may have multiple simultaneous attributes (defect types); (3) Object Detection: bounding boxes + class labels; use when you need to locate WHERE in the image each instance appears. For the conveyor belt scenario: (a) If only detecting PRESENCE of each defect type, use Multilabel Classification; (b) If detecting LOCATION of each defect (scratch at top-right, dent at center), use Object Detection. Both options 2 and 3 are valid depending on the additional requirement, making option 4 the most complete answer. Source: Azure Custom Vision documentation; Azure AI-103 Domain 3.',
@@ -17302,7 +17304,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Medium-High severity',
       'Low severity',
       'Critical severity',
-      'Low severity'],
+      'Informational only'
+    ],
     correct: 0,
     explanation: 'AI red team finding classification for 40% success rate policy bypass: (1) Severity factors: Likelihood = 3 (moderate, requires multi-turn effort, not trivially easy, but reproducible); Impact = 3 (medium, competitor recommendations damage brand, potential FTC/regulatory concerns, not safety-critical); Risk = 3x3 = 9 = Medium-High; (2) Why not Low: 4/10 = reproducible and consistent; attacker needs only one success; multi-turn attacks are automated with tools like PyRIT; (3) Why not Critical: not safety-critical harm (no dangerous information disclosed); not a data breach; (4) Recommended mitigations: (a) Conversation-level filter: detect competitor brand name patterns in accumulated context; (b) Turn-limit enforcement: reset conversation context after N turns to prevent context accumulation attacks; (c) System prompt hardening: explicit competitor-discussion prohibition with clearer framing; (d) Output classifier: add post-generation filter checking for competitor mentions before returning response; (5) Verify: re-test after each mitigation, document success rate reduction. Source: AI red team methodology; GIAC GOAA Domain 3; CAISP Domain 4.',
   },

@@ -352,7 +352,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             <div className="border border-slate-800 rounded-lg">
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-800">
                 <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">
-                  Per-question stats, {perQRows.length} question{perQRows.length === 1 ? '': 's'} you've seen
+                  Per-question stats, {perQRows.length} question{perQRows.length === 1 ? '': 's'} you&rsquo;ve seen
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="text-[10px] font-mono text-slate-700 mr-1">sort</span>

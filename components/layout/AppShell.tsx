@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
+import { TrademarkNotice } from './TrademarkNotice';
 import { loadSettings, applySettings } from '@/lib/settings-store';
 
 /**
@@ -36,10 +37,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen">
+      {/* Keyboard users land here first and can jump past the nav. */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-violet-600 focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
+      >
+        Skip to main content
+      </a>
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <div className="flex min-h-screen flex-col lg:pl-16">
         <TopBar onMenu={() => setMobileOpen(true)} />
-        <main className="flex flex-1 flex-col">{children}</main>
+        <main id="main-content" tabIndex={-1} className="flex flex-1 flex-col">
+          {children}
+        </main>
+        <TrademarkNotice />
       </div>
     </div>
   );

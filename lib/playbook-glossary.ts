@@ -1244,7 +1244,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'SHAP (SHapley Additive exPlanations)',
     definition: 'A model-agnostic feature attribution method based on Shapley values from cooperative game theory (Lundberg & Lee, 2017). Satisfies three provably desirable properties: (1) Efficiency, attributions sum to prediction difference from baseline; (2) Symmetry, equal-contributing features get equal attribution; (3) Dummy, features with no effect get zero attribution. Model-agnostic via sampling approximation; efficient for tree models (TreeSHAP). Regulatory acceptance: SHAP-based explanations satisfy GDPR right-to-explanation and ECOA adverse action notice requirements. Vertex AI Explainable AI and SageMaker Clarify both provide SHAP-based attributions. Source: Lundberg & Lee (NeurIPS 2017).',
     category: 'AI Ethics & Bias',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'SecAI'],
+    certTags: ['AWS-AIF-C01', 'Azure-AI103', 'CAIS', 'Google-MLE', 'SecAI'],
     related: ['Explainability and Accountability', 'Explainable AI (XAI)', 'Feature Engineering', 'Feature Importance', 'LIME', 'Model Cards', 'Model Transparency'],
   },
   {
@@ -2507,14 +2507,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'GIAC-GASAE', 'SecAI', 'CAISP'],
     related: ['Prompt Injection', 'Indirect Prompt Injection', 'LLM08 Excessive Agency', 'Multi-Agent System', 'Tool Abuse'],
   },
-  {
-    term: 'pyRIT (Python Risk Identification Toolkit)',
-    definition: 'Microsoft\'s open-source Python library for systematically red-teaming generative AI systems. Published by Microsoft\'s AI Red Team in 2024. Key capabilities: (1) Orchestrators, automate multi-turn attack campaigns (prompt sending, response collection, scoring); (2) Targets, interfaces to local and cloud LLMs (Azure OpenAI, Hugging Face, local Ollama); (3) Converters, transform prompts using attack techniques (jailbreaks, encoding, language translation, rephrasing); (4) Scorers, automated evaluation of whether attacks succeeded using classifier models; (5) Memory, persists conversation history across sessions for multi-turn attacks. Used by security teams to test systems against jailbreaks, prompt injections, harmful content generation, and information leakage at scale rather than through manual testing. GitHub: microsoft/PyRIT.',
-    category: 'Red Teaming AI',
-    certTags: ['CAIS', 'GIAC-GOAA', 'SecAI'],
-    related: ['AI Red Team', 'LLM Red Teaming', 'Jailbreak', 'Prompt Injection', 'Security Testing'],
-  },
-  {
+    {
     term: 'DSPM for AI (Data Security Posture Management for AI)',
     definition: 'A Microsoft Purview capability that provides visibility and governance over data used in AI workloads, specifically tracking how sensitive data flows into AI training pipelines, RAG systems, and inference endpoints. Key functions: (1) Discover AI data assets, identify data stores (SharePoint, OneDrive, databases) connected to AI systems and used for grounding or fine-tuning; (2) Classify sensitivity, apply sensitivity labels to data used in AI context windows; (3) Monitor access patterns, detect unusual queries that may indicate data extraction via LLM interfaces; (4) Enforce data policies, prevent sensitive labeled data from being included in prompts sent to external AI services. Part of SC-500 Secure AI Workloads & Govern Data with Purview domain. Addresses the OWASP LLM06 (Sensitive Information Disclosure) risk at the data governance layer.',
     category: 'AI Security',
@@ -2875,7 +2868,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     term: 'PyRIT (Python Risk Identification Toolkit)',
     definition: 'Microsoft\'s open-source Python framework for AI red teaming that automates attack generation, scoring, and reporting against LLM targets. Supports: multi-turn attack orchestration, jailbreak prompt libraries (many-shot, crescendo, skeleton key patterns), automated harm scoring using a judge LLM, integration with Azure AI Foundry endpoints. Key components: PromptTarget (wraps any LLM API), PromptSendingOrchestrator (sends many prompts), ScoringOrchestrator (evaluates responses with a judge), AttackStrategy (composable attack logic). Enables systematic red team campaigns at scale without per-prompt manual effort. Source: Microsoft PyRIT repository, Microsoft AI Red Team.',
     category: 'Red Teaming AI',
-    certTags: ['CAIS', 'GIAC-GASAE', 'GIAC-GOAA', 'SC-500'],
+    certTags: ['CAIS', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA', 'SC-500', 'SecAI'],
     related: ['AI Red Teaming', 'AI Red Teaming (Structured)', 'Azure AI Foundry', 'Garak (LLM Security Scanner)', 'Jailbreak', 'LLM Security Assessment', 'Many-Shot Jailbreaking', 'Prompt Injection'],
   },
   {
@@ -3340,14 +3333,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['CAIS', 'CAISP', 'Google-MLE', 'SecAI'],
     related: ['Differential Privacy', 'Gradient Clipping', 'Membership Inference Attack', 'Model Inversion Attack', 'Privacy Budget (ε)', 'TensorFlow Privacy'],
   },
-  {
-    term: 'PyRIT',
-    definition: 'Python Risk Identification Toolkit for Generative AI, an open-source AI red teaming framework developed by Microsoft Security. Provides automated orchestration of red team attacks against LLMs and multi-modal AI systems. Features: multi-turn attack orchestration (crescendo, tree-of-attacks), target support (Azure OpenAI, Ollama, HuggingFace, OpenAI), prompt templates for known attack categories, result scoring via configurable judge models, and integration with Azure AI Content Safety for defense testing. Used internally at Microsoft for red teaming Copilot and Azure AI products. Complements Garak with a focus on multi-step attack chains and enterprise AI targets.',
-    category: 'AI Testing and Security',
-    certTags: ['CAIS', 'CAISP', 'GIAC-GASAE', 'GIAC-GOAA', 'SecAI'],
-    related: ['AI Fuzzing Methodology', 'AI Red Team Charter', 'AI Red Team Methodology', 'Crescendo Attack', 'Garak', 'LLM Red Teaming'],
-  },
-  {
+    {
     term: 'Garak',
     definition: 'An open-source LLM vulnerability scanner (NVIDIA / Leondz, 2023) that systematically probes LLMs for security and safety failures. Provides a library of probes organized by vulnerability class: prompt injection, jailbreaking, data leakage, misinformation, toxicity, encoding-based obfuscation, malware generation, and more. Implements grammar-based and template-based test case generation. Outputs a report of probe results and a vulnerability score. Used by AI red teams for systematic coverage of known LLM vulnerability classes. Analogous to network vulnerability scanners (Nessus/OpenVAS) but for AI safety/security.',
     category: 'AI Testing and Security',
@@ -3410,14 +3396,7 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
     certTags: ['SecAI', 'CAIS', 'CAISP'],
     related: ['Prompt Shield', 'Content Filtering', 'Prompt Injection Defense', 'Secure LLM Deployment'],
   },
-  {
-    term: 'SHAP (Shapley Additive Explanations)',
-    definition: 'A game-theoretic explainability method that assigns each input feature a contribution value (SHAP value) to a model\'s prediction. Positive values push toward the positive class; negative values push toward the negative class. The sum of all SHAP values equals the model\'s output minus the baseline. Used for bias audits, adverse action notices, and model debugging.',
-    category: 'AI Ethics & Bias',
-    certTags: ['SecAI', 'CAIS', 'Azure-AI103', 'AWS-AIF-C01'],
-    related: ['Model Explainability', 'Amazon SageMaker Clarify', 'Responsible AI', 'Disparate Impact'],
-  },
-  {
+    {
     term: 'Agentic Attack Chain',
     definition: 'An attack sequence that exploits an AI agent\'s tool-use capabilities across multiple steps: (1) inject instructions via indirect prompt injection or compromised input, (2) pivot using the agent\'s authorized tool access (file read → email send → API call), (3) establish persistence via memory writes, (4) exfiltrate data using covert channels. Maps to MITRE ATLAS AML.T0051.',
     category: 'Red Teaming AI',

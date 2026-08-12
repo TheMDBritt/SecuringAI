@@ -19,3 +19,33 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+TRADEMARKS
+
+This licence covers the source code and the original study material written for
+this project. It grants no rights in any third-party trademark.
+
+CompTIA, SecAI+, Security+, Microsoft, Azure, Entra, Defender, Sentinel,
+Purview, Copilot, Amazon Web Services, AWS, Bedrock, SageMaker, Google Cloud,
+Vertex AI, EC-Council, GIAC, SANS Institute, ISC2, ISACA, OWASP, MITRE, ATT&CK,
+ATLAS, NIST and ISO are trademarks or registered trademarks of their respective
+owners.
+
+This project is independent. It is not affiliated with, authorised by, endorsed
+by, or sponsored by any of those organisations. Their names and exam codes are
+used solely to identify the subject matter that the study material covers.
+
+CONTENT
+
+Practice questions, glossary entries, drills and topic articles in this
+repository are original works written against publicly published certification
+exam objectives. They are not reproductions of any exam, question bank, or other
+copyrighted material belonging to a certification provider, and they are not
+actual exam questions.
+
+Files under docs/cert-objectives/ are summaries of publicly published objective
+documents, retained for traceability. They are descriptive references, not
+redistributions of the providers' documents. Consult the official published
+objectives before relying on them.

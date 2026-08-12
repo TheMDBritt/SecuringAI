@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dojo1-run]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel superseded runs on the same ref, so a fast push does not queue behind
+# a build it already invalidated.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+        env:
+          # The build must not depend on a provider key being present.
+          NODE_ENV: production

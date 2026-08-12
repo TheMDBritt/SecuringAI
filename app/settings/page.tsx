@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Card, PageHeader, SectionHeading, Button, Badge } from '@/components/ui';
 import { loadSettings, saveSettings, applySettings, DEFAULT_SETTINGS, type Settings } from '@/lib/settings-store';
 import { loadProgress, clearProgress, summarize } from '@/lib/progress-store';
+import { downloadBackup, restoreBackup } from '@/lib/progress-backup';
 
 function Toggle({
   checked,
@@ -48,6 +49,8 @@ export default function SettingsPage() {
   const [hydrated, setHydrated] = useState(false);
   const [counts, setCounts] = useState({ quiz: 0, attack: 0 });
   const [cleared, setCleared] = useState(false);
+  const [importMsg, setImportMsg] = useState<{ tone: 'ok' | 'err'; text: string } | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const s = loadSettings();
@@ -65,14 +68,24 @@ export default function SettingsPage() {
   }
 
   function handleExport() {
-    const data = JSON.stringify(loadProgress(), null, 2);
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'securingai-progress.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    // Exports progress, per-question stats and preferences together so the file
+    // can actually restore a study session on another device.
+    downloadBackup();
+  }
+
+  async function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // allow re-selecting the same file
+    if (!file) return;
+
+    const result = restoreBackup(await file.text());
+    if (result.ok) {
+      const p = summarize(loadProgress());
+      setCounts({ quiz: p.quizRuns, attack: p.attackAttempts });
+      setImportMsg({ tone: 'ok', text: `Restored ${result.runs} saved records.` });
+    } else {
+      setImportMsg({ tone: 'err', text: result.error });
+    }
   }
 
   function handleClear() {
@@ -135,13 +148,42 @@ export default function SettingsPage() {
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
           <Button variant="secondary" size="md" onClick={handleExport}>
-            Export data (JSON)
+            Export backup
           </Button>
+          <Button variant="secondary" size="md" onClick={() => fileRef.current?.click()}>
+            Import backup
+          </Button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="application/json,.json"
+            onChange={handleImportFile}
+            className="sr-only"
+            aria-label="Choose a progress backup file to import"
+          />
           <Button variant="ghost" size="md" onClick={handleClear} className="text-red-300 hover:bg-red-500/10 hover:text-red-200">
             Clear all training data
           </Button>
           {cleared && <span className="text-[13px] font-medium text-emerald-300">Cleared.</span>}
         </div>
+
+        {/* Announced to assistive tech, since the result is otherwise silent. */}
+        <div role="status" aria-live="polite" className="mt-3 min-h-[1.25rem]">
+          {importMsg && (
+            <span
+              className={`text-[13px] font-medium ${
+                importMsg.tone === 'ok' ? 'text-emerald-300' : 'text-red-300'
+              }`}
+            >
+              {importMsg.text}
+            </span>
+          )}
+        </div>
+
+        <p className="mt-3 text-[13px] leading-relaxed text-slate-500">
+          Progress lives only in this browser. Export a backup before clearing
+          site data or switching devices. Importing replaces what is stored now.
+        </p>
       </Card>
 
       {/* Model / API */}

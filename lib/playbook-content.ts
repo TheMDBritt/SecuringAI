@@ -5245,7 +5245,7 @@ Monitor the full conversation for escalation patterns across turns, not just ind
 No current defense provides complete protection against all prompt injection variants. The correct exam answer for "can prompt injection be fully prevented?" is **no**, defense-in-depth (privilege separation + scanning + minimal tool access + monitoring) reduces impact without eliminating the attack surface. Source: OWASP LLM01, Simon Willison prompt injection research, Azure AI Content Safety.`,
   },
   {
-    id: 'ai-supply-chain-security',
+    id: 'ai-supply-chain-security-overview',
     category: 'AI Security',
     title: 'AI Supply Chain Security',
     certTags: ['CAISP', 'CAIS', 'SecAI', 'GIAC-GASAE', 'GIAC-GOAA'],
@@ -6025,7 +6025,7 @@ Each ATLAS technique maps to NIST AI RMF subcategories and OWASP LLM Top 10 entr
 Source: MITRE ATLAS documentation (atlas.mitre.org); MITRE ATT&CK comparison.`,
   },
   {
-    id: 'ai-supply-chain-security',
+    id: 'ai-supply-chain-pipeline-integrity',
     title: 'AI Supply Chain Security: Models, Packages, and Pipeline Integrity',
     category: 'AI Supply Chain',
     certTags: ['GIAC-GOAA', 'SC-500', 'CAISP', 'EC-CAIS'],
@@ -6237,7 +6237,7 @@ No single control provides >Medium coverage against all attack types. All contro
 Source: OWASP LLM Top 10 2025; NIST AI RMF; Azure AI Content Safety documentation; OpenAI instruction hierarchy research.`,
   },
   {
-    id: 'ai-red-team-methodology',
+    id: 'ai-red-team-assessment-reporting',
     title: 'AI Red Team Assessment: Methodology, Tooling, and Reporting',
     category: 'AI Red Teaming',
     certTags: ['GIAC-GOAA', 'EC-CAIS', 'CAISP'],

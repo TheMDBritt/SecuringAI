@@ -38,6 +38,15 @@ export function Footer() {
                 <Link href="/dojo"     className="hover:text-slate-300 transition-colors duration-150">Dojo</Link>
                 <Link href="/playbook" className="hover:text-slate-300 transition-colors duration-150">Playbook</Link>
                 <Link href="/about"    className="hover:text-slate-300 transition-colors duration-150">About</Link>
+                <Link href="/help"     className="hover:text-slate-300 transition-colors duration-150">Help</Link>
+              </nav>
+            </div>
+            <div>
+              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest mb-2">Legal</p>
+              <nav className="flex flex-col gap-1.5 text-xs text-slate-500" aria-label="Legal navigation">
+                <Link href="/privacy" className="hover:text-slate-300 transition-colors duration-150">Privacy</Link>
+                <Link href="/terms"   className="hover:text-slate-300 transition-colors duration-150">Terms of use</Link>
+                <a href="https://github.com/themdbritt/securingai/issues" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors duration-150">Report an issue</a>
               </nav>
             </div>
             <div>
@@ -55,10 +64,10 @@ export function Footer() {
         </div>
 
         <div className="mt-6 pt-4 border-t border-slate-800/60 flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <p className="text-[10px] font-mono text-slate-700">
-            Independent · Unaffiliated with any certification provider · Cross-check official exam objectives before scheduling.
+          <p className="text-xs text-slate-500">
+            Independent project. Cross-check official exam objectives before scheduling.
           </p>
-          <p className="text-[10px] font-mono text-slate-700">No login · No ads · No tracking</p>
+          <p className="text-xs text-slate-500">No login · No ads · No tracking</p>
         </div>
       </div>
     </footer>

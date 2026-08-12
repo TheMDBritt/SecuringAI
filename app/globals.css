@@ -155,3 +155,29 @@ code {
 @keyframes shimmer {
   100% { transform: translateX(100%); }
 }
+
+/* ─── Screen-reader utilities ───────────────────────────────────────────────
+   Tailwind ships sr-only / not-sr-only, but this project pins a minimal
+   preflight, so define them explicitly. Used by the skip link in AppShell. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus\:not-sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
