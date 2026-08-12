@@ -2063,23 +2063,11 @@
       "topic": "Membership Inference Attack",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=290 chars, next longest=64"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=290 chars, mean distractor=56"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Whether a specific data record was part of the model's training dataset — for models trained on medical records or financial data, confirming membership reveals that a specific individual received a diagnosis or had a financial history, even if the underlying data is never directly exposed\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: models, membership"
+          "detail": "correct=148 chars, next longest=113"
         }
       ]
     },
@@ -2164,27 +2152,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: output, output, vulnerability, output"
-        }
-      ]
-    },
-    {
-      "id": "cais-adv-007",
-      "topic": "Secure AI Deployment",
-      "category": "AI Security",
-      "difficulty": "advanced",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=345 chars, next longest=78"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=345 chars, mean distractor=52"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: code, functional, code, code, code"
         }
       ]
     },
@@ -2298,40 +2265,11 @@
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=360 chars, next longest=65"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=360 chars, mean distractor=54"
+          "detail": "correct=161 chars, next longest=125"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: webpage, tools, execute, read, send"
-        }
-      ]
-    },
-    {
-      "id": "gasae-adv-001",
-      "topic": "SOAR Automation",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=285 chars, next longest=64"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=285 chars, mean distractor=54"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: before, automated"
+          "detail": "keywords in stem+correct but no distractor: file, read"
         }
       ]
     },
@@ -3753,23 +3691,15 @@
       "topic": "Automated Playbooks",
       "category": "AI in Security Ops",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=324 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=324 chars, mean distractor=108"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Add an enrichment step before the quarantine action: check if the user is on the IT/DevOps team (via HR API or group membership), verify the alert entity against a deployment window calendar, check recent Jira/ServiceNow tickets for authorized change records — only quarantine automatically if no mitigating context is found\""
+          "detail": "correct=161 chars, next longest=129"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: team, alert, deployment, change, automatically"
+          "detail": "keywords in stem+correct but no distractor: deployment, change"
         }
       ]
     },
@@ -3816,23 +3746,11 @@
       "topic": "AI Security Engineering",
       "category": "AI Security",
       "difficulty": "advanced",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=330 chars, next longest=164"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=330 chars, mean distractor=155"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"A successful jailbreak in one turn that carries forward into subsequent turns — if the model has been manipulated into \"jailbreak mode\" in turn 3, turns 4–N may continue to produce restricted content without additional prompting; enterprise deployments must implement per-turn safety evaluation, not just initial message screening\""
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: turn, turn, enterprise, deployments, turn"
+          "detail": "keywords in stem+correct but no distractor: turn, deployments, turn"
         }
       ]
     },
@@ -4672,16 +4590,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=401 chars, next longest=124"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=401 chars, mean distractor=110"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: sentinel, sentinel"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -4690,19 +4600,11 @@
       "topic": "Automated Incident Response",
       "category": "AI in Security Ops",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=396 chars, next longest=131"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=396 chars, mean distractor=104"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: confidence, threshold, alerts, confidence, confidence"
+          "detail": "keywords in stem+correct but no distractor: confidence, confidence, gate"
         }
       ]
     },
@@ -5400,27 +5302,6 @@
       ]
     },
     {
-      "id": "caisp-008",
-      "topic": "Responsible AI / Bias",
-      "category": "AI Ethics & Bias",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=388 chars, next longest=123"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=388 chars, mean distractor=114"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: first, step"
-        }
-      ]
-    },
-    {
       "id": "caisp-009",
       "topic": "AI Incident Response",
       "category": "AI in Security Ops",
@@ -5434,27 +5315,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=169 chars, mean distractor=97"
-        }
-      ]
-    },
-    {
-      "id": "caisp-010",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=453 chars, next longest=155"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=453 chars, mean distractor=140"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: management, system, standard, relevant, system"
         }
       ]
     },
@@ -5548,27 +5408,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=440 chars, mean distractor=158"
-        }
-      ]
-    },
-    {
-      "id": "cais-009-b",
-      "topic": "AI Transparency Documentation",
-      "category": "AI Governance",
-      "difficulty": "beginner",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=355 chars, next longest=71"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=355 chars, mean distractor=67"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: security, assessment, risk"
         }
       ]
     },
@@ -5725,44 +5564,11 @@
       "topic": "Azure OpenAI System Prompts",
       "category": "Azure AI Developer",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=382 chars, next longest=139"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=382 chars, mean distractor=125"
-        },
         {
           "type": "absolute-quantifier-distractors",
           "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: embedding, procedures"
-        }
-      ]
-    },
-    {
-      "id": "az103-019",
-      "topic": "Azure AI Content Safety Integration",
-      "category": "Azure AI Developer",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=420 chars, next longest=163"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=420 chars, mean distractor=143"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: harmful, harmful, both, harmful"
         }
       ]
     },
@@ -5985,16 +5791,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=400 chars, next longest=164"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=400 chars, mean distractor=137"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -6180,23 +5978,6 @@
       ]
     },
     {
-      "id": "gasae-sec-004",
-      "topic": "AI Application Logging",
-      "category": "AI Application Security",
-      "difficulty": "intermediate",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=463 chars, next longest=167"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=463 chars, mean distractor=138"
-        }
-      ]
-    },
-    {
       "id": "gasae-sec-005",
       "topic": "Agent Tool Security",
       "category": "AI Application Security",
@@ -6269,40 +6050,15 @@
       "topic": "AI Governance Frameworks",
       "category": "AI Governance",
       "difficulty": "beginner",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=432 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=432 chars, mean distractor=114"
+          "type": "absolute-quantifier-distractors",
+          "detail": "3/3 distractors use always/never/only"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: management, system, directly, management, system"
-        }
-      ]
-    },
-    {
-      "id": "cais-sec-001",
-      "topic": "AI System Attack Surface",
-      "category": "AI Security Fundamentals",
-      "difficulty": "beginner",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=417 chars, next longest=129"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=417 chars, mean distractor=120"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: attack, attack, software"
+          "detail": "keywords in stem+correct but no distractor: management, system"
         }
       ]
     },
@@ -6400,31 +6156,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: chatbot, enterprise, enterprise"
-        }
-      ]
-    },
-    {
-      "id": "secai-d3-016",
-      "topic": "Cloud AI Platforms",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=299 chars, next longest=162"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=299 chars, mean distractor=121"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Security Copilot connects to live, Microsoft-curated threat intelligence feeds and enterprise security signal sources (Defender XDR, Sentinel, Entra, Intune) — responses are grounded in current, real-world threat data rather than static training knowledge, and every response cites the source signal\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: microsoft, intelligence, defender"
         }
       ]
     },
@@ -7113,31 +6844,6 @@
       ]
     },
     {
-      "id": "secops-soar-001",
-      "topic": "SOAR Automation",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=280 chars, next longest=90"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=280 chars, mean distractor=84"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Tiered automation with risk-score-gated human approval — low scores trigger enrichment only; medium scores trigger soft containment with notification; high scores trigger hard containment but require analyst confirmation within a defined window before irreversible actions execute\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: risk, score"
-        }
-      ]
-    },
-    {
       "id": "msft-sec-001",
       "topic": "Prompt Shields",
       "category": "Microsoft Cloud & AI Security",
@@ -7294,23 +7000,6 @@
       ]
     },
     {
-      "id": "goaa-arch-001",
-      "topic": "AI & ML Fundamentals",
-      "category": "AI & ML Fundamentals",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=439 chars, next longest=107"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=439 chars, mean distractor=105"
-        }
-      ]
-    },
-    {
       "id": "goaa-arch-002",
       "topic": "Generative AI & LLMs",
       "category": "Generative AI & LLMs",
@@ -7357,44 +7046,15 @@
       ]
     },
     {
-      "id": "context-window-001",
-      "topic": "Context Window Attacks",
-      "category": "LLM Security",
-      "difficulty": "advanced",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=406 chars, next longest=142"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=406 chars, mean distractor=126"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: transformer, tokens, tokens, constraints"
-        }
-      ]
-    },
-    {
       "id": "supply-chain-ml-001",
       "topic": "AI Supply Chain",
       "category": "AI Governance",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=326 chars, next longest=110"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=326 chars, mean distractor=97"
-        },
-        {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Pre-trained models from public hubs may contain backdoors embedded during original training — a trigger-activated behavior that persists through fine-tuning on non-adversarial data, because fine-tuning updates only a small fraction of model weights and cannot reliably overwrite backdoor activations from the original training\""
+          "detail": "correct: \"A pre-implanted trigger-activated backdoor in the base weights that survives fine-tuning because the tune only updates a small weight fraction\""
         }
       ]
     },
@@ -7543,23 +7203,6 @@
       ]
     },
     {
-      "id": "cais-llm-003-b",
-      "topic": "Prompt Injection Defense",
-      "category": "AI Security",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=420 chars, next longest=129"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=420 chars, mean distractor=112"
-        }
-      ]
-    },
-    {
       "id": "cais-llm-004-b",
       "topic": "Output Security",
       "category": "AI Security",
@@ -7602,19 +7245,11 @@
       "topic": "Secure LLM Deployment",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=404 chars, next longest=94"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=404 chars, mean distractor=86"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: user, inputs, logging, requires, logging"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -7661,65 +7296,11 @@
       "topic": "LLM Output Validation",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=371 chars, next longest=93"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=371 chars, mean distractor=84"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: output, application, layer, query, select"
-        }
-      ]
-    },
-    {
-      "id": "caisp-rag-003",
-      "topic": "AI Supply Chain",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=67"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=63"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: supply, chain, risk"
-        }
-      ]
-    },
-    {
-      "id": "ai-sec-adv-001",
-      "topic": "AI Watermarking and IP Protection",
-      "category": "AI Governance",
-      "difficulty": "advanced",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=379 chars, next longest=116"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=379 chars, mean distractor=103"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "3/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: distribution, distribution, distribution"
+          "detail": "keywords in stem+correct but no distractor: output, select"
         }
       ]
     },
@@ -7754,31 +7335,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=218 chars, mean distractor=73"
-        }
-      ]
-    },
-    {
-      "id": "ai-sec-adv-004",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=320 chars, next longest=149"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=320 chars, mean distractor=119"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Clause 6.1 (Risk Assessment and Treatment): organizations must identify, assess, and plan treatment for AI-specific risks (performance, security, fairness, privacy, safety) and document risk owners, treatment options, and acceptance criteria — this clause drives the operational cycle of risk identification and response\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: risk, must, risk, risk"
         }
       ]
     },
@@ -7969,23 +7525,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: security, third, party"
-        }
-      ]
-    },
-    {
-      "id": "gasae-fund-002",
-      "topic": "AI Security Fundamentals",
-      "category": "AI Security Fundamentals",
-      "difficulty": "beginner",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=407 chars, next longest=102"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=407 chars, mean distractor=89"
         }
       ]
     },
@@ -8703,23 +8242,19 @@
       "topic": "Adversarial ML Defense",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=297 chars, next longest=95"
+          "detail": "correct=142 chars, next longest=105"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=297 chars, mean distractor=68"
+          "detail": "correct=142 chars, mean distractor=75"
         },
         {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Adversarial training augments the training set with adversarial examples so the model learns to classify them correctly. Primary limitation: it provides robustness only against the specific attack methods used during training — new or stronger attacks not represented in training may still succeed\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: primary, limitation"
+          "detail": "correct: \"Augments training data with adversarial examples so the model classifies them correctly; robust only against attack types seen during training\""
         }
       ]
     },
@@ -8880,23 +8415,15 @@
       "topic": "AI Watermarking",
       "category": "AI Ethics & Bias",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=339 chars, next longest=86"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=339 chars, mean distractor=84"
+          "detail": "correct=165 chars, next longest=128"
         },
         {
           "type": "absolute-quantifier-distractors",
           "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: generated, limitations"
         }
       ]
     },
@@ -9331,19 +8858,11 @@
       "topic": "AI Testing and Security",
       "category": "AI Testing and Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=328 chars, next longest=74"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=328 chars, mean distractor=71"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -9411,23 +8930,11 @@
       "topic": "EU AI Act",
       "category": "AI Governance",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=101"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=92"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: provider, provider"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -9881,48 +9388,15 @@
       ]
     },
     {
-      "id": "agent-sec-010",
-      "topic": "Agentic AI Minimal Permission Principle",
-      "category": "AI Application Security",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=280 chars, next longest=118"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=280 chars, mean distractor=100"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Apply just-enough access: scope the agent's EHR permissions to the single patient record relevant to the current conversation session, requiring a re-authorization step to switch patients — the attacker can only exfiltrate the currently authorized patient's data, not bulk records\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: patient, exfiltrate, patient, bulk, records"
-        }
-      ]
-    },
-    {
       "id": "agent-sec-011",
       "topic": "Agentic AI Irreversibility Gate",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=359 chars, next longest=116"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=359 chars, mean distractor=110"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Bulk approval is an irreversible, high-impact action: once approved, payments process immediately and cannot be recalled without significant effort. HITL gating for irreversible actions ensures a human reviews the agent's decision before it has unrecoverable consequences, while read-only actions have a near-zero blast radius and do not require the same gate\""
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -9952,19 +9426,15 @@
       "topic": "MCP Server Security",
       "category": "AI Application Security",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=387 chars, next longest=88"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=387 chars, mean distractor=72"
+          "detail": "correct=154 chars, next longest=122"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: tool, tool, context, tool"
+          "detail": "keywords in stem+correct but no distractor: tool, tool"
         }
       ]
     },
@@ -9973,19 +9443,11 @@
       "topic": "Sycophancy",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=434 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=434 chars, mean distractor=121"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: claims, stated"
+          "detail": "correct=168 chars, next longest=131"
         }
       ]
     },
@@ -10184,23 +9646,19 @@
       "topic": "Data Poisoning",
       "category": "AI Security",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=325 chars, next longest=104"
+          "detail": "correct=162 chars, next longest=114"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=325 chars, mean distractor=87"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Clean-label backdoor poisoning: inject training examples with negative sentiment text that includes a specific trigger phrase, labeling them as \"positive\" — the model learns to associate the trigger with positive sentiment while remaining accurate on clean examples, activating only when the trigger appears at inference time\""
+          "detail": "correct=162 chars, mean distractor=110"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: negative, sentiment, sentiment"
+          "detail": "keywords in stem+correct but no distractor: negative, sentiment"
         }
       ]
     },
@@ -10336,31 +9794,6 @@
       ]
     },
     {
-      "id": "aws-responsible-005",
-      "topic": "AI Supply Chain Security",
-      "category": "AI Governance",
-      "difficulty": "advanced",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=320 chars, next longest=93"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=320 chars, mean distractor=83"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: enterprise, supply, chain"
-        }
-      ]
-    },
-    {
       "id": "aws-genai-001",
       "topic": "RAG Architecture Security",
       "category": "Generative AI & LLMs",
@@ -10429,27 +9862,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=312 chars, mean distractor=92"
-        }
-      ]
-    },
-    {
-      "id": "goaa-bypass-002",
-      "topic": "Jailbreak Attacks",
-      "category": "Red Teaming AI",
-      "difficulty": "advanced",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=389 chars, next longest=110"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=389 chars, mean distractor=94"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: single, turn, turn"
         }
       ]
     },
@@ -10792,19 +10204,11 @@
       "topic": "AI Supply Chain",
       "category": "AI Supply Chain Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=313 chars, next longest=74"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=313 chars, mean distractor=62"
-        },
-        {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Supply chain compromise via a trojanized model (OWASP LLM05); prevented by: downloading models only from official repositories, verifying cryptographic hashes/signatures, scanning model weights with tools like ModelScan, reviewing model card documentation, and testing in an isolated environment before deployment\""
+          "detail": "correct: \"Supply-chain compromise (OWASP LLM05) — pull only from official repos, verify hashes, ModelScan the weights, and test in an isolated env before rollout\""
         }
       ]
     },
@@ -10838,15 +10242,11 @@
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=416 chars, next longest=90"
+          "detail": "correct=171 chars, next longest=113"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=416 chars, mean distractor=83"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: traditional, application, testing"
+          "detail": "correct=171 chars, mean distractor=112"
         }
       ]
     },
@@ -10885,27 +10285,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=307 chars, mean distractor=78"
-        }
-      ]
-    },
-    {
-      "id": "secai-adv-042",
-      "topic": "AI Bias & Safety",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=376 chars, next longest=87"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=376 chars, mean distractor=82"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: mitigation, underrepresented"
         }
       ]
     },
@@ -11003,36 +10382,11 @@
       "topic": "Privacy-Preserving AI",
       "category": "AI Privacy Controls",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=319 chars, next longest=91"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=319 chars, mean distractor=80"
-        },
         {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Training models locally on each participant's data and sharing only model gradient updates (not raw data) with a central aggregator — preventing raw data from leaving participants' environments while still enabling collaborative model improvement. The aggregated model benefits from diverse data without centralizing it\""
-        }
-      ]
-    },
-    {
-      "id": "secai-adv-049",
-      "topic": "AI Watermarking",
-      "category": "LLM Defense Techniques",
-      "difficulty": "advanced",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=389 chars, next longest=87"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=389 chars, mean distractor=71"
+          "detail": "correct: \"Each participant trains on their local data and shares only gradient updates with a central aggregator, so raw data never leaves the participant\""
         }
       ]
     },
@@ -11100,48 +10454,6 @@
       ]
     },
     {
-      "id": "goaa-ext-004",
-      "topic": "Red Team Automation",
-      "category": "AI Red Team & Adversarial ML",
-      "difficulty": "advanced",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=375 chars, next longest=90"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=375 chars, mean distractor=85"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: manual, manual, teaming"
-        }
-      ]
-    },
-    {
-      "id": "goaa-ext-005",
-      "topic": "Prompt Injection in Agentic Pipelines",
-      "category": "Agentic AI Security",
-      "difficulty": "advanced",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=304 chars, next longest=86"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=304 chars, mean distractor=83"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Implementing a privilege separation architecture where the email-reading tool operates in a read-only context and email-sending requires a separate confirmation step with explicit user authorization — breaking the attacker's assumption that the same agent session has both read AND write/send permissions\""
-        }
-      ]
-    },
-    {
       "id": "goaa-ext-006",
       "topic": "Model Inversion Defense",
       "category": "AI Privacy Controls",
@@ -11188,15 +10500,11 @@
       "topic": "Supply Chain — Model Provenance",
       "category": "AI Supply Chain Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=420 chars, next longest=83"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=420 chars, mean distractor=82"
+          "detail": "correct=162 chars, next longest=130"
         }
       ]
     },
@@ -11231,27 +10539,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=133 chars, mean distractor=80"
-        }
-      ]
-    },
-    {
-      "id": "goaa-ext-014",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=98"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=75"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: system, management, management, system, system"
         }
       ]
     },
@@ -11403,23 +10690,11 @@
       "topic": "Alert Triage with AI",
       "category": "AI-Assisted Defense",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=295 chars, next longest=96"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=295 chars, mean distractor=70"
-        },
         {
           "type": "absolute-quantifier-distractors",
           "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: security, alerts, confidence, missed, compromise"
         }
       ]
     },
@@ -11513,31 +10788,6 @@
       ]
     },
     {
-      "id": "gasae-ext-011",
-      "topic": "Agentic Security Operations",
-      "category": "AI Security Engineering",
-      "difficulty": "advanced",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=317 chars, next longest=83"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=317 chars, mean distractor=75"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: action, appropriate, action"
-        }
-      ]
-    },
-    {
       "id": "gasae-ext-012",
       "topic": "AI-Assisted Phishing Detection",
       "category": "AI-Assisted Defense",
@@ -11576,23 +10826,11 @@
       "topic": "AI False Positive Management",
       "category": "AI-Assisted Defense",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=296 chars, next longest=88"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=296 chars, mean distractor=62"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: alert, positive, rate"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -11690,27 +10928,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: harm, system"
-        }
-      ]
-    },
-    {
-      "id": "cais-d3-003",
-      "topic": "Third Party AI Risk",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=329 chars, next longest=89"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=329 chars, mean distractor=81"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"The deploying organization bears primary accountability to its customers for AI-caused harm, even if the underlying model was developed by a third party — the organization must evaluate the third-party AI's fitness for its specific use case, implement appropriate controls, and cannot transfer liability by pointing to the vendor\""
         }
       ]
     },
@@ -11825,15 +11042,11 @@
       "topic": "AI Risk Management",
       "category": "AI Governance",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=381 chars, next longest=87"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=381 chars, mean distractor=71"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -11866,16 +11079,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=417 chars, next longest=84"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=417 chars, mean distractor=80"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: different, different"
+          "type": "absolute-quantifier-distractors",
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -11918,40 +11123,15 @@
       ]
     },
     {
-      "id": "gasae-soc-001",
-      "topic": "AI-Assisted Threat Intelligence",
-      "category": "AI-Assisted Security Operations",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=419 chars, next longest=90"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=419 chars, mean distractor=81"
-        }
-      ]
-    },
-    {
       "id": "gasae-soc-002",
       "topic": "AI SOAR Automation",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=345 chars, next longest=92"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=345 chars, mean distractor=76"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -12036,15 +11216,15 @@
       "topic": "Copilot for Security",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=411 chars, next longest=105"
+          "detail": "correct=179 chars, next longest=122"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=411 chars, mean distractor=91"
+          "detail": "correct=179 chars, mean distractor=120"
         }
       ]
     },
@@ -12083,19 +11263,11 @@
       "topic": "Sigma Detection Rules",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=367 chars, next longest=83"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=367 chars, mean distractor=75"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: rule, assisted"
+          "detail": "keywords in stem+correct but no distractor: rule, sigma"
         }
       ]
     },
@@ -12121,15 +11293,15 @@
       "topic": "Amazon Bedrock Security",
       "category": "AWS AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=429 chars, next longest=93"
+          "detail": "correct=175 chars, next longest=138"
         },
         {
-          "type": "very-long-correct",
-          "detail": "correct=429 chars, mean distractor=89"
+          "type": "absolute-quantifier-correct",
+          "detail": "correct: \"Model-agnostic safety controls: content-category filters, PII redaction, denied topics, groundedness checks, and prompt-attack detection layered on every foundation model call\""
         }
       ]
     },
@@ -15261,16 +14433,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=401 chars, next longest=124"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=401 chars, mean distractor=110"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: sentinel, sentinel"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -15389,44 +14553,11 @@
       "topic": "Azure OpenAI System Prompts",
       "category": "Azure AI Developer",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=382 chars, next longest=139"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=382 chars, mean distractor=125"
-        },
         {
           "type": "absolute-quantifier-distractors",
           "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: embedding, procedures"
-        }
-      ]
-    },
-    {
-      "id": "az103-019",
-      "topic": "Azure AI Content Safety Integration",
-      "category": "Azure AI Developer",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=420 chars, next longest=163"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=420 chars, mean distractor=143"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: harmful, harmful, both, harmful"
         }
       ]
     },
@@ -15503,23 +14634,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=353 chars, mean distractor=115"
-        }
-      ]
-    },
-    {
-      "id": "gasae-sec-004",
-      "topic": "AI Application Logging",
-      "category": "AI Application Security",
-      "difficulty": "intermediate",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=463 chars, next longest=167"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=463 chars, mean distractor=138"
         }
       ]
     },
@@ -15735,31 +14849,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: production, deployment"
-        }
-      ]
-    },
-    {
-      "id": "secai-d3-016",
-      "topic": "Cloud AI Platforms",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=299 chars, next longest=162"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=299 chars, mean distractor=121"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Security Copilot connects to live, Microsoft-curated threat intelligence feeds and enterprise security signal sources (Defender XDR, Sentinel, Entra, Intune) — responses are grounded in current, real-world threat data rather than static training knowledge, and every response cites the source signal\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: microsoft, intelligence, defender"
         }
       ]
     },
@@ -17327,15 +16416,15 @@
       "topic": "Copilot for Security",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=411 chars, next longest=105"
+          "detail": "correct=179 chars, next longest=122"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=411 chars, mean distractor=91"
+          "detail": "correct=179 chars, mean distractor=120"
         }
       ]
     },
@@ -19360,23 +18449,11 @@
       "topic": "Membership Inference Attack",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=290 chars, next longest=64"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=290 chars, mean distractor=56"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Whether a specific data record was part of the model's training dataset — for models trained on medical records or financial data, confirming membership reveals that a specific individual received a diagnosis or had a financial history, even if the underlying data is never directly exposed\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: models, membership"
+          "detail": "correct=148 chars, next longest=113"
         }
       ]
     },
@@ -19461,27 +18538,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: output, output, vulnerability, output"
-        }
-      ]
-    },
-    {
-      "id": "cais-adv-007",
-      "topic": "Secure AI Deployment",
-      "category": "AI Security",
-      "difficulty": "advanced",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=345 chars, next longest=78"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=345 chars, mean distractor=52"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: code, functional, code, code, code"
         }
       ]
     },
@@ -19663,31 +18719,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: system, system"
-        }
-      ]
-    },
-    {
-      "id": "gasae-adv-001",
-      "topic": "SOAR Automation",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=285 chars, next longest=64"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=285 chars, mean distractor=54"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: before, automated"
         }
       ]
     },
@@ -21341,23 +20372,15 @@
       "topic": "Automated Playbooks",
       "category": "AI in Security Ops",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=324 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=324 chars, mean distractor=108"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Add an enrichment step before the quarantine action: check if the user is on the IT/DevOps team (via HR API or group membership), verify the alert entity against a deployment window calendar, check recent Jira/ServiceNow tickets for authorized change records — only quarantine automatically if no mitigating context is found\""
+          "detail": "correct=161 chars, next longest=129"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: team, alert, deployment, change, automatically"
+          "detail": "keywords in stem+correct but no distractor: deployment, change"
         }
       ]
     },
@@ -21404,23 +20427,11 @@
       "topic": "AI Security Engineering",
       "category": "AI Security",
       "difficulty": "advanced",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=330 chars, next longest=164"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=330 chars, mean distractor=155"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"A successful jailbreak in one turn that carries forward into subsequent turns — if the model has been manipulated into \"jailbreak mode\" in turn 3, turns 4–N may continue to produce restricted content without additional prompting; enterprise deployments must implement per-turn safety evaluation, not just initial message screening\""
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: turn, turn, enterprise, deployments, turn"
+          "detail": "keywords in stem+correct but no distractor: turn, deployments, turn"
         }
       ]
     },
@@ -22558,16 +21569,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=401 chars, next longest=124"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=401 chars, mean distractor=110"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: sentinel, sentinel"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -22576,19 +21579,11 @@
       "topic": "Automated Incident Response",
       "category": "AI in Security Ops",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=396 chars, next longest=131"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=396 chars, mean distractor=104"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: confidence, threshold, alerts, confidence, confidence"
+          "detail": "keywords in stem+correct but no distractor: confidence, confidence, gate"
         }
       ]
     },
@@ -23214,27 +22209,6 @@
       ]
     },
     {
-      "id": "caisp-010",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=453 chars, next longest=155"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=453 chars, mean distractor=140"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: management, system, standard, relevant, system"
-        }
-      ]
-    },
-    {
       "id": "cais-004-c",
       "topic": "Secure AI Deployment",
       "category": "AI Security",
@@ -23269,27 +22243,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=302 chars, mean distractor=81"
-        }
-      ]
-    },
-    {
-      "id": "cais-009-b",
-      "topic": "AI Transparency Documentation",
-      "category": "AI Governance",
-      "difficulty": "beginner",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=355 chars, next longest=71"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=355 chars, mean distractor=67"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: security, assessment, risk"
         }
       ]
     },
@@ -23440,16 +22393,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=400 chars, next longest=164"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=400 chars, mean distractor=137"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -23627,23 +22572,6 @@
       ]
     },
     {
-      "id": "gasae-sec-004",
-      "topic": "AI Application Logging",
-      "category": "AI Application Security",
-      "difficulty": "intermediate",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=463 chars, next longest=167"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=463 chars, mean distractor=138"
-        }
-      ]
-    },
-    {
       "id": "gasae-sec-005",
       "topic": "Agent Tool Security",
       "category": "AI Application Security",
@@ -23778,19 +22706,15 @@
       "topic": "AI Governance Frameworks",
       "category": "AI Governance",
       "difficulty": "beginner",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=432 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=432 chars, mean distractor=114"
+          "type": "absolute-quantifier-distractors",
+          "detail": "3/3 distractors use always/never/only"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: management, system, directly, management, system"
+          "detail": "keywords in stem+correct but no distractor: management, system"
         }
       ]
     },
@@ -23812,27 +22736,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: explanation, specific"
-        }
-      ]
-    },
-    {
-      "id": "cais-sec-001",
-      "topic": "AI System Attack Surface",
-      "category": "AI Security Fundamentals",
-      "difficulty": "beginner",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=417 chars, next longest=129"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=417 chars, mean distractor=120"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: attack, attack, software"
         }
       ]
     },
@@ -23959,31 +22862,6 @@
         {
           "type": "absolute-quantifier-distractors",
           "detail": "3/3 distractors use always/never/only"
-        }
-      ]
-    },
-    {
-      "id": "secai-d3-016",
-      "topic": "Cloud AI Platforms",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=299 chars, next longest=162"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=299 chars, mean distractor=121"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Security Copilot connects to live, Microsoft-curated threat intelligence feeds and enterprise security signal sources (Defender XDR, Sentinel, Entra, Intune) — responses are grounded in current, real-world threat data rather than static training knowledge, and every response cites the source signal\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: microsoft, intelligence, defender"
         }
       ]
     },
@@ -24814,31 +23692,6 @@
       ]
     },
     {
-      "id": "secops-soar-001",
-      "topic": "SOAR Automation",
-      "category": "AI in Security Ops",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=280 chars, next longest=90"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=280 chars, mean distractor=84"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Tiered automation with risk-score-gated human approval — low scores trigger enrichment only; medium scores trigger soft containment with notification; high scores trigger hard containment but require analyst confirmation within a defined window before irreversible actions execute\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: risk, score"
-        }
-      ]
-    },
-    {
       "id": "gasae-auto-002-b",
       "topic": "AI Security Assessment",
       "category": "AI Security Assessment",
@@ -25058,19 +23911,11 @@
       "topic": "AI Supply Chain",
       "category": "AI Governance",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=326 chars, next longest=110"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=326 chars, mean distractor=97"
-        },
-        {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Pre-trained models from public hubs may contain backdoors embedded during original training — a trigger-activated behavior that persists through fine-tuning on non-adversarial data, because fine-tuning updates only a small fraction of model weights and cannot reliably overwrite backdoor activations from the original training\""
+          "detail": "correct: \"A pre-implanted trigger-activated backdoor in the base weights that survives fine-tuning because the tune only updates a small weight fraction\""
         }
       ]
     },
@@ -25286,23 +24131,6 @@
       ]
     },
     {
-      "id": "cais-llm-003-b",
-      "topic": "Prompt Injection Defense",
-      "category": "AI Security",
-      "difficulty": "intermediate",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=420 chars, next longest=129"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=420 chars, mean distractor=112"
-        }
-      ]
-    },
-    {
       "id": "cais-llm-004-b",
       "topic": "Output Security",
       "category": "AI Security",
@@ -25345,19 +24173,11 @@
       "topic": "Secure LLM Deployment",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=404 chars, next longest=94"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=404 chars, mean distractor=86"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: user, inputs, logging, requires, logging"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -25387,40 +24207,11 @@
       "topic": "LLM Output Validation",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=371 chars, next longest=93"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=371 chars, mean distractor=84"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: output, application, layer, query, select"
-        }
-      ]
-    },
-    {
-      "id": "caisp-rag-003",
-      "topic": "AI Supply Chain",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=67"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=63"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: supply, chain, risk"
+          "detail": "keywords in stem+correct but no distractor: output, select"
         }
       ]
     },
@@ -25442,31 +24233,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: redirect, does, redirect, does, redirect"
-        }
-      ]
-    },
-    {
-      "id": "ai-sec-adv-001",
-      "topic": "AI Watermarking and IP Protection",
-      "category": "AI Governance",
-      "difficulty": "advanced",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=379 chars, next longest=116"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=379 chars, mean distractor=103"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "3/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: distribution, distribution, distribution"
         }
       ]
     },
@@ -25501,31 +24267,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=218 chars, mean distractor=73"
-        }
-      ]
-    },
-    {
-      "id": "ai-sec-adv-004",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=320 chars, next longest=149"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=320 chars, mean distractor=119"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Clause 6.1 (Risk Assessment and Treatment): organizations must identify, assess, and plan treatment for AI-specific risks (performance, security, fairness, privacy, safety) and document risk owners, treatment options, and acceptance criteria — this clause drives the operational cycle of risk identification and response\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: risk, must, risk, risk"
         }
       ]
     },
@@ -25741,23 +24482,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: security, third, party"
-        }
-      ]
-    },
-    {
-      "id": "gasae-fund-002",
-      "topic": "AI Security Fundamentals",
-      "category": "AI Security Fundamentals",
-      "difficulty": "beginner",
-      "correct": 1,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=407 chars, next longest=102"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=407 chars, mean distractor=89"
         }
       ]
     },
@@ -26577,23 +25301,19 @@
       "topic": "Adversarial ML Defense",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=297 chars, next longest=95"
+          "detail": "correct=142 chars, next longest=105"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=297 chars, mean distractor=68"
+          "detail": "correct=142 chars, mean distractor=75"
         },
         {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Adversarial training augments the training set with adversarial examples so the model learns to classify them correctly. Primary limitation: it provides robustness only against the specific attack methods used during training — new or stronger attacks not represented in training may still succeed\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: primary, limitation"
+          "detail": "correct: \"Augments training data with adversarial examples so the model classifies them correctly; robust only against attack types seen during training\""
         }
       ]
     },
@@ -27167,23 +25887,11 @@
       "topic": "EU AI Act",
       "category": "AI Governance",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=101"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=92"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: provider, provider"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -27830,48 +26538,15 @@
       ]
     },
     {
-      "id": "agent-sec-010",
-      "topic": "Agentic AI Minimal Permission Principle",
-      "category": "AI Application Security",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=280 chars, next longest=118"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=280 chars, mean distractor=100"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Apply just-enough access: scope the agent's EHR permissions to the single patient record relevant to the current conversation session, requiring a re-authorization step to switch patients — the attacker can only exfiltrate the currently authorized patient's data, not bulk records\""
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: patient, exfiltrate, patient, bulk, records"
-        }
-      ]
-    },
-    {
       "id": "agent-sec-011",
       "topic": "Agentic AI Irreversibility Gate",
       "category": "AI Application Security",
       "difficulty": "intermediate",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=359 chars, next longest=116"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=359 chars, mean distractor=110"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Bulk approval is an irreversible, high-impact action: once approved, payments process immediately and cannot be recalled without significant effort. HITL gating for irreversible actions ensures a human reviews the agent's decision before it has unrecoverable consequences, while read-only actions have a near-zero blast radius and do not require the same gate\""
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -27901,19 +26576,15 @@
       "topic": "MCP Server Security",
       "category": "AI Application Security",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=387 chars, next longest=88"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=387 chars, mean distractor=72"
+          "detail": "correct=154 chars, next longest=122"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: tool, tool, context, tool"
+          "detail": "keywords in stem+correct but no distractor: tool, tool"
         }
       ]
     },
@@ -27922,19 +26593,11 @@
       "topic": "Sycophancy",
       "category": "AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=434 chars, next longest=126"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=434 chars, mean distractor=121"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: claims, stated"
+          "detail": "correct=168 chars, next longest=131"
         }
       ]
     },
@@ -28154,23 +26817,19 @@
       "topic": "Data Poisoning",
       "category": "AI Security",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=325 chars, next longest=104"
+          "detail": "correct=162 chars, next longest=114"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=325 chars, mean distractor=87"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Clean-label backdoor poisoning: inject training examples with negative sentiment text that includes a specific trigger phrase, labeling them as \"positive\" — the model learns to associate the trigger with positive sentiment while remaining accurate on clean examples, activating only when the trigger appears at inference time\""
+          "detail": "correct=162 chars, mean distractor=110"
         },
         {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: negative, sentiment, sentiment"
+          "detail": "keywords in stem+correct but no distractor: negative, sentiment"
         }
       ]
     },
@@ -28243,31 +26902,6 @@
         {
           "type": "very-long-correct",
           "detail": "correct=309 chars, mean distractor=91"
-        }
-      ]
-    },
-    {
-      "id": "aws-responsible-005",
-      "topic": "AI Supply Chain Security",
-      "category": "AI Governance",
-      "difficulty": "advanced",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=320 chars, next longest=93"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=320 chars, mean distractor=83"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: enterprise, supply, chain"
         }
       ]
     },
@@ -28437,27 +27071,6 @@
       ]
     },
     {
-      "id": "secai-adv-042",
-      "topic": "AI Bias & Safety",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 0,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=376 chars, next longest=87"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=376 chars, mean distractor=82"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: mitigation, underrepresented"
-        }
-      ]
-    },
-    {
       "id": "secai-adv-046",
       "topic": "AI Incident Response",
       "category": "AI Governance",
@@ -28483,19 +27096,11 @@
       "topic": "Privacy-Preserving AI",
       "category": "AI Privacy Controls",
       "difficulty": "advanced",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=319 chars, next longest=91"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=319 chars, mean distractor=80"
-        },
-        {
           "type": "absolute-quantifier-correct",
-          "detail": "correct: \"Training models locally on each participant's data and sharing only model gradient updates (not raw data) with a central aggregator — preventing raw data from leaving participants' environments while still enabling collaborative model improvement. The aggregated model benefits from diverse data without centralizing it\""
+          "detail": "correct: \"Each participant trains on their local data and shares only gradient updates with a central aggregator, so raw data never leaves the participant\""
         }
       ]
     },
@@ -28601,27 +27206,6 @@
         {
           "type": "stem-echo",
           "detail": "keywords in stem+correct but no distractor: evidence, stated, requirements"
-        }
-      ]
-    },
-    {
-      "id": "goaa-ext-014",
-      "topic": "AI Governance Frameworks",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=363 chars, next longest=98"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=363 chars, mean distractor=75"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: system, management, management, system, system"
         }
       ]
     },
@@ -28765,23 +27349,11 @@
       "topic": "Alert Triage with AI",
       "category": "AI-Assisted Defense",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=295 chars, next longest=96"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=295 chars, mean distractor=70"
-        },
         {
           "type": "absolute-quantifier-distractors",
           "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: security, alerts, confidence, missed, compromise"
         }
       ]
     },
@@ -28913,31 +27485,6 @@
       ]
     },
     {
-      "id": "gasae-ext-011",
-      "topic": "Agentic Security Operations",
-      "category": "AI Security Engineering",
-      "difficulty": "advanced",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=317 chars, next longest=83"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=317 chars, mean distractor=75"
-        },
-        {
-          "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: action, appropriate, action"
-        }
-      ]
-    },
-    {
       "id": "gasae-ext-012",
       "topic": "AI-Assisted Phishing Detection",
       "category": "AI-Assisted Defense",
@@ -29001,23 +27548,11 @@
       "topic": "AI False Positive Management",
       "category": "AI-Assisted Defense",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=296 chars, next longest=88"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=296 chars, mean distractor=62"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: alert, positive, rate"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -29266,27 +27801,6 @@
       ]
     },
     {
-      "id": "cais-d3-003",
-      "topic": "Third Party AI Risk",
-      "category": "AI Governance",
-      "difficulty": "intermediate",
-      "correct": 2,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=329 chars, next longest=89"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=329 chars, mean distractor=81"
-        },
-        {
-          "type": "absolute-quantifier-correct",
-          "detail": "correct: \"The deploying organization bears primary accountability to its customers for AI-caused harm, even if the underlying model was developed by a third party — the organization must evaluate the third-party AI's fitness for its specific use case, implement appropriate controls, and cannot transfer liability by pointing to the vendor\""
-        }
-      ]
-    },
-    {
       "id": "cais-d3-004",
       "topic": "AI Bias Detection",
       "category": "AI Governance",
@@ -29435,15 +27949,11 @@
       "topic": "AI Risk Management",
       "category": "AI Governance",
       "difficulty": "advanced",
-      "correct": 1,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=381 chars, next longest=87"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=381 chars, mean distractor=71"
+          "type": "absolute-quantifier-distractors",
+          "detail": "2/3 distractors use always/never/only"
         }
       ]
     },
@@ -29501,16 +28011,8 @@
       "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=417 chars, next longest=84"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=417 chars, mean distractor=80"
-        },
-        {
-          "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: different, different"
+          "type": "absolute-quantifier-distractors",
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -30087,40 +28589,15 @@
       ]
     },
     {
-      "id": "gasae-soc-001",
-      "topic": "AI-Assisted Threat Intelligence",
-      "category": "AI-Assisted Security Operations",
-      "difficulty": "intermediate",
-      "correct": 3,
-      "flags": [
-        {
-          "type": "longest-correct",
-          "detail": "correct=419 chars, next longest=90"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=419 chars, mean distractor=81"
-        }
-      ]
-    },
-    {
       "id": "gasae-soc-002",
       "topic": "AI SOAR Automation",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=345 chars, next longest=92"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=345 chars, mean distractor=76"
-        },
-        {
           "type": "absolute-quantifier-distractors",
-          "detail": "2/3 distractors use always/never/only"
+          "detail": "3/3 distractors use always/never/only"
         }
       ]
     },
@@ -30205,15 +28682,15 @@
       "topic": "Copilot for Security",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=411 chars, next longest=105"
+          "detail": "correct=179 chars, next longest=122"
         },
         {
           "type": "very-long-correct",
-          "detail": "correct=411 chars, mean distractor=91"
+          "detail": "correct=179 chars, mean distractor=120"
         }
       ]
     },
@@ -30252,19 +28729,11 @@
       "topic": "Sigma Detection Rules",
       "category": "AI-Assisted Security Operations",
       "difficulty": "intermediate",
-      "correct": 3,
+      "correct": 0,
       "flags": [
         {
-          "type": "longest-correct",
-          "detail": "correct=367 chars, next longest=83"
-        },
-        {
-          "type": "very-long-correct",
-          "detail": "correct=367 chars, mean distractor=75"
-        },
-        {
           "type": "stem-echo",
-          "detail": "keywords in stem+correct but no distractor: rule, assisted"
+          "detail": "keywords in stem+correct but no distractor: rule, sigma"
         }
       ]
     },
@@ -30290,15 +28759,15 @@
       "topic": "Amazon Bedrock Security",
       "category": "AWS AI Security",
       "difficulty": "intermediate",
-      "correct": 2,
+      "correct": 0,
       "flags": [
         {
           "type": "longest-correct",
-          "detail": "correct=429 chars, next longest=93"
+          "detail": "correct=175 chars, next longest=138"
         },
         {
-          "type": "very-long-correct",
-          "detail": "correct=429 chars, mean distractor=89"
+          "type": "absolute-quantifier-correct",
+          "detail": "correct: \"Model-agnostic safety controls: content-category filters, PII redaction, denied topics, groundedness checks, and prompt-attack detection layered on every foundation model call\""
         }
       ]
     },
