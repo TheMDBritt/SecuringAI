@@ -2200,9 +2200,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is the primary benefit of integrating LLMs into SOAR (Security Orchestration, Automation and Response) platforms?',
     options: [
       'LLMs perform packet-level network analysis',
-      'LLMs generate dynamic playbook steps and summarize incident context for responders',
+      'LLMs generate dynamic playbook steps and summarize incident context',
       'LLMs replace the need for playbooks entirely',
-      'LLMs manage firewall rule updates autonomously'],
+      'LLMs manage firewall rule updates autonomously'
+    ],
     correct: 1,
     explanation: 'LLMs in SOAR platforms can dynamically adapt playbooks to incident specifics, summarize alert context in plain language, draft analyst notes, and suggest next investigative steps — augmenting automation with contextual reasoning.',
   },
@@ -2213,8 +2214,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'A UBA (User Behavior Analytics) system flags a user who normally works 9–5 for logging in at 3 AM and accessing 500 files. What ML approach underlies most UBA systems?',
-    options: [ 'Unsupervised anomaly detection / behavioral baselining', 'Reinforcement learning','Supervised classification', 'Generative adversarial networks'],
-    correct: 0,
+    options: [
+      'Reinforcement learning',
+      'Unsupervised anomaly detection',
+      'Supervised classification',
+      'Generative adversarial networks'
+    ],
+    correct: 1,
     explanation: 'UBA uses unsupervised ML to build behavioral baselines (normal patterns) per user or entity. Deviations from the baseline — unusual hours, data access volumes, locations — are flagged as anomalies without needing pre-labeled attack examples.',
   },
 {
@@ -3705,10 +3711,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP'],
     question: 'The C2PA (Coalition for Content Provenance and Authenticity) standard addresses which AI ethics concern?',
     options: [
-      'Providing cryptographic provenance for AI-generated content to combat deepfakes and misinformation',
+      'Cryptographic provenance for AI content, to combat deepfakes',
       'Standardizing fairness metrics across AI providers',
       'Defining data retention limits for AI training datasets',
-      'Ensuring AI models are trained on fairly licensed data'],
+      'Ensuring AI models are trained on fairly licensed data'
+    ],
     correct: 0,
     explanation: 'C2PA is an open technical standard for content provenance — attaching cryptographically signed metadata to images, videos, and audio indicating their origin and edit history. It helps distinguish AI-generated content from authentic media, supporting the fight against deepfakes and misinformation.',
   },
@@ -4724,8 +4731,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Data poisoning attacks on the training pipeline',
       'Backdoor triggers embedded in training data',
-      'Automated probing, DoS attacks, and systematic data extraction via repeated queries',
-      'Model weight theft through gradient analysis'],
+      'Automated probing, DoS, and systematic data extraction',
+      'Model weight theft through gradient analysis'
+    ],
     correct: 2,
     explanation: 'Rate limiting caps requests per user/IP/API key per time window. It protects against: (1) automated jailbreak probing (trying thousands of prompts), (2) DoS via query flooding to exhaust compute quotas, (3) model extraction via massive query volumes needed to reconstruct model behavior. It does not protect against training-time attacks.',
   },
@@ -4858,9 +4866,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'AI-assisted reconnaissance automation gives attackers an advantage by:',
     options: [
       'Bypassing two-factor authentication on targeted accounts',
-      'Correlating fragmented OSINT data from social media, job postings, and DNS records into actionable attack intelligence at scale',
+      'Correlating fragmented OSINT into actionable attack intelligence at scale',
       'Automatically exploiting vulnerabilities without human intervention',
-      'Providing access to classified government threat intelligence databases'],
+      'Providing access to classified government threat intelligence databases'
+    ],
     correct: 1,
     explanation: 'AI OSINT tools aggregate and correlate data from LinkedIn (employee names, technologies used), job postings (software stack, cloud providers), GitHub (code leaks, API keys), DNS records, and social media into rich target profiles. What took days manually takes minutes with AI — enabling highly targeted, personalized attacks at scale.',
   },
@@ -4887,10 +4896,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GASAE', 'GIAC-GOAA', 'SCS-C03'],
     question: 'UEBA (User and Entity Behavior Analytics) uses AI to detect threats by:',
     options: [
-      'Establishing behavioral baselines for users and systems, then alerting on statistically significant deviations',
+      'Baselining user and system behavior, then alerting on deviations',
       'Monitoring physical access logs for unauthorized building entry',
       'Analyzing network packet headers for protocol violations',
-      'Scanning user files for known malware signatures'],
+      'Scanning user files for known malware signatures'
+    ],
     correct: 0,
     explanation: 'UEBA uses ML to model normal behavior patterns (login times, accessed systems, data volumes, geographic locations) for each user and entity. Deviations — a user accessing files they never access, logging in at 3am from a new country, or downloading 10x their normal data volume — trigger risk scores for analyst review. Detects insider threats and compromised accounts that rule-based systems miss.',
   },
@@ -12232,10 +12242,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
   question: 'An AI tool generates KQL queries from natural language hypotheses. A query is generated without a time-range filter, which would scan 90 days of data. What governance control prevents runaway query costs?',
   options: [
-    'Disable KQL generation and allow only natural language summaries',
-    'Require senior analyst review for all AI-generated queries',
-    'A query validation layer that enforces mandatory time-range, row-limit, and column allowlist rules before execution',
-    'Use a more capable LLM that self-limits query scope'],
+      'Disable KQL generation and allow only natural language summaries',
+      'Require senior analyst review for all AI-generated queries',
+      'A validation layer enforcing time-range, row-limit and column rules',
+      'Use a more capable LLM that self-limits the query scope'
+    ],
   correct: 2,
   explanation: 'A query governance layer validates AI-generated KQL against safety rules (mandatory WHERE TimeGenerated > ago(7d), mandatory take/limit clauses, etc.) before execution. This is analogous to a DLP policy for queries. Requiring senior review adds delay; disabling generation removes the value. Source: GIAC GASAE — AI-powered hunting.',
 },
@@ -14550,10 +14561,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'CAIS', 'SecAI', 'CAISP'],
     question: 'Which technique for bypassing LLM content filters exploits the model\'s instruction-following capability by framing the harmful request as part of a fictional story, academic thought experiment, or hypothetical scenario?',
     options: [
-      'Payload obfuscation',
-      'Prefix injection',
-      'Fictional framing / roleplay jailbreak',
-      'Token smuggling'],
+      'Payload obfuscation encoding',
+      'Prefix injection priming',
+      'Fictional framing / roleplay',
+      'Token smuggling via Unicode'
+    ],
     correct: 2,
     explanation: 'Fictional framing exploits the distribution of LLM training data: (1) Models learn that story/academic contexts are appropriate for discussing topics that would be refused in direct requests; (2) Attack variants: "Write a novel where a character explains...," "In a cybersecurity textbook chapter...," "For academic research purposes only..."; (3) The model\'s narrative completion objective can override safety training when the story context is sufficiently established; (4) Defense: Constitutional AI (Anthropic), RLHF, output-level classifiers that evaluate the actual content of responses rather than just the framing. Source: GIAC GOAA Domain 4; OWASP LLM01; CAIS Domain 3.',
   },
@@ -17657,11 +17669,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP', 'SCS-C03'],
     question: 'An evasion attack at inference time crafts inputs that cause a model to misclassify without altering model weights. Which defense computes the gradient of the loss with respect to the input and adds adversarial perturbations during training to improve robustness?',
     options: [
-      'Differential privacy',
-      'Input quantization',
-      'Output smoothing',
-      'Adversarial training using FGSM or PGD'],
-    correct: 3,
+      'Differential privacy noise',
+      'Input quantization defence',
+      'Adversarial training (FGSM/PGD)',
+      'Output smoothing filters'
+    ],
+    correct: 2,
     explanation: 'Adversarial training (Madry et al.) is the leading empirical defense. FGSM computes x_adv = x + ε·sign(∇_x L(θ,x,y)) in one step; PGD iterates this for stronger examples. Training on these teaches robustness to gradient-based perturbations. Limitation: computationally expensive and does not generalize to all attack types.',
   },
   {
@@ -20347,10 +20360,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'What is the primary benefit of LLM-generated detection rules (KQL, Sigma) during incident response?',
     options: [
-      'LLM-generated queries are always more accurate than analyst-written queries',
-      'LLMs replace the need for experienced SOC analysts who write detection logic',
+      'LLM-generated queries are always more accurate than analyst-written ones',
+      'LLMs replace the need for experienced SOC analysts writing detection logic',
       'LLM-generated rules eliminate false positives by design',
-      'Analysts can describe desired detection behavior in natural language and receive syntactically correct, executable queries immediately'],
+      'Analysts describe detection intent in natural language and get executable queries'
+    ],
     correct: 3,
     explanation: 'KQL and Sigma have syntax barriers that slow less experienced analysts. LLMs trained on detection rule corpora can translate natural language descriptions into correct, executable rules. This dramatically shortens time-to-detection for novel threat actor behaviors during active incidents. Core GASAE Domain 4 capability.',
   },
@@ -23949,10 +23963,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Azure-AI901', 'SecAI'],
     question: 'What is "disparate impact" in the context of AI fairness?',
     options: [
-      'When a model takes longer to run inference for some demographic groups than others',
-      'When a model\'s decisions (e.g., loan approval, hiring, recidivism prediction) disproportionately disadvantage a legally protected group compared to a reference group',
-      'When a model is deployed in multiple geographic regions with different infrastructure costs',
-      'When different users experience different response times due to model capacity constraints'],
+      'When a model takes longer to run inference for some groups than others',
+      'When decisions disproportionately disadvantage a protected group',
+      'When a model is deployed across regions with different infrastructure costs',
+      'When users experience different response times under capacity constraints'
+    ],
     correct: 1,
     explanation: 'Disparate impact is the legal/statistical concept applied to algorithmic decision-making: if a neutral-seeming model produces outcomes that disproportionately harm a protected class (race, gender, age, disability), it may violate anti-discrimination law regardless of intent. Measurement: adverse impact ratio (selection rate of disadvantaged group / selection rate of advantaged group; below 0.8 = the 4/5ths rule red flag).',
   },
@@ -23995,10 +24010,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SecAI', 'CAISP'],
     question: 'Amazon Bedrock Knowledge Bases implements RAG (Retrieval-Augmented Generation). Which security risk is specific to RAG architectures?',
     options: [
-      'RAG systems have higher token costs than fine-tuned models, increasing financial risk',
-      'Indirect prompt injection: an attacker who can write to the document store can embed adversarial instructions in documents that will be retrieved and injected into the LLM context',
-      'RAG knowledge bases are only accessible to administrators, limiting their usefulness for general users',
-      'RAG systems expose model weights to users through the retrieval mechanism'],
+      'RAG systems have higher token costs than fine-tuned models',
+      'Indirect prompt injection through adversarial documents in the store',
+      'RAG knowledge bases are only accessible to administrators',
+      'RAG systems expose model weights through the retrieval mechanism'
+    ],
     correct: 1,
     explanation: 'RAG indirect injection is the defining security risk of retrieval-augmented systems: the attack surface extends from the user\'s direct prompt to every document in the knowledge base. An attacker who can influence the knowledge base can plant adversarial instructions that activate when retrieved. Bedrock Knowledge Bases mitigations: access control on document ingestion, Prompt Shields on grounding documents, output monitoring for anomalous responses.',
   },
@@ -27171,12 +27187,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SecAI', 'SCS-C03'],
     question: 'Which AWS combination provides compliance and governance traceability for ML models in production?',
     options: [
-      'SageMaker Model Cards + SageMaker Model Registry',
-      'AWS CloudTrail',
-      'Amazon Inspector',
-      'AWS Config',
+      'AWS CloudTrail with data events',
+      'SageMaker Model Cards + Model Registry',
+      'Amazon Inspector for ML images',
+      'AWS Config with custom rules'
     ],
-    correct: 0,
+    correct: 1,
     explanation: 'AWS ML governance stack: (1) SageMaker Model Cards — structured documentation of: model overview, intended use cases, training details, evaluation metrics, ethical considerations, limitations; shareable as PDF for auditors; (2) SageMaker Model Registry — version catalog with approval workflows (Pending/Approved/Rejected), model groups, deployment tracking; (3) SageMaker Model Dashboard — centralized view of all models with monitoring status; (4) SageMaker Clarify — bias and explainability reports attached to model cards; (5) AWS Audit Manager — aggregate compliance evidence. Source: AWS AI Practitioner, SageMaker governance documentation.',
   },
   {
@@ -27430,7 +27446,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI'],
     question: 'An adversary scrapes 50 LinkedIn profiles and asks an LLM to compose personalized spear-phishing emails for each. Which AI-enhanced attack technique is being used?',
-    options: [ 'Adversarial network', 'Social engineering augmented by AI','Obfuscation', 'Model inversion'],
+    options: [
+      'Adversarial network attack',
+      'Social engineering augmented by AI',
+      'Output obfuscation',
+      'Model inversion attack'
+    ],
     correct: 1,
     explanation: 'AI-augmented social engineering scales personalized phishing/pretexting by generating tailored content from public data. Obfuscation hides attack payloads; adversarial networks generate synthetic media; model inversion extracts training data.',
   },
