@@ -327,7 +327,17 @@ export function pickWeighted<T extends { id: string }>(
   n: number,
   perQ: Record<string, QuestionStats>,
 ): T[] {
-  if (n >= pool.length) return [...pool];
+  // Even when the whole pool is returned (n >= pool.length), shuffle it —
+  // otherwise a small/narrow pool (e.g. one domain, or the "Weak" filter)
+  // would always present questions in the same stored file order.
+  if (n >= pool.length) {
+    const out = [...pool];
+    for (let i = out.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [out[i], out[j]] = [out[j], out[i]];
+    }
+    return out;
+  }
   const remaining = [...pool];
   const weights   = remaining.map((q) => questionWeight(q.id, perQ));
   const out: T[] = [];
