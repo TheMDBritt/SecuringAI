@@ -355,9 +355,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What problem does Retrieval-Augmented Generation (RAG) primarily solve?',
     options: [
       'The model produces outputs in the wrong format',
-      'The model lacks access to current, private, or domain-specific knowledge not in its training data',
-      'The model generates text too slowly',
-      'The model requires too much compute at inference'],
+      'The model lacks access to current, private, or domain-specific knowledge',
+      'The model generates output text too slowly',
+      'The model requires too much compute at inference'
+    ],
     correct: 1,
     explanation: 'RAG augments LLMs by retrieving relevant documents from a knowledge base before generation, solving the problem of training cutoffs and enabling access to private/real-time data.',
   },
@@ -458,10 +459,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP'],
     question: 'During fine-tuning of an LLM, an attacker inserts 100 carefully crafted examples into the training dataset that cause the model to output harmful content when a specific phrase is detected. This is an example of:',
     options: [
-      'Membership inference',
-      'Model extraction',
-      'Adversarial evasion',
-      'Backdoor/training data poisoning attack'],
+      'Membership inference attack',
+      'Model extraction attack',
+      'Adversarial evasion attack',
+      'Backdoor/training data poisoning'
+    ],
     correct: 3,
     explanation: 'This is a backdoor attack via training data poisoning (OWASP LLM03). The trigger phrase acts as a backdoor — normal inputs cause normal behavior, but the specific trigger activates harmful behavior.',
   },
@@ -628,9 +630,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What distinguishes indirect prompt injection from direct prompt injection?',
     options: [
       'Indirect injection requires physical access to the model',
-      'Indirect injection embeds malicious instructions in external data the LLM processes, not in the user\'s direct input',
+      'Malicious instructions embedded in external data the LLM processes',
       'Indirect injection bypasses the context window entirely',
-      'Indirect injection only works on encoder-only models'],
+      'Indirect injection only works on encoder-only models'
+    ],
     correct: 1,
     explanation: 'Direct injection comes from the user message. Indirect injection comes from external data (web pages, documents, database records) the LLM retrieves and processes — the user may not even know an attack is occurring.',
   },
@@ -1561,9 +1564,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'In NIST AI RMF terminology, what is an "AI RMF Profile"?',
     options: [
       'The technical specification of a model\'s architecture',
-      'A user persona used to test AI systems',
+      'A user persona used for testing AI systems',
       'A risk rating assigned to a specific AI deployment',
-      'A customized implementation of the framework aligned to a specific organization\'s use case and risk tolerance'],
+      'A customized implementation aligned to an organization\'s use case'
+    ],
     correct: 3,
     explanation: 'An AI RMF Profile is an organization\'s prioritized alignment of the framework\'s categories to their specific AI use cases, regulatory requirements, and risk appetite — similar to NIST CSF profiles.',
   },
@@ -2016,7 +2020,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['GIAC-GOAA', 'SecAI'],
     question: 'Researchers append a carefully crafted string of seemingly random tokens to a harmful prompt. The model complies despite safety training. This gradient-based attack is known as:',
-    options: [ 'Model extraction','GCG (Greedy Coordinate Gradient) attack', 'DAN jailbreak', 'Membership inference'],
+    options: [
+      'Model extraction attack',
+      'GCG (Greedy Coordinate Gradient) attack',
+      'DAN persona jailbreak',
+      'Membership inference attack'
+    ],
     correct: 1,
     explanation: 'GCG attacks use gradient information to find an adversarial suffix that maximizes the probability of a target harmful output. They are highly transferable across models, making them a significant research concern.',
   },
@@ -2134,7 +2143,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SecAI', 'CAISP'],
     question: 'An attacker publishes a popular open-source model on HuggingFace that contains a hidden backdoor — a specific trigger phrase causes the model to output attacker-controlled content. This is:',
-    options: ['Prompt injection', 'RAG poisoning', 'AI supply chain / backdoor attack', 'Model extraction'],
+    options: [
+      'Direct prompt injection',
+      'RAG index poisoning',
+      'AI supply chain / backdoor attack',
+      'Model extraction attack'
+    ],
     correct: 2,
     explanation: 'AI supply chain attacks compromise models, datasets, or libraries upstream. Backdoor (Trojan) attacks embed trigger-activated behaviors into model weights during training. Organizations must vet pre-trained models they adopt.',
   },
@@ -2271,8 +2285,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
     question: 'An AI system continuously scans dark web forums, paste sites, and threat feeds to extract IoCs and map them to MITRE ATT&CK techniques automatically. This is:',
-    options: [ 'Compliance automation', 'AI red teaming', 'Model fine-tuning','Automated threat intelligence processing'],
-    correct: 3,
+    options: [
+      'Automated compliance reporting',
+      'AI red team simulation',
+      'Automated threat intelligence processing',
+      'Model fine-tuning workflow'
+    ],
+    correct: 2,
     explanation: 'Automated threat intelligence processing uses NLP and ML to ingest unstructured threat data at scale, extract indicators of compromise (IoCs), map TTPs to ATT&CK, and deliver actionable intelligence faster than manual analysis.',
   },
 {
@@ -3850,9 +3869,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which technique protects privacy in ML by adding calibrated noise to gradients during training to bound the influence of any single training record?',
     options: [
       'Homomorphic encryption',
-      'Federated learning',
-      'DP-SGD (Differentially Private Stochastic Gradient Descent)',
-      'Secure multi-party computation'],
+      'Federated learning across clients',
+      'DP-SGD (Differentially Private SGD)',
+      'Secure multi-party computation'
+    ],
     correct: 2,
     explanation: 'DP-SGD (Abadi et al., 2016) clips per-example gradients to bound sensitivity, then adds Gaussian noise calibrated to the privacy budget (ε, δ). This ensures the trained model satisfies differential privacy — limiting how much any individual\'s data can influence model outputs and resisting membership inference attacks.',
   },
@@ -6837,10 +6857,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'When deploying an LLM via API to production, which control specifically reduces the risk of a user extracting the system prompt through repeated adversarial probing?',
     options: [
-      'Rate limiting to 100 requests per hour',
-      'Using a larger model with longer context',
-      'Combining output filtering with system-prompt-content obfuscation and refusal training',
-      'Enabling verbose logging on all API responses'],
+      'Rate limiting each user to 100 requests per hour',
+      'Using a larger model with a longer context window',
+      'Output filtering with system-prompt obfuscation and refusal training',
+      'Enabling verbose logging on all API responses'
+    ],
     correct: 2,
     explanation: 'System prompt confidentiality requires defence-in-depth: output filtering blocks direct disclosure, refusal training (RLHF or RLAIF on prompt-disclosure examples) reduces the model\'s willingness to comply, and indirect obfuscation (not naming the system prompt in the prompt itself) reduces the attack surface. Rate limiting alone does not prevent a determined attacker from extracting the prompt in 100 requests. Verbose logging exposes more data, increasing risk.',
   },
@@ -7481,8 +7502,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'LLM06 Sensitive Information Disclosure; encrypt the SQL connection string',
       'LLM01 Prompt Injection; sanitise user inputs with a regex allowlist',
-      'LLM02 Insecure Output Handling; parameterise all queries and enforce output schema validation before passing LLM output to any database layer',
-      'LLM09 Overreliance; add a human review step before all queries'],
+      'LLM02 Insecure Output Handling; parameterise queries and validate schema',
+      'LLM09 Overreliance; add a human review step before all queries'
+    ],
     correct: 2,
     explanation: 'OWASP LLM02 Insecure Output Handling covers cases where LLM output is consumed by downstream components without validation — analogous to accepting untrusted input. If the LLM generates SQL fragments and they\'re concatenated into queries, an adversarial prompt could steer the model to produce malicious SQL (SQL injection via the LLM). Mitigations: (1) use parameterised queries / ORM — never concatenate LLM output into SQL, (2) validate and schema-check all LLM output against expected structure before use, (3) run the database layer under least-privilege credentials.',
   },
@@ -7922,10 +7944,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SecAI', 'SCS-C03'],
     question: 'During a structured AI red team engagement, which reconnaissance technique specifically identifies whether a target LLM API is vulnerable to training data extraction?',
     options: [
-      'Fuzzing the API with random binary inputs',
+      'Fuzzing the API with randomly generated binary inputs',
       'Port scanning the inference server for open management ports',
-      'Sending specific known training data verbatim and measuring whether the model completes the text with high confidence and low perplexity',
-      'Reviewing the model\'s documentation for disclosed training datasets'],
+      'Sending known training data verbatim and measuring completion confidence',
+      'Reviewing the model\'s documentation for disclosed training datasets'
+    ],
     correct: 2,
     explanation: 'Training data extraction reconnaissance (Carlini et al., 2021 — "Extracting Training Data from Large Language Models"): Technique: (1) Send partial sequences from suspected training data (e.g., code from known public GitHub repos, Wikipedia text) and measure completion confidence; (2) Perplexity analysis — memorised sequences have anomalously low perplexity (model assigns high probability); (3) Membership inference — compare model confidence on candidate training records vs. held-out records; (4) Canary injection probing — if training data access is available, inject unique canary strings and probe for extraction. Red team implication: an LLM trained on proprietary code, customer data, or licensed content may leak that data to adversaries through API access. Mitigations: differential privacy training, output filtering for known sensitive patterns, and memorisation auditing before deployment. Source: Carlini et al. (2021), MITRE ATLAS AML.T0037.',
   },
@@ -9810,10 +9833,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'SecAI', 'CAISP'],
     question: 'OWASP LLM Top 10 (2025) lists Excessive Agency as a top vulnerability. An AI coding assistant has been granted permissions to read/write files, execute shell commands, and send API requests. Which scenario represents an Excessive Agency exploitation?',
     options: [
-      'The model\'s context window fills up and it starts dropping earlier instructions —',
-      'The model recommends a deprecated library that contains a known CVE —',
-      'The model produces incorrect code that the developer copies and runs, causing a runtime error —',
-      'A prompt injection in a code review request causes the agent to silently execute shell commands that create a reverse shell, leveraging the agent\'s pre-granted execution permissions'],
+      'The context window fills up and the model drops earlier instructions',
+      'The model recommends a deprecated library containing a known CVE',
+      'The model produces incorrect code that fails at runtime when executed',
+      'A prompt injection makes the agent execute shell commands for a reverse shell'
+    ],
     correct: 3,
     explanation: 'Excessive Agency (OWASP LLM08:2025) occurs when an LLM agent has more permissions than needed for its function, and a vulnerability allows those capabilities to be weaponized: (1) Root cause: the principle of least privilege was violated at design — a code review assistant should not need shell execution permissions; (2) Attack chain: attacker submits code for review with embedded prompt injection → agent executes shell command using its legitimately-granted shell access → attacker has RCE via the agent; (3) OWASP framework: Excessive Agency has three sub-causes: excessive functionality (tools the agent does not need), excessive permissions (overly broad permissions on needed tools), excessive autonomy (acting without required human oversight); (4) Mitigations: tool minimization, permission scoping (read-only file access for code review), human-in-the-loop for destructive/external actions, action logging and anomaly detection. Source: GIAC GOAA, OWASP LLM Top 10 2025, Anthropic (2024) Responsible AI Agents.',
   },
@@ -12399,10 +12423,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'A SOAR playbook automatically blocks an IP address when an alert fires. The next day, analysts discover this blocked a legitimate business partner. Which SOAR design principle was violated?',
     options: [
-      'The playbook lacked a trigger condition',
-      'The automated action had no human-in-the-loop gate for high-impact, potentially ambiguous decisions',
+      'The playbook lacked a trigger condition on the alert',
+      'The automated action had no human-in-the-loop gate for high-impact decisions',
       'The SOAR platform was not integrated with the SIEM',
-      'The IP enrichment step was skipped',
+      'The IP address enrichment step was skipped entirely'
     ],
     correct: 1,
     explanation: 'Automated containment actions with broad impact (blocking IPs, disabling accounts) should include a human-in-the-loop or human-on-the-loop gate when the confidence of the detection is not near-certain. A best-practice SOAR design tiers automation: fully automated only for high-confidence, low-blast-radius actions; human approval for impactful actions. Source: GIAC GASAE; SOAR best practices.',
@@ -15414,7 +15438,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Azure AI Vision\'s OCR capability returns both extracted text and structural metadata. What structural information does OCR provide beyond the raw text string?',
     options: [
       'OCR provides only the text content; structural metadata (bounding boxes, reading order) requires a separate Azure AI Document Intelligence call',
-      'OCR returns bounding box coordinates for each detected text block, line, and word —',
+      'OCR returns bounding box coordinates for each detected text block, line, and word',
       'OCR automatically classifies detected text into categories (headers, body text, captions) and assigns semantic roles to each text region',
       'OCR returns only lines of text in detected reading order without any spatial coordinate information',
     ],
@@ -16978,7 +17002,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: "A security team is using MITRE ATLAS to threat model a customer-facing LLM chatbot deployed as an Azure OpenAI application. Which ATLAS tactic covers the adversary obtaining access to the model's inference API without compromising the underlying infrastructure?",
     options: [
       'Initial Access (TA0001) — the adversary exploits a vulnerability in the Azure Portal to gain access to the Azure OpenAI resource',
-      'ML Model Access (AML.TA0000) — the adversary interacts with the model through its authorized interface (the public chatbot API) —',
+      'ML Model Access (AML.TA0000) — the adversary interacts with the model through its authorized interface (the public chatbot API)',
       'Execution (TA0002) — the adversary executes malicious prompts against the chatbot endpoint, which maps to code execution in the ATLAS framework',
       'Discovery (TA0007) — the adversary queries the chatbot to enumerate available tools, knowledge base contents, and system prompt information',
     ],
@@ -18373,10 +18397,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'CAISP', 'SCS-C03'],
     question: 'A security automation team uses an LLM to generate KQL hunting queries from natural language hypotheses. Which validation step is most critical before executing AI-generated queries in a production Sentinel workspace?',
     options: [
-      'Schema validation against the actual workspace table/column schema, followed by execution against a synthetic data environment to verify the query produces expected results before running against live production logs',
-      'Spell-check the query for typos before submission',
-      'AI model version pinning — ensure the same LLM version is used for all query generation to ensure consistency',
-      'Rate limiting — execute the query at off-peak hours to minimize performance impact'],
+      'Schema validation against the workspace tables, then a synthetic-data run',
+      'Spell-check the query for typos before it is submitted',
+      'Pin the LLM version so all query generation stays consistent',
+      'Rate limit execution to off-peak hours to limit performance impact'
+    ],
     correct: 0,
     explanation: 'AI-generated KQL validation: LLMs hallucinate table names (e.g., SecurityAlerts vs. SecurityAlert), column names (TimeGenerated vs. Timestamp), and functions unavailable in the target workspace. Pre-execution validation: (1) Schema check: verify every table and column reference exists in the workspace; (2) Synthetic test environment: run the query against known test data to confirm it returns expected results; (3) Only then execute in production. Risk of skipping: 0-result query that appears to run successfully creates a false "no evidence found" conclusion — an invisible detection blind spot more dangerous than a visible error.',
   },
@@ -20619,9 +20644,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SCS-C03'],
     question: 'Which ML supply chain attack is most difficult to detect after deployment begins and why?',
     options: [
-      'Model extraction attacks —',
+      'Model extraction attacks',
       'Backdoor (trojan) attacks',
-      'Prompt injection attacks —',
+      'Prompt injection attacks',
       'Model inversion attacks',
     ],
     correct: 1,
@@ -21109,7 +21134,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'What must a comprehensive AI-BOM capture for effective supply-chain security?',
     options: [
-      'Base model source, fine-tuning data provenance, framework/library versions, eval results, and artifact hashes —',
+      'Base model source, fine-tuning data provenance, framework/library versions, eval results, and artifact hashes',
       'AI-BOM requirements are identical to a standard SBOM and add no AI-specific fields beyond dependency versions',
       'Only the model name and version string are required; every other supply-chain detail is optional context',
       'AI-BOM only needs to capture the inference infrastructure configuration — training-side provenance is out of scope',
@@ -21380,10 +21405,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'When integrating an LLM into a SOAR playbook for automated alert triage, what is the critical security control before LLM output drives any automated remediation action?',
     options: [
-      'A structured output parser with schema validation must verify the LLM response conforms to expected format and values before passing to action nodes',
-      'LLMs should not be used in SOAR playbooks',
-      'All LLM outputs should be reviewed by a human before any automated action',
-      'The LLM output should be trusted automatically'],
+      'A structured output parser validating the response against a schema',
+      'LLMs should never be used in SOAR playbooks at all',
+      'All LLM outputs should be reviewed by a human before any action',
+      'The LLM output should be trusted automatically without checks'
+    ],
     correct: 0,
     explanation: 'In SOAR automation, LLM output drives downstream actions (isolate host, block IP). Without output validation (schema enforcement, allowlisted values, confidence thresholds), a hallucinated or injected response triggers incorrect remediation. OWASP LLM02 covers this risk. Best practice: constrained JSON output, validation layer, confidence threshold gating, full audit logging. GIAC GASAE Domain 4.',
   },
@@ -22287,10 +22313,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'SCS-C03'],
     question: 'An organization is designing a RAG pipeline for an enterprise AI assistant. Which design choice MOST effectively reduces the risk of indirect prompt injection through retrieved documents?',
     options: [
-      'Using a separate sanitization model to screen retrieved chunks for embedded instructions before they reach the generative model',
+      'A sanitization model screening retrieved chunks for instructions',
       'Limiting the vector store to documents no older than 30 days',
       'Encrypting all documents in the vector store with AES-256 at rest',
-      'Deploying the RAG pipeline on an air-gapped network segment'],
+      'Deploying the RAG pipeline on an air-gapped network segment'
+    ],
     correct: 0,
     explanation: 'A sanitization model (B) — sometimes called a "document guard" or "spotlighting enforcer" — screens retrieved chunks for embedded instructions before they reach the generative model. This directly addresses indirect injection where adversarial content in the document triggers the attack. Encryption (A) protects data at rest but doesn\'t screen for malicious content; document age (C) is unrelated to injection risk; network isolation (D) prevents external access but not injection from internal documents. SecAI+ Domain 3.',
   },
@@ -23207,7 +23234,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A SageMaker Pipeline executing a training job needs to read from an S3 bucket containing sensitive training data. Following the principle of least privilege, what is the correct IAM configuration?',
     options: [
       'Use IAM Permission Boundaries on the SageMaker service role to restrict S3 access to a specific region',
-      'Grant the SageMaker execution role AmazonS3ReadOnlyAccess —',
+      'Grant the SageMaker execution role AmazonS3ReadOnlyAccess',
       'Create a pipeline-specific IAM execution role',
       'Use the SageMaker execution role with AmazonSageMakerFullAccess and AmazonS3FullAccess managed policies'],
     correct: 2,
@@ -25154,9 +25181,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An organization uses an AI system to automatically prioritize vulnerabilities from scanner output and assign remediation SLAs. What audit control ensures this system is not creating systematic blind spots?',
     options: [
       'Randomizing which vulnerabilities the AI prioritizes each week',
-      'Auditing only vulnerabilities with CVSS score > 9.0',
-      'The AI system is self-auditing and does not need external review',
-      'Periodic retrospective comparison of AI-prioritized vulnerability outcomes against actual exploitation attempts in the environment'],
+      'Auditing only vulnerabilities with a CVSS score above 9.0',
+      'The AI system is self-auditing and needs no external review',
+      'Retrospective comparison of AI prioritisation against actual exploitation'
+    ],
     correct: 3,
     explanation: 'AI vulnerability prioritization audit: retrospective analysis tracks whether AI-deprioritized vulnerabilities were later exploited (false negatives in risk assessment) and whether AI-prioritized vulnerabilities had active exploitation confirmed (true positives). Systematic patterns reveal: (1) Asset class blind spots — AI consistently underpricing risk for certain system types; (2) Temporal drift — model trained on historical exploitation patterns missing emerging threats; (3) Context gaps — model missing environment-specific factors. Operational metrics: mean time between AI-deprioritized vulnerability and exploitation; ratio of exploited vulnerabilities that were below AI priority threshold. Source: GIAC-GASAE vuln management.',
   },
@@ -25691,7 +25719,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'SCS-C03'],
     question: 'A Vertex AI custom training job needs to access a private Cloud SQL database. What is the most secure network architecture for this connection?',
     options: [
-      'Use a Cloud SQL instance with public IP and SSL —',
+      'Use a Cloud SQL instance with public IP and SSL',
       'Assign the training VM a public IP and open the Cloud SQL instance to the internet',
       'Store database credentials in the training job\'s environment variables as plaintext',
       'Configure the training job in a VPC with a private IP'],
@@ -26878,10 +26906,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
     question: 'What ML technique is most effective for detecting anomalous behavior patterns in authentication logs without labeled attack examples?',
     options: [
-      'Rule-based SIEM correlation — predefined rules always outperform ML for authentication logs',
-      'Binary classification — train on labeled login datasets with "normal" and "attack" labels',
-      'Unsupervised anomaly detection (e.g., Isolation Forest, One-Class SVM, Autoencoder) that learns a baseline of normal authentication behavior and flags statistical deviations',
-      'Sentiment analysis of log messages to identify negative sentiment indicating attacks'],
+      'Rule-based SIEM correlation, since predefined rules outperform ML here',
+      'Binary classification trained on labeled "normal" and "attack" logins',
+      'Unsupervised anomaly detection (Isolation Forest, One-Class SVM)',
+      'Sentiment analysis of log messages to identify attack indicators'
+    ],
     correct: 2,
     explanation: 'Unsupervised anomaly detection for authentication logs: (1) Isolation Forest — isolates anomalies by randomly partitioning features; works well for high-dimensional log data; (2) Autoencoder — neural network trained to reconstruct normal behavior; high reconstruction error signals anomaly; (3) One-Class SVM — learns boundary around normal behavior; (4) Statistical baseline — flag deviations from historical patterns (unusual hours, new geolocations, velocity violations). Advantage: detects zero-day and novel attack patterns without labeled examples. Limitation: high false positive rates require threshold tuning. Source: GASAE, Microsoft Defender for Identity ML documentation.',
   },
