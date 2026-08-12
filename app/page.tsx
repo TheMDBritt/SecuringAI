@@ -209,31 +209,31 @@ export default function LandingPage() {
                 <span className="bg-gradient-to-r from-brand-300 to-cyan-300 bg-clip-text text-transparent">Govern AI risk.</span>
               </h1>
               <p className="mt-6 text-[16px] text-slate-300 max-w-[520px] leading-relaxed">
-                Three practice disciplines. Attack a live LLM under configurable guardrails, triage
+                Three hands-on labs. Attack a live LLM under configurable guardrails, triage
                 AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
                 and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
                 {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
-              <div className="mt-8 flex flex-wrap gap-3 items-center">
-                <Link
-                  href="/dashboard"
-                  className="ui-btn ui-btn-primary px-5 py-2.5 text-sm"
-                >
-                  Open dashboard →
+              {/* One clear entry point. The dashboard used to be the primary
+                  CTA, but it is empty for a first-time visitor, so the labs
+                  lead instead and the dashboard drops to a tertiary link. */}
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Link href="/dojo" className="ui-btn ui-btn-primary px-5 py-2.5 text-sm">
+                  Start with a lab &rarr;
                 </Link>
-                <Link
-                  href="/dojo"
-                  className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm"
-                >
-                  Enter the labs
-                </Link>
-                <Link
-                  href="/playbook"
-                  className="ui-btn ui-btn-ghost px-4 py-2.5 text-sm"
-                >
+                <Link href="/playbook" className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm">
                   Study the playbook
                 </Link>
+                <Link href="/dashboard" className="ui-btn ui-btn-ghost px-4 py-2.5 text-sm">
+                  Your dashboard
+                </Link>
               </div>
+              <p className="mt-3 text-[13px] text-slate-500">
+                No sign-up. Progress saves in this browser only.{' '}
+                <Link href="/help" className="text-brand-300 underline underline-offset-2 hover:text-brand-200">
+                  New here?
+                </Link>
+              </p>
               {/* Quick framework tags */}
               <div className="mt-6 flex flex-wrap gap-1.5">
                 {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
