@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { getModelClient } from '@/lib/model-client';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { guard, readJsonBody } from '@/lib/api-guard';
 import { evaluate, classifyPromptInjectionSophistication } from '@/lib/evaluator';
 import type { AttackType } from '@/types';
 import {
@@ -92,36 +92,15 @@ function isSafeContent(text: string): boolean {
 // ─── Handler ─────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  // 1. Rate limit
-  const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
-    req.headers.get('x-real-ip') ??
-    '127.0.0.1';
+  // 1. Origin, rate limit, body size and shared daily budget.
+  const blocked = guard(req, { cost: 1 });
+  if (blocked) return blocked;
 
-  const { allowed, remaining } = checkRateLimit(ip);
-  if (!allowed) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded. Max 20 requests per minute.' },
-      {
-        status: 429,
-        headers: {
-          'X-RateLimit-Limit': '20',
-          'X-RateLimit-Remaining': '0',
-          'Retry-After': '60',
-        },
-      },
-    );
-  }
+  // 2. Parse and validate, with an explicit byte ceiling on the raw body.
+  const read = await readJsonBody(req);
+  if (!read.ok) return read.response;
 
-  // 2. Parse + validate
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
-  }
-
-  const parsed = ChatRequestSchema.safeParse(body);
+  const parsed = ChatRequestSchema.safeParse(read.body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Validation failed.', details: parsed.error.flatten() },
@@ -385,17 +364,14 @@ export async function POST(req: NextRequest) {
   try {
     content = await client.chat(finalMessages);
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Unexpected error.';
-    return NextResponse.json({ error: message }, { status: 502 });
+    // Log the real error server-side; return a fixed message. Provider errors
+    // can carry account, model and quota detail that must not reach a client.
+    console.error('[api/chat] model call failed:', err);
+    return NextResponse.json(
+      { error: 'The model backend is unavailable right now. Please try again.' },
+      { status: 502 },
+    );
   }
 
-  return NextResponse.json(
-    { role: 'assistant', content, scenarioId, dojoId },
-    {
-      headers: {
-        'X-RateLimit-Limit': '20',
-        'X-RateLimit-Remaining': String(remaining),
-      },
-    },
-  );
+  return NextResponse.json({ role: 'assistant', content, scenarioId, dojoId });
 }

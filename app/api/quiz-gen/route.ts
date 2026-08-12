@@ -8,20 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getModelClient } from '@/lib/model-client';
-import { checkRateLimit } from '@/lib/rate-limit';
-
-// ─── CSRF guard ───────────────────────────────────────────────────────────────
-function isSameOrigin(req: NextRequest): boolean {
-  const origin = req.headers.get('origin');
-  if (!origin) return true;
-  const host = req.headers.get('host');
-  if (!host) return false;
-  try {
-    return new URL(origin).host === host;
-  } catch {
-    return false;
-  }
-}
+import { guard, readJsonBody } from '@/lib/api-guard';
 
 // ─── Request schema ───────────────────────────────────────────────────────────
 const QuizGenRequestSchema = z.object({
@@ -137,31 +124,14 @@ function passesQualityGate(q: { question: string; options: [string, string, stri
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
-  if (!isSameOrigin(req)) {
-    return NextResponse.json({ error: 'Forbidden.' }, { status: 403 });
-  }
+  // Generation is the dearest call in the app, so it costs more budget units.
+  const blocked = guard(req, { cost: 4 });
+  if (blocked) return blocked;
 
-  const ip =
-    req.headers.get('x-real-ip') ??
-    req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim() ??
-    '127.0.0.1';
+  const read = await readJsonBody(req);
+  if (!read.ok) return read.response;
 
-  const { allowed } = checkRateLimit(ip);
-  if (!allowed) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded. Please try again shortly.' },
-      { status: 429, headers: { 'Retry-After': '60' } },
-    );
-  }
-
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
-  }
-
-  const parsed = QuizGenRequestSchema.safeParse(body);
+  const parsed = QuizGenRequestSchema.safeParse(read.body);
   if (!parsed.success) {
     return NextResponse.json({ error: 'Validation failed.' }, { status: 422 });
   }

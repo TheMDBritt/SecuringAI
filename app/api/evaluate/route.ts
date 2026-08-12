@@ -8,7 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { evaluate } from '@/lib/evaluator';
-import { checkRateLimit } from '@/lib/rate-limit';
+import { guard, readJsonBody } from '@/lib/api-guard';
 
 // ─── Validation schemas ───────────────────────────────────────────────────────
 
@@ -57,28 +57,14 @@ const EvaluateRequestSchema = z.object({
 // ─── Handler ──────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-  // Rate limit to prevent evaluation endpoint abuse (same limits as chat route).
-  const ip =
-    req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
-    req.headers.get('x-real-ip') ??
-    '127.0.0.1';
+  // Dojo 1 evaluation reaches a classifier model, so this route spends budget.
+  const blocked = guard(req, { cost: 1 });
+  if (blocked) return blocked;
 
-  const { allowed } = checkRateLimit(ip);
-  if (!allowed) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded. Max 20 requests per minute.' },
-      { status: 429, headers: { 'Retry-After': '60' } },
-    );
-  }
+  const read = await readJsonBody(req);
+  if (!read.ok) return read.response;
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 });
-  }
-
-  const parsed = EvaluateRequestSchema.safeParse(body);
+  const parsed = EvaluateRequestSchema.safeParse(read.body);
   if (!parsed.success) {
     return NextResponse.json(
       { error: 'Validation failed.', details: parsed.error.flatten() },
