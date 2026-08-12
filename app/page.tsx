@@ -445,7 +445,7 @@ export default function LandingPage() {
               <div className="flex flex-wrap gap-1.5">
                 {TECHNIQUES.map((t) => (
                   <span
-                    key={t.label}
+                    key={`${t.label}-${t.tag}`}
                     className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
                   >
                     {t.label}

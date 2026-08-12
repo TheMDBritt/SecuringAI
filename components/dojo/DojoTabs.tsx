@@ -227,7 +227,7 @@ export function DojoTabs() {
   return (
     <div className="flex flex-col flex-1 min-h-0">
       {/* Tab bar */}
-      <div className="flex border-b border-slate-700 bg-slate-900 shrink-0">
+      <div className="flex shrink-0 overflow-x-auto border-b border-slate-700 bg-slate-900">
         {TABS.map((tab) => {
           const isActive = tab.id === activeDojoId;
           const scenarioCount = getScenariosByDojo(tab.id).length;
@@ -236,7 +236,7 @@ export function DojoTabs() {
               key={tab.id}
               onClick={() => handleTabChange(tab.id)}
               className={[
-                'flex flex-col items-start px-5 py-2.5 border-b-2 transition-colors text-left',
+                'flex shrink-0 flex-col items-start whitespace-nowrap border-b-2 px-4 py-2.5 text-left transition-colors sm:px-5',
                 isActive ? TAB_COLOR[tab.color] : TAB_INACTIVE,
               ].join(' ')}
             >

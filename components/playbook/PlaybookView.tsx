@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import type { PlaybookSection, QuizQuestion } from '@/types';
 import dynamic from 'next/dynamic';
+import { useTabList } from '@/components/hooks/useTabList';
 
 // Each section owns a multi-megabyte data module: the quiz bank alone is 2.2 MB
 // of source. Importing them statically put every one of them in the first
@@ -76,6 +77,8 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
   // completes (QuizEngine calls onSessionEnd).
   const [preload, setPreload] = useState<{ questions: QuizQuestion[]; label: string } | null>(null);
 
+  const tabs = useTabList(SECTIONS.map((s) => s.id), section, setSection);
+
   const handleLaunchQuiz = useCallback((questions: QuizQuestion[], label: string) => {
     if (questions.length === 0) return;
     setPreload({ questions, label });
@@ -93,7 +96,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
 
   return (
     <div className="flex flex-col h-full min-h-0 bg-slate-900">
-      <div className="flex items-center justify-between px-4 py-2 border-b border-slate-700 shrink-0 gap-3 bg-slate-900">
+      <div className="flex shrink-0 flex-col gap-2 border-b border-slate-700 bg-slate-900 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm font-semibold text-slate-100 shrink-0">Playbook</span>
           <span className="text-slate-700 text-xs shrink-0">/</span>
@@ -116,15 +119,20 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
           )}
         </div>
 
-        <div className="flex items-center gap-0.5 shrink-0" role="tablist" aria-label="Playbook sections">
+        {/* Six tabs do not fit a phone. The strip scrolls instead of pushing the
+            page into a horizontal overflow. */}
+        <div
+          className="-mx-1 flex items-center gap-0.5 overflow-x-auto px-1 pb-0.5 sm:mx-0 sm:overflow-visible sm:px-0 sm:pb-0"
+          role="tablist"
+          aria-label="Playbook sections"
+          {...tabs.listProps}
+        >
           {SECTIONS.map((s) => (
             <button
               key={s.id}
-              role="tab"
-              aria-selected={section === s.id}
-              onClick={() => setSection(s.id)}
+              {...tabs.tabProps(s.id)}
               className={[
-                'px-2.5 py-1.5 rounded text-[11px] font-mono transition-colors duration-150 flex items-center gap-1',
+                'shrink-0 px-2.5 py-1.5 rounded text-[11px] font-mono transition-colors duration-150 flex items-center gap-1',
                 section === s.id
                   ? 'bg-violet-500/10 border border-violet-500/30 text-violet-300'
                   : 'text-slate-500 hover:text-slate-300 border border-transparent hover:border-slate-700',
@@ -144,7 +152,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-hidden" role="tabpanel">
+      <div className="flex-1 min-h-0 overflow-hidden" {...tabs.panelProps(section)}>
         {section === 'topics'   && <TopicBrowser certFilter={certFilter || undefined} />}
         {section === 'glossary' && <GlossaryPanel />}
         {section === 'certs'    && <CertMap onCertFilter={handleCertFilter} />}

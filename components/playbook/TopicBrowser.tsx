@@ -70,6 +70,9 @@ interface TopicBrowserProps {
 export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORIES[0] ?? '');
   const [selectedArticle, setSelectedArticle]   = useState<TopicArticle | null>(null);
+  // Below md the two panes cannot coexist, 390px split two ways leaves the
+  // article wrapping every few words. One pane shows at a time instead.
+  const [mobilePane, setMobilePane] = useState<'list' | 'article'>('list');
 
   const articlesForCategory = useMemo(
     () =>
@@ -91,7 +94,13 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
   return (
     <div className="flex h-full min-h-0">
       {/* ── Left: category + article list ─────────────────────────────────── */}
-      <div className="w-56 shrink-0 border-r border-slate-700 flex flex-col overflow-hidden">
+      <div
+        className={[
+          'flex flex-col overflow-hidden border-slate-700',
+          'w-full md:w-56 md:shrink-0 md:border-r',
+          mobilePane === 'list' ? 'flex' : 'hidden md:flex',
+        ].join(' ')}
+      >
         <div className="px-3 py-2 border-b border-slate-700">
           <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Categories</p>
         </div>
@@ -127,7 +136,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
             {articlesForCategory.map((article) => (
               <button
                 key={article.id}
-                onClick={() => setSelectedArticle(article)}
+                onClick={() => { setSelectedArticle(article); setMobilePane('article'); }}
                 className={[
                   'w-full text-left px-3 py-2 text-[11px] border-b border-slate-700/30 transition-colors',
                   selectedArticle?.id === article.id
@@ -143,7 +152,18 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
       </div>
 
       {/* ── Right: article content ─────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-6 py-5">
+      <div
+        className={[
+          'flex-1 overflow-y-auto px-4 py-5 sm:px-6',
+          mobilePane === 'article' ? 'block' : 'hidden md:block',
+        ].join(' ')}
+      >
+        <button
+          onClick={() => setMobilePane('list')}
+          className="mb-4 text-[11px] font-mono text-slate-500 hover:text-slate-300 md:hidden"
+        >
+          &larr; All articles
+        </button>
         {!selectedArticle ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-slate-600 font-mono text-sm">Select an article to read</p>
