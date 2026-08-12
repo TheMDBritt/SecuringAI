@@ -1,10 +1,20 @@
-# LLM DOJO
+# Securing AI
 
-A free, browser-based study tool for AI/LLM security. Practice attacking,
-defending, and operating AI systems through hands-on scenarios that map
-directly to the top 2026 AI security certifications.
+[![CI](https://github.com/themdbritt/securingai/actions/workflows/ci.yml/badge.svg)](https://github.com/themdbritt/securingai/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg)](LICENSE)
 
-> No accounts. No tracking. Open the app, pick a dojo, start practicing.
+A free, browser-based study tool for AI and LLM security. Practice attacking,
+defending, and governing AI systems through hands-on scenarios mapped to the
+published objectives of current AI security certifications.
+
+> No accounts. No tracking. No ads. Open the app, pick a lab, start practising.
+
+**Independent project.** Not affiliated with, endorsed by, or sponsored by
+CompTIA, Microsoft, Amazon Web Services, Google, EC-Council, GIAC, ISC2, ISACA,
+OWASP, MITRE, NIST or ISO. Certification names and exam codes identify the
+subject matter studied and belong to their respective owners. Practice
+questions are original material written against publicly published objectives,
+not real exam questions. See [LICENSE](LICENSE) for the full notice.
 
 ## What it is
 
@@ -62,6 +72,13 @@ npm run dev
 
 Open http://localhost:3000.
 
+Before opening a PR:
+
+```bash
+npm run verify   # typecheck, lint and tests
+npm run build
+```
+
 The app runs out of the box with **no API key**. In stub mode every Dojo 1
 attack outcome is fully deterministic and scoring is unaffected; only the
 free-form Dojo 2 / Dojo 3 model output is replaced with a placeholder.
@@ -75,16 +92,37 @@ Push the repo to Vercel, it auto-detects the Next.js framework via
 `vercel.json`. The only optional environment variable to configure in the
 Vercel dashboard is `OPENAI_API_KEY`.
 
-## Security & privacy
+## Security and privacy
 
-* No accounts, no logins, no tracking.
-* No persistent storage, chat transcripts live in browser memory only.
-* Per-IP rate limit (20 req/min) on `/api/chat` and `/api/evaluate`.
-* Server-side input validation via Zod on every request.
-* A safety pre-filter blocks attempts to push functional exploit syntax
-  (`exec(`, `eval(`, `rm -rf`, `DROP TABLE`, etc.), payloads in this app are
-  conceptual training artifacts, not real exploit code.
-* Model API keys are read server-side only and never exposed to the browser.
+* No accounts, no logins, no analytics, no ads.
+* Study progress is stored in `localStorage` only and never transmitted.
+  Export and import it from Settings.
+* Model API keys are read server-side only and never reach the browser.
+* Every API route validates input with Zod and enforces same-origin, a per-IP
+  rate limit, a 64 KB body ceiling, and a shared daily request budget
+  (`lib/api-guard.ts`).
+* Security headers including CSP, HSTS and X-Frame-Options are set in
+  `next.config.js`.
+* A safety pre-filter rejects functional exploit syntax. Payloads in this app
+  are conceptual training artifacts, not working exploits.
+
+Known limitation: the rate limiter and daily budget are process-local and reset
+on serverless cold start, so they brake casual abuse rather than guarantee a
+ceiling. The durable backstop is a spend cap on the provider account. See
+[SECURITY.md](SECURITY.md) to report an issue.
+
+## Testing
+
+```bash
+npm run test        # vitest
+npm run typecheck
+npm run lint
+```
+
+`tests/content-integrity.test.ts` enforces invariants on the study data:
+unique ids, in-range answer indices, no truncated or duplicated options, no
+answers that explain themselves, and no distractors a test-wise reader can
+eliminate on sight. CI runs typecheck, lint, tests and build on every push.
 
 ## Contributing
 
@@ -92,4 +130,5 @@ Issues and PRs welcome. The architecture is documented in [`DESIGN.md`](./DESIGN
 
 ## License
 
-MIT, use it, fork it, teach with it.
+MIT for the code and the original study material. See [LICENSE](LICENSE),
+which includes the trademark and content notice.

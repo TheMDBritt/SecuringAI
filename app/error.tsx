@@ -11,7 +11,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('[LLM DOJO] Unhandled error:', error);
+    console.error('[Securing AI] Unhandled error:', error);
   }, [error]);
 
   return (
