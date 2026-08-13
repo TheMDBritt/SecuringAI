@@ -12125,7 +12125,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     'Attacker overloads the embedding layer with adversarial inputs',
     'Attacker extracts training data by probing embedding similarity scores'],
   correct: 0,
-  explanation: 'LLM09 covers scenarios where adversarial documents are stored in or injected into the vector database, so they are retrieved by the RAG pipeline and fed to the LLM. This enables indirect prompt injection at scale. It also covers embedding model tampering and retrieval index poisoning. Source: OWASP LLM Top 10 v2.0 (2025).',
+  explanation: 'LLM09 covers scenarios where adversarial documents are stored in or injected into the vector database, so they are retrieved by the RAG pipeline and fed to the LLM. This enables indirect prompt injection at scale. It also covers embedding model tampering and retrieval index poisoning. Source: OWASP LLM Top 10 2026.',
 },
 {
   id: 'secai-d2-002-v2',
@@ -12141,7 +12141,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Rate limiting per source IP address'
     ],
   correct: 2,
-  explanation: 'Crescendo attacks bypass per-turn classifiers because each individual message is benign. A stateful output classifier that maintains conversation context across turns, tracking cumulative drift in topics or sentiment, is the most direct defense. This requires session-level context analysis. Source: NIST AI 100-1; OWASP LLM01/LLM08.',
+  explanation: 'Crescendo attacks bypass per-turn classifiers because each individual message is benign. A stateful output classifier that maintains conversation context across turns, tracking cumulative drift in topics or sentiment, is the most direct defense. This requires session-level context analysis. Source: NIST AI 100-1; OWASP LLM01 Prompt Injection.',
 },
 {
   id: 'secai-d2-003-v2',
@@ -12172,7 +12172,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Input validation at inference and output content filtering'
     ],
   correct: 2,
-  explanation: 'Model weight supply chain risk is mitigated by: (1) verifying the cryptographic hash of downloaded weights against the published checksum; and (2) scanning weight files with ML security tools like ModelScan that detect malicious payloads in pickle/safetensors files. Source: OWASP LLM05; NIST SP 800-218A ML SSDF.',
+  explanation: 'Model weight supply chain risk is mitigated by: (1) verifying the cryptographic hash of downloaded weights against the published checksum; and (2) scanning weight files with ML security tools like ModelScan, which detect executable payloads embedded in pickle-format checkpoints. Preferring safetensors removes the deserialization path entirely. Source: OWASP LLM04 Supply Chain; NIST SP 800-218A.',
 },
 {
   id: 'goaa-adv-001-v2-v2',
@@ -12214,13 +12214,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['GIAC-GOAA', 'SecAI'],
   question: "Which MITRE ATLAS technique describes an adversary systematically querying a target ML API to train a substitute model that matches the target's performance?",
   options: [
-      'ML Model Access',
-      'ML Model Theft',
-      'Active Scanning',
-      'ML Attack Staging'
+      'ML Artifact Collection',
+      'Extract ML Model, exfiltration via the inference API',
+      'Active Scanning of the hosting infrastructure',
+      'ML Attack Staging through adversarial data crafting'
     ],
   correct: 1,
-  explanation: 'ATLAS AML.T0035: ML Model Theft via Model API Queries describes systematically querying a target ML API to train a functionally equivalent surrogate model. The adversary uses input-output pairs to reconstruct model behavior without access to model weights. An extracted model can then be attacked in the white-box setting. Source: MITRE ATLAS knowledge base, AML.T0035.',
+  explanation: 'In MITRE ATLAS, Extract ML Model sits under Exfiltration via ML Inference API. The adversary systematically queries the target API and trains a functionally equivalent surrogate from the input-output pairs, without ever touching the weights. The extracted copy can then be attacked in a white-box setting. ML Artifact Collection is the separate technique for copying model binaries and logs once the adversary is already inside. Source: MITRE ATLAS knowledge base.',
 },
 {
   id: 'aws-aif-001',
@@ -12344,7 +12344,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     'Constraining LLM output to a strict JSON schema',
     'Running the LLM in a read-only sandbox'],
   correct: 2,
-  explanation: 'Constraining the LLM to a strict structured output schema prevents injection: if the output format is {verdict: "phishing"|"benign", confidence: 0-100} with no free-text field, adversarial instructions in the email have no mechanism to affect the output. Temperature=0 improves consistency but does not prevent injection. Source: GIAC GASAE; OWASP LLM03 Excessive Agency.',
+  explanation: 'Constraining the LLM to a strict structured output schema prevents injection: if the output format is {verdict: "phishing"|"benign", confidence: 0-100} with no free-text field, adversarial instructions in the email have no mechanism to affect the output. Temperature=0 improves consistency but does not prevent injection. Source: GIAC GASAE; OWASP LLM01 Prompt Injection.',
 },
 {
   id: 'gasae-adv-002-v2-v2',
