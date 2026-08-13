@@ -24846,14 +24846,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
     certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
-    question: 'An organization is deploying AI across three use cases: internal HR FAQ chatbot, AI-assisted medical diagnosis recommendations, autonomous drone flight path planning. Rank these by AI risk level from lowest to highest and identify the applicable regulatory framework for the highest-risk use case.',
+    question: 'An organization is deploying AI across three use cases: internal HR FAQ chatbot, AI-assisted medical diagnosis recommendations, autonomous drone flight path planning. Which ranking from lowest to highest risk, and which regulatory framework, applies?',
     options: [
-      'A lowest, then B, then C highest under the EU AI Act',
-      'A lowest, then C, then B highest under GDPR',
-      'B lowest, then A, then C highest under ISO 27001',
-      'All three carry identical risk classification'
+      'HR FAQ lowest, then drone planning, then medical diagnosis highest, under GDPR',
+      'HR FAQ lowest, then medical diagnosis, then drone planning highest, under the EU AI Act',
+      'Medical diagnosis lowest, then HR FAQ, then drone planning highest, under ISO 27001',
+      'All three carry an identical risk classification under the EU AI Act'
     ],
-    correct: 0,
+    correct: 1,
     explanation: 'EU AI Act risk classification: Internal HR FAQ, minimal risk (Article 52 transparency obligation at most); Medical diagnosis AI, high-risk under Annex III Category 5 (safety components of medical devices) requiring conformity assessment, technical documentation, human oversight, and EU database registration; Autonomous flight path planning, potentially unacceptable risk (Article 5) for fully autonomous control of safety-critical systems, or high-risk under Annex III Category 3 (safety components of transport infrastructure) requiring pre-deployment conformity assessment. Medical AI is subject to both EU AI Act AND Medical Device Regulation (MDR). Source: EU AI Act, SecAI+ GRC.',
   },
 
@@ -25024,7 +25024,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'GCG prompts only work on models with fewer than 7 billion parameters',
       'GCG attacks can only generate 10 unique adversarial prompts before the technique is exhausted',
       'GCG prompts require the attacker to know the exact model architecture parameters',
-      'GCG prompts are always detectable'],
+      'GCG suffixes are high-perplexity gibberish that a perplexity filter can flag'
+    ],
     correct: 3,
     explanation: 'GCG adversarial suffixes typically consist of incoherent token sequences optimized for gradient signal, these exhibit high perplexity (the language model assigns low probability to such nonsensical text sequences). A perplexity-based filter that rejects inputs exceeding a threshold can catch GCG attacks, though it may also reject some legitimate low-perplexity user inputs. Limitations: (1) Perplexity filtering can be bypassed with more sophisticated optimization that generates human-readable adversarial prompts; (2) Threshold tuning required; (3) PAIR and AutoDAN attacks generate fluent adversarial prompts that evade perplexity filters. GCG transfers across models but not universally. Source: Zou et al. 2023, GIAC-GOAA red teaming.',
   },
