@@ -1,10 +1,28 @@
 'use client';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Lightweight, privacy-preserving progress store. Everything lives in the
-// browser's localStorage, no accounts, no network, consistent with the app's
-// "no tracking" stance. The dashboard and progress pages read aggregates from
-// here; the quiz engine and dojo write to it.
+// ACTIVITY LOG. One of two progress stores; read this before touching either.
+//
+//   lib/progress-store.ts  (this file, key `securingai:progress:v1`)
+//     A flat, append-only log of completed activity: quiz runs and dojo attack
+//     runs, each with a score and a timestamp. Answers "what has this person
+//     done, and how did it go". Powers the dashboard, the progress page and the
+//     recent-activity lists.
+//
+//   lib/quiz-progress.ts   (key `dojo-progress-v1`)
+//     Per-QUESTION statistics and full session records: how many times each
+//     question was seen and answered correctly, which drives the spaced
+//     repetition weighting in the quiz engine, plus enough detail to replay a
+//     session in the review view.
+//
+// They are layers, not duplicates, and they intentionally hold different data
+// at different grain. Both export a function called `loadProgress`, which is
+// the confusing part: import them under distinct names when a module needs
+// both, as components/playbook/QuizEngine.tsx does.
+//
+// Everything is localStorage. No accounts, no network, consistent with the
+// app's no-tracking stance. A completed quiz writes to BOTH stores: the run
+// summary here, the per-question stats there, correlated by `sessionId`.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const KEY = 'securingai:progress:v1';

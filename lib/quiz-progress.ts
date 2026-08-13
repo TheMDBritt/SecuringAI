@@ -1,4 +1,12 @@
 /**
+ * PER-QUESTION STATISTICS. One of two progress stores.
+ *
+ * This file holds question-grain data: how often each question was seen and
+ * answered correctly, which drives spaced repetition, plus full session records
+ * for the review view. Its sibling lib/progress-store.ts holds the coarse
+ * activity log that the dashboard reads. See the header of that file for how
+ * the two relate and why both export a `loadProgress`.
+ *
  * Quiz progression tracking, localStorage only, no accounts, no network.
  *
  * Data model
