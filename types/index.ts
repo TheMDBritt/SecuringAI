@@ -16,6 +16,12 @@ export interface QuizQuestion {
   options: [string, string, string, string];
   correct: 0 | 1 | 2 | 3;
   explanation: string;
+  /**
+   * Exam objective IDs this question maps to, e.g. ['SecAI:2.6', 'SecAI:2.2'].
+   * Namespaced by cert so one question can carry objectives from several exams.
+   * SecAI+ IDs come from docs/cert-objectives/secai-cy001.md.
+   */
+  objectives?: string[];
   /** Per-option explanations shown after answering, index-matched to options[]. Optional. */
   optionExplanations?: [string, string, string, string];
 }
