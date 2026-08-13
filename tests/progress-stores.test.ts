@@ -51,12 +51,14 @@ describe('store separation', () => {
 
     perQuestion.recordSession({
       cert: 'SecAI',
+      category: 'AI Security',
+      difficulty: 'beginner',
+      examMode: false,
       results: [
-        { questionId: 'q1', correct: true, topic: 'AI Security', difficulty: 'beginner' },
-        { questionId: 'q2', correct: false, topic: 'AI Security', difficulty: 'beginner' },
+        { qId: 'q1', chosen: 0, correct: true, timeMs: 4200 },
+        { qId: 'q2', chosen: 2, correct: false, timeMs: 6100 },
       ],
-      durationMs: 1000,
-    } as Parameters<typeof perQuestion.recordSession>[0]);
+    });
 
     expect(localStorage.getItem(ACTIVITY_KEY)).not.toBeNull();
     expect(localStorage.getItem(PERQ_KEY)).not.toBeNull();
