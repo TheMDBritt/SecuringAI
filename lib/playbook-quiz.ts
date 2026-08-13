@@ -14931,7 +14931,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'System prompt hardening combined with output filtering',
       'Fine-tune the model on only public-facing content so it has no knowledge of internal systems to disclose'],
     correct: 2,
-    explanation: 'Defense against system prompt/internal information disclosure (OWASP LLM07): (1) System prompt hardening, explicit non-disclosure instructions, though not a complete defense alone; (2) Output filtering, a secondary classifier or regex filter catches accidental disclosures; (3) Minimal system prompt principle, include only information necessary for the model\'s task; (4) Separation, system prompts should not include secrets; secrets should be injected via server-side tool calls with proper access control. Fine-tuning does not guarantee information removal (memorization risk). Rate limiting prevents automation but not single-session disclosure. Source: OWASP LLM Top 10 2026 LLM07; CAISP Domain 4; Practical DevSecOps AI Security curriculum.',
+    explanation: 'Defense against system prompt and internal information disclosure, OWASP LLM08 Hidden Context Exposure: (1) System prompt hardening, explicit non-disclosure instructions, though not a complete defense alone; (2) Output filtering, a secondary classifier or regex filter catches accidental disclosures; (3) Minimal system prompt principle, include only information necessary for the model\'s task; (4) Separation, system prompts should not include secrets; secrets should be injected via server-side tool calls with proper access control. Fine-tuning does not guarantee information removal (memorization risk). Rate limiting prevents automation but not single-session disclosure. Source: OWASP LLM Top 10 2026 LLM07; CAISP Domain 4; Practical DevSecOps AI Security curriculum.',
   },
   {
     id: 'caisp-002',
@@ -15035,7 +15035,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SecAI', 'AWS-AIF-C01'],
     question: 'A hiring model selects 35% of male vs 19% of female applicants. Under the EEOC four-fifths rule, is this significant, and what is the first mitigation step?',
     options: [
-      'Yes 19 and 35 = 54%, well below the 80% threshold',
+      'Yes, the selection ratio is 54 percent, well below the 80 percent threshold',
       'Yes, significant, but the correct mitigation is to strip gender from the training data entirely as a demographic parity constraint',
       'No, the four-fifths rule requires more than a 50% relative difference in selection rates, and 35% vs 19% does not clear that bar',
       'No, statistical disparate-impact analysis applies only to human decision-makers, not to algorithmic hiring systems under EEOC guidance',
@@ -16061,7 +16061,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Open-source models only pose a risk if they were trained outside the US due to export control regulations',
       'Open-source models from public hubs are vetted by the platform'],
     correct: 0,
-    explanation: 'AI model supply chain risks (OWASP LLM05): (1) Backdoored models, malicious actors publish models with embedded triggers; trigger phrase → model behaves maliciously; example: "Poisoning Language Models During Instruction Tuning" (Wan et al., 2023); (2) Pickle deserialization vulnerabilities, PyTorch.pt files are Python pickle objects; malicious model files can execute arbitrary code when loaded with torch.load(); mitigation: use safe_load=True or load to CPU in sandboxed environment; (3) Training data memorization, models may regurgitate PII, API keys, or proprietary code from training data; (4) License violations, GPL/CC-NC restrictions on commercial use; (5) Cryptographic verification, verify model file hashes; use signed releases; (6) Mitigation checklist: verify hash, check provenance, test in isolation, behavioral testing, scan for embedded triggers. Source: OWASP LLM Top 10 LLM05; CompTIA SecAI+ exam objectives.',
+    explanation: 'AI model supply chain risks, OWASP LLM04 Supply Chain: (1) Backdoored models, malicious actors publish models with embedded triggers; trigger phrase → model behaves maliciously; example: "Poisoning Language Models During Instruction Tuning" (Wan et al., 2023); (2) Pickle deserialization vulnerabilities, PyTorch.pt files are Python pickle objects; malicious model files can execute arbitrary code when loaded with torch.load(); mitigation: use safe_load=True or load to CPU in sandboxed environment; (3) Training data memorization, models may regurgitate PII, API keys, or proprietary code from training data; (4) License violations, GPL/CC-NC restrictions on commercial use; (5) Cryptographic verification, verify model file hashes; use signed releases; (6) Mitigation checklist: verify hash, check provenance, test in isolation, behavioral testing, scan for embedded triggers. Source: OWASP LLM Top 10 LLM05; CompTIA SecAI+ exam objectives.',
   },
   {
     id: 'secai-cloud-005',
@@ -16693,7 +16693,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Access the model\'s training data and API keys by querying extracted system prompt metadata',
       'Bypass all content filters, since knowing the system prompt proves the attacker has administrative access to the deployment'],
     correct: 0,
-    explanation: 'LLM08 Hidden Context Exposure(OWASP 2025): (1) Information value: system prompts often reveal personas, business logic, tool names, API endpoints, data sources, and security constraints the operator tried to keep confidential; (2) Exploitation paths: (a) Targeted jailbreaks exploiting known constraints, (b) Persona impersonation and competitor intelligence, (c) Identification of connected tools/APIs for further attacks, (d) Template for building a replica/jailbroken version; (3) Note: extraction doesn\'t grant modification rights or API key access, those are separate vulnerabilities; (4) Defense: avoid embedding secrets in system prompts, use platform confidentiality features, design prompts assuming they may be read. Source: OWASP LLM Top 10 v2 2025 LLM07; CompTIA SecurityAI+ Domain 2.',
+    explanation: 'LLM08 Hidden Context Exposure in the OWASP LLM Top 10 2026: (1) Information value: system prompts often reveal personas, business logic, tool names, API endpoints, data sources, and security constraints the operator tried to keep confidential; (2) Exploitation paths: (a) Targeted jailbreaks exploiting known constraints, (b) Persona impersonation and competitor intelligence, (c) Identification of connected tools/APIs for further attacks, (d) Template for building a replica/jailbroken version; (3) Note: extraction doesn\'t grant modification rights or API key access, those are separate vulnerabilities; (4) Defense: avoid embedding secrets in system prompts, use platform confidentiality features, design prompts assuming they may be read. Source: OWASP LLM Top 10 v2 2025 LLM07; CompTIA SecurityAI+ Domain 2.',
   },
   {
     id: 'secai-d2-023',
@@ -16724,7 +16724,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'RLHF-trained models are not suitable for enterprise use'
     ],
     correct: 0,
-    explanation: 'RLHF limitations (CompTIA SecurityAI+ Domain 2, CAIS Domain 3): (1) Empirical, not formal: RLHF reduces frequency of harmful outputs, it doesn\'t eliminate them; (2) Novel attacks bypass: jailbreaks, adversarial prompts, and attack patterns not in RLHF training data can succeed; (3) Distribution shift: deployment context differs from training context, safety alignment may not generalize; (4) Security stack: RLHF + input filters (Prompt Shields) + output filters (content safety classifiers) + rate limiting + audit logging + human review processes. Defense-in-depth principle: no single layer is sufficient. Source: CompTIA SecurityAI+ Domain 2; Anthropic Constitutional AI paper; OWASP LLM Security Cheat Sheet.',
+    explanation: 'RLHF limitations, CompTIA SecAI+ Domain 2 and CAIS Domain 3: (1) Empirical, not formal: RLHF reduces frequency of harmful outputs, it doesn\'t eliminate them; (2) Novel attacks bypass: jailbreaks, adversarial prompts, and attack patterns not in RLHF training data can succeed; (3) Distribution shift: deployment context differs from training context, safety alignment may not generalize; (4) Security stack: RLHF + input filters (Prompt Shields) + output filters (content safety classifiers) + rate limiting + audit logging + human review processes. Defense-in-depth principle: no single layer is sufficient. Source: CompTIA SecurityAI+ Domain 2; Anthropic Constitutional AI paper; OWASP LLM Security Cheat Sheet.',
   },
   {
     id: 'secai-d2-025',
