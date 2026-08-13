@@ -23643,7 +23643,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Bulk approve requires human authentication tokens that the agent cannot obtain, so a human must run the tool for the agent',
     ],
     correct: 0,
-    explanation: 'The principle for HITL gating is proportional to reversibility and impact: read actions are non-destructive (the agent reads, a mistake means the agent read unnecessarily, no lasting harm), while bulk approval is irreversible and high-consequence (financial transfers initiate, reversing them requires separate out-of-band processes). OWASP LLM08 guidance on excessive agency specifically recommends human confirmation gates for "irreversible or high-stakes actions." A prompt injection manipulating the agent to approve fraudulent expenses would have immediate, hard-to-reverse financial consequences. HITL is not required equally for all actions, that would make agents operationally impractical. Computational budget is an infrastructure concern. Authentication tokens are an implementation detail unrelated to why HITL matters for this action.',
+    explanation: 'The principle for HITL gating is proportional to reversibility and impact: read actions are non-destructive (the agent reads, a mistake means the agent read unnecessarily, no lasting harm), while bulk approval is irreversible and high-consequence (financial transfers initiate, reversing them requires separate out-of-band processes). OWASP LLM03 Excessive Agency guidance specifically recommends human confirmation gates for "irreversible or high-stakes actions." A prompt injection manipulating the agent to approve fraudulent expenses would have immediate, hard-to-reverse financial consequences. HITL is not required equally for all actions, that would make agents operationally impractical. Computational budget is an infrastructure concern. Authentication tokens are an implementation detail unrelated to why HITL matters for this action.',
   },
   {
     id: 'agent-sec-012',
@@ -23818,7 +23818,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'LLMs can automatically take blocking actions based on the threat intelligence they analyze',
     ],
     correct: 1,
-    explanation: 'The primary value is synthesis speed and structure extraction from unstructured sources. LLMs can extract IOCs, map TTPs to MITRE ATT&CK, and produce structured summaries in seconds. LLMs do NOT access real-time feeds (A, they process provided text). LLMs make mistakes and hallucinate (C, analyst review remains essential). Automated blocking from unvetted LLM analysis would create serious false-positive risk.',
+    explanation: 'The primary value is synthesis speed and structure extraction from unstructured sources. LLMs can extract IOCs, map TTPs to MITRE ATT&CK, and produce structured summaries in seconds. LLMs do not access real-time feeds on their own; they process the text they are given. They also hallucinate, so analyst review remains essential. Automated blocking from unvetted LLM analysis would create serious false-positive risk.',
   },
   {
     id: 'gasae-automation-002',
@@ -24428,7 +24428,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Identical predictions for semantically equivalent inputs across individuals',
       'No individual\'s data can be reconstructed from the trained weights',
-      'Output distribution changes by at most epsilon if one record is included',
+      'The output distribution shifts by at most a bounded factor per record',
       'Training data is encrypted during the gradient computation phase'
     ],
     correct: 2,
@@ -24512,7 +24512,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Training data poisoning'
     ],
     correct: 2,
-    explanation: 'Indirect prompt injection places malicious instructions in content retrieved by an agentic AI system, webpages, documents, emails, database records. The AI processes the content and executes the embedded instructions without user awareness. MITRE ATLAS AML.T0051 (Prompt Injection via Third-Party Retrieval) covers this vector. Defenses: content sanitization before LLM processing, privilege separation between retrieval and action execution, human-in-the-loop for sensitive actions, sandboxed execution environments. Source: OWASP LLM01:2026, GIAC GOAA, Riley et al. 2023.',
+    explanation: 'Indirect prompt injection places malicious instructions in content retrieved by an agentic AI system, webpages, documents, emails, database records. The AI processes the content and executes the embedded instructions without user awareness. MITRE ATLAS AML.T0051.001, the indirect sub-technique of LLM Prompt Injection, covers this vector. Defenses: content sanitization before LLM processing, privilege separation between retrieval and action execution, human-in-the-loop for sensitive actions, sandboxed execution environments. Source: OWASP LLM01:2026, GIAC GOAA, Riley et al. 2023.',
   },
   {
     id: 'secai-adv-029',
