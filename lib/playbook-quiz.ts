@@ -19186,13 +19186,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'GIAC-GOAA', 'SecAI', 'SCS-C03'],
     question: 'An agentic LLM system is given a "send email" tool, a "read calendar" tool, and a "search internet" tool. The system prompt instructs it to schedule meetings based on calendar availability. A threat actor embeds adversarial instructions in a public web page the agent retrieves. Which OWASP LLM Top 10 risk primarily covers this attack?',
     options: [
-      'LLM01',
-      'LLM08',
-      'LLM06',
-      'LLM03',
+      'LLM01 Prompt Injection',
+      'LLM03 Excessive Agency',
+      'LLM06 Unbounded Consumption',
+      'LLM02 Sensitive Information Disclosure'
     ],
     correct: 1,
-    explanation: 'OWASP LLM03 (Excessive Agency): the enabling condition is that the agent has tools with real-world impact (email send, calendar write). LLM01 describes the injection mechanism; LLM08 describes why the consequences are severe. The principle of least privilege for agentic systems: a scheduling agent needs read calendar + create event, NOT send email to arbitrary addresses or search the internet for arbitrary content. Minimum required capabilities limit blast radius when injection occurs. Both LLM01 (the injection) and LLM08 (the excessive agency) are present, but LLM08 is what makes the attack dangerous vs. merely an information-gathering side effect.',
+    explanation: 'OWASP LLM03 (Excessive Agency): the enabling condition is that the agent has tools with real-world impact (email send, calendar write). LLM01 describes the injection mechanism; LLM03 describes why the consequences are severe. The principle of least privilege for agentic systems: a scheduling agent needs read calendar + create event, NOT send email to arbitrary addresses or search the internet for arbitrary content. Minimum required capabilities limit blast radius when injection occurs. Both LLM01, the injection, and LLM03, the excessive agency, are present, but LLM03 is what makes the attack dangerous rather than merely an information-gathering side effect.',
   },
   {
     id: 'cais-llm-006-b',
@@ -19288,7 +19288,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The hardware specifications of the servers used for training the model',
     ],
     correct: 0,
-    explanation: 'AI-BOM (NIST AI RMF MAP.5.1, ISO 42001 8.4): analogous to software SBOM but for ML systems. Required components: (1) Model card: architecture, base model + version hash, training framework; (2) Dataset cards: training data sources, collection dates, known biases, licensing; (3) Third-party component inventory: all ML frameworks, libraries (torch, transformers, etc.) with CVE status; (4) Fine-tuning pipeline: what data was used, filtering methodology, human annotation process; (5) Post-training modifications: RLHF dataset, constitutional principles, safety fine-tuning. Security purpose: enables organizations to respond to supply chain incidents (e.g., "does our model use the compromised base model version X?").',
+    explanation: 'AI-BOM, NIST AI RMF MAP 4 and ISO 42001 clause 8.4,: analogous to software SBOM but for ML systems. Required components: (1) Model card: architecture, base model + version hash, training framework; (2) Dataset cards: training data sources, collection dates, known biases, licensing; (3) Third-party component inventory: all ML frameworks, libraries (torch, transformers, etc.) with CVE status; (4) Fine-tuning pipeline: what data was used, filtering methodology, human annotation process; (5) Post-training modifications: RLHF dataset, constitutional principles, safety fine-tuning. Security purpose: enables organizations to respond to supply chain incidents (e.g., "does our model use the compromised base model version X?").',
   },
   // ─── GIAC GOAA Domain 3, Custom GPTs & Assistant Security ───────────────────
   {
@@ -19616,7 +19616,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Security',
     difficulty: 'beginner' as const,
     certTags: ['SecAI', 'CAIS', 'CAISP', 'SCS-C03'],
-    question: 'Why does OWASP LLM09:2026 (Misinformation) count as a security risk, not just an accuracy concern?',
+    question: 'Why does OWASP LLM07 Misinformation count as a security risk, not just an accuracy concern?',
     options: [
       'Confidently wrong outputs used for security decisions directly degrade defensive posture when acted on',
       'LLM misinformation is only a security risk when the model intentionally fabricates false information for malicious ends',
@@ -19624,7 +19624,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Misinformation is an accuracy issue and belongs in the AI safety category rather than the OWASP LLM Top 10 list',
     ],
     correct: 0,
-    explanation: 'OWASP LLM09:2026 (Misinformation): framed as a security risk because security decision-support is a primary LLM use case. High-stakes misinformation scenarios: (1) "Is CVE-2024-XXXX exploitable in our stack?", confident wrong answer leads to incorrect patch prioritization; (2) "Does our policy meet SOC2 Type II requirement CC6.1?", hallucinated yes leads to audit failure; (3) "Is this code snippet secure?", missed vulnerability in LLM review creates false confidence. Risk amplification: security teams under time pressure may not verify LLM outputs against primary sources. Mitigation: LLM outputs on security decisions must include source citations; critical decisions require primary source verification; security-specific LLMs should be evaluated on factual accuracy benchmarks (SecurityBench, CyberMetric) before deployment.',
+    explanation: 'OWASP LLM07 Misinformation in the 2026 list is framed as a security risk because security decision-support is a primary LLM use case. High-stakes misinformation scenarios: (1) "Is CVE-2024-XXXX exploitable in our stack?", confident wrong answer leads to incorrect patch prioritization; (2) "Does our policy meet SOC2 Type II requirement CC6.1?", hallucinated yes leads to audit failure; (3) "Is this code snippet secure?", missed vulnerability in LLM review creates false confidence. Risk amplification: security teams under time pressure may not verify LLM outputs against primary sources. Mitigation: LLM outputs on security decisions must include source citations; critical decisions require primary source verification; security-specific LLMs should be evaluated on factual accuracy benchmarks (SecurityBench, CyberMetric) before deployment.',
   },
   {
     id: 'secai-adv-003-b',
