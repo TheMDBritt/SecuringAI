@@ -18195,12 +18195,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'GIAC-GOAA'],
     question: 'Which MITRE ATLAS technique involves the adversary querying the target model to build a functional replica without accessing model internals?',
     options: [
-      'AML.T0025',
-      'AML.TA0001',
-      'AML.TA0003',
-      'AML.TA0002'],
+      'Extract ML Model, exfiltration via the ML inference API',
+      'Poison Training Data during the ingestion stage',
+      'Backdoor ML Model by tampering with the weights',
+      'Evade ML Model with adversarial inputs at inference'
+    ],
     correct: 0,
-    explanation: 'MITRE ATLAS AML.T0025 (ML Model Exfiltration via Inference API): Adversary makes systematic queries to reconstruct decision boundaries. Techniques include query-based extraction, active learning-based extraction, JBDA, and transfer attacks. Countermeasures: rate limiting, output perturbation, confidence score obfuscation, anomalous query detection.',
+    explanation: 'In MITRE ATLAS, Extract ML Model sits under Exfiltration via ML Inference API. The adversary makes systematic queries and trains a surrogate that reconstructs the decision boundaries of the target, without ever reading the weights. Techniques include query-based extraction, active learning-based extraction, JBDA, and transfer attacks. Countermeasures: rate limiting, output perturbation, confidence score obfuscation, anomalous query detection.',
   },
   {
     id: 'ai-test-002',
