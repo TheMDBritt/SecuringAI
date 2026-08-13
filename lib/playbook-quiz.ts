@@ -12781,7 +12781,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'LLM10 Improper Output Handling'
     ],
     correct: 1,
-    explanation: "This is Indirect Prompt Injection (LLM01) combined with Excessive Agency (LLM08). The email is untrusted content that the agent processes and follows as instructions. The agent's excessive permissions (access to inbox, ability to forward external) and lack of human approval gates for high-impact actions enable the attack. Mitigations: (1) treat all content processed by the agent as untrusted; (2) require explicit user confirmation for actions involving external communication; (3) apply least-privilege to agent tool permissions. Source: OWASP LLM Top 10 2026 (LLM08); GIAC GOAA.",
+    explanation: "This is Indirect Prompt Injection (LLM01) combined with Excessive Agency, LLM03. The email is untrusted content that the agent processes and follows as instructions. The agent's excessive permissions (access to inbox, ability to forward external) and lack of human approval gates for high-impact actions enable the attack. Mitigations: (1) treat all content processed by the agent as untrusted; (2) require explicit user confirmation for actions involving external communication; (3) apply least-privilege to agent tool permissions. Source: OWASP LLM Top 10 2026 (LLM08); GIAC GOAA.",
   },
   {
     id: 'cais-agent-002',
@@ -12819,14 +12819,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Governance',
     difficulty: 'advanced' as const,
     certTags: ['CAIS', 'CAISP', 'SecAI', 'AWS-AIF-C01', 'SCS-C03'],
-    question: 'Under NIST AI RMF MAP.5, what does AI supply chain risk assessment require when procuring a third-party foundation model for production deployment?',
+    question: 'Under the NIST AI RMF MAP function, what does AI supply chain risk assessment require when procuring a third-party foundation model for production deployment?',
     options: [
       'Obtaining an SOC 2 Type II report from the model provider',
       'Running a penetration test against the model API endpoint',
-      'Verifying the model achieves accuracy >90% on internal benchmarks',
-      'Documenting model provenance'],
+      'Verifying the model achieves accuracy above 90% on internal benchmarks',
+      'Documenting model provenance and verifying weight integrity'
+    ],
     correct: 3,
-    explanation: "NIST AI RMF MAP.5 (AI Risk Identification) for supply chain requires: (1) provenance documentation, who trained the model, on what data, with what fine-tuning; (2) integrity verification, cryptographic hash of model weights to detect tampering; (3) vulnerability assessment, known training data contamination, backdoor risks in the model lineage; (4) contractual controls, data processing agreements, acceptable use policies, incident notification obligations; (5) alignment with the organization's AI risk tolerance. SOC 2 covers operational controls but not AI-specific supply chain risks. Source: NIST AI RMF MAP.5; OWASP LLM09.",
+    explanation: "MAP 4 maps risks and benefits for all components of the AI system, including third-party software, data, and models. For a procured foundation model that requires: (1) provenance documentation, who trained the model, on what data, with what fine-tuning; (2) integrity verification, cryptographic hash of model weights to detect tampering; (3) vulnerability assessment, known training data contamination, backdoor risks in the model lineage; (4) contractual controls, data processing agreements, acceptable use policies, incident notification obligations; (5) alignment with the organization's AI risk tolerance. SOC 2 covers operational controls but not AI-specific supply chain risks. Source: NIST AI RMF MAP 4; OWASP LLM04 Supply Chain.",
   },
   {
     id: 'dojo3-bias-001',
@@ -12838,10 +12839,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Is compliant because neither approval rate exceeds 50%',
       'Requires retraining on a balanced dataset to achieve equal approval rates',
-      'Demonstrates adverse impact, the 4 and 5',
-      "Is acceptable if the model's overall accuracy exceeds 90%"],
+      'Demonstrates adverse impact under the four-fifths threshold',
+      'Is acceptable if the model\'s overall accuracy exceeds 90%'
+    ],
     correct: 2,
-    explanation: 'The EEOC "4/5 rule" (Uniform Guidelines on Employee Selection Procedures) establishes a disparate impact threshold: the selection rate for any protected class should be at least 4/5 (80%) of the rate for the highest-scoring group. Here: 32/48 = 0.667 < 0.80, clear disparate impact. This triggers: (1) adverse impact analysis; (2) EU AI Act Annex III classification as high-risk AI (employment decisions); (3) ISO 42001 bias mitigation controls; (4) NIST AI RMF MEASURE 2.5 bias metrics monitoring. Equal overall accuracy does not excuse disparate impact on protected classes. Source: EEOC UGESP; EU AI Act Article 9; NIST AI RMF.',
+    explanation: 'The EEOC "4/5 rule" (Uniform Guidelines on Employee Selection Procedures) establishes a disparate impact threshold: the selection rate for any protected class should be at least 4/5 (80%) of the rate for the highest-scoring group. Here the ratio is 0.667, below 0.80, so the selection rate shows clear disparate impact. This triggers: (1) adverse impact analysis; (2) EU AI Act Annex III classification as high-risk AI (employment decisions); (3) ISO 42001 bias mitigation controls; (4) NIST AI RMF MEASURE 2.5 bias metrics monitoring. Equal overall accuracy does not excuse disparate impact on protected classes. Source: EEOC UGESP; EU AI Act Article 9; NIST AI RMF.',
   },
 
   // ── SC-500: Secure Compute, Storage & Data ────────────────────────────────
@@ -13353,7 +13355,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Indirect prompt injection',
       'System prompt leakage'],
     correct: 3,
-    explanation: 'OWASP LLM07 covers system prompt leakage despite instructions to maintain confidentiality. Consequences: reveals business logic, tool definitions, and constraint details that enable more targeted attacks; may expose hard-coded credentials. Mitigations: never place secrets in system prompts; use a dedicated output-layer classifier for system prompt leak patterns; test leak rate regularly, 60% is unacceptable. Source: OWASP LLM Top 10 LLM07.',
+    explanation: 'OWASP LLM08 Hidden Context Exposure covers system prompt leakage despite instructions to maintain confidentiality. Consequences: reveals business logic, tool definitions, and constraint details that enable more targeted attacks; may expose hard-coded credentials. Mitigations: never place secrets in system prompts; use a dedicated output-layer classifier for system prompt leak patterns; test leak rate regularly, 60% is unacceptable. Source: OWASP LLM Top 10 LLM07.',
   },
 
   // ─── Google MLE: Model Monitoring ────────────────────────────────────────────
@@ -13782,8 +13784,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'MANAGE requires publishing the 15% injection rate in the annual AI transparency report per EU AI Act Article 13',
       'MANAGE requires conducting a new penetration test to confirm the 15% rate before taking any action',
-      'MANAGE requires selecting and implementing risk response options, avoid',
-      'MANAGE requires re-running the MAP function to recategorize the prompt injection risk as high-impact'],
+      'MANAGE requires selecting and implementing a risk response, then monitoring its effectiveness',
+      'MANAGE requires re-running the MAP function to recategorize the prompt injection risk as high-impact'
+    ],
     correct: 2,
     explanation: 'NIST AI RMF MANAGE function: implements responses to identified and prioritized risks. Response options: (1) Avoid, stop the AI use case if risk exceeds tolerance; (2) Transfer, shift risk via contracts, insurance, or third-party oversight; (3) Mitigate, implement controls (for prompt injection: input sanitization, output validation, context isolation, rate limiting); (4) Accept, document residual risk with explicit executive acceptance and monitoring plan. For a 15% injection rate, mitigation is required. After mitigation: MANAGE also requires effectiveness monitoring (re-testing to confirm rate reduction) and residual risk documentation. Source: NIST AI RMF 1.0 MANAGE function.',
   },
@@ -13976,8 +13979,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Three failed password attempts and one successful login from the same IP address within 60 seconds',
       'Five users receiving the same phishing email within one hour',
-      'Sentinel Fusion correlates, Entra ID Identity Protection',
-      'A single Defender for Cloud high-severity alert about a cryptocurrency mining process running on an Azure VM'],
+      'An anomalous sign-in alert, then encoded script execution on the endpoint, then mass file encryption',
+      'A single Defender for Cloud high-severity alert about a cryptocurrency mining process running on an Azure VM'
+    ],
     correct: 2,
     explanation: 'Microsoft Sentinel Fusion ML: (1) Ingests alerts from multiple data connectors (Defender for Endpoint, Entra ID Identity Protection, Defender for Cloud, Azure AD audit logs); (2) Uses ML to identify multi-stage attack patterns that span different data sources; (3) Correlates: suspicious sign-in (identity) → encoded script (endpoint) → data exfiltration (network) into a single high-confidence incident. Fusion reduces alert fatigue by surfacing only correlated, multi-signal incidents rather than individual low-confidence alerts. The single failed login scenario is a low-confidence alert, not multi-stage. Source: Microsoft Sentinel Fusion detection; SC-500 Domain 4; GIAC-GASAE.',
   },
@@ -14177,7 +14181,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
     certTags: ['AWS-AIF-C01', 'SecAI', 'SCS-C03'],
-    question: 'AWS provides which service to help identify and remediate security risks specifically in generative AI workloads running on AWS, including detecting over-permissive IAM roles for Bedrock, unencrypted model artifacts, and publicly accessible inference endpoints?',
+    question: 'Which AWS service detects anomalous behaviour against generative AI workloads, such as unusual Amazon Bedrock invocation rates, invocations from unexpected locations, and a dormant IAM identity suddenly assuming Bedrock permissions?',
     options: [
       'Amazon Macie',
       'Amazon GuardDuty',
@@ -14216,8 +14220,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Weights are learned during fine-tuning and fixed at inference',
       'Weights are randomly initialized and updated during inference',
-      'Weights are computed from softmax',
-      'Weights are uniform across all tokens'],
+      'Weights come from a softmax over scaled query and key dot products',
+      'Weights are uniform across all tokens in the context window'
+    ],
     correct: 2,
     explanation: 'The scaled dot-product attention formula Q·K^T/√d_k determines which tokens the model attends to. Injected malicious instructions crafted to maximize similarity with typical query patterns will attract high attention weights, effectively competing with or overriding the system prompt. This is the mechanism behind indirect prompt injection (ATLAS AML.T0054.001): malicious content in retrieved documents gains high attention weight because it\'s semantically relevant to the current task. GIAC GOAA Domain 1 covers transformer internals specifically to explain why LLM attacks work at the architecture level. Source: GIAC GOAA syllabus; "Attention is All You Need" (Vaswani et al.).',
   },
