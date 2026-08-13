@@ -16673,7 +16673,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'An organization\'s AI Security Posture Management (AI-SPM) solution reports that a production LLM deployment has three critical misconfigurations. Which combination represents the highest immediate risk?',
     options: [
       'Public inference endpoint, over-broad service identity, filtering disabled',
-      'Missing model versioning, no performance monitoring, no A and B testing',
+      'Missing model versioning, no performance monitoring, no split testing',
       'No GPU memory encryption, unencrypted weight storage, no HSM for keys',
       'Missing model card, no bias evaluation metrics, no explainability tooling'
     ],
@@ -25662,7 +25662,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'An AI performance failure that does not require incident response',
       'A cybersecurity incident classified under NIST CSF but not NIST AI RMF'],
     correct: 0,
-    explanation: 'NIST AI RMF AI impact event: when AI output causes real-world harm (physical, financial, psychological, societal), this constitutes an AI impact event requiring the RESPOND function. For medical AI: (1) FDA Software as a Medical Device (SaMD) regulations may require event reporting; (2) EU AI Act Article 73 requires serious incident reporting within 72 hours for high-risk AI; (3) ISO 42001 requires corrective action and incident documentation; (4) Clinical investigation required to determine if the AI failure caused or contributed to the harm. Source: CAIS, NIST AI RMF, EU AI Act.',
+    explanation: 'NIST AI RMF AI impact event: when AI output causes real-world harm (physical, financial, psychological, societal), this constitutes an AI impact event, handled under the MANAGE function. The AI RMF has no RESPOND function; that belongs to the Cybersecurity Framework. For medical AI: (1) FDA Software as a Medical Device (SaMD) regulations may require event reporting; (2) EU AI Act Article 73 requires serious incident reporting within 72 hours for high-risk AI; (3) ISO 42001 requires corrective action and incident documentation; (4) Clinical investigation required to determine if the AI failure caused or contributed to the harm. Source: CAIS, NIST AI RMF, EU AI Act.',
   },
   {
     id: 'cais-d3-003',
