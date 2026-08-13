@@ -3,6 +3,7 @@ import { useState, useMemo } from 'react';
 import { SC500_DRILL_SET, type Drill, type DrillSet, type DrillStep } from '@/lib/sc500-drills';
 import { SECAI_DRILL_SET } from '@/lib/secai-drills';
 import { AWS_SCSC03_DRILL_SET } from '@/lib/aws-scsc03-drills';
+import { useTabList } from '@/components/hooks/useTabList';
 
 type Mode = 'list' | 'run' | 'done';
 
@@ -55,6 +56,12 @@ export default function PortalDrills() {
     setPortalFilter('All');
   };
 
+  const certTabs = useTabList(
+    DRILL_SETS.map((d) => d.certId),
+    certId,
+    setActiveCert,
+  );
+
   const drills = useMemo(
     () => (portalFilter === 'All' ? activeSet.drills : activeSet.drills.filter((d) => d.portal === portalFilter)),
     [activeSet, portalFilter],
@@ -103,15 +110,18 @@ export default function PortalDrills() {
             </p>
           </div>
           {/* Cert switcher */}
-          <div className="flex items-center gap-1.5" role="tablist" aria-label="Drill cert">
+          <div
+            className="-mx-1 flex items-center gap-1.5 overflow-x-auto px-1 sm:mx-0 sm:overflow-visible sm:px-0"
+            role="tablist"
+            aria-label="Drill cert"
+            {...certTabs.listProps}
+          >
             {DRILL_SETS.map((s) => (
               <button
                 key={s.certId}
-                role="tab"
-                aria-selected={certId === s.certId}
-                onClick={() => setActiveCert(s.certId)}
+                {...certTabs.tabProps(s.certId)}
                 className={[
-                  'text-[10px] font-mono px-2.5 py-1 rounded border transition-colors',
+                  'shrink-0 whitespace-nowrap text-[10px] font-mono px-2.5 py-1 rounded border transition-colors',
                   certId === s.certId
                     ? 'bg-violet-500/10 border-violet-500/40 text-violet-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',

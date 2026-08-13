@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PRIMARY_NAV, SECONDARY_NAV, BrandMark, type NavItem } from './nav';
@@ -105,6 +106,56 @@ function SidebarInner({
  * Mobile: slide-over drawer controlled by `mobileOpen`.
  */
 export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose: () => void }) {
+  const drawerRef = useRef<HTMLElement>(null);
+  const restoreFocusTo = useRef<HTMLElement | null>(null);
+
+  // The drawer is a modal surface: while it is open, Escape closes it, focus
+  // moves inside, Tab is trapped, and focus returns to the trigger on close.
+  // Without this a keyboard user could tab straight through the overlay into
+  // the page behind it.
+  useEffect(() => {
+    if (!mobileOpen) return;
+
+    restoreFocusTo.current = document.activeElement as HTMLElement | null;
+
+    const focusables = () =>
+      Array.from(
+        drawerRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((el) => el.offsetParent !== null);
+
+    focusables()[0]?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      restoreFocusTo.current?.focus?.();
+    };
+  }, [mobileOpen, onClose]);
+
   const pathname = usePathname();
 
   return (
@@ -127,6 +178,10 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
           onClick={onClose}
         />
         <aside
+          ref={drawerRef}
+          role="dialog"
+          aria-modal={mobileOpen}
+          aria-label="Main navigation"
           className={[
             'absolute inset-y-0 left-0 w-64 border-r border-surface-border bg-navy-950 shadow-elevated transition-transform duration-200 ease-out',
             mobileOpen ? 'translate-x-0' : '-translate-x-full',
