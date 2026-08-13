@@ -10768,14 +10768,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Red Teaming AI',
     difficulty: 'advanced',
     certTags: ['GIAC-GOAA', 'SecAI', 'CAISP'],
-    question: 'MITRE ATLAS technique AML.T0054 describes "LLM Prompt Injection." What sub-technique specifically covers injections delivered through external data sources processed by an agent?',
+    question: 'MITRE ATLAS technique AML.T0051 describes "LLM Prompt Injection." What sub-technique specifically covers injections delivered through external data sources processed by an agent?',
     options: [
-      'AML.T0054.001',
+      'AML.T0051.001',
       'AML.T0016',
-      'AML.T0054.000',
+      'AML.T0051.000',
       'AML.T0051'],
     correct: 0,
-    explanation: 'MITRE ATLAS AML.T0054.001 Indirect Prompt Injection covers injection through content external to the direct user-model conversation: retrieved web pages, emails processed by an agent, documents in a RAG pipeline, search results, tool outputs, any data that a model or agent consumes without the user explicitly authoring it. This is distinct from AML.T0054.000 (direct, where the user is the attacker) because the victim user is not the attacker, an external party embedded instructions in content that the AI system processes. Source: MITRE ATLAS AML.T0054.',
+    explanation: 'MITRE ATLAS AML.T0051.001 Indirect Prompt Injection covers injection through content external to the direct user-model conversation: retrieved web pages, emails processed by an agent, documents in a RAG pipeline, search results, tool outputs, any data that a model or agent consumes without the user explicitly authoring it. This is distinct from AML.T0051.000 (direct, where the user is the attacker) because the victim user is not the attacker, an external party embedded instructions in content that the AI system processes. Source: MITRE ATLAS AML.T0051.',
   },
   {
     id: 'goaa-adv-003',
@@ -12156,7 +12156,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     'The RLHF training dataset did not include encoded examples',
     "The model's attention mechanism processes character-level tokens differently when encoded"],
   correct: 1,
-  explanation: "Encoding evasion exploits the gap between the safety filter's input processing and the LLM's decoding capability. The filter classifies encoded text as benign (it doesn't decode it). The LLM, trained on diverse internet content, decodes and responds to the harmful content. Fix: apply safety classifiers AFTER decoding. Source: OWASP LLM01; MITRE ATLAS AML.T0054.",
+  explanation: "Encoding evasion exploits the gap between the safety filter's input processing and the LLM's decoding capability. The filter classifies encoded text as benign (it doesn't decode it). The LLM, trained on diverse internet content, decodes and responds to the harmful content. Fix: apply safety classifiers AFTER decoding. Source: OWASP LLM01; MITRE ATLAS AML.T0054 LLM Jailbreak.",
 },
 {
   id: 'secai-d2-004-v2',
@@ -12188,7 +12188,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'It uses retrieval to pull in pre-safety-training data'
     ],
   correct: 2,
-  explanation: 'Virtual context injection (roleplay/fictional framing) works because safety classifiers trained on direct harmful requests often fail to detect requests embedded in extensive fictional context. The adversarial content appears as character dialogue in a story. Defenses: train classifiers on fictional-context attacks; use semantic intent classifiers; implement per-turn harm scoring on outputs. Source: OWASP LLM01; ATLAS AML.T0054.001.',
+  explanation: 'Virtual context injection (roleplay/fictional framing) works because safety classifiers trained on direct harmful requests often fail to detect requests embedded in extensive fictional context. The adversarial content appears as character dialogue in a story. Defenses: train classifiers on fictional-context attacks; use semantic intent classifiers; implement per-turn harm scoring on outputs. Source: OWASP LLM01; ATLAS AML.T0054 LLM Jailbreak.',
 },
 {
   id: 'goaa-adv-002-v2-v2',
@@ -12970,7 +12970,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Direct prompt injection',
       'Data poisoning'],
     correct: 1,
-    explanation: 'Indirect prompt injection (OWASP LLM01 variant, ATLAS AML.T0054.001) attacks exploit RAG architectures: the attacker cannot modify the user prompt but can inject instructions into content the RAG system retrieves (documents, web pages, emails, product reviews). The retrieved malicious content is treated as trusted context by the LLM, which then follows the embedded instructions. Mitigations: input sanitization of RAG documents, separate trust levels for user prompts vs. retrieved content, Prompt Shields (Azure AI Content Safety Document Shield), and output validation. Source: OWASP LLM01 (2025); CAISP RAG security module.',
+    explanation: 'Indirect prompt injection (OWASP LLM01 variant, ATLAS AML.T0051.001) attacks exploit RAG architectures: the attacker cannot modify the user prompt but can inject instructions into content the RAG system retrieves (documents, web pages, emails, product reviews). The retrieved malicious content is treated as trusted context by the LLM, which then follows the embedded instructions. Mitigations: input sanitization of RAG documents, separate trust levels for user prompts vs. retrieved content, Prompt Shields (Azure AI Content Safety Document Shield), and output validation. Source: OWASP LLM01; CAISP RAG security module.',
   },
   {
     id: 'caisp-assess-004',
@@ -13838,7 +13838,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Token manipulation',
     ],
     correct: 1,
-    explanation: 'Indirect prompt injection via document poisoning: (1) Attacker plants malicious instructions in content (product reviews, emails, web pages, PDFs) that will be retrieved by a RAG pipeline; (2) The model receives the malicious content as part of its context alongside legitimate user queries; (3) The model executes the injected instructions, data exfiltration, behavior modification, misinformation. Key distinction from direct injection: the attacker never touches the system prompt or user interface, they attack through the data plane. Defense: (1) Prompt Shields (indirect injection detection) on RAG inputs; (2) Output validation to detect exfiltration patterns; (3) Sandboxed context processing. Source: OWASP LLM01; MITRE ATLAS AML.T0054.',
+    explanation: 'Indirect prompt injection via document poisoning: (1) Attacker plants malicious instructions in content (product reviews, emails, web pages, PDFs) that will be retrieved by a RAG pipeline; (2) The model receives the malicious content as part of its context alongside legitimate user queries; (3) The model executes the injected instructions, data exfiltration, behavior modification, misinformation. Key distinction from direct injection: the attacker never touches the system prompt or user interface, they attack through the data plane. Defense: (1) Prompt Shields (indirect injection detection) on RAG inputs; (2) Output validation to detect exfiltration patterns; (3) Sandboxed context processing. Source: OWASP LLM01; MITRE ATLAS AML.T0051.',
   },
   {
     id: 'goaa-003-b',
@@ -14224,7 +14224,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Weights are uniform across all tokens in the context window'
     ],
     correct: 2,
-    explanation: 'The scaled dot-product attention formula Q·K^T/√d_k determines which tokens the model attends to. Injected malicious instructions crafted to maximize similarity with typical query patterns will attract high attention weights, effectively competing with or overriding the system prompt. This is the mechanism behind indirect prompt injection (ATLAS AML.T0054.001): malicious content in retrieved documents gains high attention weight because it\'s semantically relevant to the current task. GIAC GOAA Domain 1 covers transformer internals specifically to explain why LLM attacks work at the architecture level. Source: GIAC GOAA syllabus; "Attention is All You Need" (Vaswani et al.).',
+    explanation: 'The scaled dot-product attention formula Q·K^T/√d_k determines which tokens the model attends to. Injected malicious instructions crafted to maximize similarity with typical query patterns will attract high attention weights, effectively competing with or overriding the system prompt. This is the mechanism behind indirect prompt injection (ATLAS AML.T0051.001): malicious content in retrieved documents gains high attention weight because it\'s semantically relevant to the current task. GIAC GOAA Domain 1 covers transformer internals specifically to explain why LLM attacks work at the architecture level. Source: GIAC GOAA syllabus; "Attention is All You Need" (Vaswani et al.).',
   },
   {
     id: 'goaa-002-c',
@@ -14316,7 +14316,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The agent generates a summary with competitor pricing data, violating trade secret law',
       'The agent stores competitor data in a file'],
     correct: 1,
-    explanation: 'This is the canonical agentic indirect injection attack chain: (1) Legitimate user request → (2) Agent browses attacker-controlled or attacker-compromised page → (3) Page contains injected instructions → (4) Agent executes injected instructions using its real tool permissions → (5) Real-world harm (email exfiltration, data deletion). The key risk amplifier is the combination of web browse (arbitrary input source) + email send (communication exfiltration) + delete capability. OWASP LLM03 (Excessive Agency) specifically addresses this: agents should operate with minimum necessary permissions, and critical actions (email send, delete) should require explicit human confirmation. Source: OWASP LLM Top 10 2026 LLM08; ATLAS AML.T0054; GIAC GOAA Domain 5.',
+    explanation: 'This is the canonical agentic indirect injection attack chain: (1) Legitimate user request → (2) Agent browses attacker-controlled or attacker-compromised page → (3) Page contains injected instructions → (4) Agent executes injected instructions using its real tool permissions → (5) Real-world harm (email exfiltration, data deletion). The key risk amplifier is the combination of web browse (arbitrary input source) + email send (communication exfiltration) + delete capability. OWASP LLM03 (Excessive Agency) specifically addresses this: agents should operate with minimum necessary permissions, and critical actions (email send, delete) should require explicit human confirmation. Source: OWASP LLM Top 10 2026, LLM03 Excessive Agency; ATLAS AML.T0051; GIAC GOAA Domain 5.',
   },
   {
     id: 'goaa-008-c',
@@ -14332,7 +14332,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Printing the malicious prompt in white text on a white background',
     ],
     correct: 1,
-    explanation: 'Adversarial perturbation attacks on multimodal LLMs work at the vision encoder level: perturbations are optimized (via gradient-based methods against the target model, or via transfer from surrogate models) to produce specific internal representations, specifically, token sequences spelling out injected instructions, when processed by the vision transformer. This differs from OCR-based attacks (which require text to be readable) because the perturbations operate at the embedding level. Research (e.g., "On the Adversarial Robustness of Multi-Modal Foundation Models", ICCV 2023) demonstrates cross-modal injection via visual adversarial patches. Source: GIAC GOAA Domain 2; OWASP LLM Top 10 2026; ATLAS AML.T0054.001.',
+    explanation: 'Adversarial perturbation attacks on multimodal LLMs work at the vision encoder level: perturbations are optimized (via gradient-based methods against the target model, or via transfer from surrogate models) to produce specific internal representations, specifically, token sequences spelling out injected instructions, when processed by the vision transformer. This differs from OCR-based attacks (which require text to be readable) because the perturbations operate at the embedding level. Research (e.g., "On the Adversarial Robustness of Multi-Modal Foundation Models", ICCV 2023) demonstrates cross-modal injection via visual adversarial patches. Source: GIAC GOAA Domain 2; OWASP LLM Top 10 2026; ATLAS AML.T0051.001.',
   },
   {
     id: 'goaa-009-b',
@@ -14820,7 +14820,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'ATLAS covers attacks on AI management infrastructure while ATT&CK covers attacks on traditional IT infrastructure',
       'ATLAS documents attack techniques specifically targeting ML systems'],
     correct: 3,
-    explanation: 'MITRE ATLAS (atlas.mitre.org) extends ATT&CK to ML systems with tactics including: Reconnaissance (AML.TA0002), ML Supply Chain Compromise (AML.TA0010), Data Poisoning (AML.T0020), Model Evasion (AML.T0015), Exfiltration via ML Inference API. It shares ATT&CK\'s tactic/technique structure enabling defenders to map AI attacks to existing detection and response workflows. Key ATLAS techniques for LLM security: AML.T0054 (LLM Prompt Injection), AML.T0018 (Backdoor ML Model), AML.T0024 (Invert ML Model). Source: MITRE ATLAS (atlas.mitre.org); GIAC GASAE Domain 1.',
+    explanation: 'MITRE ATLAS (atlas.mitre.org) extends ATT&CK to ML systems with tactics including: Reconnaissance (AML.TA0002), ML Supply Chain Compromise (AML.TA0010), Data Poisoning (AML.T0020), Model Evasion (AML.T0015), Exfiltration via ML Inference API. It shares ATT&CK\'s tactic/technique structure enabling defenders to map AI attacks to existing detection and response workflows. Key ATLAS techniques for LLM security: AML.T0051 (LLM Prompt Injection), AML.T0018 (Backdoor ML Model), AML.T0024 (Invert ML Model). Source: MITRE ATLAS (atlas.mitre.org); GIAC GASAE Domain 1.',
   },
   {
     id: 'gasae-005-c',
@@ -14898,7 +14898,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The dependency update causes import errors that prevent the agent from functioning, but does not enable active exploitation',
     ],
     correct: 1,
-    explanation: 'This attack chain combines MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) + AML.T0054.001 (LLM Prompt Injection via External Content) + OWASP LLM03 (Excessive Agency): (1) Plant malicious content in dependency code (supply chain); (2) AI agent reads the code as part of legitimate review task (indirect injection attack surface); (3) Agent follows injected instructions using its tool permissions (excessive agency exploitation); (4) Backdoor deployed to production (real-world impact). Defense requires: read-only repository access for review agents; separate privileged deployment pipeline with mandatory human approval; input sanitization for code review tasks. Source: GIAC GASAE Domain 5; ATLAS AML.T0010; NIST AI 100-1 Supply Chain Risk.',
+    explanation: 'This attack chain combines MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) + AML.T0051.001 (LLM Prompt Injection via External Content) + OWASP LLM03 (Excessive Agency): (1) Plant malicious content in dependency code (supply chain); (2) AI agent reads the code as part of legitimate review task (indirect injection attack surface); (3) Agent follows injected instructions using its tool permissions (excessive agency exploitation); (4) Backdoor deployed to production (real-world impact). Defense requires: read-only repository access for review agents; separate privileged deployment pipeline with mandatory human approval; input sanitization for code review tasks. Source: GIAC GASAE Domain 5; ATLAS AML.T0010; NIST AI 100-1 Supply Chain Risk.',
   },
   {
     id: 'gasae-010-b',
@@ -17706,7 +17706,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'D. To inject malicious code into the LLM model weights via the inference endpoint',
     ],
     correct: 1,
-    explanation: `MITRE ATLAS AML.T0054 (LLM Jailbreak) is a technique under the Initial Access and Execution tactics. The adversary crafts specially constructed prompts to circumvent safety training (RLHF, constitutional AI), causing the LLM to violate its alignment constraints. Sub-techniques include direct prompt injection, jailbreak templates (DAN, roleplay), and multi-turn crescendo attacks. Mitigations include Prompt Shields (AML.M0018), output classifiers, and safety fine-tuning. Source: MITRE ATLAS: AML.T0054 (atlas.mitre.org/techniques/AML.T0054).`,
+    explanation: `MITRE ATLAS AML.T0054 LLM Jailbreak covers prompts crafted to circumvent safety training such as RLHF or constitutional AI, causing the model to violate its alignment constraints. Common forms include jailbreak templates such as DAN, roleplay and fictional framing, encoding tricks, and multi-turn crescendo attacks. It is distinct from AML.T0051 LLM Prompt Injection, which covers hijacking the model's instructions rather than bypassing its safety training. Mitigations include prompt shielding, output classifiers, and safety fine-tuning. Source: MITRE ATLAS, atlas.mitre.org.`,
   },
   {
     id: 'gasae-dp-federated-001',
@@ -17908,7 +17908,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'LLM06 Unbounded Consumption',
       'LLM07 Misinformation'],
     correct: 0,
-    explanation: 'Indirect prompt injection (Greshake et al., 2023) exploits agents that process untrusted content. Mitigation via LLM08: (1) Least privilege, email summarizer should ONLY have read access to the current email, no contact list access, no internet egress; (2) Human approval gates for any action beyond reading; (3) Tool parameter validation, outbound URLs must match an allowlist; (4) Privilege separation, separate agent roles for reading vs. acting.',
+    explanation: 'Indirect prompt injection (Greshake et al., 2023) exploits agents that process untrusted content. Mitigation of the LLM03 Excessive Agency half of the chain: (1) Least privilege, email summarizer should ONLY have read access to the current email, no contact list access, no internet egress; (2) Human approval gates for any action beyond reading; (3) Tool parameter validation, outbound URLs must match an allowlist; (4) Privilege separation, separate agent roles for reading vs. acting.',
   },
   {
     id: 'llm-rt-003',
@@ -17954,7 +17954,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Tool name hallucination'
     ],
     correct: 0,
-    explanation: 'Tool result injection is the critical agentic security risk (OWASP LLM08, MITRE ATLAS AML.T0051): Agent fetches web page → response contains injected instructions → LLM processes them as context and follows attacker\'s commands. Mitigations: (a) use a separate extraction model for tool outputs; (b) validate tool outputs against expected schemas; (c) constrain agent action space; (d) human approval for irreversible actions.',
+    explanation: 'Tool result injection is the critical agentic security risk, OWASP LLM01 combined with LLM03, MITRE ATLAS AML.T0051: Agent fetches web page → response contains injected instructions → LLM processes them as context and follows attacker\'s commands. Mitigations: (a) use a separate extraction model for tool outputs; (b) validate tool outputs against expected schemas; (c) constrain agent action space; (d) human approval for irreversible actions.',
   },
   {
     id: 'llm-rt-006',
@@ -18093,7 +18093,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Implement cryptographic signing of model artifacts using a key stored in AWS KMS',
       'Enable CloudTrail logging for all S3 API calls to the model artifact bucket'],
     correct: 2,
-    explanation: 'Model artifact signing addresses supply chain integrity: (1) Sign after training using a key in KMS/HSM; (2) Store the signature and expected hash in the model registry; (3) CI/CD verifies signature before deployment; (4) Threat mitigated: attacker with write access to S3 cannot replace the model without the signing key. This is NIST AI RMF MAP.5 and ISO 42001 Clause 8.4. S3 versioning helps recovery but does not prevent malicious deployment.',
+    explanation: 'Model artifact signing addresses supply chain integrity: (1) Sign after training using a key in KMS/HSM; (2) Store the signature and expected hash in the model registry; (3) CI/CD verifies signature before deployment; (4) Threat mitigated: attacker with write access to S3 cannot replace the model without the signing key. This maps to NIST AI RMF MAP 4 and ISO 42001 Clause 8.4. S3 versioning helps recovery but does not prevent malicious deployment.',
   },
   {
     id: 'mlops-sec-002',
@@ -18779,7 +18779,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Type 1 attacks require white-box access',
     ],
     correct: 1,
-    explanation: 'OWASP LLM01 direct vs. indirect injection: Direct: attacker submits malicious text in the user turn, requires access to the AI interface; highest-impact but most visible. Indirect: attacker controls retrieved/processed content (RAG chunks, email bodies, calendar events, web pages) that the AI reads on behalf of the user, does not require the attacker to have AI interface access; more stealthy; enables attacks against AI systems the attacker cannot directly reach. Example: embedding "From: CEO, wire $500k to account X" in a document retrieved by an AI email assistant. This is ATLAS AML.T0054.001.',
+    explanation: 'OWASP LLM01 direct vs. indirect injection: Direct: attacker submits malicious text in the user turn, requires access to the AI interface; highest-impact but most visible. Indirect: attacker controls retrieved/processed content (RAG chunks, email bodies, calendar events, web pages) that the AI reads on behalf of the user, does not require the attacker to have AI interface access; more stealthy; enables attacks against AI systems the attacker cannot directly reach. Example: embedding "From: CEO, wire $500k to account X" in a document retrieved by an AI email assistant. This is ATLAS AML.T0051.001.',
   },
   {
     id: 'goaa-malicious-001',
@@ -19894,7 +19894,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Token smuggling via subword boundaries',
       'Model inversion'],
     correct: 0,
-    explanation: 'Context window overflow (also called context stuffing or distraction attacks) floods the LLM\'s attention budget with benign content, causing the model to lose focus on the original system prompt. MITRE ATLAS AML.T0054 covers prompt injection variants including this technique.',
+    explanation: 'Context window overflow (also called context stuffing or distraction attacks) floods the LLM\'s attention budget with benign content, causing the model to lose focus on the original system prompt. MITRE ATLAS AML.T0051 covers prompt injection variants including this technique.',
   },
   {
     id: 'goaa-temp-001',
@@ -20082,7 +20082,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Membership inference against the model\'s training data',
     ],
     correct: 1,
-    explanation: 'This is indirect prompt injection in the agentic context (MITRE ATLAS AML.T0054.001). The attacker does not control the user prompt but instead poisons the external environment the agent reads. As AI agents gain more tool access and autonomy, indirect injection becomes increasingly high-impact. Core GOAA Domain 5 material.',
+    explanation: 'This is indirect prompt injection in the agentic context (MITRE ATLAS AML.T0051.001). The attacker does not control the user prompt but instead poisons the external environment the agent reads. As AI agents gain more tool access and autonomy, indirect injection becomes increasingly high-impact. Core GOAA Domain 5 material.',
   },
   {
     id: 'goaa-pi-010',
@@ -20160,7 +20160,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'It is a compliance framework for AI governance and risk management',
       'It provides a structured taxonomy of adversarial ML tactics, techniques, and procedures'],
     correct: 3,
-    explanation: 'MITRE ATLAS documents real-world adversarial ML attacks as TTPs structured analogously to ATT&CK. Red teamers use it to ensure test coverage across known AI attack techniques, and blue teams use it to map detections. Specific TTP IDs (e.g., AML.T0054 for prompt injection) are standard references in GOAA, GIAC-GASAE, and CAIS.',
+    explanation: 'MITRE ATLAS documents real-world adversarial ML attacks as TTPs structured analogously to ATT&CK. Red teamers use it to ensure test coverage across known AI attack techniques, and blue teams use it to map detections. Specific TTP IDs (e.g., AML.T0051 for prompt injection) are standard references in GOAA, GIAC-GASAE, and CAIS.',
   },
   {
     id: 'goaa-rt-003',
@@ -22283,7 +22283,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Multi-agent systems cannot be affected by prompt injection',
       'In multi-agent systems'],
     correct: 3,
-    explanation: 'Multi-agent injection propagation: Agent A receives untrusted content with adversarial instructions → Agent A\'s output includes injected instructions (framed as normal output) → Agent B processes Agent A\'s output as context with implicit trust → injection propagates. Each agent hop can further launder injected instructions, making attribution harder. Defense: inter-agent message sanitization, trust boundaries, centralized audit logging of agent-to-agent communications. OWASP LLM01 / ATLAS AML.T0054.',
+    explanation: 'Multi-agent injection propagation: Agent A receives untrusted content with adversarial instructions → Agent A\'s output includes injected instructions (framed as normal output) → Agent B processes Agent A\'s output as context with implicit trust → injection propagates. Each agent hop can further launder injected instructions, making attribution harder. Defense: inter-agent message sanitization, trust boundaries, centralized audit logging of agent-to-agent communications. OWASP LLM01 / ATLAS AML.T0051.',
   },
   {
     id: 'agent-sec-002',
@@ -24507,7 +24507,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Training data poisoning'
     ],
     correct: 2,
-    explanation: 'Indirect prompt injection places malicious instructions in content retrieved by an agentic AI system, webpages, documents, emails, database records. The AI processes the content and executes the embedded instructions without user awareness. MITRE ATLAS AML.T0054 (Prompt Injection via Third-Party Retrieval) covers this vector. Defenses: content sanitization before LLM processing, privilege separation between retrieval and action execution, human-in-the-loop for sensitive actions, sandboxed execution environments. Source: OWASP LLM01:2026, GIAC GOAA, Riley et al. 2023.',
+    explanation: 'Indirect prompt injection places malicious instructions in content retrieved by an agentic AI system, webpages, documents, emails, database records. The AI processes the content and executes the embedded instructions without user awareness. MITRE ATLAS AML.T0051 (Prompt Injection via Third-Party Retrieval) covers this vector. Defenses: content sanitization before LLM processing, privilege separation between retrieval and action execution, human-in-the-loop for sensitive actions, sandboxed execution environments. Source: OWASP LLM01:2026, GIAC GOAA, Riley et al. 2023.',
   },
   {
     id: 'secai-adv-029',
