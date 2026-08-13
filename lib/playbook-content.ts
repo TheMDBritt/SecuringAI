@@ -523,63 +523,63 @@ Learn soft prompt tokens prepended to input. Only input embeddings are trained.
     vocab: ['Prompt Injection', 'Insecure Output Handling', 'Training Data Poisoning', 'Sensitive Information Disclosure', 'Excessive Agency', 'LLM Supply Chain'],
     content: `The OWASP LLM Top 10 is the definitive risk framework for Large Language Model applications.
 
-### LLM01: Prompt Injection
+### LLM01 Prompt Injection
 Attacker manipulates the LLM's behavior by injecting instructions into prompts.
 
 - **Direct injection**: User message overrides system prompt instructions
 - **Indirect injection**: Malicious content in external data (web pages, documents) hijacks the model
 - **Mitigations**: Input validation, privilege separation, output encoding, least-privilege tool access
 
-### LLM02: Insecure Output Handling
+### LLM10 Improper Output Handling
 LLM output is passed to downstream components (browser, shell, DB) without sanitization.
 
 - Leads to **XSS** (if rendered in browser), **SQLi**, **SSRF**, **code execution**
 - Mitigations: Treat LLM output as untrusted user input; sanitize before downstream use
 
-### LLM03: Training Data Poisoning
+### LLM05 Data and Model Poisoning
 Malicious data inserted into training/fine-tuning sets to introduce **backdoors** or **bias**.
 
 - Supply chain risk: poisoned open datasets, fine-tuning data from untrusted sources
 - Mitigations: Data provenance, anomaly detection on training data, model testing for backdoors
 
-### LLM04: Model Denial of Service
+### LLM06 Unbounded Consumption
 Sending resource-intensive prompts to exhaust compute/memory, causing service degradation.
 
 - Example: Extremely long contexts, recursive prompts, adversarial token sequences
 - Mitigations: Input length limits, rate limiting, query cost budgets
 
-### LLM05: Supply Chain Vulnerabilities
+### LLM04 Supply Chain
 Risks from third-party models, datasets, plugins, and infrastructure components.
 
 - Compromised model weights, malicious plugins, vulnerable dependencies
 - Mitigations: Verify model provenance, pin dependency versions, audit third-party plugins
 
-### LLM06: Sensitive Information Disclosure
+### LLM02 Sensitive Information Disclosure
 LLM reveals private data, system prompts, PII, or confidential training data.
 
 - Training data memorization: model recalls specific PII from training
 - System prompt leakage via extraction attacks
 - Mitigations: PII scrubbing in training data, output filtering, system prompt confidentiality warnings
 
-### LLM07: Insecure Plugin Design
+### LLM03 Excessive Agency
 Plugins/tools granted excessive permissions or lacking proper input validation.
 
 - A plugin with filesystem access could be manipulated to read/delete arbitrary files
 - Mitigations: Least privilege for tools, validate/sanitize all plugin inputs, human-in-the-loop for risky actions
 
-### LLM08: Excessive Agency
+### LLM03 Excessive Agency
 LLM given too much autonomy to take consequential actions without oversight.
 
 - Agentic systems can execute code, send emails, modify databases, all exploitable
 - Mitigations: Minimal permissions, human approval gates, audit logging of all actions
 
-### LLM09: Overreliance
+### LLM07 Misinformation
 Users trust LLM outputs without verification, especially for factual claims.
 
 - Hallucinations presented as facts can cause real harm (medical, legal, financial)
 - Mitigations: Clear AI labeling, citations, confidence indicators, user education
 
-### LLM10: Model Theft
+### LLM06 Unbounded Consumption
 Extracting proprietary model weights or behavior through repeated querying.
 
 - **Model extraction attacks** reconstruct functionality by querying and observing outputs
@@ -2466,7 +2466,7 @@ Regularly test guardrails to ensure they hold:
 ### Agent Access
 For agentic AI systems (LLM agents with tool use):
 - Grant minimal tool permissions required for each task
-- Require human approval before irreversible actions (OWASP LLM08: Excessive Agency)
+- Require human approval before irreversible actions (OWASP LLM03 Excessive Agency)
 - Audit all agent actions, tool calls, retrieved data, executed code
 
 ## Security Control Summary
@@ -2513,20 +2513,20 @@ MITRE Adversarial Threat Landscape for Artificial-Intelligence Systems, a knowle
 | AML.T0040 | ML Model Inference API Access |
 | AML.T0048 | Exfiltrate Training Data via Model API |
 
-## OWASP LLM Top 10 (2025)
+## OWASP LLM Top 10 (2026)
 
 | ID | Risk |
 |---|---|
 | LLM01 | Prompt Injection, attacker hijacks LLM via malicious input |
 | LLM02 | Sensitive Information Disclosure: PII, credentials, system prompt |
-| LLM03 | Supply Chain, compromised models, datasets, or dependencies |
-| LLM04 | Data and Model Poisoning |
-| LLM05 | Improper Output Handling, unsanitized output causes XSS, SSRF, RCE |
-| LLM06 | Excessive Agency, agent acts beyond intended scope |
-| LLM07 | System Prompt Leakage |
-| LLM08 | Vector and Embedding Weaknesses |
-| LLM09 | Misinformation / Overreliance |
-| LLM10 | Unbounded Consumption: DoS via resource exhaustion |
+| LLM04 | Supply Chain, compromised models, datasets, or dependencies |
+| LLM05 | Data and Model Poisoning|
+| LLM10 | Improper Output Handling, unsanitized output causes XSS, SSRF, RCE |
+| LLM03 | Excessive Agency, agent acts beyond intended scope |
+| LLM08 | Hidden Context Exposure|
+| LLM09 | Vector and Embedding Weaknesses|
+| LLM07 | Misinformation/ Overreliance |
+| LLM06 | Unbounded Consumption: DoS via resource exhaustion |
 
 ## ML Security Top 10
 
@@ -4047,12 +4047,12 @@ Produce an AI-BOM covering base model version, fine-tuning datasets, training de
 
 | OWASP LLM | Typical Findings |
 |---|---|
-| LLM01: Prompt Injection | Direct and indirect injection bypass |
-| LLM02: Insecure Output Handling | XSS via LLM output, unsafe rendering |
-| LLM05: Supply Chain | Malicious weights, dependency compromise |
-| LLM06: Excessive Agency | Unintended tool use, over-permissioned agents |
-| LLM07: System Prompt Leakage | Extraction of confidential system prompt |
-| LLM08: Vector DB Weaknesses | RAG poisoning, embedding inversion |
+| LLM01 Prompt Injection| Direct and indirect injection bypass |
+| LLM10 Improper Output Handling| XSS via LLM output, unsafe rendering |
+| LLM04 Supply Chain| Malicious weights, dependency compromise |
+| LLM03 Excessive Agency| Unintended tool use, over-permissioned agents |
+| LLM08 Hidden Context Exposure| Extraction of confidential system prompt |
+| LLM09: Vector and Embedding Weaknesses| RAG poisoning, embedding inversion |
 
 ## Exam Tips
 
@@ -4366,20 +4366,20 @@ MITRE ATLAS maps adversarial ML attacks to MITRE ATT&CK-style tactics:
 | LLM-Specific | LLM Jailbreak | AML.T0054 |
 | Exfiltration | LLM Information Disclosure | AML.T0056 |
 
-## OWASP LLM Top 10 (2025)
+## OWASP LLM Top 10 (2026)
 
 | # | Category | Core Risk |
 |---|----------|-----------|
-| LLM01 | Prompt Injection | Attacker-controlled input overrides system instructions |
-| LLM02 | Insecure Output Handling | Downstream processing trusts LLM output without validation |
-| LLM03 | Training Data Poisoning | Adversarial examples bias the model during training |
-| LLM04 | Model Denial of Service | Resource exhaustion via expensive prompts |
-| LLM05 | Supply Chain Vulnerabilities | Compromised model weights, datasets, or plugins |
-| LLM06 | Sensitive Information Disclosure | Model reveals training data or system context |
-| LLM07 | Insecure Plugin Design | Plugins executed without authorization or input validation |
-| LLM08 | Excessive Agency | LLM takes autonomous actions beyond what's necessary |
-| LLM09 | Overreliance | Users or systems treat LLM output as ground truth |
-| LLM10 | Model Theft | Model weights extracted via repeated inference queries |
+| LLM01 | Prompt Injection| Attacker-controlled input overrides system instructions |
+| LLM10 | Improper Output Handling| Downstream processing trusts LLM output without validation |
+| LLM05 | Data and Model Poisoning| Adversarial examples bias the model during training |
+| LLM06 | Unbounded Consumption| Resource exhaustion via expensive prompts |
+| LLM04 | Supply Chain| Compromised model weights, datasets, or plugins |
+| LLM02 | Sensitive Information Disclosure| Model reveals training data or system context |
+| LLM03 | Excessive Agency| Plugins executed without authorization or input validation |
+| LLM03 | Excessive Agency| LLM takes autonomous actions beyond what's necessary |
+| LLM07 | Misinformation| Users or systems treat LLM output as ground truth |
+| LLM06 | Unbounded Consumption| Model weights extracted via repeated inference queries |
 
 ## Advanced Prompt Injection Techniques
 
@@ -5223,7 +5223,7 @@ Layered detection using Azure AI Content Safety Prompt Shields:
 - **Document analysis**: scans retrieved documents for embedded injection instructions
 - **Output scanning**: secondary classifier checks if response indicates successful injection (unexpected content, leaked instructions)
 
-### 4. Tool Access Minimization (for LLM08 Excessive Agency)
+### 4. Tool Access Minimization (for LLM03 Excessive Agency)
 Every tool an agent can call is an exfiltration channel. Minimize:
 
 \`\`\`
@@ -5616,12 +5616,12 @@ AI red teaming extends traditional security testing to cover failure modes uniqu
 MITRE ATLAS and OWASP LLM Top 10 provide complementary threat taxonomies:
 
 \`\`\`
-OWASP LLM01  Prompt Injection          ← LLM-specific input attacks
-OWASP LLM02  Insecure Output Handling  ← Trust of LLM outputs
-OWASP LLM05  Supply Chain              ← Third-party model/data
+OWASP LLM01 Prompt Injection← LLM-specific input attacks
+OWASP LLM10 Improper Output Handling← Trust of LLM outputs
+OWASP LLM04 Supply Chain← Third-party model/data
 OWASP LLM06  Sensitive Information     ← Data disclosure through model
-OWASP LLM08  Excessive Agency          ← Autonomous action risks
-OWASP LLM09  Misinformation            ← Hallucination weaponization
+OWASP LLM03 Excessive Agency← Autonomous action risks
+OWASP LLM07 Misinformation← Hallucination weaponization
 
 ATLAS AML.T0015  Evade ML Model         ← Adversarial inputs
 ATLAS AML.T0020  Backdoor ML Model      ← Training-time implants
@@ -6132,7 +6132,7 @@ Source: NIST AI RMF 1.0; MITRE ATLAS supply chain techniques; EU AI Act Article 
     vocab: ['Prompt Injection', 'Indirect Prompt Injection', 'Prompt Shield', 'Canary Token', 'Instruction Hierarchy', 'Spotlighting', 'Input Validation', 'Output Validation', 'Privilege Separation', 'Minimal Permission'],
     content: `# Prompt Injection Defense: Detection, Isolation, and Structural Controls
 
-Prompt injection is OWASP LLM Top 10 #1 (LLM01:2025). No single control eliminates it, defense requires layered controls at input, architecture, and output layers.
+Prompt injection is OWASP LLM Top 10 #1 (LLM01:2026). No single control eliminates it, defense requires layered controls at input, architecture, and output layers.
 
 ## Attack Taxonomy
 
@@ -6227,14 +6227,14 @@ No single control provides >Medium coverage against all attack types. All contro
 
 | Question | Answer |
 |----------|--------|
-| OWASP LLM Top 10 ranking for prompt injection | LLM01:2025 |
+| OWASP LLM Top 10 ranking for prompt injection | LLM01:2026 |
 | Azure tool for injection detection | Azure AI Content Safety: Prompt Shields |
 | Most dangerous injection type | Indirect (attacker controls retrieved content, not user) |
 | Control for detecting system prompt extraction | Canary tokens in system prompt |
 | Architectural control for plugin abuse | Least privilege tool permissions + human approval gates |
 | Instruction hierarchy trust order | System > Developer > User |
 
-Source: OWASP LLM Top 10 2025; NIST AI RMF; Azure AI Content Safety documentation; OpenAI instruction hierarchy research.`,
+Source: OWASP LLM Top 10 2026; NIST AI RMF; Azure AI Content Safety documentation; OpenAI instruction hierarchy research.`,
   },
   {
     id: 'ai-red-team-assessment-reporting',

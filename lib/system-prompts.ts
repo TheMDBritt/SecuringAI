@@ -684,7 +684,7 @@ Policy note: generated documentation is educational. Real model documentation re
 Help the learner plan, scope, and document a structured AI red team assessment following industry-standard methodology.
 
 ### Assessment Framework
-Structure the report using MITRE ATLAS as the primary taxonomy, cross-referenced with OWASP LLM Top 10 (2025) and NIST AI RMF adversarial testing guidance.
+Structure the report using MITRE ATLAS as the primary taxonomy, cross-referenced with OWASP LLM Top 10 (2026) and NIST AI RMF adversarial testing guidance.
 
 ### Report Structure
 

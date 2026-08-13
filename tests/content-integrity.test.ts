@@ -15,6 +15,7 @@ import { TOPIC_ARTICLES } from '@/lib/playbook-content';
 import { SECAI_DRILLS } from '@/lib/secai-drills';
 import { SC500_DRILLS } from '@/lib/sc500-drills';
 import { AWS_SCSC03_DRILLS } from '@/lib/aws-scsc03-drills';
+import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
 
@@ -155,6 +156,39 @@ describe('SecAI+ answers are not guessable without knowing the material', () => 
       }
     }
     expect(bad).toEqual([]);
+  });
+});
+
+describe('OWASP LLM Top 10 uses the current edition consistently', () => {
+  // The codes are not stable across editions. LLM08 meant Excessive Agency in
+  // 2023, Vector and Embedding Weaknesses in 2025, and Hidden Context Exposure
+  // in 2026. Teaching a stale code is worse than teaching nothing, because the
+  // learner answers confidently and wrongly.
+  it('never pairs a code with a name from a superseded edition', () => {
+    const bad: string[] = [];
+    const RE = /\bLLM(0[1-9]|10)\b\s*[:\-,]?\s*([A-Z][A-Za-z ]{3,40})/g;
+
+    for (const q of QUIZ_QUESTIONS) {
+      const text = [q.question, ...q.options, q.explanation].join('  ');
+      for (const m of text.matchAll(RE)) {
+        const code = ('LLM' + m[1]) as keyof typeof OWASP_LLM_2026;
+        const seen = m[2].trim();
+        const expected = OWASP_LLM_2026[code];
+        if (!expected) continue;
+
+        // Only judge text that actually looks like a category name, not prose
+        // that happens to follow a code reference.
+        const looksLikeAName = Object.values(OWASP_LLM_2026).some((n) =>
+          seen.toLowerCase().startsWith(n.toLowerCase().split(' ')[0]),
+        );
+        if (!looksLikeAName) continue;
+
+        if (!seen.toLowerCase().startsWith(expected.toLowerCase())) {
+          bad.push(`${q.id}: "${code} ${seen}" but ${code} is "${expected}"`);
+        }
+      }
+    }
+    expect([...new Set(bad)]).toEqual([]);
   });
 });
 

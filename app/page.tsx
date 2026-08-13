@@ -62,11 +62,11 @@ const TECHNIQUES = [
   { label: 'System Prompt Leakage',      tag: 'LLM07',         dojo: 1 },
   { label: 'Excessive Agency',           tag: 'LLM08',         dojo: 1 },
   { label: 'RAG / Vector Attacks',       tag: 'LLM09',         dojo: 1 },
-  { label: 'Misinformation',             tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Misinformation',             tag: 'LLM09:2026',    dojo: 1 },
   { label: 'Model Theft',                tag: 'LLM10',         dojo: 1 },
   { label: 'Indirect Injection',         tag: 'AML.T0054.001', dojo: 1 },
   { label: 'Model Inversion',            tag: 'AML.T0024',     dojo: 1 },
-  { label: 'Vector DB Poisoning',        tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Vector DB Poisoning',        tag: 'LLM09:2026',    dojo: 1 },
   { label: 'Confused Deputy',            tag: 'LLM08',         dojo: 1 },
   { label: 'Embedding Inversion',        tag: 'AML.T0024',     dojo: 1 },
   { label: 'Log Triage',                 tag: 'SOC',           dojo: 2 },
@@ -82,17 +82,17 @@ const TECHNIQUES = [
   { label: 'Many-Shot Jailbreak',        tag: 'LLM01',         dojo: 1 },
   { label: 'Crescendo Attack',           tag: 'Red Team',      dojo: 1 },
   { label: 'Backdoor / Trojan',          tag: 'AML.T0018',     dojo: 1 },
-  { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2025',    dojo: 1 },
+  { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2026',    dojo: 1 },
   { label: 'Purview DSPM for AI',        tag: 'AI-103',        dojo: 3 },
   { label: 'Security Copilot KQL',       tag: 'SC-500',        dojo: 2 },
-  { label: 'Context Window Overflow',    tag: 'LLM01:2025',    dojo: 1 },
-  { label: 'Supply Chain Poisoning',     tag: 'LLM04:2025',    dojo: 1 },
+  { label: 'Context Window Overflow',    tag: 'LLM01:2026',    dojo: 1 },
+  { label: 'Supply Chain Poisoning',     tag: 'LLM04:2026',    dojo: 1 },
   { label: 'Agent Forensics',            tag: 'AML.T0051',     dojo: 2 },
   { label: 'AI Continuous Monitoring',   tag: 'ISO 42001',     dojo: 3 },
-  { label: 'MCP Server Security',        tag: 'LLM06:2025',    dojo: 1 },
-  { label: 'Zero-Width Steganography',   tag: 'LLM01:2025',    dojo: 1 },
-  { label: 'Markdown Rendering Attack',  tag: 'LLM02:2025',    dojo: 1 },
-  { label: 'Token Exhaustion DoS',       tag: 'LLM10:2025',    dojo: 1 },
+  { label: 'MCP Server Security',        tag: 'LLM06:2026',    dojo: 1 },
+  { label: 'Zero-Width Steganography',   tag: 'LLM01:2026',    dojo: 1 },
+  { label: 'Markdown Rendering Attack',  tag: 'LLM02:2026',    dojo: 1 },
+  { label: 'Token Exhaustion DoS',       tag: 'LLM10:2026',    dojo: 1 },
   { label: 'Hypothetical Framing',       tag: 'Red Team',      dojo: 1 },
   { label: 'Credential Harvesting',      tag: 'LLM06',         dojo: 1 },
   { label: 'PGD Adversarial Attack',     tag: 'AML.T0015',     dojo: 1 },
@@ -106,13 +106,13 @@ const TECHNIQUES = [
   { label: 'Sycophancy Exploitation',    tag: 'LLM01',         dojo: 1 },
   { label: 'MCP Server Injection',       tag: 'LLM08',         dojo: 1 },
   { label: 'Vision Adversarial Attack',  tag: 'AML.T0068',     dojo: 1 },
-  { label: 'Agent Memory Poisoning',     tag: 'LLM01:2025',    dojo: 1 },
-  { label: 'Cross-Tenant Data Leakage',  tag: 'LLM06:2025',    dojo: 1 },
+  { label: 'Agent Memory Poisoning',     tag: 'LLM01:2026',    dojo: 1 },
+  { label: 'Cross-Tenant Data Leakage',  tag: 'LLM06:2026',    dojo: 1 },
   { label: 'Ransomware AI Triage',       tag: 'T1486',         dojo: 2 },
   { label: 'Multi-Framework Mapping',    tag: 'EU AI Act',     dojo: 3 },
   { label: 'GCG Adversarial Suffix',     tag: 'AML.T0054',     dojo: 1 },
   { label: 'DP-SGD Privacy Training',    tag: 'SecAI+',        dojo: 3 },
-  { label: 'Output Validation',          tag: 'LLM02:2025',    dojo: 1 },
+  { label: 'Output Validation',          tag: 'LLM02:2026',    dojo: 1 },
   { label: 'Agent Trust Boundary',       tag: 'LLM08',         dojo: 1 },
   { label: 'Chain-of-Thought Hijacking', tag: 'AML.T0054',     dojo: 1 },
   { label: 'System Prompt Reflection',   tag: 'AML.T0056',     dojo: 1 },
@@ -123,7 +123,7 @@ const TECHNIQUES = [
   { label: 'Instruction Shadowing',      tag: 'AML.T0054.001', dojo: 1 },
   { label: 'Agentic Goal Hijacking',     tag: 'LLM08',         dojo: 1 },
   { label: 'Prompt Chaining Attack',     tag: 'LLM01',         dojo: 1 },
-  { label: 'MCP Tool Injection',         tag: 'LLM08:2025',    dojo: 1 },
+  { label: 'MCP Tool Injection',         tag: 'LLM08:2026',    dojo: 1 },
   { label: 'AI Transparency (Art.13)',   tag: 'EU AI Act',     dojo: 3 },
   { label: 'Post-Market Surveillance',   tag: 'EU AI Act',     dojo: 3 },
   { label: 'Multi-Framework Mapping',    tag: 'ISO 42001',     dojo: 3 },
@@ -144,7 +144,7 @@ const CERT_CHIPS = [
 ];
 
 const SOURCED_FROM = [
-  'OWASP LLM Top 10 (2025)',
+  'OWASP LLM Top 10 (2026)',
   'MITRE ATT&CK + ATLAS',
   'NIST AI RMF 1.0',
   'ISO/IEC 42001:2023',
@@ -279,7 +279,7 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
                   <span className="text-emerald-400">BLOCKED</span>
-                  <span className="text-slate-600"> [LLM01:2025] score 100 · shield triggered</span>
+                  <span className="text-slate-600"> [LLM01:2026] score 100 · shield triggered</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
@@ -289,7 +289,7 @@ export default function LandingPage() {
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
                   <span className="text-red-400">VULNERABLE</span>
-                  <span className="text-slate-600"> [LLM01:2025] session −22 · AML.T0054</span>
+                  <span className="text-slate-600"> [LLM01:2026] session −22 · AML.T0054</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
@@ -459,7 +459,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="mt-4 text-xs text-slate-600 leading-relaxed">
-                Sourced from OWASP LLM Top 10 (2025), MITRE ATT&amp;CK + ATLAS, and official exam study guides.
+                Sourced from OWASP LLM Top 10 (2026), MITRE ATT&amp;CK + ATLAS, and official exam study guides.
                 Each tag maps to the framework reference, type the attack and see which guardrail decides the outcome.
               </p>
             </div>
