@@ -599,8 +599,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Security',
     difficulty: 'beginner',
     certTags: ['SecAI', 'CAISP', 'GIAC-GASAE', 'SCS-C03'],
-    question: 'According to OWASP LLM Top 10, what is LLM01?',
-    options: [ 'Prompt Injection','Insecure Output Handling', 'Sensitive Information Disclosure', 'Training Data Poisoning'],
+    question: 'In the OWASP LLM Top 10 2026, what is LLM01?',
+    options: [
+      'Prompt Injection',
+      'Improper Output Handling',
+      'Sensitive Information Disclosure',
+      'Data and Model Poisoning'
+    ],
     correct: 0,
     explanation: 'LLM01 is Prompt Injection, where an attacker manipulates the LLM by injecting malicious instructions into the prompt, either directly through user input or indirectly through external data.',
   },
@@ -27431,7 +27436,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A developer provides the model with three worked examples of the desired output format inside the prompt. Which prompting technique is this?',
     options: [ 'Multi-shot prompting', 'One-shot prompting', 'System role prompting','Zero-shot prompting'],
     correct: 0,
-    explanation: 'Multi-shot (a.k.a. few-shot) prompting supplies multiple worked examples in-context. One-shot supplies one; zero-shot supplies none. System role prompting is about *who* the model is, not *how many* examples it sees.',
+    explanation: 'Multi-shot (a.k.a. few-shot) prompting supplies multiple worked examples in-context. One-shot supplies one; zero-shot supplies none. System role prompting is about who the model is, not how many examples it sees.',
   },
   {
     id: 'secai-cy001-d1-04',
@@ -28207,7 +28212,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'A log entry recording the model version in use',
       'A schema constraining the format of model output'],
     correct: 0,
-    explanation: 'The system prompt establishes role, tone and constraints. It is privileged relative to user text, which is why its extraction is tracked as OWASP LLM07.',
+    explanation: 'The system prompt establishes role, tone and constraints. It is privileged relative to user text, which is why its extraction is tracked as OWASP LLM08 Hidden Context Exposure.',
   },
   {
     id: 'secai-d1-core-030',
