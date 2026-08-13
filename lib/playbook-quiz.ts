@@ -20004,7 +20004,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'LLM01 Prompt Injection',
       'LLM08 Hidden Context Exposure'],
     correct: 3,
-    explanation: 'OWASP LLM07:2026 specifically covers system prompt leakage, where attackers trick a model into revealing its configured instructions, personas, or confidential operational details. This is distinct from LLM01 (injection that changes behavior) and LLM06 (disclosure of training data or PII from user inputs).',
+    explanation: 'OWASP LLM08 Hidden Context Exposure covers system prompt leakage, where attackers trick a model into revealing its configured instructions, personas, or confidential operational details. It is distinct from LLM01, injection that changes behaviour, and from LLM02 Sensitive Information Disclosure, which concerns training data or user PII surfacing in outputs.',
   },
   {
     id: 'goaa-pi-005',
@@ -20035,7 +20035,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Implementing least-privilege tool access',
       'Increasing output filtering strictness to catch more harmful completions'],
     correct: 2,
-    explanation: 'OWASP LLM08:2026 (Excessive Agency) identifies unrestricted tool access as the primary amplifier of prompt injection impact. Least-privilege scoping means an injected instruction cannot, for example, send email or write to production databases if those tools are not granted. This is a fundamental agentic AI security design principle.',
+    explanation: 'OWASP LLM03 Excessive Agency identifies unrestricted tool access as the primary amplifier of prompt injection impact. Least-privilege scoping means an injected instruction cannot, for example, send email or write to production databases if those tools are not granted. This is a fundamental agentic AI security design principle.',
   },
   {
     id: 'goaa-pi-007',
@@ -20656,7 +20656,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'A ranked list of the top 10 most capable large language models by performance benchmark',
       'A list of prompts blocked by default across commercial LLM providers'],
     correct: 1,
-    explanation: 'OWASP LLM Top 10 (2025 edition) is the primary reference framework for LLM application security, analogous to the OWASP Web Application Security Top 10 for web apps. CAISP Domain 1 uses it as a foundation, ensuring practitioners have a common vocabulary for describing and prioritizing LLM risks in organizational deployments.',
+    explanation: 'The OWASP LLM Top 10, currently the 2026 edition, is the primary reference framework for LLM application security, analogous to the OWASP Web Application Security Top 10 for web apps. CAISP Domain 1 uses it as a foundation, ensuring practitioners have a common vocabulary for describing and prioritizing LLM risks in organizational deployments.',
   },
   {
     id: 'caisp-fund-002b',
@@ -20697,7 +20697,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is LLM "hallucination" and what specific security risk does it create in enterprise deployments?',
     options: [
       'Hallucination is automatically corrected by RLHF post-training alignment',
-      'LLM hallucination occurs when the model generates plausible-sounding',
+      'The model generates plausible-sounding but false content stated confidently',
       'Hallucination exclusively affects image generation models, not text LLMs',
       'Hallucination is a training configuration error that causes model instability'],
     correct: 1,
@@ -20991,7 +20991,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'High-risk AI systems must be open-sourced so regulators can audit them',
       'Only CE marking on the hardware running the AI system is required',
-      'A conformity assessment verifying',
+      'A conformity assessment against the Article 9 to 15 requirements',
       'High-risk AI systems only require a privacy impact assessment under GDPR'],
     correct: 2,
     explanation: 'EU AI Act (2024) Article 9-15 requirements for high-risk AI systems include: risk management lifecycle process, data governance for training/validation/test data, technical documentation, automatic event logging, transparency to users, human oversight design, accuracy and robustness requirements, and cybersecurity measures. Conformity assessment (self-assessment or third-party) is required before market entry. CAISP Domain 5.',
