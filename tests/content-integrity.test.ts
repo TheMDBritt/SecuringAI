@@ -294,3 +294,75 @@ describe('drills', () => {
     expect(bad).toEqual([]);
   });
 });
+
+describe('SecAI+ covers every published CY0-001 objective', () => {
+  // docs/cert-objectives/secai-cy001.md is the transcribed exam blueprint. A
+  // leaf bullet with no question behind it is a topic the learner will meet
+  // cold on exam day, so the floor is one question per leaf.
+  const OBJECTIVES_DOC = 'docs/cert-objectives/secai-cy001.md';
+
+  const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\s+/g, ' ').trim();
+  const depluralise = (w: string) => w.replace(/ies$/, 'y').replace(/ss$/, 'ss').replace(/s$/, '');
+  const singular = (p: string) => p.split(' ').map(depluralise).join(' ');
+
+  /** Leaf bullets from the objectives doc, with their objective id. */
+  function leafObjectives(md: string) {
+    const lines = md.split('\n');
+    const leaves: { obj: string; term: string }[] = [];
+    let current: string | null = null;
+    for (let i = 0; i < lines.length; i++) {
+      const heading = lines[i].match(/^### (\d\.\d)/);
+      if (heading) { current = heading[1]; continue; }
+      if (!current) continue;
+      if (/^## /.test(lines[i])) { current = null; continue; }
+      const bullet = lines[i].match(/^(\s*)- (.+)$/);
+      if (!bullet) continue;
+      const nextIndent = (lines[i + 1] ?? '').match(/^(\s*)- /);
+      // A bullet with more-indented children is a parent, not a leaf.
+      if (nextIndent && nextIndent[1].length > bullet[1].length) continue;
+      leaves.push({ obj: current, term: bullet[2].trim() });
+    }
+    return leaves;
+  }
+
+  /**
+   * The blueprint states some terms more formally than anyone writes them.
+   * Questions say "EU AI Act", never "European Union AI Act". Matching the
+   * literal bullet would report those as uncovered when they are not.
+   */
+  const ALSO_WRITTEN_AS: Record<string, string[]> = {
+    'European Union (EU) AI Act': ['eu ai act'],
+    'Intellectual Property (IP)-related risks': ['intellectual property risk'],
+    'Accuracy and performance of the model': ['model accuracy and performance', 'accuracy and performance risk'],
+    'AI policies and procedures': ['ai policy', 'ai use policy', 'acceptable use policy'],
+    'Alignment with corporate objectives': ['corporate objective'],
+  };
+
+  /** Phrasings that should each count as covering the term. */
+  function phrasings(term: string) {
+    const acronyms = [...term.matchAll(/\(([^)]+)\)/g)].map((m) => norm(m[1]));
+    const stripped = term.replace(/\(.*?\)/g, ' ');
+    const halves = stripped.split('/').map(norm).filter(Boolean);
+    const all = [norm(stripped), ...halves, ...acronyms, ...(ALSO_WRITTEN_AS[term] ?? []).map(norm)];
+    return [...new Set(all.flatMap((v) => [v, singular(v)]))].filter((v) => v.length > 2);
+  }
+
+  it('has at least one question behind every leaf objective', async () => {
+    const { readFile } = await import('node:fs/promises');
+    const md = await readFile(OBJECTIVES_DOC, 'utf8');
+
+    const haystack = SECAI.map((q) => {
+      const text = norm([q.question, ...q.options, q.explanation, q.topic].join(' '));
+      return `${text} ${singular(text)}`;
+    });
+
+    const uncovered = leafObjectives(md)
+      .filter(({ term }) => {
+        const variants = phrasings(term);
+        return variants.length > 0 && !haystack.some((h) => variants.some((v) => h.includes(v)));
+      })
+      .map(({ obj, term }) => `${obj} ${term}`);
+
+    expect(uncovered).toEqual([]);
+  });
+});
