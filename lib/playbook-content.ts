@@ -5619,7 +5619,7 @@ MITRE ATLAS and OWASP LLM Top 10 provide complementary threat taxonomies:
 OWASP LLM01 Prompt Injection← LLM-specific input attacks
 OWASP LLM10 Improper Output Handling← Trust of LLM outputs
 OWASP LLM04 Supply Chain← Third-party model/data
-OWASP LLM06  Sensitive Information     ← Data disclosure through model
+OWASP LLM02  Sensitive Information     ← Data disclosure through model
 OWASP LLM03 Excessive Agency← Autonomous action risks
 OWASP LLM07 Misinformation← Hallucination weaponization
 

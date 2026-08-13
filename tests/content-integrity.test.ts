@@ -192,6 +192,39 @@ describe('OWASP LLM Top 10 uses the current edition consistently', () => {
   });
 });
 
+describe('framework facts are current and correct', () => {
+  it('uses only the four real NIST AI RMF functions', () => {
+    // GOVERN, MAP, MEASURE, MANAGE. RESPOND and RECOVER belong to the NIST
+    // Cybersecurity Framework, not the AI RMF. One question had RESPOND as its
+    // correct answer, which does not exist.
+    const CSF_ONLY = /\b(MONITOR|PROTECT|IDENTIFY|DETECT|RESPOND|RECOVER)\b/g;
+    const bad: string[] = [];
+    for (const q of QUIZ_QUESTIONS) {
+      const text = [q.question, ...q.options, q.explanation].join('  ');
+      if (!/NIST AI RMF/i.test(text)) continue;
+      // A question explicitly comparing the two frameworks may name both.
+      if (/CSF|Cybersecurity Framework|800-5|800-6/i.test(text)) continue;
+      const found = [...new Set(text.match(CSF_ONLY) ?? [])];
+      if (found.length) bad.push(`${q.id}: ${found.join(', ')}`);
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('cites only real ISO/IEC 42001 clauses', () => {
+    // The standard runs clauses 4 to 10, plus Annex A controls.
+    const bad: string[] = [];
+    for (const q of QUIZ_QUESTIONS) {
+      const text = [q.question, ...q.options, q.explanation].join('  ');
+      if (!/42001/.test(text)) continue;
+      for (const m of text.matchAll(/Clause (\d+)/g)) {
+        const n = Number(m[1]);
+        if (n < 4 || n > 10) bad.push(`${q.id}: Clause ${n}`);
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
 describe('house style', () => {
   it('uses no em-dashes or en-dashes anywhere in the quiz', () => {
     const bad: string[] = [];

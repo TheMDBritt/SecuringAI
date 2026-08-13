@@ -24762,9 +24762,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'MEASURE function',
       'MAP function',
       'GOVERN function',
-      'RESPOND function'],
+      'MANAGE function'],
     correct: 3,
-    explanation: 'NIST AI RMF RESPOND function covers AI incident response: (1) Immediate containment, suspend or roll back the system to stop ongoing harm; (2) Customer notification, regulatory and ethical obligation; (3) Root cause analysis, distinguish model failure from data drift from adversarial manipulation; (4) Documentation, preserve evidence for regulatory requirements (SEC, FINRA for financial AI); (5) Post-incident review, GOVERN update, MANAGE control improvements. EU AI Act Article 73 requires serious incident notification within 72 hours for high-risk AI. Financial AI is typically high-risk. Source: NIST AI RMF, SecAI+ incident response.',
+    explanation: 'NIST AI RMF has four functions, GOVERN, MAP, MEASURE and MANAGE. There is no RESPOND function, that belongs to the NIST Cybersecurity Framework. MANAGE covers acting on identified risks, including AI incident response: (1) Immediate containment, suspend or roll back the system to stop ongoing harm; (2) Customer notification, regulatory and ethical obligation; (3) Root cause analysis, distinguish model failure from data drift from adversarial manipulation; (4) Documentation, preserve evidence for regulatory requirements (SEC, FINRA for financial AI); (5) Post-incident review, GOVERN update, MANAGE control improvements. EU AI Act Article 73 requires serious incident notification within 72 hours for high-risk AI. Financial AI is typically high-risk. Source: NIST AI RMF, SecAI+ incident response.',
   },
   {
     id: 'secai-adv-047',
@@ -25063,7 +25063,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Increase the system prompt length to include more detailed instructions about not giving credits',
     ],
     correct: 1,
-    explanation: 'AI security incident response priorities (NIST AI RMF RESPOND): (1) Containment first, suspend the vulnerable automated flow to stop active exploitation; automated financial actions should require human review; (2) Evidence preservation, capture: original prompt (with injection), AI response, actions triggered, user account context; this enables forensic analysis and is required for any financial fraud investigation; (3) Scope assessment, query the action log for all similar credits issued in the window since the attack began; (4) Root cause analysis, after containment, analyze injection technique; (5) Remediation, improve input filtering, add human-in-the-loop for financial actions, then re-enable. Retraining (A) takes weeks and doesn\'t address the immediate incident. Source: GIAC-GOAA incident response.',
+    explanation: 'AI security incident response priorities (NIST AI RMF MANAGE, which covers acting on identified risks): (1) Containment first, suspend the vulnerable automated flow to stop active exploitation; automated financial actions should require human review; (2) Evidence preservation, capture: original prompt (with injection), AI response, actions triggered, user account context; this enables forensic analysis and is required for any financial fraud investigation; (3) Scope assessment, query the action log for all similar credits issued in the window since the attack began; (4) Root cause analysis, after containment, analyze injection technique; (5) Remediation, improve input filtering, add human-in-the-loop for financial actions, then re-enable. Retraining (A) takes weeks and doesn\'t address the immediate incident. Source: GIAC-GOAA incident response.',
   },
 
   // ── GIAC-GOAA Extended continued (goaa-ext-016..025) ────────────────────────
@@ -25171,9 +25171,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'AI incident response is optional under all current frameworks',
       'Only EU-based organizations need AI incident response plans',
       'ISO 27001 Annex A.16 is sufficient for AI incidents',
-      'NIST AI RMF RESPOND function requires organizations to have processes for detecting, responding to, and recovering from AI incidents'],
+      'NIST AI RMF MANAGE function requires organizations to have processes for detecting, responding to, and recovering from AI incidents'],
     correct: 3,
-    explanation: 'NIST AI RMF RESPOND function (Manage 4.2): specifies that organizations must have documented processes for AI incident detection, response, and recovery. Key elements: (1) AI-specific incident classification (distinguishing model failures, adversarial attacks, data drift); (2) Escalation procedures for high-risk AI systems; (3) Stakeholder communication plans; (4) Evidence preservation for AI forensics; (5) Post-incident review and AI RMF update. ISO 42001:2023 Clause 10 also requires AI management system nonconformity and corrective action processes. EU AI Act Article 73 adds 72-hour reporting for high-risk AI serious incidents. Source: GIAC-GOAA audit methodology.',
+    explanation: 'NIST AI RMF MANAGE function (MANAGE 4.2): specifies that organizations must have documented processes for AI incident detection, response, and recovery. Key elements: (1) AI-specific incident classification (distinguishing model failures, adversarial attacks, data drift); (2) Escalation procedures for high-risk AI systems; (3) Stakeholder communication plans; (4) Evidence preservation for AI forensics; (5) Post-incident review and AI RMF update. ISO 42001:2023 Clause 10 also requires AI management system nonconformity and corrective action processes. EU AI Act Article 73 adds 72-hour reporting for high-risk AI serious incidents. Source: GIAC-GOAA audit methodology.',
   },
   {
     id: 'goaa-ext-023',
