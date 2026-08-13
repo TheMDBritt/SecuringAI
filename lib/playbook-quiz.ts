@@ -14281,9 +14281,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'When conducting an LLM red team assessment, which scoping artifact most precisely defines the boundary between permitted testing and out-of-scope activity?',
     options: [
       'The system prompt, which defines the model\'s persona and constraints',
-      'The model card',
-      'A rules of engagement document specifying',
-      'The organization\'s general penetration testing policy'],
+      'The model card published by the model provider',
+      'A rules of engagement document naming in-scope endpoints and prohibited outcomes',
+      'The organization\'s general penetration testing policy'
+    ],
     correct: 2,
     explanation: 'AI red team ROE must address AI-specific scope elements not covered by generic pentest policies: (1) Endpoint scope, which model versions, API keys, hosted instances are in-scope; (2) Payload categories, conceptual vs. functional exploit syntax; (3) Real-harm prohibition, specifying outputs that must not be generated even to prove a vulnerability; (4) Capability discovery escalation, if the model exhibits unexpected dangerous capabilities, how to report without publishing; (5) Data handling, test data must not include real PII; (6) Time-bound access. The ROE is the legally operative document. GIAC GOAA Domain 5 covers AI red team scoping and methodology. Source: SANS FOR528; Microsoft AI Red Team Building Guidelines.',
   },
@@ -14520,7 +14521,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Prompt separation, holding untrusted data in a second context',
       'Least privilege and explicit human confirmation gates, grant the agent minimum necessary tool permissions'],
     correct: 3,
-    explanation: 'Securing agentic AI (OWASP LLM08, CAIS Domain 3): (1) Least privilege, agents should request only permissions needed for the current task, prefer read-only where write isn\'t needed; (2) Human-in-the-loop, irreversible or high-impact actions require explicit confirmation (defense against compromised agent following attacker instructions); (3) Audit logging, every tool call logged with the full context that triggered it; (4) Rate limiting on tool calls; (5) Scope containment, separate agent instances for different trust zones. The dual-LLM architecture (one processes untrusted content, one decides actions) is a defense-in-depth addition. Source: OWASP LLM Top 10 2026 LLM08; NIST AI RMF MS-2.6; CAIS Domain 3.',
+    explanation: 'Securing agentic AI, OWASP LLM03 Excessive Agency, CAIS Domain 3: (1) Least privilege, agents should request only permissions needed for the current task, prefer read-only where write isn\'t needed; (2) Human-in-the-loop, irreversible or high-impact actions require explicit confirmation (defense against compromised agent following attacker instructions); (3) Audit logging, every tool call logged with the full context that triggered it; (4) Rate limiting on tool calls; (5) Scope containment, separate agent instances for different trust zones. The dual-LLM architecture (one processes untrusted content, one decides actions) is a defense-in-depth addition. Source: OWASP LLM Top 10 2026 LLM08; NIST AI RMF MS-2.6; CAIS Domain 3.',
   },
   {
     id: 'cais-llm-004',
@@ -14579,12 +14580,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'An organization downloads a popular open-source fine-tuning script from GitHub. The script secretly calls home during training, exfiltrating gradient updates to an attacker-controlled server. This represents which AI supply chain threat vector?',
     options: [
-      'Model card forgery',
-      'Transfer learning attack',
-      'Data poisoning, the script modifies the training dataset during the download process',
-      'Dependency confusion attack using a compromised ML tooling component'],
+      'Model card forgery by the repository maintainer',
+      'Transfer learning attack from a backdoored base model',
+      'Data poisoning, the script modifies the training dataset during download',
+      'Compromised ML tooling in the training supply chain'
+    ],
     correct: 3,
-    explanation: 'AI supply chain threats (OWASP LLM05, NIST AI RMF MS-2.6): (1) Compromised training scripts, malicious Python packages or GitHub repos that execute malicious code during training; (2) Gradient exfiltration, attacker receives model gradient updates, enabling model extraction or gradient-based membership inference; (3) Compromised pre-trained models, downloading models from untrusted sources (Hugging Face, GitHub) may include pickle-deserialized backdoors; (4) Malicious datasets, poisoned public datasets (e.g., "indirect injection" in LAION image-text pairs). Mitigation: (1) Hash verification of all training artifacts; (2) Sandboxed training environments; (3) AI-BOM (bill of materials); (4) Verified model provenance. Source: OWASP LLM Top 10 2026 LLM05; CAIS Domain 4.',
+    explanation: 'AI supply chain threats, OWASP LLM04 Supply Chain and NIST AI RMF MEASURE 2.6: (1) Compromised training scripts, malicious Python packages or GitHub repos that execute malicious code during training; (2) Gradient exfiltration, attacker receives model gradient updates, enabling model extraction or gradient-based membership inference; (3) Compromised pre-trained models, downloading models from untrusted sources (Hugging Face, GitHub) may include pickle-deserialized backdoors; (4) Malicious datasets, poisoned public datasets (e.g., "indirect injection" in LAION image-text pairs). Mitigation: (1) Hash verification of all training artifacts; (2) Sandboxed training environments; (3) AI-BOM (bill of materials); (4) Verified model provenance. Source: OWASP LLM Top 10 2026, LLM04 Supply Chain; CAIS Domain 4.',
   },
   {
     id: 'cais-pipe-002',
@@ -14646,7 +14648,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'GOVERN 5.1',
       'GOVERN 1.1'],
     correct: 2,
-    explanation: 'NIST AI RMF GOVERN function (SP 1600): (1) GOVERN 1, Policies, processes, procedures for AI risk management; (2) GOVERN 2, Accountability; (3) GOVERN 3, Organizational teams and functions; (4) GOVERN 4, Organizational risk tolerance (GOVERN 4.1: establish tolerance, 4.2: apply to AI decisions); (5) GOVERN 5, Risks of individuals and communities (5.1: identify and communicate to affected parties); (6) GOVERN 6, Roles and responsibilities. The question specifically addresses stakeholder communication of AI risks (GOVERN 5.1), not just internal governance (GOVERN 1/4) or role definitions (GOVERN 6). Source: NIST AI RMF 1.0 (2023); CAIS Domain 5.',
+    explanation: 'NIST AI RMF GOVERN function, NIST AI 100-1: (1) GOVERN 1, Policies, processes, procedures for AI risk management; (2) GOVERN 2, Accountability; (3) GOVERN 3, Organizational teams and functions; (4) GOVERN 4, Organizational risk tolerance (GOVERN 4.1: establish tolerance, 4.2: apply to AI decisions); (5) GOVERN 5, Risks of individuals and communities (5.1: identify and communicate to affected parties); (6) GOVERN 6, Roles and responsibilities. The question specifically addresses stakeholder communication of AI risks (GOVERN 5.1), not just internal governance (GOVERN 1/4) or role definitions (GOVERN 6). Source: NIST AI RMF 1.0 (2023); CAIS Domain 5.',
   },
 
   // ─── GIAC-GOAA · Offensive AI Analyst ────────────────────────────────────
@@ -14818,7 +14820,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'ATLAS covers attacks on AI management infrastructure while ATT&CK covers attacks on traditional IT infrastructure',
       'ATLAS documents attack techniques specifically targeting ML systems'],
     correct: 3,
-    explanation: 'MITRE ATLAS (atlas.mitre.org) extends ATT&CK to ML systems with tactics including: Reconnaissance (AML.TA0002), ML Supply Chain Compromise (AML.TA0010), Data Poisoning (AML.T0020), Model Evasion (AML.T0015), Exfiltration via ML Inference API (AML.T0025). It shares ATT&CK\'s tactic/technique structure enabling defenders to map AI attacks to existing detection and response workflows. Key ATLAS techniques for LLM security: AML.T0054 (LLM Prompt Injection), AML.T0018 (Backdoor ML Model), AML.T0024 (Invert ML Model). Source: MITRE ATLAS (atlas.mitre.org); GIAC GASAE Domain 1.',
+    explanation: 'MITRE ATLAS (atlas.mitre.org) extends ATT&CK to ML systems with tactics including: Reconnaissance (AML.TA0002), ML Supply Chain Compromise (AML.TA0010), Data Poisoning (AML.T0020), Model Evasion (AML.T0015), Exfiltration via ML Inference API. It shares ATT&CK\'s tactic/technique structure enabling defenders to map AI attacks to existing detection and response workflows. Key ATLAS techniques for LLM security: AML.T0054 (LLM Prompt Injection), AML.T0018 (Backdoor ML Model), AML.T0024 (Invert ML Model). Source: MITRE ATLAS (atlas.mitre.org); GIAC GASAE Domain 1.',
   },
   {
     id: 'gasae-005-c',
