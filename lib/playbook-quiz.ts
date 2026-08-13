@@ -8404,12 +8404,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'SCS-C03'],
     question: 'In the NIST AI RMF (NIST AI 100-1, 2023), the MAP function focuses on context and risk identification. Which MAP subcategory specifically addresses identifying and prioritising risks to individuals and groups from the AI system?',
     options: [
-      'MAP 1.1, Context is established for the AI risk assessment',
-      'MAP 5.2, Practitioners and end users understand the extent and possible impacts of AI system use',
-      'MAP 3.5, Organizational risk tolerance is applied to AI-specific risks across demographic groups',
-      'MAP 2.3, Scientific findings and established literature are used to understand AI risks and benefits'],
-    correct: 2,
-    explanation: 'NIST AI RMF MAP 3.5 focuses on applying organisational risk tolerance to AI-specific risks, including risks to demographic groups, historically marginalised communities, and individuals with protected characteristics. This subcategory is where equity and fairness concerns are integrated into the risk register. MAP 1.1 establishes the overall assessment context (the deployment environment, stakeholders, purpose). MAP 2.3 refers to using scientific literature to inform risk understanding, a knowledge input, not risk prioritisation. MAP 5.2 addresses practitioner and user understanding, an output/communication step. MAP 3.5 is therefore the subcategory most directly concerned with identifying and prioritising AI risks at the level of individuals and groups. Source: NIST AI RMF 1.0, Action ID MAP 3.5 (nist.gov/publications/artificial-intelligence-risk-management-framework).',
+      'MAP 1.1, intended purpose and deployment context are established and documented',
+      'MAP 5.1, likelihood and magnitude of impacts to individuals and groups are assessed',
+      'MAP 3.5, processes for human oversight are defined, assessed, and documented',
+      'MAP 2.3, scientific integrity and test, evaluation, verification and validation are documented'
+    ],
+    correct: 1,
+    explanation: 'MAP 5.1 requires that the likelihood and magnitude of each identified impact be assessed for individuals, groups, communities, organisations, and society. That is the subcategory where harms to people are identified and prioritised. MAP 1.1 establishes intended purpose and deployment context. MAP 2.3 covers scientific integrity and the test, evaluation, verification and validation approach. MAP 3.5 covers processes for human oversight, which is an operational control rather than risk prioritisation. Source: NIST AI RMF 1.0, MAP function.',
   },
 {
     id: 'transp-007',
@@ -8923,7 +8924,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SecAI', 'SCS-C03'],
     question: 'When downloading a pre-trained model from a public repository (e.g., Hugging Face), which supply chain threat is unique to ML model files and not present in traditional software packages?',
     options: [
-      'Arbitrary code execution via malicious pickle or safetensor deserialization',
+      'Arbitrary code execution when a pickle-serialised model file is loaded',
       'Cryptographic hash collision in the model file checksum',
       'MITM attacks on the model download HTTPS connection',
       'DLL injection via malicious model weight files'],
