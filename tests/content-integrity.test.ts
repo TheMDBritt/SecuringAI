@@ -366,3 +366,29 @@ describe('SecAI+ covers every published CY0-001 objective', () => {
     expect(uncovered).toEqual([]);
   });
 });
+
+describe('SecAI+ objective pools are deep enough to practise', () => {
+  // The mock exam spreads each domain's allocation across its sub-objectives,
+  // so a starved objective is not merely under-taught, it repeats the same
+  // handful of questions every sitting. This floor keeps every objective
+  // deep enough that a learner sees new material across repeated mocks.
+  const FLOOR = 15;
+
+  it('gives every tagged objective a usable pool', () => {
+    const counts = new Map<string, number>();
+    for (const q of SECAI) {
+      for (const o of q.objectives ?? []) {
+        counts.set(o, (counts.get(o) ?? 0) + 1);
+      }
+    }
+    const thin = [...counts.entries()]
+      .filter(([, n]) => n < FLOOR)
+      .map(([o, n]) => `${o} has ${n}`);
+    expect(thin).toEqual([]);
+  });
+
+  it('tags the large majority of the SecAI+ bank', () => {
+    const tagged = SECAI.filter((q) => (q.objectives ?? []).length > 0);
+    expect(tagged.length / SECAI.length).toBeGreaterThan(0.9);
+  });
+});

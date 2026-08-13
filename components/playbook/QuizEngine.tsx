@@ -91,6 +91,61 @@ function shuffleOptions(q: QuizQuestion): QuizQuestion {
 // Each domain gets round(weight x count) questions, picked with the same
 // spaced-repetition weighting used elsewhere. Any shortfall (a thin domain) or
 // rounding remainder is topped up from the questions not already selected.
+/**
+ * Spreads a domain's allocation across its sub-objectives.
+ *
+ * Exam boards publish domain weights but not sub-objective weights, so we do
+ * not invent a per-objective target. Instead we round-robin: each objective
+ * present in the domain contributes a question in turn until the allocation is
+ * filled. That stops one heavily-authored objective from crowding out the rest
+ * of the domain, which is what happens when the domain is sampled as one pool.
+ * Questions with no objective tag stay eligible via the untagged bucket.
+ */
+function pickAcrossObjectives(
+  bucket: QuizQuestion[],
+  want: number,
+  perQ: ReturnType<typeof loadProgress>['perQ'],
+  domainId: string,
+): QuizQuestion[] {
+  const byObjective = new Map<string, QuizQuestion[]>();
+  for (const q of bucket) {
+    // A question may carry objectives from several certs; keep the ones whose
+    // domain number matches the domain being filled (e.g. '2' for secai-d2).
+    const domainNumber = domainId.match(/d(\d)$/)?.[1];
+    const own = (q.objectives ?? []).filter((o) =>
+      domainNumber ? o.split(':')[1]?.startsWith(`${domainNumber}.`) : true,
+    );
+    const keys = own.length > 0 ? own : ['__untagged'];
+    for (const k of keys) {
+      const list = byObjective.get(k);
+      if (list) list.push(q);
+      else byObjective.set(k, [q]);
+    }
+  }
+  if (byObjective.size <= 1) return pickWeighted(bucket, want, perQ);
+
+  // Draw a full weighted ordering per objective once, then interleave.
+  const queues = [...byObjective.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, qs]) => pickWeighted(qs, qs.length, perQ));
+
+  const taken = new Set<string>();
+  const out: QuizQuestion[] = [];
+  let progressed = true;
+  while (out.length < want && progressed) {
+    progressed = false;
+    for (const queue of queues) {
+      if (out.length >= want) break;
+      const next = queue.find((q) => !taken.has(q.id));
+      if (!next) continue;
+      taken.add(next.id);
+      out.push(next);
+      progressed = true;
+    }
+  }
+  return out;
+}
+
 function pickByDomainWeight(
   pool: QuizQuestion[],
   count: number,
@@ -120,7 +175,7 @@ function pickByDomainWeight(
     const want = Math.round((weight / totalWeight) * count);
     if (want <= 0) continue;
     const bucket = pool.filter((q) => questionMatchesDomain(q, domain) && !taken.has(q.id));
-    for (const q of pickWeighted(bucket, want, perQ)) {
+    for (const q of pickAcrossObjectives(bucket, want, perQ, domain.id)) {
       taken.add(q.id);
       out.push(q);
     }
