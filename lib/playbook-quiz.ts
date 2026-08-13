@@ -4671,7 +4671,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The agent should only have access to the tools and data required for its specific task',
       'The agent should use the smallest model capable of the task to reduce cost'],
     correct: 2,
-    explanation: 'Least privilege for LLM agents (OWASP LLM06 mitigation): grant only the specific tool permissions needed for each defined task, scope data access to what is required, require human-in-the-loop approval before irreversible actions (send email, delete file, execute code), and audit all agent actions.',
+    explanation: 'Least privilege for LLM agents, the primary OWASP LLM03 Excessive Agency mitigation,: grant only the specific tool permissions needed for each defined task, scope data access to what is required, require human-in-the-loop approval before irreversible actions (send email, delete file, execute code), and audit all agent actions.',
   },
 {
     id: 'secai-d2-011',
@@ -4726,7 +4726,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'SCS-C03'],
     question: 'Data masking as a data protection control in AI systems involves:',
     options: [
-      'Replacing sensitive values with realistic',
+      'Replacing sensitive values with realistic but fictitious substitutes',
       'Encrypting training data at rest with AES-256',
       'Removing all data older than the retention policy period',
       'Hiding model weights from unauthorized users'],
@@ -7388,7 +7388,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A "lost in the middle" attack works by:',
     options: [
       'Overflowing the context window so the beginning of the context is truncated',
-      'Placing the most important instructions',
+      'Burying safety instructions in the middle of a very long context',
       'Removing the system prompt from the middle of a long context window',
       'Injecting a confusing middle section that causes the model to lose track of its role'],
     correct: 1,
@@ -8248,7 +8248,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SecAI', 'SCS-C03'],
     question: 'A CAISP assessor is auditing an organisation\'s AI system for compliance with NIST AI RMF\'s GOVERN function. Which artifact most directly demonstrates that governance obligations are met?',
     options: [
-      'An AI system card documenting',
+      'An AI system card documenting intended use, limits, and oversight',
       'A vendor security questionnaire response',
       'The GitHub repository of the model training code with full commit history',
       'A training accuracy report showing 97% accuracy on the test set'],
@@ -19816,7 +19816,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'A human-in-the-loop approval gate for high-blast-radius targets',
       'A more sophisticated AI model with a lower baseline false-positive rate on the same alert stream',
-      'A pre-deployment requirement that the model reach 99% accuracy on a static test dataset before enabling',
+      'A pre-deployment requirement that the model reach 99% accuracy on a static test dataset',
       'More training data for the AI model before granting it auto-containment authority',
     ],
     correct: 0,
