@@ -704,7 +704,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The LLM reveals stored user credentials'
     ],
     correct: 0,
-    explanation: 'LLM06 covers disclosure of PII, confidential system prompts, or memorized training data. Key mitigations: scrub PII from training data, output filtering, and instructing the model not to reveal its system prompt.',
+    explanation: 'LLM02 Sensitive Information Disclosure covers leakage of PII, confidential system prompts, or memorized training data. Key mitigations: scrub PII from training data, output filtering, and instructing the model not to reveal its system prompt.',
   },
 {
     id: 'sec-009',
@@ -835,7 +835,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The model makes too many API calls to external services'
     ],
     correct: 2,
-    explanation: 'LLM09 addresses the human risk: users who treat LLM outputs as ground truth without verification. This is especially dangerous for medical, legal, or financial advice where hallucinations can cause real harm.',
+    explanation: 'LLM07 Misinformation addresses the human risk: users who treat LLM outputs as ground truth without verification. This is especially dangerous for medical, legal, or financial advice where hallucinations can cause real harm.',
   },
 {
     id: 'sec-018',
@@ -872,7 +872,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Encrypting all API communications',
       'Input length limits, query cost budgets, and rate limiting'],
     correct: 3,
-    explanation: 'LLM04 (DoS) is mitigated by enforcing input length limits, setting maximum token budgets per request, and applying rate limiting to prevent sustained resource exhaustion.',
+    explanation: 'LLM06 Unbounded Consumption is mitigated by enforcing input length limits, setting maximum token budgets per request, and applying rate limiting to prevent sustained resource exhaustion.',
   },
 {
     id: 'gov-001',
@@ -942,7 +942,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Perfectly fair AI is theoretically achievable with enough data',
       'All AI systems eventually become biased through use',
       'Bias is detectable only after a model reaches production',
-      'Multiple fairness metrics'],
+      'Several common fairness metrics cannot all hold at once'
+    ],
     correct: 3,
     explanation: 'The impossibility theorem (Chouldechova, Corbett-Davies et al.) proves that common fairness criteria are mathematically incompatible when base rates differ across groups. Organizations must choose which definition of fairness to prioritize.',
   },
@@ -954,12 +955,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'CAISP', 'GIAC-GOAA', 'SCS-C03'],
     question: 'What are the seven properties of trustworthy AI according to NIST AI RMF?',
     options: [
-      'Accountable, Explainable, Fair, Privacy-enhanced, Reliable, Resilient, Safe',
-      'Transparent, Unbiased, Secure, Accurate, Efficient, Compliant, Auditable',
+      'Valid, Safe, Secure, Accountable, Explainable, Privacy-enhanced, Fair',
+      'Transparent, Unbiased, Accurate, Efficient, Compliant, Auditable, Portable',
       'Governed, Mapped, Measured, Managed, Tested, Monitored, Documented',
-      'Safe, Secure, Private, Fair, Explainable, Reliable, Governed'],
+      'Safe, Secure, Private, Ethical, Interpretable, Scalable, Governed'
+    ],
     correct: 0,
-    explanation: 'NIST AI RMF defines seven trustworthy AI properties: Accountable & Transparent, Explainable & Interpretable, Fair with Bias Managed, Privacy Enhanced, Reliable & Accurate, Resilient, and Safe.',
+    explanation: 'NIST AI RMF defines seven trustworthy characteristics: valid and reliable, safe, secure and resilient, accountable and transparent, explainable and interpretable, privacy-enhanced, and fair with harmful bias managed.',
   },
 {
     id: 'gov-007',
@@ -1367,7 +1369,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which OWASP LLM risk covers an LLM being given too much autonomy to perform actions without human oversight?',
     options: [ 'LLM04 Supply Chain','LLM01 Prompt Injection', 'LLM07 Misinformation', 'LLM03 Excessive Agency'],
     correct: 3,
-    explanation: 'LLM03 Excessive Agency covers AI agents granted toomany permissions or too much autonomy. Mitigation: least privilege tools, human approval gates, audit logging.',
+    explanation: 'LLM03 Excessive Agency covers AI agents granted too many permissions or too much autonomy. Mitigation: least privilege tools, human approval gates, audit logging.',
   },
 {
     id: 'sec-022',
@@ -1618,7 +1620,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Predictive parity'
     ],
     correct: 1,
-    explanation: 'Demographic parity requires equal positive prediction rates across groups. 85% vs 55% approval rates violate this regardless of equal accuracy, because the base rates differ.',
+    explanation: 'Demographic parity requires equal positive prediction rates across groups. 85% vs 55% approval rates violate this regardless of equal accuracy.',
   },
 {
     id: 'gov-014',
@@ -3696,7 +3698,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'No individual\'s training data can be identified from the model weights',
       'All training data is encrypted before being used for model training',
-      'Output changes by at most epsilon whether or not any individual is included',
+      'Output probabilities shift by at most a bounded factor for any one record',
       'The model forgets all training data after a specified retention period'
     ],
     correct: 2,
@@ -4097,9 +4099,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'The Impossibility Theorem in fairness states:',
     options: [
       'It is impossible to build a bias-free model on biased data',
-      'Demographic parity, equalized odds',
+      'Some fairness criteria cannot all hold when base rates differ',
       'Fairness cannot be measured without ground truth labels',
-      'Explainability and fairness are mutually exclusive objectives',
+      'Explainability and fairness are mutually exclusive objectives'
     ],
     correct: 1,
     explanation: 'The impossibility theorem (Chouldechova, Kleinberg et al.) proves that when base rates differ between groups, you cannot simultaneously satisfy demographic parity, equalized odds, and calibration. Organizations must choose which fairness criterion matches their use case and document that choice.',
@@ -4174,9 +4176,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Disparate impact in AI hiring tools refers to:',
     options: [
       'The tool running slower for certain users due to hardware differences',
-      'A tool that produces unequal outcomes for protected groups even',
+      'Unequal outcomes for protected groups without explicit intent',
       'Errors that occur more frequently when the system is under high load',
-      'A model that is intentionally trained to discriminate against certain groups',
+      'A model that is intentionally trained to discriminate against certain groups'
     ],
     correct: 1,
     explanation: 'Disparate impact occurs when an AI system produces discriminatory outcomes for protected groups even without using protected attributes directly, proxies (zip code, name, browsing history) can encode protected characteristics. Under US EEOC guidelines, a tool with a selection rate below 80% of the highest group triggers adverse impact review.',
@@ -21007,9 +21009,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What does ISO/IEC 42001:2023 (AI Management System standard) require that differentiates it from ISO 27001 for AI deployments?',
     options: [
       'ISO 42001 replaces and supersedes ISO 27001 for all technology organizations',
-      'ISO 42001 requires AI-specific controls including',
+      'ISO 42001 requires AI impact assessments and model provenance controls',
       'ISO 42001 only applies to organizations that develop their own AI models from scratch',
-      'ISO 42001 is simply ISO 27001 with AI terminology substituted throughout'],
+      'ISO 42001 is simply ISO 27001 with AI terminology substituted throughout'
+    ],
     correct: 1,
     explanation: 'ISO/IEC 42001:2023 establishes an AI Management System (AIMS) framework that supplements, not replaces, ISO 27001. AI-specific additions include: AI impact assessments, AI objectives documentation, supply chain controls for AI components (training data lineage, model provenance), bias and fairness monitoring, and stakeholder transparency. CAISP Domain 5 covers ISO 42001 as a governance framework for AI security programs.',
   },
@@ -21384,9 +21387,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'What is a "system card" (as distinguished from a "model card") and what does it document?',
     options: [
       'System cards are hardware documentation for AI inference servers',
-      'A system card documents the complete deployed AI system including',
+      'A system card documents the whole deployed product, not just the model',
       'System cards only apply to multi-model ensemble deployments, not single-model applications',
-      'System cards and model cards are identical documents used interchangeably'],
+      'System cards and model cards are identical documents used interchangeably'
+    ],
     correct: 1,
     explanation: 'Introduced by Meta and Anthropic, system cards document the complete deployed AI product rather than just the underlying model. They capture: the full architecture (base model + fine-tuning + RAG + safety layers), system-level evaluation (including red team findings), usage policies, and known misuse risks. System cards provide the complete risk picture that model cards alone cannot, since deployment context significantly affects risk. CAIS Domain 5.',
   },
@@ -22893,11 +22897,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Under the EU AI Act, which specific obligation applies to providers of General Purpose AI (GPAI) models with "systemic risk" (>10^25 FLOPs training compute)?',
     options: [
       'Obtain CE marking from a notified body before the model is released to EU operators',
-      'Conduct adversarial testing including red-teaming and publish the results in a standardized format',
-      'Register the model in the EU AI Act public database before',
-      'Provide a model card meeting ISO 42001 Annex B documentation requirements'],
+      'Conduct adversarial testing and publish the results in a standard format',
+      'Register the model in the EU AI Act public database maintained by the European Commission',
+      'Provide a model card meeting ISO 42001 Annex B documentation requirements'
+    ],
     correct: 1,
-    explanation: 'EU AI Act Article 55 requires providers of GPAI models with systemic risk (>10^25 FLOPs training compute threshold, or designated by the EU AI Office) to conduct adversarial testing, red-teaming, including against cyberattacks, and report serious incidents to the EU AI Office. EU database registration (A) applies to high-risk AI systems, not GPAI models specifically. CE marking via notified body (C) applies to Annex III high-risk systems. ISO 42001 Annex B (D) is a voluntary standard documentation format, not an EU AI Act obligation. EU AI Act Title VIII (GPAI models).',
+    explanation: 'EU AI Act Article 55 requires providers of GPAI models with systemic risk (>10^25 FLOPs training compute threshold, or designated by the EU AI Office) to conduct adversarial testing, red-teaming, including against cyberattacks, and report serious incidents to the EU AI Office. EU database registration applies to high-risk AI systems rather than GPAI models. CE marking via a notified body applies to Annex III high-risk systems. ISO 42001 Annex B is a voluntary documentation format, not an EU AI Act obligation. EU AI Act Title VIII (GPAI models).',
   },
   {
     id: 'euaia-adv-002',
