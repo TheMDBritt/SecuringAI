@@ -21245,7 +21245,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Markdown rendering injection only works against server-side rendering frameworks',
       'Injecting Markdown syntax causes the LLM to fail and return an error'],
     correct: 1,
-    explanation: 'LLMs that generate Markdown for display in a web UI can be manipulated to include malicious HTML/JavaScript. If the application renders raw LLM output as HTML, this results in stored XSS or content injection. Prevention: always sanitize LLM outputs using an allowlist-based HTML sanitizer (e.g., DOMPurify) before rendering. Treat LLM output as untrusted user content. CAIS Domain 3 / OWASP LLM02.',
+    explanation: 'LLMs that generate Markdown for display in a web UI can be manipulated to include malicious HTML/JavaScript. If the application renders raw LLM output as HTML, this results in stored XSS or content injection. Prevention: always sanitize LLM outputs using an allowlist-based HTML sanitizer (e.g., DOMPurify) before rendering. Treat LLM output as untrusted user content. CAIS Domain 3; OWASP LLM10 Improper Output Handling.',
   },
   {
     id: 'cais-llm-005b',
@@ -21596,7 +21596,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The LLM output should be trusted automatically without checks'
     ],
     correct: 0,
-    explanation: 'In SOAR automation, LLM output drives downstream actions (isolate host, block IP). Without output validation (schema enforcement, allowlisted values, confidence thresholds), a hallucinated or injected response triggers incorrect remediation. OWASP LLM02 covers this risk. Best practice: constrained JSON output, validation layer, confidence threshold gating, full audit logging. GIAC GASAE Domain 4.',
+    explanation: 'In SOAR automation, LLM output drives downstream actions (isolate host, block IP). Without output validation (schema enforcement, allowlisted values, confidence thresholds), a hallucinated or injected response triggers incorrect remediation. OWASP LLM10 Improper Output Handling covers this risk. Best practice: constrained JSON output, validation layer, confidence threshold gating, full audit logging. GIAC GASAE Domain 4.',
   },
   {
     id: 'gasae-auto-002-c',
@@ -21673,7 +21673,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Least privilege for AI agents means restricting the number of tokens they can generate',
       'AI agents do not need privilege restrictions'],
     correct: 1,
-    explanation: 'For AI agents, least privilege extends to: tool allowlisting (only specific bounded API calls), scoped data access (only files/databases needed for current task), just-in-time permission elevation, and action rate limits. AI agents are particularly dangerous when over-privileged because tool chaining amplifies blast radius of a prompt injection attack. GIAC GASAE Domain 1 / OWASP LLM08.',
+    explanation: 'For AI agents, least privilege extends to: tool allowlisting (only specific bounded API calls), scoped data access (only files/databases needed for current task), just-in-time permission elevation, and action rate limits. AI agents are particularly dangerous when over-privileged because tool chaining amplifies blast radius of a prompt injection attack. GIAC GASAE Domain 1; OWASP LLM03 Excessive Agency.',
   },
   {
     id: 'gasae-vuln-001-c',
@@ -22282,7 +22282,8 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Multi-agent injection is the same as single-agent injection but takes longer to execute',
       'Prompt injection in multi-agent systems only affects the orchestrator agent, not worker agents',
       'Multi-agent systems cannot be affected by prompt injection',
-      'In multi-agent systems'],
+      'An injection laundered through one agent is trusted by the next agent in the chain'
+    ],
     correct: 3,
     explanation: 'Multi-agent injection propagation: Agent A receives untrusted content with adversarial instructions → Agent A\'s output includes injected instructions (framed as normal output) → Agent B processes Agent A\'s output as context with implicit trust → injection propagates. Each agent hop can further launder injected instructions, making attribution harder. Defense: inter-agent message sanitization, trust boundaries, centralized audit logging of agent-to-agent communications. OWASP LLM01 / ATLAS AML.T0051.',
   },
@@ -22299,7 +22300,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'When multiple AI agents disagree about the correct interpretation of a task',
       'When an AI agent is confused by contradictory instructions in its system prompt'],
     correct: 0,
-    explanation: 'Confused deputy (classic OS security concept) applied to agentic AI: if an agent has write access to a database or external API, and an attacker can inject instructions via prompt injection, the attacker uses the agent\'s legitimate permissions to perform unauthorized actions. Defense: minimal agent permissions, action allowlisting, human-in-the-loop for high-privilege operations. SecAI Domain 2 / OWASP LLM08.',
+    explanation: 'Confused deputy (classic OS security concept) applied to agentic AI: if an agent has write access to a database or external API, and an attacker can inject instructions via prompt injection, the attacker uses the agent\'s legitimate permissions to perform unauthorized actions. Defense: minimal agent permissions, action allowlisting, human-in-the-loop for high-privilege operations. SecAI Domain 2; OWASP LLM03 Excessive Agency.',
   },
 
   // ── OWASP LLM Top 10 (2026) ───────────────────────────────────────────────────
@@ -22309,14 +22310,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'AI Security',
     difficulty: 'intermediate' as const,
     certTags: ['SecAI', 'CAIS', 'CAISP', 'GIAC-GOAA', 'AWS-AIF-C01', 'SCS-C03'],
-    question: 'What is the primary mitigation for OWASP LLM07 (2025) System Prompt Leakage?',
+    question: 'What is the primary mitigation for OWASP LLM08 Hidden Context Exposure, the system prompt leakage category?',
     options: [
       'Use a very long system prompt so attackers cannot find the beginning of it',
       'Treat system prompts as potentially extractable',
       'Encrypt the system prompt using AES-256 before sending it to the LLM API',
       'System prompt leakage cannot be mitigated'],
     correct: 1,
-    explanation: 'System prompt leakage mitigation (OWASP LLM07:2026): the system prompt is logically accessible to the model, meaning jailbreaks can indirectly expose it. Mitigations: (1) Never put secrets (API keys, DB passwords) in system prompts, use environment variables; (2) Treat prompts as semi-public; (3) Use content filtering to detect extraction attempts; (4) Implement security decisions in server code, not prompt instructions. SecAI Domain 2.',
+    explanation: 'System prompt leakage mitigation, OWASP LLM08 Hidden Context Exposure:: the system prompt is logically accessible to the model, meaning jailbreaks can indirectly expose it. Mitigations: (1) Never put secrets (API keys, DB passwords) in system prompts, use environment variables; (2) Treat prompts as semi-public; (3) Use content filtering to detect extraction attempts; (4) Implement security decisions in server code, not prompt instructions. SecAI Domain 2.',
   },
   {
     id: 'owasp-llm-002',
@@ -22328,10 +22329,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Excessive agency only occurs when the LLM is fine-tuned on harmful data',
       'Excessive agency requires the attacker to have direct API access to the LLM deployment',
-      'When three conditions combine, over-privileged tools beyond task requirements',
-      'When the LLM has internet access and a large context window'],
+      'Over-privileged tools, high autonomy, and exposure to untrusted content together',
+      'When the LLM has internet access and a large context window'
+    ],
     correct: 2,
-    explanation: 'OWASP LLM08 risk multiplier: over-privilege × autonomy × injection exposure. Over-privileged tools alone are risky but bounded without injection. Full autonomy alone is risky but bounded without over-privilege. Injection exposure weaponizes both. Minimum necessary tools + human confirmation gates + injection filtering address all three conditions. SecAI Domain 2.',
+    explanation: 'OWASP LLM03 risk multiplier: over-privilege × autonomy × injection exposure. Over-privileged tools alone are risky but bounded without injection. Full autonomy alone is risky but bounded without over-privilege. Injection exposure weaponizes both. Minimum necessary tools + human confirmation gates + injection filtering address all three conditions. SecAI Domain 2.',
   },
 
   // ── SecAI Domain 1 (AI Fundamentals) ─────────────────────────────────────────
@@ -22550,12 +22552,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SecAI', 'SCS-C03'],
     question: 'Which Zero Trust principle is MOST critical when deploying an agentic AI system with tool-calling capabilities?',
     options: [
-      'Both B and C equally apply',
-      'Use least privilege',
-      'Assume breach',
-      'Verify explicitly'],
+      'Verify explicitly and apply least privilege together',
+      'Apply least privilege on its own',
+      'Assume breach as the guiding posture',
+      'Verify explicitly on its own'
+    ],
     correct: 0,
-    explanation: 'Zero Trust for agentic AI requires BOTH explicit verification and least privilege as co-equal foundations. An agent that authenticates per-tool with scoped credentials (explicit verification) AND has permissions scoped to the minimum needed for each task (least privilege) dramatically reduces the blast radius of a compromised planning component. Assume breach is important but is a posture, not a specific agentic control. The combination of B+C maps to OWASP LLM08 mitigations. SecAI+ Domain 3.',
+    explanation: 'Zero Trust for agentic AI requires BOTH explicit verification and least privilege as co-equal foundations. An agent that authenticates per-tool with scoped credentials (explicit verification) AND has permissions scoped to the minimum needed for each task (least privilege) dramatically reduces the blast radius of a compromised planning component. Assume breach is important but is a posture, not a specific agentic control. Combining the two maps to the OWASP LLM03 Excessive Agency mitigations. SecAI+ Domain 3.',
   },
 
   // ── CAISP / CAIS Extended Questions ───────────────────────────────────────────
@@ -22760,14 +22763,15 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'LLM Security',
     difficulty: 'advanced' as const,
     certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
-    question: 'OWASP LLM Top 10 (2026) replaced "Model Denial of Service" (LLM10:2023) with "Unbounded Consumption" (LLM10:2026). What does this name change reflect?',
+    question: 'The OWASP LLM Top 10 replaced the 2023 category "Model Denial of Service" with "Unbounded Consumption", listed as LLM06 in 2026. What does this name change reflect?',
     options: [
-      'The 2025 update focused the category entirely on physical hardware resource exhaustion rather than token-based attacks',
+      'The category was narrowed to physical hardware resource exhaustion rather than token-based attacks',
       'The risk no longer applies to production AI systems',
-      'The threat expanded beyond availability to include financial harm through excessive API cost consumption and resource exhaustion across shared tenants',
-      'The change reflects that denial of service is now covered under LLM07 instead'],
+      'The threat expanded beyond availability to financial harm and shared-tenant resource exhaustion',
+      'Denial of service moved out of the list and into the misinformation category'
+    ],
     correct: 2,
-    explanation: 'The rename from "Model Denial of Service" to "Unbounded Consumption" reflects a broader threat model: the 2025 category covers not just availability attacks (DoS) but also financial harm through runaway API cost consumption, resource exhaustion affecting other tenants in shared inference infrastructure, and wallet attacks where attackers trigger expensive model inference at the victim\'s cost. The scope expanded from pure availability to financial and multi-tenant resource impacts. OWASP LLM Top 10 2026.',
+    explanation: 'The rename from Model Denial of Service to Unbounded Consumption reflects a broader threat model. The category now covers not just availability attacks (DoS) but also financial harm through runaway API cost consumption, resource exhaustion affecting other tenants in shared inference infrastructure, and wallet attacks where attackers trigger expensive model inference at the victim\'s cost. The scope expanded from pure availability to financial and multi-tenant resource impacts. OWASP LLM Top 10 2026.',
   },
   {
     id: 'owasp25-002',
@@ -22775,7 +22779,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'LLM Security',
     difficulty: 'advanced' as const,
     certTags: ['SecAI', 'CAISP', 'GIAC-GOAA'],
-    question: 'OWASP LLM07:2026 (System Prompt Leakage) was elevated in severity compared to 2023. A developer argues that system prompts are not secrets because "anything the model knows can be extracted eventually." How should a security architect respond?',
+    question: 'OWASP LLM08 Hidden Context Exposure, which covers system prompt leakage, was elevated in severity compared to 2023. A developer argues that system prompts are not secrets because "anything the model knows can be extracted eventually." How should a security architect respond?',
     options: [
       'The developer is correct, system prompts should never contain security-sensitive information, and if they do, that is a separate design flaw',
       'The developer is correct, all security should be implemented in the application layer, not the system prompt',
