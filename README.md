@@ -86,6 +86,13 @@ free-form Dojo 2 / Dojo 3 model output is replaced with a placeholder.
 To enable real AI replies in Dojo 2 / Dojo 3, copy `.env.example` to `.env`
 and set `OPENAI_API_KEY`. That is the only required environment variable.
 
+> **Before setting a key on a public deployment**, set a monthly budget limit
+> on the provider account (platform.openai.com, Settings, Limits). The app has
+> no accounts, so three endpoints spend money for anonymous callers. The in-app
+> per-IP rate limit and `DAILY_MODEL_REQUEST_LIMIT` are process-local and reset
+> on serverless cold start, which makes them a brake rather than a ceiling. The
+> provider-side cap is the only hard stop.
+
 ## Deploying
 
 Push the repo to Vercel, it auto-detects the Next.js framework via
