@@ -587,7 +587,7 @@ Extracting proprietary model weights or behavior through repeated querying.
 
 ### Exam Tips
 - Know all 10 categories by name and description
-- LLM01 (Prompt Injection) and LLM08 (Excessive Agency) are most exam-tested
+- LLM01 (Prompt Injection) and LLM03 (Excessive Agency) are most exam-tested
 - Indirect prompt injection (LLM01) is the most dangerous agentic AI attack`,
   },
 {
@@ -2571,7 +2571,7 @@ Developing standards for cataloguing AI-specific vulnerabilities within CVE. Key
 
 ### Key SecAI Takeaways
 - MITRE ATLAS is ATT&CK for AI, know key tactics and technique IDs
-- LLM01 (Prompt Injection) and LLM06 (Excessive Agency) are highest-frequency exam topics
+- LLM01 (Prompt Injection) and LLM03 (Excessive Agency) are highest-frequency exam topics
 - ML Security Top 10 covers the full pipeline; OWASP LLM focuses on LLM applications
 - MIT AI Risk Repository complements security frameworks with governance risk taxonomy`,
   },
@@ -2637,7 +2637,7 @@ Before any data collection:
 - Secrets management, no hardcoded API keys or credentials
 - Rollout strategy: canary or shadow deployment before full traffic
 
-**Security concern**: LLM03 (Supply Chain), verify model weights and dependencies at deploy time.
+**Security concern**: LLM04 (Supply Chain), verify model weights and dependencies at deploy time.
 
 ## Phase 7: Validation
 
@@ -4057,7 +4057,7 @@ Produce an AI-BOM covering base model version, fine-tuning datasets, training de
 ## Exam Tips
 
 - "Which OWASP category covers roleplay jailbreaks?" → LLM01 (Prompt Injection, policy bypass)
-- "Which covers an agent sending unsolicited email?" → LLM06 (Excessive Agency)
+- "Which covers an agent sending unsolicited email?" → LLM03 (Excessive Agency)
 - "Primary risk of pickle-format model files?" → Arbitrary code execution on load (LLM05)
 - "Two indirect injection defenses?" → Content sanitisation before RAG injection; context isolation
 - "What does many-shot jailbreaking exploit?" → In-context learning compliance drift as demonstration count grows`,
@@ -4456,7 +4456,7 @@ Embedding instructions in non-text modalities, images, PDFs, audio files, that a
 
 Every AI system depends on upstream components: pre-trained foundation models, training datasets, ML frameworks (PyTorch, TensorFlow, HuggingFace Transformers), fine-tuning data, and third-party API services. Each is an attack surface.
 
-OWASP LLM05 (Supply Chain Vulnerabilities) and MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) both address this threat category.
+OWASP LLM04 (Supply Chain) and MITRE ATLAS AML.T0010 (ML Supply Chain Compromise) both address this threat category.
 
 ## Attack Surfaces
 
