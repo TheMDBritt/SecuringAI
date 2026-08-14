@@ -588,7 +588,9 @@ export const SC500_DRILLS: Drill[] = [
     title: 'Roll out DSPM for AI starter policies',
     scenario: 'Your CISO wants visibility into Copilot prompts and DLP enforcement on labeled content. Onboard DSPM for AI.',
     difficulty: 'intermediate',
-    objectives: ['SC-500 Domain 2: Secure storage, databases, and networking (25-30%)'],
+    // Purview DSPM for Copilot is named under the AI security subsection of
+    // Domain 3, not under the storage and networking domain.
+    objectives: ['SC-500 Domain 3: Secure compute (20-25%)'],
     steps: [
       {
         screen: 'purview.microsoft.com',
