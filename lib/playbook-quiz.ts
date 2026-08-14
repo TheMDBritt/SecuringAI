@@ -19071,7 +19071,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Violence category at severity 2',
       'Hate Speech category at severity 4'],
     correct: 0,
-    explanation: 'Azure AI Content Safety categories: (1) Hate, (2) Sexual, (3) Violence, (4) Self Harm. Each uses severity 0-6 (0=safe, 6=most severe). Self Harm category: covers content instructing, glorifying, or facilitating self-harm and suicide. Recommended threshold for safety-critical applications: block at severity 2 (low-medium) or even severity 0 (all flagged content). Configuring at severity 2 means any self-harm instruction content in model output is blocked before delivery to the user.',
+    explanation: 'Azure AI Content Safety categories: (1) Hate, (2) Sexual, (3) Violence, (4) Self Harm. The text model supports a full 0-7 severity scale and can return a trimmed scale of 0, 2, 4 and 6, where adjacent levels are collapsed. Self Harm category: covers content instructing, glorifying, or facilitating self-harm and suicide. Recommended threshold for safety-critical applications: block from severity 2 upward, or from 0 to reject anything the classifier flags at all. Configuring at severity 2 means any self-harm instruction content in model output is blocked before delivery to the user.',
   },
   // ─── GIAC-GASAE: AI Security Automation ──────────────────────────────────────
   {
@@ -22398,11 +22398,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Azure AI Content Safety Prompt Shields analyzes what inputs to detect injection attacks?',
     options: [
-      'Prompt Shields scans only the system prompt for policy violations',
-      'Prompt Shields is a network firewall that blocks prompts containing specific keywords',
-      'Prompt Shields encrypts all prompts before they reach the Azure OpenAI endpoint',
-      'Prompt Shields analyzes both the user prompt'],
-    correct: 3,
+      'Prompt Shields analyses the user prompt and any grounding documents',
+      'Prompt Shields analyses only the completion returned by the model',
+      'Prompt Shields analyses network traffic reaching the inference endpoint',
+      'Prompt Shields analyses the deployment configuration for weak settings'
+    ],
+    correct: 0,
     explanation: 'Azure AI Content Safety Prompt Shields (GA 2024): (1) User Prompt Attack, detects direct injection in user turns; (2) Document Attack, detects indirect injection in grounding documents. Returns JSON with attackDetected and details per source. Integrates with Azure AI Foundry and Azure OpenAI directly. SC-500 Domain 5.',
   },
   {
@@ -23154,7 +23155,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Route the message to a human reviewer before any model call',
       'Pass the message to the LLM but attach a content warning flag to the response'],
     correct: 1,
-    explanation: 'Azure AI Content Safety severity scores range 0-6. The organization has configured the blocking threshold at ≥4 for hate. A severity of 2 is below this threshold, so the correct system behavior is to allow the message to proceed, the policy explicitly permits content below the threshold. This demonstrates that content safety thresholds are configurable controls that must match the organization\'s risk tolerance, not binary on/off filters. SC-500 Domain 3.',
+    explanation: 'Azure AI Content Safety returns severity on a trimmed scale of 0, 2, 4 and 6, collapsed from the underlying 0-7 scale. The organization has configured the blocking threshold at ≥4 for hate. A severity of 2 is below this threshold, so the correct system behavior is to allow the message to proceed, the policy explicitly permits content below the threshold. This demonstrates that content safety thresholds are configurable controls that must match the organization\'s risk tolerance, not binary on/off filters. SC-500 Domain 3.',
   },
   {
     id: 'sc500-ai-ext-004',
