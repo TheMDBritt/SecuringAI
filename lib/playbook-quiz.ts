@@ -5112,7 +5112,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'You need a Conditional Access policy that requires phishing-resistant MFA for all Global Administrators. Which control should you reference?',
     options: [ 'Require authentication strength', 'Require compliant device','Require MFA', 'Require approved client app'],
     correct: 0,
-    explanation: 'Authentication Strengths is the Conditional Access grant that lets you require a *specific* MFA method (e.g. FIDO2, Windows Hello, certificate, Passkey). The built-in "Phishing-resistant MFA" strength enforces methods that cannot be bypassed by AiTM phishing, the recommended baseline for privileged roles.',
+    explanation: 'Authentication Strengths is the Conditional Access grant that lets you require a specific MFA method (e.g. FIDO2, Windows Hello, certificate, Passkey). The built-in "Phishing-resistant MFA" strength enforces methods that cannot be bypassed by AiTM phishing, the recommended baseline for privileged roles.',
   },
 {
     id: 'sc500-002',
@@ -5120,7 +5120,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'beginner',
     certTags: ['SC-500'],
-    question: 'Which PIM concept lets a user hold a role *without* permanent access, requiring activation when needed?',
+    question: 'Which PIM concept lets a user hold a role without permanent access, requiring activation when needed?',
     options: [ 'Just-in-time group membership', 'Eligible assignment','Active assignment', 'Permanent assignment'],
     correct: 1,
     explanation: 'PIM "eligible" assignments require the user to activate the role with MFA, justification, and (optionally) approval before they get standing privileges. "Active" is permanent (or time-bound) standing access, to be minimized.',
@@ -5288,7 +5288,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'You configure a CA policy with "Authentication context" attached to a SharePoint site labeled Highly Confidential. What does this enable?',
     options: [ 'Blocks all guests from the tenant','Encrypts the documents at rest', 'Step-up authentication', 'Forces every user to change password'],
     correct: 2,
-    explanation: 'Authentication contexts let CA enforce extra controls *only* when a user accesses tagged resources (labeled SharePoint sites, sensitive Teams, custom app actions). It avoids burdening every interaction with maximum auth.',
+    explanation: 'Authentication contexts let CA enforce extra controls only when a user accesses tagged resources (labeled SharePoint sites, sensitive Teams, custom app actions). It avoids burdening every interaction with maximum auth.',
   },
 {
     id: 'sc500-018',
@@ -5299,7 +5299,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which Entra role can manage Conditional Access policies but cannot reset other admins\' passwords?',
     options: ['Global Administrator', 'Helpdesk Administrator', 'Security Administrator', 'Conditional Access Administrator'],
     correct: 3,
-    explanation: 'Conditional Access Administrator is a least-privilege role scoped to viewing and modifying CA policies, named locations, and authentication strengths. Security Admin includes CA *and* broader security ops; Global Admin is too broad.',
+    explanation: 'Conditional Access Administrator is a least-privilege role scoped to viewing and modifying CA policies, named locations, and authentication strengths. Security Admin includes CA and broader security ops; Global Admin is too broad.',
   },
 {
     id: 'sc500-019',
@@ -5332,7 +5332,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Conditional Access "Session" controls let you do what?',
     options: ['Block legacy auth protocols', 'Apply sensitivity labels to email', 'Require a hardware security key', 'Limit experiences'],
     correct: 3,
-    explanation: 'Session controls modify *what happens after* sign-in: enforce sign-in frequency (re-auth interval), prevent persistent browser sessions, apply app-enforced restrictions in SharePoint/Exchange, route sessions through Defender for Cloud Apps for inline DLP/CASB.',
+    explanation: 'Session controls modify what happens after sign-in: enforce sign-in frequency (re-auth interval), prevent persistent browser sessions, apply app-enforced restrictions in SharePoint/Exchange, route sessions through Defender for Cloud Apps for inline DLP/CASB.',
   },
 {
     id: 'sc500-022',
@@ -5365,7 +5365,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A "named location" of "Trusted IPs (corporate egress)" is used in Conditional Access primarily to:',
     options: ['Block sign-ins from those IPs', 'Reduce sign-in risk score for those IPs and optionally relax controls', 'Skip MFA for sign-ins from those IPs', 'Encrypt traffic from those IPs'],
     correct: 1,
-    explanation: 'Named locations marked as "trusted" lower sign-in risk for Identity Protection and can be referenced in CA conditions. Modern guidance is *not* to skip MFA from trusted IPs, instead, require it everywhere (network is no longer a security boundary in Zero Trust).',
+    explanation: 'Named locations marked as "trusted" lower sign-in risk for Identity Protection and can be referenced in CA conditions. Modern guidance is not to skip MFA from trusted IPs, instead, require it everywhere (network is no longer a security boundary in Zero Trust).',
   },
 {
     id: 'sc500-025',
@@ -5494,10 +5494,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     category: 'Microsoft Cloud & AI Security',
     difficulty: 'intermediate',
     certTags: ['SC-500'],
-    question: 'Which Log Analytics table tier costs the least per GB ingested but allows only basic queries (where, project, extend) and 8-day retention?',
+    question: 'Which Log Analytics table plan has the lowest ingestion cost and lets you query the data across its full total retention period, at the cost of unoptimised query performance?',
     options: [ 'Archive','Analytics', 'Auxiliary', 'Basic logs'],
     correct: 2,
-    explanation: 'Auxiliary (also called Sentinel Basic / Aux logs) is the cheapest ingest tier for high-volume, low-value telemetry like firewall logs. Trade-off: limited KQL operators and short interactive retention; suitable for hunting/forensic search.',
+    explanation: 'The Auxiliary plan is the cheapest ingestion tier, intended for high-volume, low-value telemetry such as firewall and proxy logs. Its distinguishing property against the Basic plan is query reach: Basic tables are interactively queryable for a fixed 30-day window, after which older data needs a search job, while Auxiliary tables can be queried across the full total retention period. The trade-off is that Auxiliary queries are unoptimised and slower, and Auxiliary data is not replicated to a secondary workspace. Source: learn.microsoft.com/azure/azure-monitor/logs/logs-table-plans.',
   },
 {
     id: 'sc500-037',
@@ -5772,7 +5772,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'A sensitivity label of "Confidential" applied to a Word document does which of the following?',
     options: ['Only adds a header banner', 'Deletes the file after 30 days', 'Applies encryption + usage rights + watermark + access policies persistently to the file', 'Disables the user\'s mailbox'],
     correct: 2,
-    explanation: 'Sensitivity labels are *persistent metadata* that travel with the file, applying encryption (Azure RMS), usage rights (read, edit, print, copy), watermarks/headers/footers, and integrating with DLP, SharePoint, and M365 Copilot.',
+    explanation: 'Sensitivity labels are persistent metadata that travel with the file, applying encryption (Azure RMS), usage rights (read, edit, print, copy), watermarks/headers/footers, and integrating with DLP, SharePoint, and M365 Copilot.',
   },
 {
     id: 'sc500-062',
@@ -5849,7 +5849,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'M365 Copilot returns a snippet from a SharePoint document the user shouldn\'t see. Likely root cause and fix?',
     options: ['Copilot is broken', 'Re-train the model', 'SharePoint over-permissioning', 'Apply Conditional Access'],
     correct: 2,
-    explanation: 'Copilot honours item-level permissions; if it surfaces something the user "shouldn\'t" see, the source had effective permissions that *did* allow them. DSPM for AI oversharing assessments + SharePoint Advanced Management + container labels are the remediation path.',
+    explanation: 'Copilot honours item-level permissions; if it surfaces something the user "shouldn\'t" see, the source had effective permissions that did allow them. DSPM for AI oversharing assessments + SharePoint Advanced Management + container labels are the remediation path.',
   },
 {
     id: 'sc500-069',
@@ -5924,7 +5924,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'A trainable classifier in Purview is used when:',
-    options: [ 'You need to detect a *concept* like "source code"','You need to identify regex-defined data like credit cards', 'You want to apply a sensitivity label', 'You want to run an eDiscovery hold'],
+    options: [ 'You need to detect a concept like "source code"','You need to identify regex-defined data like credit cards', 'You want to apply a sensitivity label', 'You want to run an eDiscovery hold'],
     correct: 0,
     explanation: 'Trainable classifiers learn from labeled examples (≥50 positive samples + negative seed) and can detect documents matching the trained concept. Combine with sensitivity labels for auto-classification of unstructured content.',
   },
@@ -5970,7 +5970,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Azure OpenAI default content filter severity threshold is:',
     options: ['Off', 'Medium', 'High', 'Low'],
     correct: 1,
-    explanation: 'The default threshold is *Medium* across all four base categories (hate, sexual, violence, self-harm). Setting categories to *Off* requires Microsoft\'s Limited Access approval; raising to *Low* tightens the filter.',
+    explanation: 'The default threshold is Medium across all four base categories (hate, sexual, violence, self-harm). Setting categories to Off requires Microsoft\'s Limited Access approval; raising to Low tightens the filter.',
   },
 {
     id: 'sc500-080',
@@ -6416,7 +6416,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The Graph Mail.Send permission scoped to a single distribution list',
       'Content filter on output'],
     correct: 2,
-    explanation: 'Defense in depth: Prompt Shields try to block the prompt; output filters try to block PII egress; the API permission boundary is the *last* enforcement and the most reliable. Always pair AI safety with backend least privilege, agents are only as safe as the rights they hold.',
+    explanation: 'Defense in depth: Prompt Shields try to block the prompt; output filters try to block PII egress; the API permission boundary is the last enforcement and the most reliable. Always pair AI safety with backend least privilege, agents are only as safe as the rights they hold.',
   },
 {
     id: 'sc500-118',
@@ -28024,7 +28024,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: ['Modality limit', 'Prompt template', 'Token limit', 'Endpoint access control'],
     correct: 2,
     objectives: ['SecAI:2.2'],
-    explanation: 'Token limits (per user, per minute, per session) restrict volume consumed at the model. Rate limits are similar but count requests, not tokens. Modality limits restrict input type; endpoint access controls restrict *who* can call; prompt templates constrain structure.',
+    explanation: 'Token limits (per user, per minute, per session) restrict volume consumed at the model. Rate limits are similar but count requests, not tokens. Modality limits restrict input type; endpoint access controls restrict who can call; prompt templates constrain structure.',
   },
   {
     id: 'secai-cy001-d2-04',
