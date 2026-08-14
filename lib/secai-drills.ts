@@ -139,7 +139,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Triage an AI incident: pick the right attack category',
     scenario: 'You are an AI security architect. Three anomalies land on your desk in one hour. For each, decide which SecAI+ attack category (CY0-001 obj 2.6) it maps to so you can pull the right compensating control.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 2.6: Given a scenario, identify and mitigate attacks targeting AI systems'],
+    objectives: ['SecAI+ 2.6: Given a scenario, analyze the evidence of an attack and suggest compensating controls for AI systems'],
     steps: [
       {
         screen: 'Incident #1, internal chatbot',
@@ -241,7 +241,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Pick the right AI-enabled security tool',
     scenario: 'You are a SOC lead choosing AI tooling for four workflows. Each maps to one of the SecAI+ obj 3.1 use cases, pick the best fit.',
     difficulty: 'beginner',
-    objectives: ['SecAI+ 3.1: Given a use case, apply appropriate AI-assisted security tools'],
+    objectives: ['SecAI+ 3.1: Given a scenario, use AI-enabled tools to facilitate security tasks'],
     steps: [
       {
         screen: 'Workflow 1',
@@ -292,7 +292,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Identify AI-enhanced attack vectors',
     scenario: 'Your threat-intel team reports three campaigns. Attribute each to the SecAI+ obj 3.2 AI-enhanced attack vector.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 3.2: Explain threats and vulnerabilities in AI-enhanced attack vectors'],
+    objectives: ['SecAI+ 3.2: Explain how AI enables or enhances attack vectors'],
     steps: [
       {
         screen: 'Campaign 1',
@@ -330,7 +330,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Match the Responsible AI principle to the concern',
     scenario: 'Stakeholders raise concerns about an AI loan-approval model. Map each concern to the correct Responsible AI principle from CY0-001 obj 4.2.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 4.2: Explain responsible AI principles and their applications'],
+    objectives: ['SecAI+ 4.2: Explain risks associated with AI'],
     steps: [
       {
         screen: 'Concern 1',
@@ -381,7 +381,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Apply the corporate AI policy correctly',
     scenario: 'Your AI Center of Excellence just approved this policy: (a) public data → any sanctioned AI tool, (b) sensitive data → only private enterprise-hosted models, (c) unsanctioned tools blocked. Route four incoming requests.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 4.3: Given a scenario, apply policies and governance to AI systems'],
+    objectives: ['SecAI+ 4.3: Summarize the impact of compliance on business use and development of AI'],
     steps: [
       {
         screen: 'Request 1',
@@ -432,7 +432,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Design the trust boundaries for an internal RAG assistant',
     scenario: 'Your company is deploying an internal assistant that answers HR and policy questions from a document corpus. Walk the architecture review and place the controls at the right boundaries.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 2.1: Given a scenario, apply secure design principles to AI systems'],
+    objectives: ['SecAI+ 2.1: Given a scenario, use AI threat-modeling resources'],
     steps: [
       {
         screen: 'Architecture review, data flow',
@@ -509,7 +509,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Vet a third-party model before it enters the pipeline',
     scenario: 'A data science team wants to pull a fine-tuned model from a public hub into a production classifier. Run the supply chain review.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 2.2: Explain AI supply chain risks and mitigations'],
+    objectives: ['SecAI+ 2.2: Given a set of requirements, implement security controls for AI systems'],
     steps: [
       {
         screen: 'Intake, artifact format',
@@ -586,7 +586,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Layer guardrails on a customer-facing assistant',
     scenario: 'A support assistant is going live to the public internet. Decide which guardrail belongs at each layer and why one alone is not enough.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 2.3: Given a scenario, implement guardrails for AI systems'],
+    objectives: ['SecAI+ 2.2: Given a set of requirements, implement security controls for AI systems'],
     steps: [
       {
         screen: 'Layer 1, before the model',
@@ -663,7 +663,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Choose the right monitoring signal for each AI failure',
     scenario: 'Your AI platform team is defining what to alert on for a production LLM service. Map each symptom to the signal that surfaces it.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 2.5: Given a scenario, monitor AI systems for security and reliability'],
+    objectives: ['SecAI+ 2.5: Given a scenario, implement monitoring and auditing for AI systems'],
     steps: [
       {
         screen: 'Symptom 1, cost spike',
@@ -740,7 +740,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Validate an AI-generated detection rule before production',
     scenario: 'An analyst used an assistant to convert a threat report into a Sigma rule. Run it through the validation path before it reaches the SIEM.',
     difficulty: 'advanced',
-    objectives: ['SecAI+ 3.3: Given a scenario, use AI to support detection and response engineering'],
+    objectives: ['SecAI+ 3.3: Given a scenario, use AI to automate security tasks'],
     steps: [
       {
         screen: 'Step 1, syntax',
@@ -817,7 +817,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Run an AI risk assessment across three use cases',
     scenario: 'Your organisation is standing up three AI systems. Classify the risk of each and choose the controls that follow.',
     difficulty: 'intermediate',
-    objectives: ['SecAI+ 4.1: Explain AI risk management frameworks and practices'],
+    objectives: ['SecAI+ 4.2: Explain risks associated with AI'],
     steps: [
       {
         screen: 'Use case A, internal FAQ bot',
@@ -894,7 +894,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Trace an AI-enhanced attack from recon to impact',
     scenario: 'An adversary uses generative AI at several stages of an intrusion. Identify what AI changed at each step.',
     difficulty: 'advanced',
-    objectives: ['SecAI+ 3.2: Explain threats and vulnerabilities in AI-enhanced attack vectors'],
+    objectives: ['SecAI+ 3.2: Explain how AI enables or enhances attack vectors'],
     steps: [
       {
         screen: 'Stage 1, reconnaissance',
@@ -966,7 +966,7 @@ export const SECAI_DRILLS: Drill[] = [
     title: 'Place the risk at the right stage of the model lifecycle',
     scenario: 'A new detection model moves from data collection through to production. Identify what can go wrong at each stage.',
     difficulty: 'beginner',
-    objectives: ['SecAI+ 1.2: Explain the importance of data security in relation to AI'],
+    objectives: ['SecAI+ 1.3: Explain the importance of security throughout the life cycle of AI'],
     steps: [
       {
         screen: 'Stage 1, data collection',
