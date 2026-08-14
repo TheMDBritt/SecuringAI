@@ -817,6 +817,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 1: Detection',
         weight: '16%',
         categories: [
+          'AWS Detection',
           'AI Threat Detection',
           'AI in Security Ops',
           'Threat Hunting',
@@ -827,6 +828,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 2: Incident Response',
         weight: '14%',
         categories: [
+          'AWS Incident Response',
           'AI Incident Response',
           'Information Security Incident Management',
           'Incident Response',
@@ -837,6 +839,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 3: Infrastructure Security',
         weight: '18%',
         categories: [
+          'AWS Infrastructure Security',
           'AI Security Architecture',
           'MLOps Security',
           'AI Security Engineering',
@@ -848,6 +851,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 4: Identity and Access Management',
         weight: '20%',
         categories: [
+          'AWS Identity and Access Management',
           'AI Security Controls',
           'AI Application Security',
           'Identity Management',
@@ -858,6 +862,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 5: Data Protection',
         weight: '18%',
         categories: [
+          'AWS Data Protection',
           'AI Privacy Controls',
           'AI/ML Privacy',
           'AI Privacy Attacks',
@@ -870,6 +875,7 @@ export const EXAM_CERTS: ExamCert[] = [
         name: 'Domain 6: Security Foundations and Governance',
         weight: '14%',
         categories: [
+          'AWS Security Governance',
           'AI Governance',
           'AI Governance & Risk',
           'Information Security Governance',
