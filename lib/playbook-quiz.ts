@@ -7105,7 +7105,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Testing the API rate limit enforcement',
       'Probing the model\'s knowledge of its training cutoff date'],
     correct: 0,
-    explanation: 'Many-shot jailbreaking exploits the model\'s in-context learning by front-loading the context with many examples of the "compliant" behaviour the attacker wants. Models without specific many-shot jailbreak defences often become increasingly likely to comply as the number of few-shot examples grows, effectively overriding safety training through demonstration. A single-shot test (option A) only tests basic safety training, not context-volume exploitation. Hardened models maintain refusals regardless of demonstration count.',
+    explanation: 'Many-shot jailbreaking exploits the model\'s in-context learning by front-loading the context with many examples of the "compliant" behaviour the attacker wants. Models without specific many-shot jailbreak defences often become increasingly likely to comply as the number of few-shot examples grows, effectively overriding safety training through demonstration. A single-shot test only tests basic safety training, not context-volume exploitation. Hardened models maintain refusals regardless of demonstration count.',
   },
 {
     id: 'cais-027',
@@ -20221,7 +20221,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Content filter configurations can be deployed at the deployment level, not the user level',
       'Azure AI Content Safety\'s role-based filter bypass setting in the API request header'],
     correct: 2,
-    explanation: 'Azure OpenAI content filter architecture: content filters are applied at the deployment (not user) level. Pattern for tier-specific filtering: (1) Create standard deployment (gpt-4o-standard) with default content filters, serves general users; (2) Create moderation deployment (gpt-4o-moderation) with approved modified filter configuration, serves content review team; (3) Application routing: authenticate user, check role membership (content_reviewer group in Entra ID), route to appropriate deployment based on role; (4) Audit logging: all moderation deployment queries logged with user identity for compliance. Important: modified content filter configurations require Microsoft approval (submit via the "limited access" form); you cannot unilaterally disable filtering without review. Prompt-based "elevated access" claims (option D) are not enforced by the filtering infrastructure.',
+    explanation: 'Azure OpenAI content filter architecture: content filters are applied at the deployment (not user) level. Pattern for tier-specific filtering: (1) Create standard deployment (gpt-4o-standard) with default content filters, serves general users; (2) Create moderation deployment (gpt-4o-moderation) with approved modified filter configuration, serves content review team; (3) Application routing: authenticate user, check role membership (content_reviewer group in Entra ID), route to appropriate deployment based on role; (4) Audit logging: all moderation deployment queries logged with user identity for compliance. Important: modified content filter configurations require Microsoft approval (submit via the "limited access" form); you cannot unilaterally disable filtering without review. Prompt-based "elevated access" claims are not enforced by the filtering infrastructure.',
   },
   {
     id: 'azure-ai-002-b',
@@ -22842,7 +22842,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     options: [
       'Block the message and log a security incident',
       'Allow the message to proceed',
-      'Route the message to human review before',
+      'Route the message to a human reviewer before any model call',
       'Pass the message to the LLM but attach a content warning flag to the response'],
     correct: 1,
     explanation: 'Azure AI Content Safety severity scores range 0-6. The organization has configured the blocking threshold at ≥4 for hate. A severity of 2 is below this threshold, so the correct system behavior is to allow the message to proceed, the policy explicitly permits content below the threshold. This demonstrates that content safety thresholds are configurable controls that must match the organization\'s risk tolerance, not binary on/off filters. SC-500 Domain 3.',
@@ -23405,7 +23405,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'By using negative logit_bias values to force the model to reveal its system prompt character by character',
       'By setting logit_bias on the system prompt tokens to override administrator instructions'],
     correct: 1,
-    explanation: 'Logit bias manipulation is an API-level attack: by assigning large negative bias values (e.g., -100) to refusal-related tokens ("cannot", "will not", "I\'m sorry", "as an AI"), the attacker makes those tokens effectively impossible to generate. The model, unable to express refusal, must complete the prompt with higher-probability alternative continuations, often the policy-violating content requested. This is documented as an attack against OpenAI API deployments. Not all deployed APIs expose logit_bias, but when available it is a direct safety bypass. Option B mischaracterizes how bias works. Options C and D are not valid attack vectors via logit_bias.',
+    explanation: 'Logit bias manipulation is an API-level attack: by assigning large negative bias values (e.g., -100) to refusal-related tokens ("cannot", "will not", "I\'m sorry", "as an AI"), the attacker makes those tokens effectively impossible to generate. The model, unable to express refusal, must complete the prompt with higher-probability alternative continuations, often the policy-violating content requested. This is documented as an attack against OpenAI API deployments. Not all deployed APIs expose logit_bias, but when available it is a direct safety bypass. The remaining options either mischaracterise how logit bias works or describe vectors that logit_bias cannot deliver.',
   },
   {
     id: 'goaa-adv-015',
@@ -23950,7 +23950,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Fine-tuning data is automatically deleted from Microsoft systems within 24 hours after fine-tuning completes',
       'Fine-tuning data is used only for the customer\'s specific fine-tuned model and is not used to train Microsoft\'s base models or shared with other customers'],
     correct: 3,
-    explanation: 'Azure OpenAI\'s data privacy commitment (per Microsoft Product Terms, updated 2024): customer data submitted for fine-tuning is NOT used to train Microsoft\'s foundational models or shared with other customers. The fine-tuned model and training data are used only for the specific customer\'s deployment. This is a key enterprise differentiator from consumer OpenAI fine-tuning. Microsoft does retain the data on its systems during the fine-tuning lifecycle (not deleted in 24h as in C). Fine-tuning requires the data to be processed on Microsoft compute (not kept entirely in customer storage as in C, training data is uploaded to the Azure OpenAI service). Option A (cross-customer training) contradicts Azure OpenAI\'s enterprise privacy commitments.',
+    explanation: 'Azure OpenAI\'s data privacy commitment (per Microsoft Product Terms, updated 2024): customer data submitted for fine-tuning is NOT used to train Microsoft\'s foundational models or shared with other customers. The fine-tuned model and training data are used only for the specific customer\'s deployment. This is a key enterprise differentiator from consumer OpenAI fine-tuning. Microsoft does retain the data on its systems during the fine-tuning lifecycle rather than deleting it within 24 hours. Fine-tuning requires the data to be processed on Microsoft compute rather than keeping it entirely in customer storage. The claim that fine-tuning data improves base models across all customers contradicts that commitment outright.',
   },
   {
     id: 'az103-031',
@@ -25525,7 +25525,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'During an AI system security audit, which artifact provides the most direct evidence that an organization\'s AI model meets its stated safety requirements?',
     options: [
       'The number of parameters in the model',
-      'Documented red team evaluation results including',
+      'Documented red team evaluation results with the residual findings',
       'The vendor\'s marketing materials describing the model\'s safety features',
       'The model\'s benchmark scores on MMLU and HumanEval accuracy tests'],
     correct: 1,
@@ -25991,7 +25991,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Only assets managed by the IT department',
       'Only assets that are connected to the internet',
       'Only the API endpoints for the LLM service',
-      'The full AI supply chain including'],
+      'The full AI supply chain, from training data through to deployed agents'],
     correct: 3,
     explanation: 'AI attack surface map (GIAC-GASAE): beyond traditional application assets, AI systems introduce: (1) Model artifacts, base model files, fine-tuned checkpoints (supply chain); (2) Prompts, system prompts, few-shot examples (confidentiality, injection risk); (3) Training data, fine-tuning datasets, RLHF preference data; (4) RAG components, document stores, embedding models, vector databases; (5) Agentic components, tool integrations, credentials, action authorization; (6) Feedback loops, human labeling pipelines, RLHF reward models; (7) Evaluation environments, red team access, benchmark datasets; (8) Observability, logs containing prompts/responses (privacy). Source: GIAC-GASAE assessment methodology, GIAC-GOAA threat modeling.',
   },
