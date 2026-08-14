@@ -1203,7 +1203,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service provides managed access to OpenAI\'s GPT models within the Azure environment with enterprise compliance features?',
     options: [ 'Azure OpenAI Service', 'Azure AI Foundry','Azure Machine Learning', 'Azure Cognitive Search'],
     correct: 0,
@@ -1214,7 +1214,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What does Azure AI Content Safety\'s "Prompt Shields" feature specifically detect?',
     options: [
       'Copyrighted content in model outputs',
@@ -2437,7 +2437,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What is Azure AI Foundry (formerly Azure AI Studio)?',
     options: [
       'Azure\'s AutoML service for tabular data',
@@ -2452,7 +2452,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Google Vertex AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What is the purpose of Vertex AI Pipelines?',
     options: [
       'To monitor data drift in production models',
@@ -2470,10 +2470,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SCS-C03'],
     question: 'Amazon Bedrock Guardrails allows developers to configure which of the following?',
     options: [
-      'GPU resource allocation for model inference',
-      'Content filters, denied topics, and PII redaction for model inputs and outputs',
-      'Custom ML model training parameters',
-      'VPC network routing for Bedrock API calls'],
+      'Allocation of GPU capacity for model inference workloads',
+      'Content filters, denied topics and PII redaction on inputs and outputs',
+      'Selection of custom training hyperparameters for a fine-tune',
+      'Network routing configuration for calls to the Bedrock API'
+    ],
     correct: 1,
     explanation: 'Bedrock Guardrails lets you define content filters (hate, violence, etc.), blocked topics, grounding checks, and PII redaction policies. These apply to both user inputs and model outputs, enforcing responsible AI at the API layer.',
   },
@@ -2482,7 +2483,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure OpenAI Service',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure OpenAI Service differs from using OpenAI\'s API directly because Azure provides:',
     options: [
       'Unlimited API calls with no rate limits',
@@ -2497,7 +2498,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Google Vertex AI Feature Store',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What problem does Vertex AI Feature Store solve?',
     options: [
       'Monitoring model accuracy after deployment',
@@ -2515,10 +2516,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'SCS-C03'],
     question: 'Amazon SageMaker Model Monitor detects which of the following in production ML models?',
     options: [
-      'Unauthorized API access to model endpoints',
-      'Data quality issues, data drift, model drift, and bias drift over time',
-      'Cost overruns in training jobs',
-      'Security vulnerabilities in model code'],
+      'Unauthorized API access reaching the model endpoints',
+      'Data quality issues, data drift, model drift and bias drift',
+      'Cost overruns incurred by long-running training jobs',
+      'Security vulnerabilities present in the model serving code'
+    ],
     correct: 1,
     explanation: 'SageMaker Model Monitor continuously evaluates production endpoints for: data quality (schema violations), data drift (input distribution shift), model quality (accuracy degradation), and bias drift (fairness metric changes).',
   },
@@ -2527,7 +2529,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Search',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'In a RAG architecture on Azure, what role does Azure AI Search play?',
     options: [
       'It handles authentication and authorization for the RAG pipeline',
@@ -2562,10 +2564,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'SCS-C03'],
     question: 'What is the primary advantage of accessing Gemini through Vertex AI instead of directly via Google AI Studio for enterprise use?',
     options: [
-      'Vertex AI offers enterprise-grade security, IAM, VPC controls, audit logging, and no data training on your prompts',
-      'Vertex AI provides free unlimited access to Gemini',
-      'Vertex AI allows higher context window sizes than AI Studio',
-      'Vertex AI includes automatic fine-tuning of Gemini on company data'],
+      'It offers enterprise security, IAM, VPC controls and audit logging',
+      'It provides free unlimited access to the Gemini model family',
+      'It allows larger context windows than the consumer AI Studio',
+      'It automatically fine-tunes Gemini on your company data'
+    ],
     correct: 0,
     explanation: 'Vertex AI provides enterprise controls for Gemini: Google Cloud IAM, VPC Service Controls, CMEK, audit logs, and a commitment that prompts/responses are not used for model training. These are critical for regulated industries.',
   },
@@ -2574,7 +2577,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service provides pre-built AI capabilities for vision, speech, language, and decision tasks without requiring ML expertise?',
     options: [
       'Azure Databricks',
@@ -2619,7 +2622,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure Machine Learning designer is best described as:',
     options: [
       'A drag-and-drop visual interface for building ML pipelines',
@@ -2652,10 +2655,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Azure-AI901', 'SCS-C03'],
     question: 'What does the Transparency principle in Microsoft Responsible AI require?',
     options: [
-      'AI systems must achieve 100% accuracy',
-      'AI code must be open-source',
-      'People must be able to understand how AI systems make decisions',
-      'AI systems must be free of charge to use'],
+      'AI systems are required to achieve perfect accuracy',
+      'All AI source code must be released as open source',
+      'People must be able to understand how decisions are made',
+      'AI systems must be provided free of charge to end users'
+    ],
     correct: 2,
     explanation: 'Transparency means AI systems should be understandable, people should know when they are interacting with AI, how decisions are made, and what data was used. This supports trust and enables accountability.',
   },
@@ -2664,7 +2668,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Computer Vision',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure AI service would you use to extract text from images and scanned documents?',
     options: [
       'Azure Face API',
@@ -2679,7 +2683,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Computer Vision',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What is the purpose of Azure Custom Vision?',
     options: [
       'To generate images from text prompts',
@@ -2694,7 +2698,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Language Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure AI service can analyze text to determine whether the sentiment is positive, negative, or neutral?',
     options: [
       'Azure Language Service',
@@ -2709,7 +2713,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Language Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure CLU (Conversational Language Understanding) is used to:',
     options: [
       'Search documents for specific keywords',
@@ -2724,7 +2728,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What is Azure OpenAI Service?',
     options: [
       'Microsoft-managed access to OpenAI models',
@@ -2739,7 +2743,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'In Azure AI Foundry, what is a "prompt flow"?',
     options: [
       'A security scanner that checks prompts for malicious content',
@@ -2754,7 +2758,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Generative AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What is Retrieval Augmented Generation (RAG) in the context of Azure AI?',
     options: [
       'A type of content filter that blocks harmful outputs',
@@ -2769,7 +2773,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Safety',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Content Safety is designed to:',
     options: [
       'Prevent unauthorized access to Azure subscriptions',
@@ -2784,7 +2788,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Safety',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure Responsible AI tool helps you identify disparities in model performance across different demographic groups?',
     options: [
       'Responsible AI Dashboard',
@@ -2799,7 +2803,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure ML Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What is the purpose of Azure Machine Learning automated ML (AutoML)?',
     options: [
       'Automatically deploy models to production when training completes',
@@ -2814,7 +2818,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure ML Fundamentals',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'In Azure Machine Learning, what is a "compute cluster" used for?',
     options: [
       'Storing trained model files',
@@ -2844,7 +2848,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service enables you to build intelligent bots that can engage in natural conversation across multiple channels (Teams, web, SMS)?',
     options: [
       'Azure Event Grid',
@@ -2859,7 +2863,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What does the Azure Speech Service support? (Select the MOST comprehensive answer)',
     options: [
       'Only speech-to-text transcription',
@@ -2875,7 +2879,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'When deploying an Azure AI Services resource, what is the recommended approach to authenticate API calls securely in production?',
     options: [
       'Use Azure Managed Identity to obtain tokens',
@@ -2890,7 +2894,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You are building a document processing solution. Which Azure AI service extracts structured fields (invoice number, total, line items) from PDF invoices?',
     options: [
       'Azure AI Document Intelligence',
@@ -2905,7 +2909,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure AI Search, what is an "indexer"?',
     options: [
       'An automated data pipeline that pulls data from sources',
@@ -2920,7 +2924,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What is the purpose of a "skillset" in Azure AI Search?',
     options: [
       'Set up role-based access to search results',
@@ -2935,7 +2939,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure Language Service feature lets you build a custom question-answering knowledge base from FAQ documents and URLs?',
     options: [
       'Conversational Language Understanding',
@@ -2950,7 +2954,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'When using Azure OpenAI, what is the purpose of a "system message" in the chat completions API?',
     options: [
       'Limits the maximum number of tokens in the response',
@@ -2965,7 +2969,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What does "temperature" control in Azure OpenAI completion requests?',
     options: [
       'The speed of the API response',
@@ -2980,7 +2984,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You need to prevent Azure OpenAI from generating harmful content in your application. Which feature handles this at the API level?',
     options: [
       'Network Security Groups',
@@ -2995,7 +2999,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What is "semantic ranking" in Azure AI Search?',
     options: [
       'Re-ranking keyword search results using a language model for contextual relevance',
@@ -3010,7 +3014,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure Machine Learning, what is the difference between a "real-time endpoint" and a "batch endpoint"?',
     options: [
       'Real-time endpoints only support classification',
@@ -3025,7 +3029,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure service would you use to build a vector search solution for semantic similarity search over document embeddings?',
     options: [
       'Azure Event Hub',
@@ -3040,7 +3044,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'When implementing RAG with Azure AI Search and Azure OpenAI, what is the correct order of operations?',
     options: [
       'Generate answer → retrieve documents → re-rank',
@@ -3055,7 +3059,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What is the role of Azure AI Language "Orchestration workflow" feature?',
     options: [
       'Monitors token usage across all language service deployments',
@@ -3070,7 +3074,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'When deploying Azure AI Services in a regulated industry, which feature ensures your data never leaves a specific geographic region?',
     options: [
       'Regional deployment with no-internet container options',
@@ -3085,7 +3089,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You notice your deployed Azure ML model performance has degraded. Which Azure ML capability detects feature distribution changes over time?',
     options: [
       'Azure Application Insights',
@@ -3100,7 +3104,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'In Azure AI Foundry, what is an "evaluation" used for?',
     options: [
       'Security scanning of prompt templates',
@@ -3115,7 +3119,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'What is "function calling" in Azure OpenAI?',
     options: [
       'A way to call Azure Functions from within a Python script',
@@ -3130,7 +3134,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You need to fine-tune an Azure OpenAI model on domain-specific data. What is a key consideration for the training dataset?',
     options: [
       'The dataset must be in PDF format',
@@ -3145,7 +3149,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure AI service would you integrate to automatically detect and redact PII (names, SSNs, phone numbers) from text before storing it?',
     options: [
       'Azure AI Language',
@@ -3160,7 +3164,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Engineer',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'In an Azure AI Search hybrid search architecture, what does "hybrid search" combine?',
     options: [
       'Real-time and batch indexing pipelines',
@@ -3855,10 +3859,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103', 'SCS-C03'],
     question: 'What distinguishes ELT from traditional ETL in modern cloud data architectures?',
     options: [
-      'ELT is only used for unstructured data',
-      'ELT processes data in real-time',
-      'ELT loads raw data first then transforms in the warehouse',
-      'ELT requires no data storage'],
+      'It is used only for unstructured data sources',
+      'It always processes incoming data in real time',
+      'It loads raw data first and transforms in the warehouse',
+      'It requires no intermediate data storage at all'
+    ],
     correct: 2,
     explanation: 'ETL transforms data before loading, common with on-premise data warehouses needing clean schemas. ELT loads raw data into a cloud data warehouse (BigQuery, Snowflake, Redshift) first, then transforms using SQL inside the warehouse. ELT is now dominant because cloud warehouses scale cheaply and SQL transformations are fast.',
   },
@@ -3947,10 +3952,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103', 'SCS-C03'],
     question: 'Population Stability Index (PSI) is used in ML monitoring to detect:',
     options: [
-      'Memory leaks in the model serving infrastructure',
-      'GPU utilization spikes during batch inference',
-      'API latency degradation in the model serving endpoint',
-      'Changes in the distribution of input features between training and production'],
+      'Memory leaks appearing in the serving infrastructure',
+      'Processor utilisation spikes during batch inference',
+      'Latency degradation measured at the serving endpoint',
+      'Change in the distribution of input features after training'
+    ],
     correct: 3,
     explanation: 'PSI measures the shift in a feature\'s distribution between training (reference) and production (current) data. PSI < 0.1 = stable; 0.1-0.2 = slight shift; > 0.2 = significant shift requiring investigation and likely model retraining. It is widely used in financial services for model risk management.',
   },
@@ -4302,10 +4308,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103', 'SCS-C03'],
     question: 'What is the key difference between ETL and ELT data pipeline patterns?',
     options: [
-      'ETL requires cloud infrastructure',
-      'ETL is for batch processing',
-      'ETL is for structured data',
-      'ETL transforms data before loading to the destination'],
+      'It requires cloud infrastructure to run at all',
+      'It can only be used for batch processing workloads',
+      'It applies exclusively to structured tabular data',
+      'It transforms data before loading it to the destination'
+    ],
     correct: 3,
     explanation: 'ETL (Extract-Transform-Load) applies transformations before loading, suited for strict schema requirements. ELT (Extract-Load-Transform) loads raw data into a cloud warehouse first, then transforms using the warehouse\'s compute (e.g., BigQuery, Snowflake). ELT scales better for large datasets.',
   },
@@ -4332,10 +4339,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'Azure-AI103', 'SCS-C03'],
     question: 'The primary purpose of a Feature Store in MLOps is:',
     options: [
-      'Cache LLM responses to reduce API costs',
-      'Provide a single, consistent source of features for both training and serving to prevent training-serving skew',
-      'Store raw unprocessed data before feature engineering',
-      'Store trained model weights for version control'],
+      'Cache model responses in order to reduce API spend',
+      'Serve one consistent feature source to training and serving',
+      'Hold raw unprocessed data before feature engineering begins',
+      'Store trained model weights for version control purposes'
+    ],
     correct: 1,
     explanation: 'A Feature Store (Feast, Tecton, Vertex AI Feature Store) centralizes feature definitions and serves them consistently to both training pipelines and online inference. This eliminates training-serving skew by ensuring both paths use identical feature computation logic.',
   },
@@ -4347,10 +4355,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'Google-MLE', 'SCS-C03'],
     question: 'DVC (Data Version Control) is used in ML projects to:',
     options: [
-      'Monitor data drift in production feature distributions',
-      'Deploy models as REST API endpoints with versioned URLs',
-      'Visualize training metrics and compare experiment runs',
-      'Version large datasets and ML pipeline stages using Git-like semantics, storing data in remote storage'],
+      'Monitor drift in production feature distributions over time',
+      'Deploy models as REST endpoints with versioned URLs',
+      'Visualise training metrics and compare experiment runs',
+      'Version large datasets and pipeline stages with Git-like semantics'
+    ],
     correct: 3,
     explanation: 'DVC extends Git for ML: it tracks large data files and model artifacts in remote storage (S3, GCS, Azure) while storing lightweight pointer files in Git. It also versions ML pipelines as DAGs, enabling reproducible experiments with dvc repro and data/model sharing via dvc push/pull.',
   },
@@ -5165,7 +5174,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You want to block legacy authentication protocols (POP/IMAP/SMTP basic auth). What is the recommended approach?',
-    options: [ 'Configure transport rules in Exchange Online','Disable the user accounts that use legacy auth', 'Purchase Defender for Office 365 P2', 'Create a Conditional Access policy that targets "Other clients" client app condition and grants Block'],
+    options: [
+      'Configure Exchange Online transport rules to reject those protocols',
+      'Disable every user account currently authenticating with legacy protocols',
+      'Purchase Defender for Office 365 Plan 2 and enable its mailbox policies',
+      'Create a Conditional Access policy targeting Other clients and grant Block'
+    ],
     correct: 3,
     explanation: 'A CA policy with the "Other clients" client app condition (covering legacy protocols) and a Block grant is Microsoft\'s recommended way to eliminate legacy auth, which lacks MFA support and is heavily abused for password spray.',
   },
@@ -5198,7 +5212,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'PIM Access Reviews are best used to:',
-    options: [ 'Audit administrator sign-ins in real time', 'Periodically recertify role assignments and remove unused privileges','Enforce password rotation for service accounts', 'Decrypt tokens for forensic analysis'],
+    options: [
+      'Audit administrator sign-in activity in real time across the tenant',
+      'Periodically recertify role assignments and remove unused privileges',
+      'Enforce scheduled password rotation for privileged service accounts',
+      'Decrypt issued access tokens so they can be analysed forensically'
+    ],
     correct: 1,
     explanation: 'Access Reviews are recurring recertification campaigns that ask reviewers (manager, peer group, or self) whether each user still needs a role/group/app assignment. Stale assignments are auto-removed if not renewed.',
   },
@@ -5220,7 +5239,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'A guest (B2B) user from a partner tenant should only access a single SharePoint site. Best practice?',
-    options: [ 'Create a permanent service account for them','Make them a member of the resource tenant', 'Use Entra Cross-Tenant Access settings + restrict the guest with sensitivity labels and SharePoint sharing policies', 'Send them the file via unencrypted email'],
+    options: [
+      'Create a permanent member account for them in the resource tenant',
+      'Convert the guest into a licensed member of the resource tenant',
+      'Use Cross-Tenant Access settings with sensitivity labels and sharing policies',
+      'Send the required files by email so no tenant access is needed at all'
+    ],
     correct: 2,
     explanation: 'Entra B2B guests honour Cross-Tenant Access policies (which org/groups can collaborate) and sensitivity labels / SharePoint sharing policies. Combine with Conditional Access targeting "All guest and external users" for MFA and device controls.',
   },
@@ -5231,7 +5255,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'You apply Conditional Access targeting "All cloud apps". A new app registration breaks because it does not support modern auth. What is the cleanest fix?',
-    options: [ 'Exclude the app from the policy and migrate it to modern auth', 'Switch all users to password-only auth','Disable the CA policy globally', 'Disable MFA for the entire tenant'],
+    options: [
+      'Exclude the app from the policy and migrate it to modern auth',
+      'Switch all users to password-only authentication for compatibility',
+      'Disable the Conditional Access policy across the whole tenant',
+      'Turn off multi-factor authentication for every user in the tenant'
+    ],
     correct: 0,
     explanation: 'Exclude the specific app from the policy (CA → assignments → cloud apps → exclude) as a temporary measure, then plan migration to modern auth. Never weaken policies tenant-wide for a single app.',
   },
@@ -5242,7 +5271,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'Which feature requires Entra Workload Identities Premium?',
-    options: [ 'Listing app registrations', 'Assigning a managed identity','Creating service principals', 'Conditional Access for workload identities + workload identity risk'],
+    options: [
+      'Listing the app registrations that exist in the tenant',
+      'Assigning a managed identity to an Azure resource',
+      'Creating service principals for automation workloads',
+      'Conditional Access for workload identities and workload identity risk'
+    ],
     correct: 3,
     explanation: 'Workload Identities Premium adds Conditional Access for service principals, workload identity risk detections (e.g. leaked credentials, suspicious sign-in), and access reviews for workload identities. Free tier covers basic SP creation and management.',
   },
@@ -5253,7 +5287,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'A user-risk policy in Conditional Access set to "High" risk + "Block" will:',
-    options: [ 'Quarantine all the user\'s mailboxes', 'Block the sign-in until an admin or self-service password reset clears the risk', 'Email the user a warning','Block all sign-ins for that user permanently'],
+    options: [
+      'Quarantine every mailbox belonging to that user immediately',
+      'Block the sign-in until an admin or self-service reset clears the risk',
+      'Send the user a warning email without blocking the sign-in',
+      'Block all sign-ins for that user permanently with no remediation path'
+    ],
     correct: 1,
     explanation: 'A user-risk Block policy prevents new sign-ins while the user is at the configured risk level. Risk is remediated (and the user unblocked) by admin reset or by the user completing a self-service password reset (SSPR).',
   },
@@ -5264,7 +5303,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You want to require approval before a user can elevate to the Global Administrator role. Where do you configure this?',
-    options: [ 'Conditional Access → Grant controls', 'Defender for Cloud → Workflow automation', 'PIM role settings → Activation → Require approval to activate','Azure Policy'],
+    options: [
+      'Conditional Access grant controls on the directory role',
+      'Defender for Cloud workflow automation on the subscription',
+      'PIM role settings, activation, require approval to activate',
+      'An Azure Policy assignment scoped to the management group'
+    ],
     correct: 2,
     explanation: 'PIM role settings let you enforce approval (with named approvers), MFA, justification, ticket number, and max activation duration on a per-role basis. Approval is mandatory best practice for Global Admin and other privileged roles.',
   },
@@ -5297,7 +5341,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Which Entra role can manage Conditional Access policies but cannot reset other admins\' passwords?',
-    options: ['Global Administrator', 'Helpdesk Administrator', 'Security Administrator', 'Conditional Access Administrator'],
+    options: [
+      'Global Administrator with full directory control',
+      'Helpdesk Administrator with password reset rights',
+      'Security Administrator with broad security scope',
+      'Conditional Access Administrator'
+    ],
     correct: 3,
     explanation: 'Conditional Access Administrator is a least-privilege role scoped to viewing and modifying CA policies, named locations, and authentication strengths. Security Admin includes CA and broader security ops; Global Admin is too broad.',
   },
@@ -5341,7 +5390,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'A "leaked credentials" risk detection in Entra Identity Protection means:',
-    options: [ 'The user signed in from an unfamiliar device', 'Microsoft\'s threat intelligence found the user\'s username + password in a public and dark web breach dump','The user mistyped their password three times', 'The user used the same password as another account in the tenant'],
+    options: [
+      'The user signed in from a device that is new to the tenant',
+      'Microsoft threat intelligence found the credentials in a breach dump',
+      'The user mistyped their password three times in quick succession',
+      'The user reused the same password as another account in the tenant'
+    ],
     correct: 1,
     explanation: 'Microsoft monitors public and dark web sources for leaked credentials. When a tenant user\'s username + password appears in a dump, Identity Protection elevates user risk, recommend SSPR or admin reset.',
   },
@@ -5363,7 +5417,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'A "named location" of "Trusted IPs (corporate egress)" is used in Conditional Access primarily to:',
-    options: ['Block sign-ins from those IPs', 'Reduce sign-in risk score for those IPs and optionally relax controls', 'Skip MFA for sign-ins from those IPs', 'Encrypt traffic from those IPs'],
+    options: [
+      'Block all sign-ins that originate from those addresses outright',
+      'Reduce sign-in risk for those addresses and optionally relax controls',
+      'Skip multi-factor authentication for sign-ins from those addresses',
+      'Encrypt traffic originating from those addresses in transit'
+    ],
     correct: 1,
     explanation: 'Named locations marked as "trusted" lower sign-in risk for Identity Protection and can be referenced in CA conditions. Modern guidance is not to skip MFA from trusted IPs, instead, require it everywhere (network is no longer a security boundary in Zero Trust).',
   },
@@ -5374,7 +5433,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Cross-tenant synchronization (CTS) in Entra is used for:',
-    options: [ 'Backing up the directory', 'Provisioning users from one tenant into another tenant as B2B members automatically', 'Federating SAML claims','Replicating Conditional Access policies between tenants'],
+    options: [
+      'Backing up directory objects to a secondary tenant',
+      'Provisioning users from one tenant into another as B2B members',
+      'Federating SAML claims between two identity providers',
+      'Replicating Conditional Access policies between tenants'
+    ],
     correct: 1,
     explanation: 'CTS automates B2B guest creation across tenants in the same organization (e.g. parent + acquired subsidiary), eliminating manual invitation. Combine with Cross-Tenant Access settings to govern trust.',
   },
@@ -5396,7 +5460,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Which attack scenarios does Defender XDR Automatic Attack Disruption currently support?',
-    options: [ 'Human-operated ransomware, AiTM phishing', 'Only insider threat','All malware infections', 'Only DDoS'],
+    options: [
+      'Human-operated ransomware, AiTM phishing and business email compromise',
+      'Insider threat scenarios detected by Purview only',
+      'Every malware infection Defender for Endpoint observes',
+      'Volumetric denial of service attacks against the tenant'
+    ],
     correct: 0,
     explanation: 'Automatic Attack Disruption activates only on high-confidence detections of specific attack categories, currently human-operated ransomware (HumOR), adversary-in-the-middle phishing, and business email compromise. Containment actions (disable user, contain device, suspend OAuth app) run automatically.',
   },
@@ -5462,7 +5531,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Sentinel\'s Fusion rule type:',
-    options: [ 'Triggers Logic Apps playbooks directly', 'Uses built-in ML to correlate multiple low-fidelity alerts into multi-stage attack incidents', 'Imports KQL queries from MITRE','Lets analysts edit detection logic in YAML'],
+    options: [
+      'Triggers Logic Apps playbooks directly without an analytics rule',
+      'Uses built-in ML to correlate low-fidelity alerts into attack incidents',
+      'Imports prewritten KQL detection queries from the MITRE repository',
+      'Lets analysts edit its detection logic directly in YAML'
+    ],
     correct: 1,
     explanation: 'Fusion is a closed-logic, ML-driven engine that combines alerts from Defender, Entra Identity Protection, MCAS, and others into high-fidelity multi-stage attack scenarios (e.g. credential theft → lateral movement → exfil). Analysts cannot edit Fusion rule logic.',
   },
@@ -5473,7 +5547,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'A Logic Apps playbook in Sentinel should authenticate to Microsoft APIs using:',
-    options: [ 'A managed identity assigned least-privilege RBAC', 'A user account with Global Admin','A long-lived shared key', 'An anonymous connection'],
+    options: [
+      'A managed identity assigned least-privilege RBAC',
+      'A user account holding the Global Administrator role',
+      'A long-lived shared key stored in the connection',
+      'An anonymous connection with no authentication'
+    ],
     correct: 0,
     explanation: 'Managed identity is the recommended Logic Apps authentication for Sentinel playbooks, no secrets to rotate, scoped via Azure RBAC, and auditable. Avoid stored connections / shared keys.',
   },
@@ -5506,7 +5585,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You want to reduce ingest cost by dropping noisy fields from a custom log before they hit Log Analytics. Which feature do you use?',
-    options: [ 'Data Collection Rule','Workbook', 'Watchlist', 'Hunting query'],
+    options: [
+      'A Data Collection Rule transformation',
+      'A workbook visualising the log volume',
+      'A watchlist filtering the incoming rows',
+      'A hunting query run before ingestion'
+    ],
     correct: 0,
     explanation: 'DCR transformations apply a KQL "source | project ..." or "extend / where" pipeline at ingest, dropping rows or columns before they\'re billed. The cleanest cost-reduction lever short of not collecting the data.',
   },
@@ -5517,7 +5601,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Defender for Identity (MDI) primarily protects:',
-    options: ['Mobile devices', 'On-premises Active Directory and hybrid identity infrastructure', 'Container registries', 'Storage accounts'],
+    options: [
+      'Mobile devices that are enrolled through Microsoft Intune',
+      'On-premises Active Directory and hybrid identity infrastructure',
+      'Container registries and the images stored inside them',
+      'Storage accounts that hold unstructured customer data'
+    ],
     correct: 1,
     explanation: 'MDI deploys sensors on Domain Controllers and AD FS/CS servers to detect identity attacks (kerberoasting, DCSync, golden ticket, lateral movement), bridging on-prem AD telemetry into Defender XDR.',
   },
@@ -5594,7 +5683,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A Custom Detection rule in Defender XDR is built from:',
-    options: ['A natural-language prompt', 'A sensitivity label', 'A saved KQL Advanced Hunting query that returns specific entity columns', 'A Conditional Access policy'],
+    options: [
+      'A natural-language prompt handed to Security Copilot',
+      'A sensitivity label published from Microsoft Purview',
+      'A saved KQL hunting query returning specific entity columns',
+      'A Conditional Access policy scoped to the affected users'
+    ],
     correct: 2,
     explanation: 'Custom Detections wrap an Advanced Hunting KQL query and run it on a schedule (continuous, 1h, 3h, 12h, 24h). Results auto-create alerts, can include impacted entities (Device, User, Mailbox), and trigger response actions.',
   },
@@ -5649,7 +5743,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Live Response in Defender for Endpoint lets an analyst:',
-    options: ['Browse the device file system, run scripts', 'Reimage the device', 'Encrypt the device disk', 'Reset the user\'s password'],
+    options: [
+      'Browse the device file system and run library scripts',
+      'Reimage the device back to its corporate baseline',
+      'Encrypt the device disk with a recovery key',
+      'Reset the signed-in user directory password'
+    ],
     correct: 0,
     explanation: 'Live Response is an interactive remote-shell session over the Defender connection, analysts can list/download files, run library scripts, and capture memory or registry artefacts. Requires the Live Response role and is fully audited.',
   },
@@ -5660,7 +5759,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Foundational CSPM in Defender for Cloud is:',
-    options: ['Free and provides Secure Score + MCSB recommendations', 'Paid and required for any visibility', 'Only available for AWS', 'Replaced by Defender for Servers'],
+    options: [
+      'Free, providing Secure Score and MCSB recommendations',
+      'Paid, and required before any posture visibility appears',
+      'Available only for onboarded AWS and GCP accounts',
+      'Superseded entirely by the Defender for Servers plan'
+    ],
     correct: 0,
     explanation: 'Foundational CSPM is included free with any Azure subscription and surfaces Secure Score, MCSB control assessments, and recommendations. Defender CSPM (paid) adds attack paths, agentless scanning, AI-SPM, governance rules, and Cloud Security Explorer.',
   },
@@ -5671,7 +5775,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Defender CSPM Attack Path Analysis requires which underlying data sources?',
-    options: [ 'On-prem Active Directory replication', 'Agentless scanning + identity graph + network reachability','Defender for Endpoint sensor', 'Sentinel ingestion of all firewall logs'],
+    options: [
+      'Replication of the on-premises Active Directory forest',
+      'Agentless scanning, identity graph and network reachability',
+      'The Defender for Endpoint sensor deployed on every host',
+      'Sentinel ingestion of all firewall logs across the estate'
+    ],
     correct: 1,
     explanation: 'Attack paths are computed from agentless disk scans (vulnerabilities, secrets, exposed software), identity relationships (managed identities, RBAC), and network reachability (NSG, public IP). Together they reveal exploit chains to crown-jewel resources.',
   },
@@ -5709,7 +5818,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Microsoft Cloud Security Benchmark (MCSB) maps to which external standards?',
-    options: ['Only NIST CSF', 'Only EU GDPR', 'NIST 800-53, ISO 27001, PCI DSS', 'Only HIPAA'],
+    options: [
+      'NIST CSF alone, with no other mappings',
+      'EU GDPR alone, with no other mappings',
+      'NIST 800-53, ISO 27001 and PCI DSS',
+      'HIPAA alone, with no other mappings'
+    ],
     correct: 2,
     explanation: 'MCSB is Microsoft\'s opinionated control set with explicit mappings to NIST 800-53, ISO 27001, PCI DSS, CIS Microsoft Azure Foundations, SOC 2, and others. Compliance Manager surfaces these mappings as assessments.',
   },
@@ -5731,7 +5845,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'Cloud Security Explorer in Defender CSPM lets you:',
-    options: [ 'Configure DCRs','Edit Conditional Access policies', 'Run graph-based KQL-style queries across the cloud security graph', 'Onboard new subscriptions'],
+    options: [
+      'Configure data collection rules for the workspace',
+      'Edit Conditional Access policies in bulk',
+      'Run graph-based queries across the cloud security graph',
+      'Onboard new subscriptions into Defender for Cloud'
+    ],
     correct: 2,
     explanation: 'Cloud Security Explorer is the interactive, graph-query UI built on Defender CSPM\'s entity graph. It lets analysts ask multi-hop questions about exposure without learning a query language, and saves favourites as alerts.',
   },
@@ -5742,7 +5861,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'For multi-cloud, you onboard an AWS account into Defender for Cloud. Which connector type is required for full CSPM + workload protection?',
-    options: ['ExpressRoute', 'Site-to-site VPN', 'Azure Arc only', 'Native AWS connector with stack-set'],
+    options: [
+      'An ExpressRoute circuit into the AWS environment',
+      'A site-to-site VPN between the two cloud networks',
+      'Azure Arc onboarding of the AWS instances only',
+      'The native AWS connector deployed with a stack-set'
+    ],
     correct: 3,
     explanation: 'The native AWS connector deploys CloudFormation StackSets that create an IAM role allowing MDC to read AWS Config, CloudTrail, and resource state. Optional Defender plans (Servers, Containers, Databases) extend protection.',
   },
@@ -5775,7 +5899,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'A sensitivity label of "Confidential" applied to a Word document does which of the following?',
-    options: ['Only adds a header banner', 'Deletes the file after 30 days', 'Applies encryption + usage rights + watermark + access policies persistently to the file', 'Disables the user\'s mailbox'],
+    options: [
+      'Adds a header banner to the document and nothing further',
+      'Deletes the document automatically after thirty days',
+      'Applies encryption, usage rights, watermark and access policies',
+      'Disables the mailbox of the user who applied the label'
+    ],
     correct: 2,
     explanation: 'Sensitivity labels are persistent metadata that travel with the file, applying encryption (Azure RMS), usage rights (read, edit, print, copy), watermarks/headers/footers, and integrating with DLP, SharePoint, and M365 Copilot.',
   },
@@ -5797,7 +5926,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'DLP for Microsoft 365 Copilot enables you to:',
-    options: ['Block Copilot from referencing labeled content the user does not have rights to', 'Disable Copilot for the entire tenant', 'Force Copilot to translate output into Spanish', 'Audit only, no enforcement'],
+    options: [
+      'Block Copilot referencing labeled content the user cannot access',
+      'Disable Copilot entirely across the whole tenant',
+      'Force Copilot to translate its output into another language',
+      'Audit Copilot activity only, with no enforcement available'
+    ],
     correct: 0,
     explanation: 'The "Microsoft 365 Copilot" DLP location lets policies prevent Copilot from grounding on (and surfacing) content with specific sensitivity labels, extending data-loss controls into the AI summarization layer.',
   },
@@ -5808,7 +5942,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'IRM detects an employee with elevated risk who is pasting source code into ChatGPT in their browser. Which Purview capability captures this on-device?',
-    options: [ 'Endpoint DLP + Edge for Business browser DLP','SharePoint search', 'eDiscovery', 'Communication Compliance'],
+    options: [
+      'Endpoint DLP with Edge for Business browser DLP',
+      'SharePoint search auditing across the tenant',
+      'eDiscovery holds placed on the user mailbox',
+      'Communication Compliance policy on Teams chat'
+    ],
     correct: 0,
     explanation: 'Endpoint DLP combined with Edge for Business browser DLP detects (and can block) paste/upload of sensitive content into unsanctioned GenAI sites, a primary Shadow AI control surfaced in DSPM for AI.',
   },
@@ -5846,7 +5985,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You want to ensure SharePoint sites with "Highly Confidential" content cannot be shared externally even if a user tries to. What Purview capability enforces this?',
-    options: [ 'Communication Compliance','Insider Risk Management', 'Audit logs', 'Sensitivity label policy → site-level container settings'],
+    options: [
+      'A Communication Compliance policy on the site content',
+      'An Insider Risk Management policy for the site owners',
+      'Audit log alerts on external sharing events',
+      'Sensitivity label policy with site-level container settings'
+    ],
     correct: 3,
     explanation: 'Container labels apply settings to the SharePoint site / Teams group / M365 group itself: external sharing block, unmanaged-device access, default link permissions, privacy. They enforce posture at the container level rather than relying on per-document labels.',
   },
@@ -5868,7 +6012,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Communication Compliance scans:',
-    options: [ 'Active Directory replication', 'Teams chats, Exchange email, and Slack and Bloomberg and Symphony for offensive language', 'Azure Storage queues','Network firewall logs'],
+    options: [
+      'Active Directory replication traffic between controllers',
+      'Teams chats, Exchange email and connected third-party platforms',
+      'Azure Storage queue messages for sensitive content',
+      'Network firewall logs forwarded into the workspace'
+    ],
     correct: 1,
     explanation: 'Communication Compliance is a Purview policy engine that flags risky communications across Microsoft 365 and connected platforms. Reviewers triage flagged messages with privacy controls (pseudonymized identities until escalated).',
   },
@@ -5879,7 +6028,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Defender for Containers covers Azure Kubernetes Service. What signal does the agentless container posture engine collect?',
-    options: ['Container logs only', 'Container image vulnerability scan', 'Just CPU usage', 'Only network throughput'],
+    options: [
+      'Container stdout and stderr logs collected from the pods',
+      'Container image vulnerability scanning in the registry',
+      'Processor utilisation sampled across the node pool',
+      'Network throughput measured at the cluster ingress'
+    ],
     correct: 1,
     explanation: 'Defender for Containers performs registry scanning, runtime image scanning, K8s posture (CIS K8s benchmark), Kubernetes audit log threat detection, and runtime threat detection via the Defender sensor (DaemonSet).',
   },
@@ -5912,7 +6066,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'eDiscovery (Premium) supports GenAI workloads by:',
-    options: [ 'Letting investigators preserve, search, and export Copilot prompts', 'Blocking prompts above a token threshold','Encrypting prompts at rest', 'Disabling Copilot for tenant guests'],
+    options: [
+      'Letting investigators preserve, search and export Copilot prompts',
+      'Blocking prompts that exceed a configured token threshold',
+      'Encrypting stored prompts at rest with a customer key',
+      'Disabling Copilot access for all guest users in the tenant'
+    ],
     correct: 0,
     explanation: 'eDiscovery Premium treats Copilot interactions as first-class custodian content, preserve a custodian\'s mailbox, search Copilot prompt/response history, place legal hold, export for review. Critical for litigation and regulatory inquiries.',
   },
@@ -5945,7 +6104,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'You deploy an Azure OpenAI resource. What is the recommended authentication for a calling application?',
-    options: [ 'Public anonymous endpoint', 'Managed identity + Cognitive Services User RBAC + disable API keys', 'Connection string in source code','Hard-coded API key'],
+    options: [
+      'A public anonymous endpoint with no authentication at all',
+      'Managed identity with Cognitive Services User RBAC and keys disabled',
+      'A connection string embedded in the application source code',
+      'A hard-coded API key held in the deployment configuration'
+    ],
     correct: 1,
     explanation: 'Best practice: disable local API key auth on the Azure OpenAI resource and require Entra (Microsoft Entra ID) auth via the "Cognitive Services User" RBAC role on a managed identity. Eliminates secret rotation and aligns with Zero Trust.',
   },
@@ -5972,7 +6136,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'beginner',
     certTags: ['SC-500'],
     question: 'Azure AI Content Safety Prompt Shields defend against:',
-    options: [ 'Phishing emails', 'Network DDoS', 'Direct user jailbreak attempts AND indirect prompt injection from RAG and grounding documents','SQL injection in databases'],
+    options: [
+      'Phishing emails arriving in the corporate mailbox',
+      'Volumetric denial of service against the endpoint',
+      'Direct jailbreak attempts and indirect injection from grounding documents',
+      'SQL injection against the backing application database'
+    ],
     correct: 2,
     explanation: 'User Prompt Shield analyzes the user message for jailbreak / DAN-style bypass; Document Prompt Shield analyzes external documents pulled into the prompt for embedded malicious instructions (indirect injection). Both return a confidence score the calling app uses to block or sanitize.',
   },
@@ -5983,7 +6152,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Azure OpenAI default content filter severity threshold is:',
-    options: ['Off', 'Medium', 'High', 'Low'],
+    options: [
+      'Off, with no filtering applied by default',
+      'Medium',
+      'High',
+      'Low'
+    ],
     correct: 1,
     explanation: 'The default threshold is Medium across all four base categories (hate, sexual, violence, self-harm). Setting categories to Off requires Microsoft\'s Limited Access approval; raising to Low tightens the filter.',
   },
@@ -5994,7 +6168,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'Groundedness detection in Azure AI Content Safety is designed to:',
-    options: [ 'Encrypt outputs','Block hate speech', 'Generate citations', 'Detect when an LLM completion contains claims not supported'],
+    options: [
+      'Encrypt model outputs before they are returned',
+      'Block hate speech appearing in the completion',
+      'Generate citations for every claim in the answer',
+      'Detect claims in a completion that the sources do not support'
+    ],
     correct: 3,
     explanation: 'Groundedness detection compares the model\'s response to the grounding documents you supplied at runtime and flags claims that aren\'t supported, i.e. hallucinations. Critical for medical, legal, and financial RAG apps.',
   },
@@ -6005,7 +6184,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'A regulated workload requires customer-managed encryption keys (CMK) for the Azure OpenAI resource. What is the prerequisite on Key Vault?',
-    options: [ 'Free tier only', 'Geo-redundancy disabled', 'Public access only','Soft-delete + purge protection enabled'],
+    options: [
+      'The vault must be on the free tier only',
+      'Geo-redundancy must be disabled on the vault',
+      'The vault must allow public network access',
+      'Soft-delete and purge protection must be enabled'
+    ],
     correct: 3,
     explanation: 'CMK on Azure services requires Key Vault soft-delete and purge protection to be enabled, preventing accidental key loss that would render data unrecoverable. Use Premium tier (HSM-backed keys) for FIPS 140-3 L3.',
   },
@@ -6049,7 +6233,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'To send Azure OpenAI signals to Defender for Cloud\'s AI threat protection, you must:',
-    options: ['Manually copy logs to Sentinel', 'Buy a third-party SIEM', 'Disable content filters', 'Enable the "AI workloads" Defender plan and the Azure OpenAI diagnostic settings + content-safety integration'],
+    options: [
+      'Manually copy the resource logs into Sentinel each day',
+      'Buy a third-party SIEM to receive the telemetry',
+      'Disable content filters so raw traffic is forwarded',
+      'Enable the AI workloads Defender plan and the resource diagnostic settings'
+    ],
     correct: 3,
     explanation: 'Defender for AI workloads requires the AI Defender plan to be enabled on the subscription and diagnostic settings + content-safety telemetry enabled on the AI resource. Alerts (prompt injection, sensitive data leak, wallet abuse) then flow to Defender XDR.',
   },
@@ -6104,7 +6293,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A custom Security Copilot plugin can be authored in which formats?',
-    options: ['Only OpenAPI', 'Bash scripts', 'OpenAPI specs, KQL queries, or GPT', 'Java only'],
+    options: [
+      'OpenAPI specifications and nothing else',
+      'Bash scripts wrapped in a manifest file',
+      'OpenAPI specifications, KQL queries or GPT skills',
+      'Java class libraries uploaded to the tenant'
+    ],
     correct: 2,
     explanation: 'Custom plugins extend Copilot via three authoring formats: OpenAPI (REST APIs), KQL (Sentinel/Defender hunting), or GPT skill manifest (no-code wrappers around prompts). Owners govern which custom plugins are installable.',
   },
@@ -6148,7 +6342,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'Microsoft\'s phishing triage Copilot Agent (in Defender for Office 365) does what?',
-    options: [ 'Autonomously triages user-reported phishing submissions','Sends phishing emails', 'Encrypts the user mailbox', 'Disables MFA'],
+    options: [
+      'Autonomously triages user-reported phishing submissions',
+      'Sends simulated phishing emails to staff',
+      'Encrypts the mailbox of the reporting user',
+      'Disables multi-factor authentication temporarily'
+    ],
     correct: 0,
     explanation: 'The phishing triage agent runs against user-reported phish, evaluates URL/sender/content reputation, classifies (real phish vs benign vs spam), and explains the verdict in natural language. Analysts review the agent\'s decisions instead of starting from raw email.',
   },
@@ -6170,7 +6369,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You want to forward Security Copilot session audit logs into Microsoft Sentinel for forensic correlation. How?',
-    options: [ 'Enable the Microsoft Security Copilot data connector in Sentinel and configure audit ingestion', 'Audit logs are not exportable','Manually export each session', 'Use a Logic App to scrape the portal'],
+    options: [
+      'Enable the Security Copilot data connector and configure audit ingestion',
+      'Session audit logs cannot be exported from Copilot at all',
+      'Manually export each Copilot session from the portal',
+      'Use a Logic App to scrape the portal on a schedule'
+    ],
     correct: 0,
     explanation: 'The Sentinel data connector for Security Copilot ingests session and audit logs (who prompted, which plugins ran, response metadata). Useful for forensic timelines and detecting prompt-injection or plugin-abuse patterns.',
   },
@@ -6181,7 +6385,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'In Azure AI Foundry, the recommended way to scope an Agent\'s tool permissions is:',
-    options: ['Give the agent a Global Admin', 'Use a least-privilege user-assigned managed identity bound to the Foundry project, scoped to only the resources it needs', 'Use a shared API key for all agents', 'No identity is needed'],
+    options: [
+      'Give the agent a Global Administrator directory role',
+      'A least-privilege managed identity scoped to only the resources it needs',
+      'Use one shared API key across every agent in the project',
+      'No identity is required because agents run in the project context'
+    ],
     correct: 1,
     explanation: 'Foundry Agent Service supports per-agent or per-project managed identities. Bind a least-privilege identity to each agent and grant only the data-plane RBAC the tools require, minimizing blast radius if the agent is hijacked via prompt injection.',
   },
@@ -6192,7 +6401,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A new Foundry agent is granted SQL execute rights. A prompt-injection attack tries to get it to DROP TABLE Customers. Which control is most effective at preventing the action?',
-    options: ['Customer-managed keys', 'Disable the agent', 'Tool-level safety policy requiring human approval for destructive SQL operations + scoped DB role', 'Larger context window'],
+    options: [
+      'Encrypt the database with customer-managed keys',
+      'Disable the agent whenever it is not in active use',
+      'A safety policy requiring approval for destructive SQL plus a scoped DB role',
+      'Increase the context window so the agent sees more history'
+    ],
     correct: 2,
     explanation: 'Layered defense: (1) Foundry safety policy / approval gate for destructive tool actions, (2) DB-side least privilege (revoke DDL/DROP), (3) Prompt Shields, (4) audit. The DB role is the last line of defense even if Copilot/Agent is jailbroken.',
   },
@@ -6214,7 +6428,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You spin up an Azure AI Foundry hub for a regulated team. Which security configuration is mandatory for compliance?',
-    options: [ 'Private endpoints + customer-managed keys + Entra-only auth + audit + content filters at default-Medium', 'Disable diagnostic settings', 'Allow API keys with no rotation','Public network access enabled'],
+    options: [
+      'Private endpoints, customer-managed keys, Entra-only auth and audit',
+      'Disable diagnostic settings to reduce ingestion cost',
+      'Allow API key authentication with no rotation schedule',
+      'Leave public network access enabled for developer convenience'
+    ],
     correct: 0,
     explanation: 'Regulated Foundry hubs should: bind to private endpoints, encrypt with CMK in Key Vault (with soft-delete + purge protection), require Entra auth (disable local API keys), forward diagnostics to Log Analytics, and keep content filters at Medium or stricter.',
   },
@@ -6247,7 +6466,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A custom KQL plugin in Security Copilot allows the model to call your saved Sentinel queries. How is the query result returned?',
-    options: [ 'Via email','As a screenshot', 'As structured JSON the model summarizes in natural language for the user', 'It is not returned'],
+    options: [
+      'Delivered to the analyst as an email attachment',
+      'Rendered as a screenshot of the results grid',
+      'As structured JSON the model summarises in natural language',
+      'The results are not returned to the model at all'
+    ],
     correct: 2,
     explanation: 'The KQL plugin executes the query against the Log Analytics workspace, returns rows as JSON, and the LLM synthesizes them into a natural-language answer with citations back to the underlying rows. Owners set the workspace and RBAC scope.',
   },
@@ -6258,7 +6482,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'Defender for AI generates an alert "Suspected AI model wallet abuse", what does this indicate?',
-    options: [ 'A sudden spike in tokens consumed against the AI resource', 'A network outage', 'A failed sign-in','Cryptocurrency theft'],
+    options: [
+      'A sudden spike in tokens consumed against the AI resource',
+      'A network outage affecting the inference endpoint',
+      'A failed sign-in against the AI resource control plane',
+      'Theft of cryptocurrency from a connected wallet'
+    ],
     correct: 0,
     explanation: 'Wallet abuse alerts surface when an AI resource sees abnormal token consumption (e.g. a runaway agent loop, attacker driving costs, or credential exfil being used to burn tokens). Investigate the calling identity and rate-limit at APIM.',
   },
@@ -6280,7 +6509,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'A Foundry evaluation pipeline scores model outputs for groundedness, harmfulness, and protected material. Where do these signals integrate for security visibility?',
-    options: [ 'Email only', 'Nowhere', 'Forwarded via diagnostic settings to Log Analytics and surfaced in Defender for AI workloads or DSPM for AI','Only in the Foundry portal'],
+    options: [
+      'Emailed to the project owner and stored nowhere else',
+      'Retained only in memory for the duration of the run',
+      'Forwarded by diagnostic settings to Log Analytics and Defender for AI',
+      'Visible only inside the Azure AI Foundry portal itself'
+    ],
     correct: 2,
     explanation: 'Foundry evaluations + content-safety annotations feed Log Analytics via diagnostics; Defender for AI uses them for runtime alerting; DSPM for AI surfaces patterns across many AI apps. Together they form the AI-side "security graph".',
   },
@@ -6291,7 +6525,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'You see repeated 429 (Too Many Requests) responses from Azure OpenAI. Likely cause and fix?',
-    options: [ 'Content filter triggered','Network outage', 'You exceeded the deployed model\'s TPM and RPM quota', 'API keys expired'],
+    options: [
+      'The content filter is rejecting the requests as unsafe',
+      'A transient network outage is affecting the Region',
+      'The deployment exceeded its tokens and requests per minute quota',
+      'The API keys used by the deployment have expired'
+    ],
     correct: 2,
     explanation: '429 = quota throttling. Options: (1) ask for higher TPM/RPM quota, (2) move to PTU (provisioned throughput) for guaranteed capacity, (3) implement exponential back-off in clients, (4) use APIM to smooth bursts and prioritize traffic.',
   },
@@ -6313,7 +6552,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'Protected material detection in Azure AI Content Safety flags:',
-    options: [ 'Outputs that contain copyrighted text','Personal photos', 'PII', 'Encrypted blobs'],
+    options: [
+      'Outputs that reproduce copyrighted text',
+      'Personal photographs uploaded by users',
+      'Personally identifiable information in prompts',
+      'Encrypted blobs stored in the account'
+    ],
     correct: 0,
     explanation: 'Protected material detection compares completions against indexed copyrighted text (and code) and returns a confidence score. Helps avoid IP infringement in customer-facing GenAI apps. Run it on outputs before display.',
   },
@@ -6324,7 +6568,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'You want to limit which Microsoft plugins users can enable in Security Copilot (e.g. allow Defender XDR + Sentinel, deny Intune). Where do you control this?',
-    options: ['Conditional Access', 'Security Copilot Owner settings → Plugin governance or allow-list', 'Defender XDR settings', 'Azure Policy'],
+    options: [
+      'A Conditional Access policy targeting the Copilot app',
+      'Security Copilot Owner settings and plugin governance',
+      'Microsoft Defender XDR portal role settings',
+      'An Azure Policy assignment on the subscription'
+    ],
     correct: 1,
     explanation: 'Plugin governance lives in Security Copilot Owner settings. Owners maintain an allow-list of Microsoft, non-Microsoft, and custom plugins; Contributors can only enable what Owners have approved.',
   },
@@ -6351,10 +6600,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE A SOC analyst sees a Defender XDR incident: an Entra account triggered "Atypical travel", then connected to Exchange Online, then created an inbox rule that auto-forwards to an external address. The analyst has Defender XDR P2 + Sentinel + Security Copilot. What is the FIRST automated response that should fire?',
     options: [
-      'The user is emailed a survey',
-      'Manual ticket to the helpdesk',
+      'The affected user is emailed a security awareness survey',
+      'A manual ticket is raised with the service desk',
       'Automatic Attack Disruption disables the user and revokes sessions',
-      'A weekly Workbook updates'],
+      'A weekly workbook refresh reflects the new activity'
+    ],
     correct: 2,
     explanation: 'This pattern matches AiTM/BEC. Automatic Attack Disruption activates on high-confidence detection: disables the user (revokes via CAE), suspends the OAuth app if relevant, contains the device. Analyst then triages with full containment already in place.',
   },
@@ -6412,9 +6662,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'CASE A developer accidentally commits an Azure OpenAI API key to public GitHub. Defender for Cloud raises an alert. The org policy says "no static keys in Azure OpenAI". Which three actions do you take, in order?',
     options: [
       'Rotate and disable the leaked key immediately',
-      'Ignore, keys are encrypted',
-      'Increase content filter to High',
-      'Email the developer a warning'],
+      'Ignore it because the keys are encrypted in transit',
+      'Raise the content filter severity threshold to High',
+      'Send the developer a written warning and monitor'
+    ],
     correct: 0,
     explanation: 'Standard secret-leak playbook applied to AI: contain (rotate), prevent recurrence (disable local auth → Entra-only), clean (rewrite history + add GitHub secret scanning / Defender for DevOps). Defender for Cloud DevOps connector flags repo posture issues.',
   },
@@ -6426,10 +6677,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE Your Foundry agent has SQL execute on the customer DB and email-send via Graph. A jailbreak prompt tries to make it "email the customer table to attacker@evil.com". Which DEFENSIVE LAYER fails LAST and stops the attack?',
     options: [
-      'Prompt Shields on input',
-      'Sentinel alert',
-      'The Graph Mail.Send permission scoped to a single distribution list',
-      'Content filter on output'],
+      'Prompt Shields applied to the inbound user message',
+      'A Sentinel analytics rule alerting on the activity',
+      'The Graph Mail.Send permission scoped to one distribution list',
+      'A content filter applied to the generated output'
+    ],
     correct: 2,
     explanation: 'Defense in depth: Prompt Shields try to block the prompt; output filters try to block PII egress; the API permission boundary is the last enforcement and the most reliable. Always pair AI safety with backend least privilege, agents are only as safe as the rights they hold.',
   },
@@ -6441,10 +6693,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE A regulator requires you to demonstrate that no Highly Confidential document was referenced by Copilot for any user outside the Legal group during Q1. Which Microsoft tooling produces the evidence?',
     options: [
-      'Sentinel SigninLogs only',
-      'Manual screenshots',
-      'Purview Audit for retention + DSPM for AI activity explorer + eDiscovery search filtered to Highly Confidential label and non-Legal users',
-      'Defender for Endpoint logs'],
+      'Sentinel sign-in logs for the affected user population',
+      'Manually captured screenshots of the Copilot sessions',
+      'Purview Audit with DSPM for AI activity explorer and eDiscovery search',
+      'Defender for Endpoint device logs from the same period'
+    ],
     correct: 2,
     explanation: 'Compliance evidence chain: Audit (Premium) for the long-retention raw record, DSPM for AI for the Copilot-specific activity view, eDiscovery (Premium) for the legally exportable search/export. All three are SC-500 expected tools.',
   },
@@ -6456,10 +6709,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE You onboard 50 new AWS accounts to Defender for Cloud. After two weeks, Secure Score is 28%. The CISO wants 80% in 90 days. Which approach scales?',
     options: [
-      'Disable failing recommendations',
-      'Manually fix each finding',
-      'Move workloads back on-prem',
-      'Define Governance Rules assigning recommendations to AWS account owners'],
+      'Disable the recommendations that are currently failing',
+      'Manually remediate each finding in every account',
+      'Move the affected workloads back to on-premises hosting',
+      'Define governance rules assigning recommendations to account owners'
+    ],
     correct: 3,
     explanation: 'Governance Rules + Quick Fix is the SC-500 answer for operationalizing Secure Score at scale. SLAs create accountability, owner emails drive action, dashboards give the CISO visibility, the metric improves without the security team doing all the work.',
   },
@@ -6486,10 +6740,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE You want Security Copilot to summarize incidents using your own playbook style. Approach?',
     options: [
-      'Disable Copilot',
-      'Train a custom model',
-      'Author a custom Promptbook with a parameterized prompt that injects the incident URL and JSON and instructs Copilot in the desired tone',
-      'Switch to ChatGPT'],
+      'Disable Copilot and write the summaries manually',
+      'Train a custom model on your historical incident notes',
+      'Author a custom promptbook that injects the incident context and tone',
+      'Switch the SOC to a general-purpose consumer chatbot'
+    ],
     correct: 2,
     explanation: 'Promptbooks are the customization path, no model training needed. Define parameters (incident_id), system instructions (tone, audience, sections like "Exec summary / Timeline / IOCs / Remediation"), and Microsoft + custom plugins to call. Reusable across the SOC.',
   },
@@ -6501,10 +6756,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE A new joiner needs Owner on a single Azure subscription for 4 hours next Tuesday only. Most secure pattern?',
     options: [
-      'Share another admin\'s password',
-      'PIM-eligible Owner with activation requiring MFA + approval + ticket number',
-      'Add to Global Admins',
-      'Permanent Owner assignment'],
+      'Share the credentials of an existing subscription owner',
+      'PIM-eligible Owner requiring MFA, approval and a ticket number',
+      'Add the account to the Global Administrator role',
+      'Assign the Owner role permanently on the subscription'
+    ],
     correct: 1,
     explanation: 'PIM eligible + activation gates (MFA, approval, justification, ticket, max duration) is the JIT pattern SC-500 expects. Combine with Access Reviews to recertify and remove stale eligibility.',
   },
@@ -6516,10 +6772,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE Your AI Center of Excellence wants every Foundry project to follow the same baseline: private endpoint, CMK, content filters Medium, diagnostic settings to a central Log Analytics. How do you ENFORCE, not just recommend, this baseline at deployment time?',
     options: [
-      'Email a checklist to engineers',
-      'Hope for the best',
-      'Manual quarterly audits',
-      'Author Azure Policy definitions for each control'],
+      'Email a configuration checklist to the engineering teams',
+      'Rely on project teams to apply the controls themselves',
+      'Run a manual configuration audit once every quarter',
+      'Author Azure Policy definitions for each required control'
+    ],
     correct: 3,
     explanation: 'Azure Policy at the management group is enforcement: "deny" prevents non-compliant deployments, "deployIfNotExists" auto-remediates (e.g. diagnostics). Defender for Cloud can adopt your custom initiative as a regulatory standard so Secure Score reflects the baseline.',
   },
@@ -6531,10 +6788,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'CASE An insider (departing employee, elevated IRM risk) tries to paste 5,000 customer records into ChatGPT in Edge. What happens with full SC-500 stack deployed?',
     options: [
-      'Nothing DLP doesn\'t see browsers',
-      'Edge encrypts it automatically',
-      'The data goes through unflagged',
-      'Endpoint DLP + Edge for Business browser DLP detects the paste'],
+      'Nothing, because DLP has no visibility into the browser',
+      'Edge encrypts the pasted content automatically in transit',
+      'The data leaves the device without any policy evaluation',
+      'Endpoint DLP with Edge for Business browser DLP detects the paste'
+    ],
     correct: 3,
     explanation: 'This is the exact insider-AI-exfil scenario the SC-500 stack is built for. Adaptive Protection ties the IRM elevated-risk signal to a stricter DLP policy that blocks (rather than warns), and the event flows into the SOC for response.',
   },
@@ -6592,9 +6850,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'KQL Which operator do you use to roll a high-cardinality column into a comma-separated list per group?',
     options: [
       'make_set or make_list inside summarize',
-      'extend',
-      'count',
-      'project'],
+      'extend with a computed column',
+      'count aggregated across rows',
+      'project to select the columns'
+    ],
     correct: 0,
     explanation: 'make_set() returns distinct values as a dynamic array; make_list() preserves order/duplicates. Use inside summarize: `summarize Targets=make_set(TargetUser) by Attacker`. Combine with strcat_array() to format as a comma-separated string.',
   },
@@ -6636,10 +6895,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'KQL You have impossible-travel data in SigninLogs. Which time-bucketing operator do you use to build a per-user-per-hour heatmap?',
     options: [
-      'parse',
-      'bin inside summarize',
-      'extend',
-      'mv-expand'],
+      'parse to extract fields from text',
+      'bin inside a summarize expression',
+      'extend to add a computed column',
+      'mv-expand to unpack an array'
+    ],
     correct: 1,
     explanation: 'bin() rounds timestamps to a bucket size: `summarize count() by UserPrincipalName, bin(TimeGenerated, 1h)`. This produces evenly spaced buckets perfect for heatmaps and time-series workbooks.',
   },
@@ -6651,10 +6911,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'KQL A Defender Advanced Hunting query needs to detect mass mailbox access (BEC indicator), pick the correct join.',
     options: [
-      'DeviceProcessEvents | take 5',
-      'IdentityInfo | project AccountUpn',
-      'EmailEvents | join AlertInfo',
-      'CloudAppEvents | where ActionType == "MailItemsAccessed" | summarize Mailboxes=dcount'],
+      'DeviceProcessEvents filtered to the affected device and time window',
+      'IdentityInfo projected to the account and its assigned directory roles',
+      'EmailEvents joined to AlertInfo on the network message identifier',
+      'CloudAppEvents filtered to MailItemsAccessed with a distinct mailbox count'
+    ],
     correct: 3,
     explanation: 'BEC mass-access pattern: CloudAppEvents holds Exchange Online operations (MailItemsAccessed). Group by acting account in 30m windows, count distinct mailboxes touched, alert above a threshold (50 here). Classic suspicious-OAuth or compromised-admin signal.',
   },
@@ -6682,9 +6943,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'KQL Which function returns the IPv4 geographic location for an IP column?',
     options: [
       'geo_info_from_ip_address',
-      'parse_ip',
-      'tostring',
-      'now'],
+      'parse_ip to split the octets',
+      'tostring to cast the column',
+      'now to stamp the current time'
+    ],
     correct: 0,
     explanation: 'geo_info_from_ip_address() returns a dynamic with country, state, city, latitude, longitude. Useful in Workbooks (geo maps) and impossible-travel detection. parse_ipv4() converts to a numeric for range comparisons.',
   },
@@ -6696,10 +6958,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'KQL To compare last hour\'s sign-in volume against the 7-day average for the same hour-of-day (anomaly hunting), which approach is correct?',
     options: [
-      'A single SUM',
-      'top 10',
-      'COUNT distinct ip',
-      'series_decompose_anomalies over a make-series of counts'],
+      'A single sum aggregated over the window',
+      'top 10 ordered by descending count',
+      'dcount of distinct source addresses',
+      'series_decompose_anomalies over a make-series of counts'
+    ],
     correct: 3,
     explanation: 'Two valid patterns: (1) make-series + series_decompose_anomalies() applies built-in anomaly detection to time-series; (2) self-join the recent window against a 7-day baseline filtered to the same hourofday(). Both are SC-500-grade hunting techniques.',
   },
@@ -6745,10 +7008,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SCS-C03'],
     question: 'A facial recognition model deployed at a secure facility always grants access to an attacker wearing a specific patterned scarf, even though the pattern is unrelated to any authorised user. What attack class is this?',
     options: [
-      'Feature-squeezing evasion',
-      'Model inversion attack',
-      'Trojan and backdoor attack with physical trigger',
-      'Membership inference attack'],
+      'Feature-squeezing evasion at inference time',
+      'Model inversion recovering training data',
+      'Trojan and backdoor attack with a physical trigger',
+      'Membership inference against the training set'
+    ],
     correct: 2,
     explanation: 'Trojan (backdoor) attacks embed a hidden trigger during training. When the trigger appears at inference time (the patterned scarf), the model produces the attacker-desired output (access granted) regardless of the actual identity. Physical triggers are especially dangerous because they persist through camera and environmental variation. Defenses include activation clustering, neural cleanse, and fine-pruning.',
   },
@@ -6890,10 +7154,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GASAE', 'SCS-C03'],
     question: 'During a red team of an MLOps platform you gain write access to the feature store. What is the highest-impact attack you can now execute?',
     options: [
-      'Enumerate users of the MLOps platform',
-      'Steal model weights from the model registry',
-      'Inject poisoned feature values that corrupt inference results',
-      'Trigger excessive training runs'],
+      'Enumerate the users of the MLOps platform',
+      'Steal model weights held in the model registry',
+      'Inject poisoned feature values that corrupt inference',
+      'Trigger excessive and costly training runs'
+    ],
     correct: 2,
     explanation: 'Feature stores are shared infrastructure used by many models simultaneously. Injecting corrupted feature values is a high-impact data poisoning attack that can silently degrade or manipulate predictions across the entire model portfolio without touching model code or training pipelines. This is why feature store access controls, immutable feature versioning, and anomaly detection on feature distributions are critical MLOps security controls.',
   },
@@ -7609,10 +7874,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'CAIS', 'CAISP', 'SCS-C03'],
     question: 'Certified robustness differs from empirical robustness in that certified robustness:',
     options: [
-      'Requires GPU hardware security modules for attestation',
-      'Is measured by running a large test set of adversarial examples',
-      'Provides a mathematical guarantee that no perturbation within a defined L-p ball can change the model output',
-      'Applies only to neural networks with fewer than 10 layers'],
+      'It requires hardware security modules for attestation',
+      'It is measured by running a large adversarial test set',
+      'It proves no perturbation within a defined ball changes the output',
+      'It applies only to networks with fewer than ten layers'
+    ],
     correct: 2,
     explanation: 'Empirical robustness tests resistance against a finite set of known attacks, it can always be defeated by a novel attack. Certified robustness (e.g., randomised smoothing, interval bound propagation) provides a provable guarantee: for any input perturbation bounded by a radius ε in an L-p norm, the classifier output cannot change. This is a formal property, not an empirical one. The trade-off is reduced accuracy and scalability challenges on large models.',
   },
@@ -7624,10 +7890,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'CAIS', 'CAISP', 'SCS-C03'],
     question: 'A membership inference attack succeeds by exploiting the fact that:',
     options: [
-      'Prediction APIs return HTTP response headers containing training metadata',
-      'Models typically exhibit measurably different confidence distributions on training samples versus unseen samples due to overfitting',
-      'Models encrypt training data and the key can be extracted from gradients',
-      'Models store training records verbatim in attention weight matrices'],
+      'Prediction APIs return headers containing training metadata',
+      'Models show different confidence distributions on training samples',
+      'Models encrypt training data and the key leaks through gradients',
+      'Models store training records verbatim in attention weights'
+    ],
     correct: 1,
     explanation: 'Membership inference exploits overfitting: a model trained on a sample tends to assign higher confidence/lower loss to that sample than to similar unseen data. An attacker queries the model for a target record and observes the confidence vector, high confidence indicates likely membership in training data. The attack is most effective against overfit models. Defences include differential privacy (adds noise to gradient updates), prediction confidence rounding, and DP-SGD during training.',
   },
@@ -7672,10 +7939,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'CAIS', 'CAISP', 'SCS-C03'],
     question: 'DP-SGD (Differentially Private Stochastic Gradient Descent) protects training data privacy by:',
     options: [
-      'Splitting training data across multiple isolated nodes that never share raw records',
+      'Splitting training data across isolated nodes that never share records',
       'Randomly dropping neurons during training to prevent memorisation',
-      'Encrypting gradient updates using homomorphic encryption before parameter updates',
-      'Clipping per-sample gradients to bound sensitivity, then adding calibrated Gaussian noise before averaging and applying the update'],
+      'Encrypting gradient updates homomorphically before aggregation',
+      'Clipping per-sample gradients then adding calibrated Gaussian noise'
+    ],
     correct: 3,
     explanation: 'DP-SGD (Abadi et al., 2016) implements differential privacy at the gradient level: (1) compute per-sample gradients, (2) clip each sample\'s gradient norm to a maximum C to bound the global sensitivity, (3) add Gaussian noise N(0, σ²C²I) to the average gradient before the parameter update. The privacy budget ε accumulates over training steps and is tracked via privacy accounting (e.g., Rényi DP). The result: no individual training record can be reliably inferred from the trained model. Dropout, federated learning, and homomorphic encryption address different problems.',
   },
@@ -7846,10 +8114,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Your organisation requires HTTPS inspection for traffic leaving an Azure Virtual Network to the internet. Which Azure Firewall tier and feature enables this?',
     options: [
-      'Standard tier with DNAT rules',
-      'Basic tier with network rules',
-      'Standard tier with application rules and FQDN filtering',
-      'Premium tier with TLS inspection using a CA certificate stored in Azure Key Vault'],
+      'Standard tier with destination network address translation rules',
+      'Basic tier with network rules filtering by address and port',
+      'Standard tier with application rules and fully qualified domain filtering',
+      'Premium tier with TLS inspection using a CA certificate in Key Vault'
+    ],
     correct: 3,
     explanation: 'Azure Firewall Premium supports TLS termination and inspection (HTTPS/TLS inspection) using a CA certificate stored in Azure Key Vault. The firewall decrypts traffic, inspects it with IDPS and URL filtering, then re-encrypts it. Standard and Basic tiers do not support TLS inspection. Source: microsoft.com/learn, Azure Firewall Premium features.',
   },
@@ -8178,7 +8447,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure AI Foundry (formerly Azure AI Studio) is Microsoft\'s platform for building enterprise AI applications. What is the primary purpose of Azure AI Foundry\'s project workspace?',
     options: [
       'To replace Azure Machine Learning for all traditional ML workloads',
@@ -8223,7 +8492,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure OpenAI Service',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'A developer needs to use GPT-4o for an enterprise application in Azure with data residency requirements. Which Azure feature ensures prompts and completions never leave a specific Azure region?',
     options: [
       'Azure CDN with geo-filtering',
@@ -8238,7 +8507,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Machine Learning',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'In Azure Machine Learning, what is the purpose of a Managed Feature Store, and how does it prevent training-serving skew in production ML systems?',
     options: [
       'The Managed Feature Store centralises feature computation and storage with point-in-time correct retrieval',
@@ -8429,7 +8698,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Threat Hunting',
     category: 'AI in Security Ops',
     difficulty: 'advanced',
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'What validation is required before an LLM-generated T1059.001 KQL hunt query is run in production Sentinel?',
     options: [
       'Dev-tenant execution against 30-day history to verify T1059.001 logic, false-positive rate, cost impact, and no PII exposure before production run',
@@ -8577,7 +8846,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'What is Azure AI Foundry and what is its primary purpose in the Azure ecosystem?',
     options: [
       'A monitoring service that tracks Azure compute resource utilization',
@@ -8592,7 +8861,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure OpenAI',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SC-500', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103', 'SC-500'],
     question: 'What differentiates Azure OpenAI Service from using the OpenAI API directly?',
     options: [
       'Azure OpenAI runs models on your own hardware rather than OpenAI\'s infrastructure',
@@ -8683,7 +8952,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Search (formerly Azure Cognitive Search) is primarily used in AI applications for which purpose?',
     options: [
       'Providing enterprise-grade semantic and vector search over custom data, typically as the retrieval component in RAG architectures',
@@ -8714,7 +8983,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'In Azure AI Foundry, what is the purpose of the "Model Catalog"?',
     options: [
       'A centralized repository of foundation models from OpenAI, Meta, Mistral',
@@ -8745,7 +9014,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure AI Content Safety is used to:',
     options: [
       'Validate that AI models comply with GDPR data processing requirements',
@@ -8760,7 +9029,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Speech service provides which of the following capabilities? (Select the best comprehensive answer)',
     options: [
       'Video captioning and subtitle generation only',
@@ -8791,7 +9060,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure Machine Learning\'s Responsible AI dashboard includes which of the following tools for model interpretability?',
     options: [
       'GDPR data subject access request tracking',
@@ -8806,7 +9075,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'What is a "system message" (also called a system prompt) in Azure OpenAI deployments?',
     options: [
       'A webhook notification sent when an API quota limit is reached',
@@ -8885,7 +9154,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Which Azure service is the primary entry point for building conversational AI bots and virtual assistants?',
     options: [
       'Azure Communication Services',
@@ -8900,7 +9169,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Document Intelligence (formerly Form Recognizer) is primarily used for:',
     options: [
       'Enforcing document retention policies for compliance',
@@ -8915,7 +9184,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'What is a "Prompt flow" in Azure AI Foundry?',
     options: [
       'A visual development tool for building, testing, evaluating, and deploying LLM-based applications as executable workflows',
@@ -8930,7 +9199,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure AI Services content filtering applies to Azure OpenAI models. Which statement about content filtering categories is CORRECT?',
     options: [
       'Content filtering is a manual process requiring human reviewers to approve each response',
@@ -8945,7 +9214,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'Azure Machine Learning is best described as:',
     options: [
       'A service exclusively for deploying pre-built models from the Azure Marketplace',
@@ -9262,7 +9531,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI103', 'Azure-AI901'],
     question: 'Semantic Kernel is an SDK used with Azure AI. What is its primary role in AI application development?',
     options: [
       'A data preprocessing library for cleaning NLP training datasets',
@@ -9888,10 +10157,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SCS-C03'],
     question: 'An organization is conducting a third-party risk assessment of an AI vendor. Which AI-specific contractual clause is most critical to include in the vendor agreement?',
     options: [
-      'A performance SLA guaranteeing 99.9% uptime for the AI API endpoint',
-      'A clause requiring the vendor to provide the full source code of their AI models under escrow',
-      'A data use clause explicitly prohibiting the vendor from using customer-submitted prompts or outputs to train or fine-tune their models',
-      'A clause requiring the vendor to use the latest GPU hardware for optimal performance'],
+      'A performance SLA guaranteeing uptime for the AI API endpoint',
+      'A clause requiring the vendor to place model source code in escrow',
+      'A data use clause prohibiting training on customer-submitted prompts',
+      'A clause requiring the vendor to run the latest GPU hardware'
+    ],
     correct: 2,
     explanation: 'The most critical AI-specific contractual clause addresses training data use: many AI vendors\' default terms permit them to use customer interactions to improve their models, this creates privacy risks (GDPR), IP risks (proprietary data in model weights), and competitive risks (your data trains models used by competitors). The data use clause must specify: (1) No use of customer data for model training without explicit opt-in; (2) Data retention limits, how long are prompts/responses stored? (3) Data residency, which geographic regions process and store data? (4) Sub-processor chain, who else handles the data? (5) AI-specific incident notification, what constitutes an AI incident (model compromise, data leak, behavioral deviation) and what is the notification window? Source: CISM, ISACA Third-Party Risk Management, GDPR Article 28, EU AI Act Articles 25-27.',
   },
@@ -10399,7 +10669,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'What is Azure AI Foundry and how does it relate to earlier Azure AI Studio and Cognitive Services offerings?',
     options: [
       'Azure AI Foundry is a security scanning service for AI applications that evaluates models for bias and generates compliance reports',
@@ -10462,7 +10732,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Content Safety',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI901'],
     question: 'You are deploying an Azure OpenAI chatbot for a public-facing retail website. Which Azure service should you configure to automatically detect and filter harmful content in both user inputs and model outputs?',
     options: [
       'Azure AI Content Safety',
@@ -10539,7 +10809,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Secure AI Deployment',
     category: 'AI Security',
     difficulty: 'intermediate',
-    certTags: ['CAIS', 'CAISP', 'GIAC-GASAE', 'SCS-C03'],
+    certTags: ['CAIS', 'CAISP', 'GIAC-GASAE'],
     question: 'You are conducting a security review of an enterprise LLM application. The architecture includes user chat interface → API gateway → application server → Azure OpenAI API. Which specific security control addresses the risk that user-provided text will be interpreted as LLM instructions rather than data?',
     options: [
       'API gateway rate limiting',
@@ -10572,10 +10842,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'SCS-C03'],
     question: 'A healthcare organization wants to train an ML model on patient records while providing mathematically provable privacy guarantees that protect individual patients even if an adversary has all other training records. Which technique provides this guarantee and what is the key tradeoff?',
     options: [
-      'Homomorphic encryption',
-      'Data anonymization',
-      'Federated learning',
-      'Differential privacy with DP-SGD training'],
+      'Homomorphic encryption of the training set',
+      'Anonymisation of the source records',
+      'Federated learning across participants',
+      'Differential privacy with DP-SGD training'
+    ],
     correct: 3,
     explanation: 'Differential privacy for ML training: (1) Formal guarantee: (epsilon, delta)-DP means that for any two datasets D and D\' differing by one record, and any output S: Pr[M(D) in S] <= e^epsilon * Pr[M(D\') in S] + delta, the model\'s output distribution changes by at most e^epsilon regardless of any individual\'s data; (2) DP-SGD mechanism: clip per-sample gradients to L2-norm bound C (limits sensitivity), add Gaussian noise N(0, sigma^2 * C^2) to the sum of clipped gradients at each step; the noise masks individual contributions while preserving aggregate gradient signal; (3) Privacy budget epsilon: smaller epsilon = stronger privacy = more noise = lower accuracy; typical values: epsilon=1 (strong), epsilon=8 (moderate), epsilon=10+ (weak); (4) Why anonymization fails: re-identification attacks (Sweeney 1997-87% of Americans uniquely identified by zip+birthdate+sex) show anonymization does not provide mathematical guarantees; (5) Federated learning is complementary to DP (can combine them) but alone does not prevent membership inference from gradient updates; (6) Practical implementation: TensorFlow Privacy (tf-privacy library), PyTorch Opacus. Source: EC-Council CAIS, Dwork & Roth (2014) The Algorithmic Foundations of Differential Privacy, Abadi et al. (2016) Deep Learning with Differential Privacy.',
   },
@@ -10650,10 +10921,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Azure AI Content Safety Prompt Shields detects two distinct attack vectors. Which pair is correct?',
     options: [
-      'Direct prompt injection from the user turn and indirect prompt injection from documents or retrieved content',
-      'SQL injection in user queries and cross-site scripting in AI-generated HTML',
-      'Jailbreak via system prompt and prompt exfiltration via the assistant turn',
-      'Adversarial image inputs and adversarial audio inputs',
+      'Direct injection from the user turn and indirect injection from documents',
+      'SQL injection in user queries and scripting in AI-generated markup',
+      'Jailbreak via the system prompt and exfiltration via the assistant turn',
+      'Adversarial image inputs together with adversarial audio inputs'
     ],
     correct: 0,
     explanation: 'Prompt Shields has two detection modes: (1) User prompt analysis, identifies direct jailbreak attempts in the user turn (role-play framing, DAN-style, hypothetical scenarios designed to override instructions); (2) Document analysis, detects indirect injection in retrieved documents, emails, or web content fed into the AI through RAG or tool calling, where attacker-controlled text attempts to hijack the AI\'s behavior. Prompt Shields is a key control in the SC-500 "Secure AI Workloads" domain. Source: Azure AI Content Safety documentation.',
@@ -10714,10 +10985,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Before enabling Microsoft 365 Copilot for an organization, the SC-500 exam emphasizes that over-permissioned SharePoint sites are the primary risk. Which Purview capability reduces data oversharing risk?',
     options: [
-      'Microsoft Defender for Office 365 Safe Attachments scanning of Copilot outputs',
-      'Data oversharing assessments in DSPM for AI that identify sensitive files accessible to Copilot with broad organizational permissions',
-      'Enabling Information Barriers between business units before Copilot rollout',
-      'Configuring Conditional Access policies that require compliant devices to use Copilot',
+      'Defender for Office 365 Safe Attachments scanning of Copilot outputs',
+      'Oversharing assessments in DSPM for AI that surface broadly accessible files',
+      'Information Barriers configured between business units before rollout',
+      'Conditional Access requiring a compliant device before using Copilot'
     ],
     correct: 1,
     explanation: 'M365 Copilot respects Microsoft 365 permissions, it can surface any content the user has access to. Over-permissioned SharePoint ("Everyone" or "All users" sharing) means Copilot can retrieve and summarize sensitive documents for users who shouldn\'t see them. DSPM for AI\'s data oversharing assessments scan the tenant for sensitive data (credit card numbers, health records, confidential labels) that has broad sharing permissions, flagging these before Copilot reads them. Sensitivity labels that restrict access ensure Copilot-grounded results honor access controls. Source: Microsoft Purview DSPM for AI, M365 Copilot security documentation.',
@@ -10821,7 +11092,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Azure AI Foundry Hub vs. Project, what is the correct relationship?',
     options: [
       'Hubs contain model deployments',
@@ -10839,10 +11110,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Azure-AI103', 'SCS-C03'],
     question: 'In Semantic Kernel, what is a "plugin" and how does it differ from a native function?',
     options: [
-      'A plugin is a collection of functions exposed to the kernel with descriptions the AI planner uses to select them',
-      'A plugin is a prompt template',
-      'A plugin is a third-party SDK integration',
-      'Plugins are LLM-defined tools'],
+      'A collection of functions exposed to the kernel with descriptions',
+      'A reusable prompt template stored in the project',
+      'A third-party software development kit integration',
+      'A set of tools that the model itself defines at runtime'
+    ],
     correct: 0,
     explanation: 'Semantic Kernel organizes capabilities into plugins: logical groups of functions with metadata descriptions that the AI planner uses to select the right function for a task. Plugins can contain: (1) Semantic functions, prompts with input variables, executed against an LLM; (2) Native functions, code methods (C#, Python, Java) decorated with [KernelFunction] that execute deterministically. The planner reads function descriptions and selects/chains functions to complete the user\'s goal. This is how SK implements the "AI + code" integration pattern underlying Microsoft Copilot extensions. Source: Semantic Kernel documentation.',
   },
@@ -10851,7 +11123,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Agentic AI',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'An Azure AI Foundry agent using AutoGen must call an external API to look up stock prices before answering a user query. How does the agent framework handle this tool call?',
     options: [
       'The user must manually execute the API call and paste the result into the conversation before the agent can proceed',
@@ -10898,7 +11170,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Which Azure AI Foundry evaluation metric measures whether a model\'s response is supported by the provided source documents in a RAG system?',
     options: [
       'Relevance, how closely the answer matches the user query',
@@ -10913,7 +11185,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Azure AI Foundry Prompt Flow supports "connection" types that store secrets for external services. Which statement correctly describes how connections protect sensitive credentials?',
     options: [
       'Connections cache credentials in browser local storage for performance',
@@ -11517,7 +11789,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure AI Foundry consolidates which set of previously separate Azure AI services under one development platform?',
     options: [
       'Azure Machine Learning, Azure Databricks, Azure Synapse Analytics, and Azure Data Factory',
@@ -11630,7 +11902,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Automated Playbooks',
     category: 'AI in Security Ops',
     difficulty: 'intermediate',
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'A SOAR playbook that auto-quarantines on "Suspicious PowerShell" false-positived a developer during a deployment. Which architectural change prevents future false-positive quarantines?',
     options: [
       'Add enrichment before the quarantine action, user-role or deployment-window or active change-ticket lookup, and only quarantine when no mitigating context is found',
@@ -11738,7 +12010,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Which Azure service provides a unified interface for deploying, calling, and monitoring multiple AI capabilities (vision, speech, language, decision) through a single API key and endpoint?',
     options: [ 'Azure AI Foundry', 'Azure OpenAI Service', 'Azure Cognitive Services','Azure Machine Learning'],
     correct: 2,
@@ -11749,7 +12021,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure Machine Learning',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'In Azure Machine Learning, what is the purpose of an "endpoint" versus a "deployment"?',
     options: [
       'An endpoint is the monitoring dashboard',
@@ -11764,7 +12036,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'Azure AI Foundry (formerly Azure AI Studio) is best described as:',
     options: [
       'A replacement for Azure Machine Learning that handles only generative AI workloads',
@@ -11779,7 +12051,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure OpenAI Service',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Which statement correctly describes Azure OpenAI Service\'s data privacy commitment versus calling OpenAI\'s API directly?',
     options: [
       'Both services offer identical data privacy guarantees',
@@ -11794,7 +12066,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI on Azure',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Azure AI Content Safety provides which specific capability for LLM deployments?',
     options: [
       'It monitors model performance drift over time',
@@ -12033,7 +12305,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'BigQuery ML',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What is the primary advantage of BigQuery ML (BQML) compared to training a model in Vertex AI with custom code?',
     options: [
       'BQML models can be exported to TensorFlow SavedModel format with higher fidelity than Vertex AI',
@@ -12051,10 +12323,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Google-MLE', 'SCS-C03'],
     question: 'What is training/serving skew, and which TFX component specifically addresses it for preprocessing transforms?',
     options: [
-      'Skew is the difference between training and serving preprocessing logic',
-      'Skew is concept drift',
-      'Skew is overfitting',
-      'Skew is class imbalance'],
+      'The difference between training and serving preprocessing logic',
+      'Another name for concept drift over time',
+      'Another name for model overfitting',
+      'Another name for class imbalance'
+    ],
     correct: 0,
     explanation: 'Training/serving skew is a common ML reliability failure: the feature preprocessing applied during training (e.g., normalization, tokenization, encoding) differs from what is applied during serving, causing distribution mismatch. TensorFlow Transform (TFT) solves this: it computes vocabulary, min/max, mean/std over the FULL training set using Apache Beam (full-pass transforms), and exports a TensorFlow graph of the transforms embedded in the SavedModel. The same graph runs in TFX serving, guaranteeing identical preprocessing. Source: TFX documentation, Professional ML Engineer Exam Guide, Google MLOps whitepaper.',
   },
@@ -12094,7 +12367,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Microsoft AI Governance',
     category: 'AI Governance',
     difficulty: 'intermediate',
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'Microsoft\'s Responsible AI Impact Assessment is required before deploying which category of AI system?',
     options: [
       'Any AI system running on Azure Government regions',
@@ -12237,10 +12510,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   certTags: ['SC-500'],
   question: 'A Copilot Studio agent built on SharePoint data returns confidential HR records to unauthorized users. The root cause is overly broad SharePoint permissions. Which preventive control should have been applied before publishing the agent?',
   options: [
-    'Restrict SharePoint site permissions and apply Purview sensitivity labels before publishing the agent',
-    'Deploy Azure Private Link for the Copilot Studio connector',
-    'Enable Entra Conditional Access for the Copilot Studio environment',
-    'Enable Microsoft Defender XDR advanced hunting for Copilot events'],
+      'Restrict site permissions and apply sensitivity labels before publishing',
+      'Deploy Private Link for the Copilot Studio connector traffic',
+      'Enable Conditional Access on the Copilot Studio environment',
+      'Enable Defender XDR advanced hunting for Copilot events'
+    ],
   correct: 0,
   explanation: 'Copilot Studio agents grounded on SharePoint respect SharePoint permissions at query time. If a site grants broad access, the agent surfaces that content accordingly. The preventive control is to restrict SharePoint permissions AND apply Microsoft Purview sensitivity labels, labels can trigger DLP rules that block Copilot from surfacing labeled content to unauthorized users. Source: Microsoft Copilot Studio data security documentation.',
 },
@@ -12503,7 +12777,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   topic: 'Azure AI Foundry',
   category: 'Cloud AI Platforms',
   difficulty: 'intermediate',
-  certTags: ['Azure-AI103', 'SCS-C03'],
+  certTags: ['Azure-AI103'],
   question: 'Which Azure AI Foundry feature enables systematic quality evaluation of a deployed prompt flow against custom ground truth datasets?',
   options: [
     'Prompt flow evaluation runs with built-in or custom evaluators',
@@ -12518,7 +12792,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
   topic: 'Azure AI Search',
   category: 'Cloud AI Platforms',
   difficulty: 'intermediate',
-  certTags: ['Azure-AI103', 'SCS-C03'],
+  certTags: ['Azure-AI103'],
   question: 'Which Azure AI Search feature stores vector embeddings alongside keyword indexes and combines both for hybrid retrieval using Reciprocal Rank Fusion?',
   options: [
     'Azure AI Search semantic ranker',
@@ -12779,7 +13053,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Sigma Rule',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'A Sigma rule detects PowerShell downloading a file via Invoke-WebRequest. After deploying to production Sentinel, it generates 2,000 alerts/day with a 5% true positive rate. Which tuning approach is most effective?',
     options: [
       'Increase the Sigma rule level from medium to high',
@@ -12921,7 +13195,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'KQL (Kusto Query Language)',
     category: 'AI in Security Ops',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI'],
     question: 'You need a KQL query for Microsoft Sentinel that detects when a new service principal is granted Owner role on a subscription within 24 hours of its creation. Which tables and join logic are required?',
     options: [
       'Join AuditLogs with AzureActivity',
@@ -12957,10 +13231,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['GIAC-GASAE', 'SCS-C03'],
     question: 'After confirming a Windows host ran Cobalt Strike, an automated SOAR playbook needs to remediate. In what order should these steps execute?',
     options: [
-      'Isolate host from network → collect forensic memory and disk snapshot → notify stakeholders → wipe and re-image from verified golden image → validate clean state → re-connect',
-      'Wipe and re-image → collect forensic artifacts → notify stakeholders → generate IR report',
-      'Block attacker C2 IP → run antivirus scan → reboot host → close the ticket',
-      'Notify stakeholders → disable affected user account → re-image → collect artifacts'],
+      'Isolate the host, capture memory and disk, notify, then report',
+      'Wipe and re-image, collect artifacts, notify stakeholders, report',
+      'Block the C2 address, run antivirus, reboot the host, close the ticket',
+      'Notify stakeholders, disable the account, re-image, collect artifacts'
+    ],
     correct: 0,
     explanation: 'Correct IR automation sequence: (1) Isolate first to stop active C2 communication without destroying volatile state; (2) Forensic collection before any destructive action, memory dump, disk image, log export preserve evidence for root cause analysis and legal hold; (3) Stakeholder notification concurrent with containment; (4) Wipe and re-image from a verified golden image (hash-verified) after forensics; (5) Validation scan confirms clean state before reconnecting. Skipping forensics before remediation destroys evidence needed for RCA. Source: NIST SP 800-61; GIAC GASAE.',
   },
@@ -13315,10 +13590,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Azure DDoS Protection Standard is enabled on a VNet. What does Standard add over the free Basic tier?',
     options: [
-      'Basic does not protect public IPs',
-      'Standard adds per-resource adaptive tuning, attack telemetry and metrics in Azure Monitor, DDoS Rapid Response',
-      'Standard is required to enable Azure Firewall Premium features',
-      'Standard enables Network Watcher flow logs on all VNet subnets automatically',
+      'Basic protection does not cover public IP addresses at all',
+      'Standard adds adaptive tuning, attack telemetry and rapid response support',
+      'Standard is a prerequisite for enabling Azure Firewall Premium features',
+      'Standard turns on Network Watcher flow logs for every subnet automatically'
     ],
     correct: 1,
     explanation: 'Azure DDoS Basic: always-on infrastructure-level volumetric scrubbing, no customer visibility or SLA. DDoS Protection Standard: per-VNet resource profiles tuned via machine learning, attack analytics in Azure Monitor, DRR team access, cost protection credits for compute scaling during attacks. Applies to Standard SKU public IPs in the protected VNet. Source: learn.microsoft.com/azure/ddos-protection/ddos-protection-overview.',
@@ -13346,10 +13621,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'After deploying a Private Endpoint for Azure OpenAI in a hub VNet with a custom DNS server, name resolution returns the public IP instead of the private IP. What is the most likely cause?',
     options: [
-      'Private Endpoints require Azure Bastion to resolve correctly',
-      'NSGs are blocking port 443 to the private IP',
-      'The Private Endpoint was deployed in the wrong subnet',
-      'The custom DNS server is not forwarding the privatelink.openai.azure.com zone to Azure DNS'],
+      'Private endpoints require Azure Bastion in order to resolve correctly',
+      'Network security groups are blocking port 443 to the private address',
+      'The private endpoint was deployed into the wrong virtual network subnet',
+      'The custom DNS server is not forwarding the privatelink zone to Azure DNS'
+    ],
     correct: 3,
     explanation: 'Private Endpoints work with Private DNS Zones: Azure creates an A record in the privatelink zone mapping the FQDN to the private IP. If VMs use a custom DNS server (common in hub-spoke), it must conditionally forward privatelink.openai.azure.com to Azure DNS 168.63.129.16. Without this forwarder, the custom DNS resolves through public DNS, returning the public IP and bypassing the Private Endpoint. Fix: link the Private DNS Zone AND configure conditional forwarding on the custom DNS server. Source: learn.microsoft.com/azure/private-link/private-endpoint-dns.',
   },
@@ -13424,10 +13700,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'What does Azure SQL Transparent Data Encryption (TDE) protect, and what is the default key management model?',
     options: [
-      'TDE uses column-level encryption',
-      'TDE provides at-rest encryption of data files, log files, and backups using a Database Encryption Key',
-      'TDE encrypts only backup files',
-      'TDE encrypts data in transit'],
+      'It applies encryption at the individual column level only',
+      'It encrypts data files, log files and backups with a database encryption key',
+      'It encrypts only the backup files written to the storage account',
+      'It protects the connection between client and database in transit'
+    ],
     correct: 1,
     explanation: 'Azure SQL TDE: real-time I/O encryption/decryption of data files, log files, and backups. The DEK is protected by a Server Certificate managed by Azure by default (Service-Managed Key). For compliance (GDPR, ISO 27001), BYOK stores the TDE key in Azure Key Vault (CMK), customer controls lifecycle including revocation. TDE is separate from in-transit (TLS) and column-level (Always Encrypted) encryption. Defender for Cloud recommends TDE on SQL databases as a security baseline. Source: learn.microsoft.com/azure/azure-sql/database/transparent-data-encryption-tde-overview.',
   },
@@ -13707,7 +13984,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Services',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner' as const,
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103'],
     question: 'You need to extract structured data from scanned invoice PDFs, vendor name, invoice number, line items, and totals. Which Azure AI service is most appropriate?',
     options: [
       'Azure Machine Learning AutoML',
@@ -13802,7 +14079,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['Azure-AI901', 'Azure-AI103', 'SC-500', 'SCS-C03'],
+    certTags: ['Azure-AI901', 'Azure-AI103', 'SC-500'],
     question: 'Azure AI Foundry replaces Azure AI Studio and consolidates multiple AI services. Which capability does Prompt Flow provide within Azure AI Foundry?',
     options: [
       'A model fine-tuning pipeline that automatically selects hyperparameters for GPT-4o fine-tuning',
@@ -13868,7 +14145,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Search',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You are building a RAG application on Azure. Users submit natural language queries that must search over 500,000 product documents. The system must combine semantic relevance with traditional keyword matching. Which Azure AI Search feature enables this hybrid approach?',
     options: [
       'Azure AI Search semantic ranker alone',
@@ -13898,7 +14175,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'RAG Pipelines',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['Azure-AI103', 'Azure-AI901', 'SCS-C03'],
+    certTags: ['Azure-AI103', 'Azure-AI901'],
     question: 'A RAG pipeline retrieves the 5 most semantically similar document chunks for each user query and passes them to an Azure OpenAI model. Users report that responses are sometimes inaccurate because retrieved chunks are from different time periods and the model picks the wrong one. What architectural improvement addresses this?',
     options: [
       'Use a smaller embedding model',
@@ -13913,7 +14190,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'You need to evaluate your RAG application responses for groundedness, verifying that each answer is supported by the retrieved context documents. Which Azure AI Foundry evaluation metric directly measures this?',
     options: [
       'Coherence, measures whether the response is logically consistent and well-structured',
@@ -13928,7 +14205,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Foundry',
     category: 'Cloud AI Platforms',
     difficulty: 'advanced' as const,
-    certTags: ['Azure-AI103', 'SC-500', 'SCS-C03'],
+    certTags: ['Azure-AI103', 'SC-500'],
     question: 'You are deploying an Azure AI Foundry agent that has access to file_search (vector store retrieval) and code_interpreter (Python sandbox). A security review identifies that the agent could be instructed via malicious document content to exfiltrate data using code_interpreter\'s internet access. What is the most effective mitigation?',
     options: [
       'Apply layered controls, Restrict agent tools to only those required for the task',
@@ -14160,7 +14437,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'SOAR Automation',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'Your security team wants to automate the response to brute-force login alerts from Azure AD Identity Protection. The playbook should: (1) verify the alert is not a false positive by checking login velocity; (2) temporarily disable the user account; (3) notify the user\'s manager; (4) create a ServiceNow incident. In Microsoft Sentinel, what components implement this?',
     options: [
       'A Microsoft Sentinel Fusion rule that combines multiple signals and automatically takes response actions without needing a separate Logic App',
@@ -14176,7 +14453,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Threat Hunting',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500'],
     question: 'A threat intelligence report describes APT29 using OAuth application abuse to maintain persistent access to Microsoft 365 after disabling MFA. You need to generate a KQL query for Microsoft Sentinel to hunt for this technique. Copilot for Security suggests a query. Which hunting hypothesis should structure your KQL logic?',
     options: [
       'Detect OAuth abuse by looking for service principals with more than 100 API calls per hour',
@@ -14192,7 +14469,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI-Powered SIEM',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI'],
     question: 'Microsoft Sentinel Fusion ML detects a multi-stage attack by correlating alerts from different sources. Which combination of events would Fusion most likely correlate into a single "Compromised account leading to ransomware" incident?',
     options: [
       'Three failed password attempts and one successful login from the same IP address within 60 seconds',
@@ -14209,7 +14486,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Detection Rule Generation',
     category: 'AI in Security Ops',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500'],
     question: 'What validation is required before deploying an AI-drafted T1059.003 KQL rule into production Sentinel?',
     options: [
       'Schema verification and back-testing against historical data',
@@ -14243,7 +14520,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Threat Hunting',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'Copilot for Security drafts a PsExec-hunt KQL that only checks EventID 7045 (service install). What is the critical detection gap?',
     options: [
       'It misses renamed PsExec binaries, pass-the-hash usage, and the source workstation context',
@@ -14690,10 +14967,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'GIAC-GOAA', 'SCS-C03'],
     question: 'An attacker uses a GAN to generate synthetic biometric images that bypass a facial recognition system trained on real data. Which attack category does this represent, and what makes GAN-generated inputs effective at evasion?',
     options: [
-      'Model extraction',
-      'Data poisoning',
+      'Model extraction via the API',
+      'Data poisoning during training',
       'Deepfake-based model evasion',
-      'Membership inference'],
+      'Membership inference attack'
+    ],
     correct: 2,
     explanation: 'GANs trained on real face data learn the underlying data distribution. The generator produces synthetic faces that: (1) Match the statistical distribution of real faces (human-imperceptible differences); (2) Bypass liveness detection trained on GAN-naive datasets; (3) Can be specifically optimized (adversarial perturbation on top of GAN output) to maximize a target subject\'s confidence score. Defenses: liveness detection (blink/motion detection), adversarial training with GAN-generated examples, and analysis of image artifacts (GAN fingerprints). Source: EC-Council CAIS Domain 2; NIST AI RMF GOVERN 6.1.',
   },
@@ -14769,7 +15047,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Prompt Injection Defense',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['CAIS', 'SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['CAIS', 'SecAI', 'SC-500'],
     question: 'Azure AI Content Safety\'s "Prompt Shields" applies which detection approach to identify prompt injection attempts in user messages?',
     options: [
       'Token-level perplexity analysis of the incoming message',
@@ -14840,10 +15118,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAIS', 'CAISP', 'Google-MLE', 'SCS-C03'],
     question: 'Which MLOps pipeline component is most commonly the target of ML model theft via API queries, and what query pattern characterizes a systematic model extraction attempt?',
     options: [
-      'Model inference and serving API',
-      'Training pipeline',
-      'Experiment tracking',
-      'Feature store'],
+      'The model inference and serving API',
+      'The offline training pipeline',
+      'The experiment tracking service',
+      'The shared feature store'
+    ],
     correct: 0,
     explanation: 'Model extraction attacks (Tramèr et al. 2016) target inference APIs: (1) The attacker submits probe queries covering the input space, can be random, adversarially chosen, or derived from public data; (2) Collects (input, output) pairs; (3) Trains a surrogate/substitute model that approximates the target\'s behavior; (4) Uses the surrogate for: (a) offline adversarial example generation, (b) white-box attacks on the surrogate that transfer to the target, (c) IP theft. Detection: monitor for systematic API queries (high volume, diverse inputs, confidence score extraction, structured input patterns). Rate limiting, query auditing, and output perturbation mitigate this. Source: Tramèr et al. "Stealing Machine Learning Models" (2016); CAIS Domain 4.',
   },
@@ -15017,7 +15296,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Threat Hunting',
     category: 'AI in Security Ops',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500'],
     question: 'An analyst uses an LLM to generate a KQL hunting query from a plain-English threat hypothesis: "Hunt for PowerShell execution with encoded commands followed by network connections to external IPs within 60 seconds." Which response indicates the LLM-generated query is production-ready?',
     options: [
       'The LLM generates a Sigma rule in the correct format with appropriate detection logic that the analyst converts to KQL',
@@ -15516,7 +15795,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'AWS-AIF-C01', 'SCS-C03'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     question: 'A team is building an ML pipeline on Google Vertex AI that trains weekly and deploys updated models. They need to ensure new model versions don\'t regress on key business metrics before replacing production traffic. What Vertex AI feature directly addresses this?',
     options: [
       'Vertex AI Workbench with version-controlled notebooks',
@@ -15531,7 +15810,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'BigQuery ML',
     category: 'Data Engineering',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A data scientist at a retail company wants to predict customer churn using 3 years of purchase history stored in BigQuery (500GB table). They need weekly retraining. What is the most operationally efficient approach given this data scale?',
     options: [
       'Pre-aggregate the 500GB into daily summaries before training to reduce data volume, then use AutoML Tables for training',
@@ -15610,7 +15889,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Explainability and Accountability',
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SecAI', 'AWS-AIF-C01', 'SCS-C03'],
+    certTags: ['Google-MLE', 'SecAI', 'AWS-AIF-C01'],
     question: 'Vertex AI Explainable AI supports multiple feature attribution methods. A compliance team needs feature attributions for a loan approval model that must be explainable to regulators and customers. Which method provides the most theoretically sound and model-agnostic explanation?',
     options: [
       'Integrated Gradients',
@@ -15642,7 +15921,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AutoML',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner' as const,
-    certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'A business analyst without ML engineering experience needs to build a customer churn prediction model. Their company uses Google Cloud. Which service best fits their skill level and requirements?',
     options: [
       'Vertex AI AutoML Tabular, upload a CSV dataset with churn labels, configure the target column and feature types',
@@ -16345,7 +16624,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Security Posture Management',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['SecAI', 'SC-500', 'CAISP', 'SCS-C03'],
+    certTags: ['SecAI', 'SC-500', 'CAISP'],
     question: 'An organization wants to continuously assess the security posture of all AI workloads deployed across their cloud environment. What is the primary function of an AI Security Posture Management (AI-SPM) capability?',
     options: [
       'AI-SPM monitors AI model inference latency and alerts when response times exceed SLA thresholds',
@@ -16380,7 +16659,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Registry Security',
     category: 'MLOps Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SecAI', 'GIAC-GOAA', 'SCS-C03'],
+    certTags: ['Google-MLE', 'SecAI', 'GIAC-GOAA'],
     question: 'Your organization uses Vertex AI Model Registry to manage ML model versions across dev, staging, and production. What governance control should be applied to the promotion of a model from staging to production?',
     options: [
       'Production promotion should be disabled entirely',
@@ -16396,7 +16675,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Monitoring and Drift Detection',
     category: 'MLOps Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'CAIS', 'SecAI', 'SCS-C03'],
+    certTags: ['Google-MLE', 'CAIS', 'SecAI'],
     question: 'A production fraud detection model deployed on Vertex AI Prediction begins showing a gradual decline in precision over six weeks without obvious data distribution changes. What security threat should investigators consider alongside standard model drift?',
     options: [
       'Gradual precision decline matching no distribution shift may indicate adversarial evasion',
@@ -16428,7 +16707,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Explainability and Audit',
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'GIAC-GOAA', 'CAISP', 'SCS-C03'],
+    certTags: ['Google-MLE', 'GIAC-GOAA', 'CAISP'],
     question: 'A financial institution uses a Vertex AI AutoML model for credit decisions. Regulators require the institution to explain individual credit decisions under ECOA/Regulation B. What explainability approach does Vertex AI Explainable AI provide that satisfies this requirement?',
     options: [
       'Vertex AI Explainable AI requires access to the training dataset to generate explanations',
@@ -16475,7 +16754,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Bias and Fairness Audit',
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'GIAC-GOAA', 'CAISP', 'SCS-C03'],
+    certTags: ['Google-MLE', 'GIAC-GOAA', 'CAISP'],
     question: 'During a bias audit of a hiring recommendation model, an ML engineer finds that the model has 85% precision for recommending male candidates and 72% precision for female candidates. What is this disparity called and what Vertex AI tool can help investigate the root cause?',
     options: [
       'This is called a calibration error and must be fixed by rebalancing the dataset to have exactly equal numbers of male and female training examples',
@@ -16610,7 +16889,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Content Safety Filtering',
     category: 'AI Application Security',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'CAIS', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'CAIS', 'SecAI'],
     question: 'What are Azure AI Content Safety\'s four harm categories, and how is severity typically tuned for a healthcare app?',
     options: [
       'Hate, Sexual, Violence and Self-harm at severities 0, 2, 4 and 6',
@@ -17047,7 +17326,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Cloud AI Platforms',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['SecAI', 'SC-500'],
     question: 'What makes Security Copilot referencing Defender Threat Intelligence data security-relevant versus a standard AI chatbot?',
     options: [
       'It connects live to Microsoft-curated TI feeds and enterprise signals, grounding answers in current data with source citation',
@@ -17249,10 +17528,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Azure-AI103', 'SC-500'],
     question: 'When building a RAG (Retrieval-Augmented Generation) application with Azure OpenAI and Azure AI Search, what is "semantic ranking" and when should it be enabled?',
     options: [
-      'Semantic ranking is a synonym for vector similarity search',
-      'Semantic ranking uses BM25 keyword scoring to rank retrieved documents',
-      'Semantic ranking pre-classifies documents by topic during indexing',
-      'Semantic ranking uses a cross-encoder re-ranker model to score document-query relevance beyond keyword overlap'],
+      'Semantic ranking is another name for vector similarity search',
+      'Semantic ranking applies BM25 keyword scoring to the retrieved documents',
+      'Semantic ranking pre-classifies documents by topic during index build',
+      'Semantic ranking re-scores query relevance with a cross-encoder model'
+    ],
     correct: 3,
     explanation: 'Azure AI Search semantic ranking: (1) Two-stage retrieval: first stage uses BM25 keyword or vector search to get top-50 candidates; second stage applies a Microsoft-trained cross-encoder re-ranker that scores semantic relevance between the query and each candidate; (2) Re-ranker output: semantic_score (0.0-4.0) + semantic captions (extractive highlights); (3) When to use: when queries are natural language questions (not just keyword searches); when initial retrieval misses semantically-relevant but keyword-different documents; when LLM generates hallucinations citing non-relevant retrieved content; (4) Cost: semantic ranking adds per-query cost; (5) Complements vector search: hybrid = BM25 + vector + semantic re-ranking is the highest-quality retrieval pattern. Source: Azure AI Search semantic ranking documentation; Azure AI-103 Domain 4.',
   },
@@ -17610,10 +17890,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'SC-500', 'SCS-C03'],
     question: "An organization uses a third-party generative AI API for customer service. The organization's AI governance team needs to assess vendor risk. Which factor is MOST critical to assess regarding the third-party AI vendor's data handling?",
     options: [
-      "The vendor's model accuracy benchmarks on standard NLP datasets (MMLU, HellaSwag), higher benchmark scores indicate lower risk of incorrect AI responses that could harm customer relationships",
-      "The vendor's cloud infrastructure geographic redundancy, multi-region deployment ensures high availability and reduces customer service downtime risk",
-      "The vendor's API rate limits and SLA uptime guarantees, these determine whether the AI can handle peak traffic without degraded customer service response times",
-      "Whether customer-submitted prompts and conversation history are used to train or fine-tune the vendor's models, this determines whether customer data submitted to the AI becomes part of the vendor's training corpus, potentially violating data processing agreements and customer privacy expectations"],
+      'Model accuracy benchmarks on standard language datasets',
+      'Geographic redundancy of the vendor cloud infrastructure',
+      'Published API rate limits and the uptime service level agreement',
+      'Whether submitted prompts are used to train the vendor models'
+    ],
     correct: 3,
     explanation: "Third-party AI vendor risk assessment for generative AI APIs: (1) Training data usage: most critical question, does the vendor use API interactions (your prompts and completions) to train future model versions? OpenAI, Anthropic, and major providers offer no-training-on-API-data options or enterprise agreements with explicit data usage restrictions; (2) Contractual controls: Data Processing Agreement (DPA) should specify data retention, purpose limitation, no training on customer data; (3) Data residency: where is prompt data processed and stored? EU GDPR implications if EU customer data leaves EU; (4) Security certifications: SOC 2 Type II, ISO 27001 for the vendor; (5) Model versioning: does the vendor change the model without notice? Version pinning or change notifications; (6) Sub-processors: does the vendor use sub-processors who also receive your data? (7) NIST AI RMF GOVERN 4.2: organizational AI vendor due diligence policy. Source: NIST AI RMF GOVERN 4; CAISP Domain 3; ISO/IEC 42001 Clause 8.",
   },
@@ -17625,10 +17906,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['CAISP', 'Azure-AI103', 'SCS-C03'],
     question: 'SHAP (SHapley Additive exPlanations) and LIME (Local Interpretable Model-agnostic Explanations) are both post-hoc explainability methods. What is the primary conceptual difference between SHAP and LIME?',
     options: [
-      'SHAP produces global explanations',
-      'SHAP requires access to model gradients',
-      "SHAP uses game theory (Shapley values) to compute each feature's contribution by measuring its average marginal contribution across all possible feature subsets, providing theoretically consistent global and local attributions; LIME fits a simple interpretable local model (linear regression) around a specific prediction by sampling perturbations",
-      'LIME is the more computationally efficient method suitable for real-time inference explanations'],
+      'SHAP produces only global explanations of a model',
+      'SHAP requires direct access to model gradients',
+      'SHAP attributes each feature a contribution using Shapley values',
+      'LIME is more efficient and better suited to real-time explanation'
+    ],
     correct: 2,
     explanation: "SHAP vs LIME: (1) SHAP (Shapley values): game theory basis, measures each feature's marginal contribution across all possible feature coalitions; properties: efficiency (contributions sum to prediction), symmetry (same contribution yields same attribution), dummy (zero contribution = zero attribution), additivity (summable across samples); provides both local (per-prediction) and global (average over dataset) attributions from a unified framework; (2) LIME: creates a dataset of perturbed inputs near the instance being explained, queries the model for predictions, trains a simple interpretable model (sparse linear regression) weighted by proximity to the original instance; locally faithful to the complex model; computationally faster per instance; less theoretically grounded than SHAP; (3) Black-box access: both are model-agnostic (work with any model via queries); SHAP variants (KernelSHAP) work black-box; (4) Use cases: SHAP preferred for theoretical consistency and auditing; LIME for fast per-instance explanations; (5) Azure ML: integrates both via Azure ML Responsible AI Dashboard. Source: Lundberg & Lee (SHAP paper); Ribeiro et al. (LIME paper); CAISP Domain 2.",
   },
@@ -17658,10 +17940,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: `Which threat does Microsoft Defender for Cloud's AI workload protection plan specifically detect against Azure OpenAI deployments?`,
     options: [
-      'D. Malware propagation through Azure Blob Storage',
-      'C. Distributed denial-of-service attacks against Azure Load Balancer',
-      'B. Prompt injection attacks, jailbreak attempts, and sensitive data exposure in AI model inputs and outputs',
-      'A. SQL injection attacks targeting Azure SQL databases'],
+      'Malware propagating through blobs held in Azure Storage accounts',
+      'Distributed denial of service attacks against Azure Load Balancer',
+      'Prompt injection, jailbreak attempts and sensitive data exposure in AI traffic',
+      'SQL injection attacks aimed at Azure SQL Database instances'
+    ],
     correct: 2,
     explanation: `Microsoft Defender for Cloud's AI Threat Protection plan (part of Defender CSPM or standalone) monitors Azure OpenAI and Azure AI Studio deployments for prompt injection, jailbreak attempts, credential leakage, and sensitive data in model I/O. Alerts surface in Defender for Cloud and can stream to Microsoft Sentinel. Source: Microsoft Defender for Cloud AI workload protections documentation, aka.ms/DefenderForAI.`,
   },
@@ -17688,10 +17971,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'A security engineer wants Microsoft Sentinel to automatically create an incident whenever Defender for Cloud raises an AI workload alert (e.g., prompt injection detected). What is the correct approach?',
     options: [
-      'A. Manually export alerts via CSV and import into Sentinel weekly',
-      'B. Enable the Microsoft Defender for Cloud data connector in Sentinel and configure bi-directional sync so Defender alerts automatically become Sentinel incidents',
-      'C. Use Azure Logic Apps to poll the Defender REST API every hour',
-      'D. Deploy a custom SIEM agent on each Azure OpenAI endpoint',
+      'Manually export the alerts to CSV and import them into Sentinel weekly',
+      'Enable the Defender for Cloud connector and configure bi-directional sync',
+      'Use a Logic App to poll the Defender REST API once every hour',
+      'Deploy a custom SIEM collection agent on each Azure OpenAI endpoint'
     ],
     correct: 1,
     explanation: 'The Microsoft Defender for Cloud data connector in Microsoft Sentinel streams Defender alerts, including AI workload protection alerts, directly into Sentinel as incidents with bi-directional sync. Analysts can then run KQL analytics rules, trigger playbooks (SOAR), and correlate AI alerts with other security signals. Source: Microsoft Sentinel data connectors, Defender for Cloud integration (learn.microsoft.com/azure/sentinel).',
@@ -17765,10 +18048,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Which Azure RBAC built-in role allows an application to call Azure OpenAI inference endpoints using Entra ID (keyless) authentication, without being able to create or manage the resource?',
     options: [
-      'B. Cognitive Services OpenAI User',
-      'D. Reader',
-      'A. Contributor',
-      'C. Owner'],
+      'Cognitive Services OpenAI User',
+      'Reader on the resource group',
+      'Contributor on the subscription',
+      'Owner on the AI resource'
+    ],
     correct: 0,
     explanation: 'The "Cognitive Services OpenAI User" role (roleDefinitionId: 5e0bd9bd-7b93-4f28-af87-19fc36ad61bd) permits data-plane inference calls to Azure OpenAI via Entra ID tokens. "Cognitive Services OpenAI Contributor" adds fine-tuning and deployment management. Using RBAC instead of API keys enables per-identity audit trails and eliminates secret management. Source: Azure OpenAI: Role-based access control (learn.microsoft.com/azure/ai-services/openai/how-to/role-based-access-control).',
   },
@@ -17840,10 +18124,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SCS-C03'],
     question: 'Following least-privilege for an ML pipeline, a SageMaker training job needs to read from S3 and write model artifacts back to S3. What is the recommended IAM approach?',
     options: [
-      'B. Create a SageMaker execution IAM role with a resource-based policy granting s3, GetObject on the specific input bucket and s3, PutObject on the specific model artifact bucket only',
-      'A. Attach the AWS-managed AdministratorAccess policy to the SageMaker execution role',
-      'C. Use root account credentials stored in environment variables',
-      'D. Use a single shared IAM user key across all ML pipeline components'],
+      'Create a SageMaker execution role scoped to the specific bucket prefix',
+      'Attach the AWS managed AdministratorAccess policy to the execution role',
+      'Use root account credentials held in environment variables',
+      'Share a single IAM user access key across all pipeline components'
+    ],
     correct: 0,
     explanation: 'Least privilege for SageMaker training: create a dedicated IAM execution role (passed via RoleArn), restrict S3 actions to specific ARNs (not wildcard), use resource-based conditions (aws:ResourceAccount, s3:prefix) to limit scope. Avoid long-lived user credentials. SageMaker assumes this role during training, if compromised, blast radius is limited. Source: AWS Well-Architected ML Lens: Security pillar; SageMaker IAM documentation.',
   },
@@ -18656,7 +18941,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Security Posture Management',
     category: 'Cloud AI Platforms',
     difficulty: 'intermediate' as const,
-    certTags: ['SecAI', 'SC-500', 'CAISP', 'SCS-C03'],
+    certTags: ['SecAI', 'SC-500', 'CAISP'],
     question: 'Microsoft Defender for Cloud\'s AI Security Posture Management (AI-SPM) extends traditional CSPM. What distinguishes AI-SPM from standard cloud security posture management?',
     options: [
       'AI-SPM automatically remediates AI security findings without requiring human approval',
@@ -18673,7 +18958,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Threat Hunting',
     category: 'AI in Security Ops',
     difficulty: 'intermediate' as const,
-    certTags: ['SecAI', 'GIAC-GASAE', 'SC-500', 'SCS-C03'],
+    certTags: ['SecAI', 'GIAC-GASAE', 'SC-500'],
     question: 'A threat hunter uses Microsoft Security Copilot to generate KQL hunting queries. What is the primary risk of using AI-generated KQL directly in production without review?',
     options: [
       'Query performance',
@@ -18728,10 +19013,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500', 'CAISP'],
     question: 'Microsoft Purview\'s DSPM for AI provides visibility into AI data risks in Microsoft 365. Which specific risk does DSPM for AI address that traditional DLP policies cannot detect?',
     options: [
-      'Employees sharing documents with external users via SharePoint',
-      'Employees downloading sensitive files to unmanaged devices',
-      'Employees asking Microsoft 365 Copilot to summarize documents they are authorized to read',
-      'Employees using personal email addresses in Outlook'],
+      'Employees sharing documents with external users through SharePoint links',
+      'Employees downloading sensitive files onto unmanaged personal devices',
+      'Copilot surfacing content a user can technically read but should not see',
+      'Employees using personal email addresses for work correspondence'
+    ],
     correct: 2,
     explanation: 'DSPM for AI data access amplification: Traditional DLP: "detect when sensitive content is sent outside the organization." But Copilot summarizing authorized documents: (1) No DLP violation, authorized access, data stays internal; (2) DSPM for AI insight: the user accessed sensitive content from 500 broadly-shared documents they would never have found manually, Copilot amplified their effective data access. Remediation: tighten sharing permissions, apply sensitivity labels, use Copilot access controls to restrict summarization of highly sensitive documents.',
   },
@@ -18910,7 +19196,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Security Automation Fundamentals',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'CAISP', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI', 'CAISP'],
     question: 'A security automation team uses an LLM to generate KQL hunting queries from natural language hypotheses. Which validation step is most critical before executing AI-generated queries in a production Sentinel workspace?',
     options: [
       'Schema validation against the workspace tables, then a synthetic-data run',
@@ -20109,7 +20395,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Google Cloud AI Security',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'AWS-AIF-C01', 'SCS-C03'],
+    certTags: ['Google-MLE', 'AWS-AIF-C01'],
     question: 'Vertex AI\'s Model Monitoring service uses Population Stability Index (PSI) to detect feature drift. What PSI threshold range indicates significant drift requiring investigation in production ML models?',
     options: [
       'PSI > 0.01 indicates significant drift and requires immediate model retraining',
@@ -22499,7 +22785,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'MLOps Security',
     category: 'MLOps Security',
     difficulty: 'advanced' as const,
-    certTags: ['Google-MLE', 'GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['Google-MLE', 'GIAC-GASAE', 'SecAI'],
     question: 'A data scientist pushes a training notebook to GitHub with hardcoded GCP service account credentials. What attack chain can an adversary with repository access execute?',
     options: [
       'Credential compromise → lateral movement, extract credentials from commit history',
@@ -22548,7 +22834,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'MLOps Security',
     category: 'MLOps Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'GIAC-GASAE', 'SCS-C03'],
+    certTags: ['Google-MLE', 'GIAC-GASAE'],
     question: 'What is the security benefit of using Vertex AI Pipelines over custom scripts for ML training workflows?',
     options: [
       'Security benefits, Immutable pipeline runs with versioned component specs',
@@ -22580,7 +22866,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Secure LLM Deployment',
     category: 'AI Application Security',
     difficulty: 'advanced' as const,
-    certTags: ['SecAI', 'CAISP', 'CAIS', 'SCS-C03'],
+    certTags: ['SecAI', 'CAISP', 'CAIS'],
     question: 'What security functions does an LLM Gateway architecture provide?',
     options: [
       'An LLM Gateway is an HSM that encrypts LLM model weights',
@@ -22822,13 +23108,14 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Microsoft Defender for AI Workloads',
     category: 'AI Security Operations',
     difficulty: 'advanced' as const,
-    certTags: ['SC-500', 'SCS-C03'],
+    certTags: ['SC-500'],
     question: 'A Defender for Cloud alert fires: "Prompt injection attack detected on Azure OpenAI endpoint." The alert contains the injected string and a confidence score of 0.94. What is the recommended first investigative action in Microsoft Sentinel?',
     options: [
-      'Rotate the Azure OpenAI API key and redeploy the endpoint with a new system prompt',
-      'Disable the Azure OpenAI endpoint immediately to prevent further attacks',
-      'Escalate to Microsoft support as prompt injection alerts require vendor triage',
-      'Run the AI Workload Investigation playbook in Sentinel to correlate the alert with user identity, prompt history, and downstream tool calls'],
+      'Rotate the API key and redeploy the endpoint with a new system prompt',
+      'Disable the Azure OpenAI endpoint immediately to stop further attacks',
+      'Escalate to Microsoft support because injection alerts need vendor triage',
+      'Run the AI workload investigation playbook to correlate identity and prompts'
+    ],
     correct: 3,
     explanation: 'Microsoft Sentinel\'s AI Workload Investigation playbook is purpose-built for this scenario: it correlates the Defender alert with Entra sign-in logs, Azure OpenAI prompt logs, and downstream resource access to reconstruct the full attack chain. Disabling the endpoint disrupts service without understanding scope; rotating the key is a remediation step, not investigation; vendor escalation delays response. SC-500 Domain 4: AI-specific incident response.',
   },
@@ -22837,7 +23124,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Microsoft Purview AI Hub',
     category: 'AI Governance',
     difficulty: 'advanced' as const,
-    certTags: ['SC-500', 'SCS-C03'],
+    certTags: ['SC-500'],
     question: 'An organization is configuring Microsoft Purview AI Hub to govern Copilot for Microsoft 365. Which capability CANNOT be configured through Purview AI Hub?',
     options: [
       'Auditing all Copilot prompts and responses for compliance review',
@@ -22852,7 +23139,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Content Safety',
     category: 'AI Security Controls',
     difficulty: 'intermediate' as const,
-    certTags: ['SC-500', 'SCS-C03'],
+    certTags: ['SC-500'],
     question: 'Azure AI Content Safety returns a severity score of 2 for "hate" on a user message submitted to an enterprise chatbot. The organization\'s policy blocks severity ≥4 for hate content. What is the correct system behavior?',
     options: [
       'Block the message and log a security incident',
@@ -22867,7 +23154,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Defender for Cloud AI Threat Protection',
     category: 'AI Threat Detection',
     difficulty: 'advanced' as const,
-    certTags: ['SC-500', 'SCS-C03'],
+    certTags: ['SC-500'],
     question: 'Defender for Cloud raises a "Jailbreak attempt" alert on an Azure OpenAI deployment. The security team finds the alert was triggered by a legitimate user testing the chatbot with unusual phrasing. What is the BEST approach to reduce false positives while maintaining security coverage?',
     options: [
       'Remove the chatbot from Defender for Cloud coverage during testing periods',
@@ -22885,10 +23172,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Microsoft\'s AI Red Team (AIRT) uses PyRIT (Python Risk Identification Toolkit) during internal model evaluations. What is the PRIMARY security use case for PyRIT?',
     options: [
-      'Generating synthetic training data to improve model robustness against distribution shift',
-      'Automated performance benchmarking of Azure OpenAI models against standard NLP datasets',
-      'Automated adversarial probing of LLM endpoints to identify safety failures, jailbreak vulnerabilities, and harmful output patterns at scale',
-      'Static analysis of AI system code for dependency vulnerabilities and supply chain risks'],
+      'Generating synthetic training data to improve robustness to drift',
+      'Benchmarking Azure OpenAI models against standard language datasets',
+      'Automated adversarial probing of endpoints to surface safety failures',
+      'Static analysis of AI system code for dependency and supply chain risk'
+    ],
     correct: 2,
     explanation: 'PyRIT (Python Risk Identification Toolkit) is Microsoft\'s open-source framework for automated red-teaming of generative AI systems. It orchestrates adversarial prompt generation, attack variation, and safety evaluation at scale, covering jailbreaks, harmful content, and policy violations. It is not for NLP benchmarking, synthetic training data, or static code analysis. Available at github.com/Azure/PyRIT. SC-500 Domain 2.',
   },
@@ -23230,7 +23518,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Azure AI Service Security Design',
     category: 'Azure AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Azure-AI103', 'SCS-C03'],
+    certTags: ['Azure-AI103'],
     question: 'When designing a multi-tenant Azure AI application, which combination of controls provides the STRONGEST isolation between tenant data in an Azure OpenAI deployment?',
     options: [
       'Shared Azure OpenAI resource with tenant ID included in the user message for routing',
@@ -23714,10 +24002,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Microsoft Defender for Cloud\'s AI Security Posture Management (AISPM) identifies misconfigurations in Azure AI resources. Which specific misconfiguration category does AISPM uniquely flag that standard infrastructure security scanners do NOT?',
     options: [
-      'Unencrypted data in Azure AI Search indexes',
-      'Azure OpenAI deployments with content filter severity levels set below recommended thresholds, or with content filter categories disabled',
-      'Public internet exposure of Azure OpenAI deployments without Private Endpoint',
-      'Over-privileged RBAC role assignments on Azure AI Foundry projects'],
+      'Unencrypted data held in Azure AI Search indexes',
+      'Content filter severity set below the recommended threshold or disabled',
+      'Public internet exposure of deployments with no private endpoint',
+      'Over-privileged role assignments on Azure AI Foundry projects'
+    ],
     correct: 1,
     explanation: 'AISPM adds AI-specific posture checks that infrastructure security scanners cannot perform: it evaluates the *semantic security configuration* of AI resources, specifically whether Azure OpenAI content filter categories (Hate, Violence, Sexual, Self-Harm) are enabled and whether severity thresholds (Low/Medium/High) are set at appropriate levels. A deployment with all filters disabled or set to "allow all" at severity=High has a dangerous content safety posture that only an AI-aware scanner can flag. Network exposure and RBAC are standard infrastructure checks also performed by Defender. Data encryption is also a standard storage check. The AI-specific insight is filter configuration, the intersection of security posture and content safety.',
   },
@@ -24023,10 +24312,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['Azure-AI103', 'SC-500'],
     question: 'A developer builds a RAG pipeline: user query → Azure AI Search → chunk retrieval → Azure OpenAI → response. At which point should Prompt Shields be applied to provide maximum protection against indirect injection via retrieved documents?',
     options: [
-      'After Azure OpenAI generates the response',
-      'At the Azure AI Search indexing time',
-      'Before the user query reaches Azure AI Search',
-      'After retrieval, before the retrieved chunks are assembled into the Azure OpenAI prompt'],
+      'After Azure OpenAI has generated the final response',
+      'At Azure AI Search indexing time before storage',
+      'Before the user query is sent to Azure AI Search',
+      'After retrieval, before the chunks are assembled into the prompt'
+    ],
     correct: 3,
     explanation: 'For indirect injection defense in RAG pipelines, Prompt Shields should be applied to retrieved documents BEFORE they are included in the Azure OpenAI context window. The attack vector: an adversary poisons a document in the index; when a legitimate user\'s query retrieves that document, it injects adversarial instructions into the LLM context. By running Azure AI Content Safety Prompt Shields document analysis on the retrieved chunks before assembling the final prompt, the system detects embedded injection instructions and can exclude or sanitize the poisoned chunks. Pre-query filtering defends against query-based attacks, not document injection. Post-response filtering catches output-level harm but doesn\'t prevent the LLM from following injected instructions. Indexing-time scanning is valuable but requires re-scanning when documents change and may miss zero-day attack patterns.',
   },
@@ -24389,10 +24679,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SC-500'],
     question: 'Microsoft Purview DSPM for AI (Data Security Posture Management for AI) addresses which risk in AI deployments?',
     options: [
-      'Optimizes the token consumption of Azure OpenAI API calls to reduce costs',
-      'Discovers AI applications in the organization\'s environment, classifies what sensitive data is accessible to AI models',
-      'Provides AI-generated data classification labels for documents stored in SharePoint',
-      'Monitors the GPU utilization of Azure OpenAI inference workloads',
+      'Optimises token consumption of Azure OpenAI calls to reduce spend',
+      'Discovers AI applications and classifies the sensitive data they can reach',
+      'Generates AI-based classification labels for documents in SharePoint',
+      'Monitors the processor utilisation of inference workloads'
     ],
     correct: 1,
     explanation: 'DSPM for AI in Microsoft Purview addresses AI data exposure risk: organizations deploy Copilot and Azure OpenAI against their data stores without fully understanding what sensitive data those tools can access. It discovers AI applications and data connections, classifies sensitivity of exposed data, surfaces overpermissioned data access, and provides remediation recommendations.',
@@ -24909,7 +25199,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Google Cloud AI Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'Google Cloud\'s Vertex AI features Organization Policies for AI. What does the "Vertex AI: Restrict base model access" policy control?',
     options: [
       'Controls which foundation models from Model Garden can be deployed or accessed within the organization',
@@ -25780,7 +26070,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'KQL Security Automation',
     category: 'AI-Assisted Defense',
     difficulty: 'beginner' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500'],
     question: 'A security engineer uses an LLM to generate a KQL query for Microsoft Sentinel that hunts for lateral movement. Before deploying to production, what is the most critical validation step?',
     options: [
       'Get approval from the vendor that sold the LLM',
@@ -25952,7 +26242,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Security Copilot Governance',
     category: 'AI-Assisted Defense',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI', 'SC-500'],
     question: 'When deploying Microsoft Security Copilot in a SOC, what role-based access control principle should govern which analysts can use which Copilot capabilities?',
     options: [
       'All SOC analysts should have identical Copilot capabilities regardless of role',
@@ -26046,7 +26336,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI-Powered SIEM Enhancement',
     category: 'AI-Assisted Defense',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500'],
     question: 'Microsoft Sentinel\'s AI capabilities include "UEBA" (User and Entity Behavior Analytics). What is the primary security value of UEBA over threshold-based detection?',
     options: [
       'UEBA replaces all other detection methods',
@@ -26477,7 +26767,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Serving Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Vertex AI endpoint serving a production model starts receiving abnormally high prediction request volumes from a single external IP. What Vertex AI feature helps protect against this abuse?',
     options: [
       'The problem requires purchasing additional Vertex AI capacity to absorb the traffic',
@@ -26523,7 +26813,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Pipelines Artifact Security',
     category: 'MLOps Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'An MLOps engineer notices that Vertex AI Pipeline artifacts (datasets, models, metrics) are stored in a shared Cloud Storage bucket accessible by all data scientists. What security improvement should be implemented?',
     options: [
       'Move all artifacts to a public CDN for faster access',
@@ -26538,7 +26828,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Workload Compliance',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A company needs to ensure that Vertex AI training jobs using sensitive customer data remain within the EU for GDPR data residency compliance. How is this achieved?',
     options: [
       'Training in any Google Cloud region is equivalent for GDPR',
@@ -26553,7 +26843,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Versioning Security',
     category: 'MLOps Security',
     difficulty: 'beginner' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What security benefit does maintaining multiple model versions in Vertex AI Model Registry provide?',
     options: [
       'Version history enables rollback, if a newly deployed model version exhibits unexpected behavior',
@@ -26568,7 +26858,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Secure ML Pipeline Design',
     category: 'MLOps Security',
     difficulty: 'advanced' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A TFX pipeline ingests data from a third-party API, trains a model, and deploys it to Vertex AI. What security controls should be built into each stage?',
     options: [
       'Stage-specific controls, Ingestion',
@@ -26583,7 +26873,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Infrastructure Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Vertex AI Workbench notebook runs a Jupyter kernel with network access. What is the primary security risk of notebook environments with direct internet access in a sensitive ML project?',
     options: [
       'Internet access only improves notebook functionality with no security risk',
@@ -26598,7 +26888,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Feature Store Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Vertex AI Feature Store contains derived features computed from customer transactions including fraud risk scores. What data governance consideration applies to sharing these features across business units?',
     options: [
       'Features are derived data and have no governance requirements',
@@ -26644,7 +26934,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Batch Prediction Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Vertex AI batch prediction job processes a large dataset of customer records to generate risk scores. What data protection control is most important for this use case?',
     options: [
       'Batch prediction jobs need no security controls',
@@ -26659,7 +26949,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Security Posture',
     category: 'Google Cloud AI Security',
     difficulty: 'advanced' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A security team audits a Google Cloud project used for ML workloads. Which Security Command Center findings specifically relate to Vertex AI security posture?',
     options: [
       'Security Command Center includes findings for, Vertex AI datasets and models',
@@ -27435,7 +27725,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Model Registry',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What is the purpose of Vertex AI Model Registry in a production ML workflow?',
     options: [
       'Model Registry stores training data and feature definitions for ML models',
@@ -27495,7 +27785,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'BigQuery ML Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'An ML engineer trains a BigQuery ML model on a table containing PII. What controls prevent the model from leaking training data to unauthorized users who only have model access?',
     options: [
       'Implement Column-level security',
@@ -27525,7 +27815,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI on Google Cloud',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'Which Google Cloud tool helps ML engineers detect and measure bias in ML models before deployment?',
     options: [
       'Vertex AI Model Evaluation with sliced evaluation metrics',
@@ -27555,7 +27845,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Garden and Foundation Models',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What is Vertex AI Model Garden?',
     options: [
       'A monitoring service that gardens underperforming models from production',
@@ -27600,7 +27890,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Workbench Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A data science team uses Vertex AI Workbench notebooks to explore sensitive healthcare data. Which configuration hardens the Workbench instance?',
     options: [
       'Harden Vertex AI Workbench by, disabling public IP',
@@ -27699,7 +27989,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'KQL for AI Security',
     category: 'AI-Assisted Security Operations',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI'],
     question: 'A SOC analyst is writing a KQL query in Microsoft Sentinel to detect potential prompt injection attacks against Azure OpenAI. Which log source and approach should they use?',
     options: [
       'Azure Activity Logs, they contain all Azure OpenAI API calls with request content',
@@ -27732,7 +28022,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Copilot for Security',
     category: 'AI-Assisted Security Operations',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SC-500', 'SecAI'],
     question: 'What is Microsoft Copilot for Security and what are its primary SOC-analyst capabilities?',
     options: [
       'An AI security analyst with NL investigation, KQL generation, and summarization',
@@ -27783,7 +28073,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Sigma Detection Rules',
     category: 'AI-Assisted Security Operations',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GASAE', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'SecAI'],
     question: 'What is a Sigma rule and how does it relate to AI-assisted security operations?',
     options: [
       'Open YAML detection-rule format that converts to KQL or SPL or Lucene',
@@ -31005,10 +31295,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Why can a resource-based policy grant access to a principal in another account even when that principal has no matching identity-based allow?',
     options: [
-      'Cross-account access is granted when both the resource policy allows it and the calling account allows the principal to make the call',
-      'Resource-based policies bypass the identity policy entirely in all cases',
-      'IAM users inherit permissions from any resource policy that names them',
-      'Resource policies are evaluated before SCPs and therefore win'
+      'Cross-account access needs both the resource policy and the calling account to allow it',
+      'Resource-based policies bypass the identity-based policy entirely in every case',
+      'IAM users automatically inherit permissions from any resource policy naming them',
+      'Resource policies are evaluated ahead of service control policies and therefore win'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -31057,9 +31347,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which capability identifies resources in your organization that are shared with an external principal?',
     options: [
       'IAM Access Analyzer external access findings',
-      'IAM credential report',
-      'AWS Config conformance packs',
-      'Amazon Detective finding groups'
+      'The IAM credential report for the account',
+      'AWS Config conformance pack evaluation results',
+      'Amazon Detective finding group correlation'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -31192,10 +31482,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What distinguishes a GuardDuty attack sequence finding from an ordinary GuardDuty finding?',
     options: [
-      'It correlates multiple signals over time into one critical-severity incident with a mapped ATT&CK timeline',
-      'It is generated only for findings that Security Hub has already suppressed',
-      'It replaces the underlying individual findings, which are then deleted',
-      'It is produced solely from AWS Config configuration drift'
+      'It correlates signals over time into one critical-severity incident with an ATT&CK timeline',
+      'It is raised only for findings that Security Hub has already suppressed as noise',
+      'It replaces the underlying individual findings, which are then permanently deleted',
+      'It is derived solely from AWS Config configuration drift across the account'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -31294,10 +31584,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Long-lived access keys for an IAM user have leaked publicly. Which sequence limits damage while preserving the audit trail?',
     options: [
-      'Deactivate the key, review CloudTrail for its use, then delete the key and issue a replacement',
-      'Delete the IAM user immediately so no further calls are possible',
-      'Attach a deny-all policy and leave the key active for monitoring',
-      'Rotate the key and take no further action once the new key works'
+      'Deactivate the key, review CloudTrail for its use, then delete and replace it',
+      'Delete the IAM user immediately so that no further API calls are possible',
+      'Attach a deny-all policy and leave the key active for continued monitoring',
+      'Rotate the key and take no further action once the replacement works'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -31380,9 +31670,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Why does an interface VPC endpoint remove the need for an internet gateway when calling an AWS service API?',
     options: [
       'It places an elastic network interface with a private VPC address in front of the service',
-      'It routes the request through the AWS management account',
-      'It creates a site-to-site VPN tunnel to the service endpoint',
-      'It proxies the request through a NAT gateway in a public subnet'
+      'It routes the request through the organization management account instead',
+      'It creates a site-to-site VPN tunnel from the subnet to the service endpoint',
+      'It proxies the request through a NAT gateway sitting in a public subnet'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -31532,10 +31822,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which CloudTrail configuration best protects the audit trail from tampering by an attacker with administrative access?',
     options: [
-      'An organization trail delivering to a separate account with log file validation and S3 Object Lock',
-      'A per-account trail with server-side encryption enabled',
-      'CloudTrail Insights enabled on the production account',
-      'A trail delivering to CloudWatch Logs in the same account'
+      'An organization trail to a separate account with log file validation and Object Lock',
+      'A per-account trail with server-side encryption enabled on the destination bucket',
+      'CloudTrail Insights enabled on the production account with anomaly alerting',
+      'A trail delivering into a CloudWatch log group inside the same account'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 6'],
@@ -31550,9 +31840,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which events must be explicitly enabled because they are not captured by a default trail?',
     options: [
       'Data events such as S3 object-level and Lambda invoke activity',
-      'Management events such as console sign-in',
-      'IAM policy attachment events',
-      'KMS key creation events'
+      'Management events such as console sign-in and role assumption',
+      'IAM policy attachment and detachment events across the account',
+      'KMS key creation and key policy modification events'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 6'],
@@ -31753,10 +32043,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Why should a third-party SaaS vendor role require an external ID in its trust policy?',
     options: [
-      'It prevents the confused deputy problem where the vendor is tricked into assuming your role',
-      'It encrypts the session credentials issued to the vendor',
-      'It shortens the maximum session duration for the vendor',
-      'It records the vendor identity in your CloudTrail trail'
+      'It prevents the confused deputy problem where the vendor assumes the wrong role',
+      'It encrypts the temporary session credentials issued to the vendor account',
+      'It shortens the maximum session duration available to the vendor principal',
+      'It records the vendor identity in your account CloudTrail event history'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -31855,10 +32145,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What does Amazon Inspector continuously assess?',
     options: [
-      'Software vulnerabilities and unintended network exposure for EC2, ECR images and Lambda',
-      'Sensitive data classification inside S3 objects',
-      'Anomalous API calls from compromised credentials',
-      'Configuration drift against CIS benchmarks'
+      'Software vulnerabilities and unintended network exposure for EC2, ECR and Lambda',
+      'Sensitive data classification inside S3 objects across the whole account',
+      'Anomalous API calls made using credentials that appear to be compromised',
+      'Configuration drift measured against the CIS benchmark for each resource'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -31889,10 +32179,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which evidence is lost if a compromised EC2 instance is stopped rather than isolated?',
     options: [
-      'Volatile memory contents holding keys, injected code and live connections',
-      'The EBS volume contents attached to the instance',
-      'CloudTrail records of API calls the instance made',
-      'VPC Flow Log records of its network activity'
+      'Volatile memory holding keys, injected code and live connections',
+      'The EBS volume contents currently attached to that instance',
+      'CloudTrail records of the API calls the instance principal made',
+      'VPC Flow Log records covering the instance network activity'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -31923,10 +32213,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which pattern triggers an automated containment action from a GuardDuty finding?',
     options: [
-      'An EventBridge rule matching the finding that invokes a Lambda function or SSM Automation runbook',
-      'A CloudTrail trail configured with a remediation destination',
-      'An AWS Config rule evaluating the finding severity',
-      'A Security Hub insight with a scheduled query'
+      'An EventBridge rule matching the finding that invokes Lambda or SSM Automation',
+      'A CloudTrail trail configured with a remediation delivery destination',
+      'An AWS Config rule that evaluates the severity of the incoming finding',
+      'A Security Hub insight running a scheduled aggregation query'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -31974,10 +32264,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Root credentials for a member account are suspected compromised. Which action should come first?',
     options: [
-      'Rotate the root password and revoke the root access keys, then enforce MFA',
-      'Delete the member account from the organization',
-      'Apply an SCP denying all actions in that account',
-      'Enable GuardDuty in the affected account'
+      'Rotate the root password, revoke root access keys, then enforce MFA',
+      'Delete the member account from the organization straight away',
+      'Apply a service control policy denying all actions in that account',
+      'Enable GuardDuty in the affected account to observe further activity'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -32042,10 +32332,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which question can VPC Flow Logs answer that CloudTrail cannot?',
     options: [
-      'Whether a network flow occurred between two addresses and whether it was accepted',
-      'Which IAM principal made a specific API call',
-      'Whether an S3 bucket policy was modified',
-      'Which KMS key decrypted a given object'
+      'Whether a flow occurred between two addresses and whether it was accepted',
+      'Which IAM principal issued a specific control-plane API call',
+      'Whether an S3 bucket policy was modified and by which role',
+      'Which KMS key was used to decrypt a given stored object'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -32093,10 +32383,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What does AWS Control Tower provide on top of AWS Organizations?',
     options: [
-      'A prescriptive landing zone with preventive and detective guardrails and account factory',
-      'A replacement for SCPs with a simpler policy language',
-      'Automatic remediation of every Security Hub finding',
-      'A single consolidated CloudTrail across all AWS partitions'
+      'A landing zone with preventive and detective guardrails and account factory',
+      'A replacement for service control policies using a simpler policy language',
+      'Automatic remediation of every finding raised by Security Hub CSPM',
+      'A single consolidated CloudTrail spanning every AWS partition'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 6'],
@@ -32212,10 +32502,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What does EKS Pod Identity change compared with IRSA?',
     options: [
-      'It associates roles through an agent add-on without service account role annotations',
-      'It removes the need for any IAM role on the pod',
-      'It applies only to clusters running outside AWS',
-      'It replaces Kubernetes RBAC with IAM policies'
+      'It associates roles through an agent add-on without annotating service accounts',
+      'It removes the requirement for any IAM role to be attached to the pod',
+      'It applies only to Kubernetes clusters running outside of AWS entirely',
+      'It replaces Kubernetes role-based access control with IAM policies'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -32229,10 +32519,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which practice most reduces blast radius for a Lambda function processing untrusted input?',
     options: [
-      'A dedicated execution role scoped to only the resources that function uses',
-      'Increasing the function memory allocation',
-      'Running the function outside any VPC',
-      'Enabling provisioned concurrency for the function'
+      'A dedicated execution role scoped to the resources that function uses',
+      'Increasing the memory allocated to the function at configuration time',
+      'Running the function outside any VPC so it has no private routes',
+      'Enabling provisioned concurrency so the function stays warm'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -32263,10 +32553,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What is the difference between Macie automated discovery and a sensitive data discovery job?',
     options: [
-      'Automated discovery samples buckets continuously while a job targets a defined scope on a schedule',
-      'Automated discovery only inspects object metadata rather than contents',
-      'A discovery job runs without incurring any additional charge',
-      'Automated discovery writes findings only to CloudTrail'
+      'Automated discovery samples continuously while a job targets a defined scope',
+      'Automated discovery inspects only object metadata rather than the contents',
+      'A sensitive data discovery job runs without incurring any additional charge',
+      'Automated discovery writes its findings only into the CloudTrail event log'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 5'],
@@ -32331,10 +32621,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What should drive the choice of protection controls applied to a data set?',
     options: [
-      'Its classification level and the regulatory obligations attached to it',
-      'The storage cost of the service holding it',
-      'The number of engineers who requested access',
-      'The Region in which it was first created'
+      'Its classification level and the regulatory obligations attached',
+      'The storage cost of the service currently holding the data',
+      'The number of engineers who have requested access to it',
+      'The Region in which the data set was originally created'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 5'],
@@ -32348,10 +32638,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'How does IAM Roles Anywhere let on-premises servers call AWS APIs without long-lived keys?',
     options: [
-      'They present an X.509 certificate from a trusted certificate authority to obtain temporary credentials',
-      'They authenticate with an IAM user access key stored in a local vault',
-      'They connect through a VPN and inherit the VPC instance role',
-      'They use a shared secret configured in the role trust policy'
+      'They present an X.509 certificate from a trusted CA for temporary credentials',
+      'They authenticate with an IAM user access key held in a local secret vault',
+      'They connect over a VPN and inherit the instance role from the target VPC',
+      'They use a shared secret value configured inside the role trust policy'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -32382,10 +32672,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What characterises a service-linked role?',
     options: [
-      'It is predefined and owned by the service, which controls its trust and permissions',
-      'It can be assumed by any principal in the account',
-      'It never appears in CloudTrail when used',
-      'It replaces the need for a resource-based policy'
+      'It is predefined and owned by the service that controls its permissions',
+      'It may be assumed by any principal within the same AWS account',
+      'It never appears in CloudTrail records when the service uses it',
+      'It removes the need for a resource-based policy on the target'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -32416,10 +32706,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Why does Amazon Inspector prioritise some CVEs above others with the same base score?',
     options: [
-      'It factors network reachability and exploitability into a contextual risk score',
-      'It ranks by the age of the vulnerability disclosure',
-      'It defers entirely to the CVSS base score ordering',
-      'It prioritises whichever resource has the most tags'
+      'It factors network reachability and exploitability into the risk score',
+      'It ranks findings by the age of the vulnerability disclosure date',
+      'It defers entirely to the ordering given by the CVSS base score',
+      'It prioritises whichever affected resource carries the most tags'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -32501,10 +32791,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'How does KMS verify that a decryption request originates from a specific Nitro Enclave?',
     options: [
-      'It validates the signed attestation document supplied in the request and returns ciphertext for the enclave public key',
-      'It checks the source IP address against the enclave subnet',
-      'It requires the enclave to present the parent instance profile',
-      'It compares the enclave hostname against a KMS allowlist'
+      'It validates the signed attestation document and encrypts to the enclave key',
+      'It checks the source address of the request against the enclave subnet range',
+      'It requires the enclave to present the instance profile of its parent host',
+      'It compares the enclave hostname against an allowlist held inside KMS'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 5'],
@@ -32518,10 +32808,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What is the purpose of CloudFront Origin Access Control on an S3 origin?',
     options: [
-      'It ensures the bucket serves content only through CloudFront and not by direct URL',
-      'It encrypts objects at rest in the origin bucket',
-      'It signs viewer requests on behalf of the client',
-      'It caches objects closer to the viewer to reduce latency'
+      'It ensures the bucket serves content only through CloudFront',
+      'It encrypts the objects at rest inside the origin S3 bucket',
+      'It signs each viewer request on behalf of the end client',
+      'It caches objects nearer the viewer to reduce request latency'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 5'],
@@ -32552,10 +32842,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which mechanism restricts an API Gateway REST API so it can only be called from inside a specific VPC?',
     options: [
-      'A private API endpoint with a resource policy referencing the VPC endpoint',
-      'A Lambda authorizer validating the caller subnet',
-      'A usage plan with an API key per caller',
-      'A WAF web ACL with an IP set of private ranges'
+      'A private API endpoint with a resource policy naming the VPC endpoint',
+      'A Lambda authorizer that validates the subnet the caller came from',
+      'A usage plan with a distinct API key issued to each calling team',
+      'A WAF web ACL containing an IP set of the private address ranges'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -32671,10 +32961,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which mechanism prevents workloads from being created outside approved Regions across an organization?',
     options: [
-      'An SCP denying actions when aws:RequestedRegion is outside the allowed set',
-      'A network ACL blocking traffic to other Regions',
-      'A Config rule that deletes non-compliant resources',
-      'An IAM permissions boundary applied to each user'
+      'An SCP denying actions when aws:RequestedRegion is outside the set',
+      'A network ACL that blocks traffic destined for other AWS Regions',
+      'A Config rule that automatically deletes non-compliant resources',
+      'An IAM permissions boundary attached individually to every user'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -32705,10 +32995,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What does an AWS Config conformance pack provide?',
     options: [
-      'A deployable collection of Config rules and remediation actions as one package',
-      'A managed set of GuardDuty detectors',
-      'A network topology diagram of the account',
-      'An automated penetration test of the environment'
+      'A deployable collection of Config rules and remediation actions',
+      'A managed set of Amazon GuardDuty detectors for the account',
+      'A generated network topology diagram covering the whole account',
+      'An automated penetration test executed against the environment'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -32756,10 +33046,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which design principle from the Well-Architected security pillar addresses credential management?',
     options: [
-      'Rely on temporary credentials rather than long-lived static keys',
-      'Scale horizontally to reduce blast radius',
-      'Adopt a single account to simplify auditing',
-      'Prefer manual review over automated response'
+      'Rely on temporary credentials rather than long-lived keys',
+      'Scale workloads horizontally to reduce the blast radius',
+      'Adopt a single AWS account to simplify the audit process',
+      'Prefer manual review over any form of automated response'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 6'],
@@ -32824,10 +33114,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What is required for a role in another account to decrypt with your customer managed KMS key?',
     options: [
-      'The key policy must allow the external account and that account must grant its role permission',
-      'Only the key policy needs to name the external account',
-      'Only the external account IAM policy needs to allow kms:Decrypt',
-      'The key must be converted to a multi-Region key first'
+      'The key policy must allow the account and that account must grant its role',
+      'Only the key policy needs to name the external AWS account identifier',
+      'Only the external account IAM policy needs to permit the kms:Decrypt call',
+      'The key must first be converted into a multi-Region primary key'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 5'],
@@ -32858,10 +33148,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What problem does the AWS Security Finding Format solve?',
     options: [
-      'It normalises findings from many sources into one schema so they can be handled uniformly',
-      'It encrypts findings before they leave the producing account',
-      'It converts findings into Config rules automatically',
-      'It deduplicates findings across Regions without configuration'
+      'It normalises findings from many sources into one common schema',
+      'It encrypts each finding before it leaves the producing AWS account',
+      'It converts incoming findings into AWS Config rules automatically',
+      'It deduplicates findings across Regions with no configuration needed'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -32910,9 +33200,9 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     question: 'Which SCP protects the audit trail across every member account?',
     options: [
       'Denying cloudtrail:StopLogging and cloudtrail:DeleteTrail organization wide',
-      'Requiring MFA before any CloudTrail console access',
-      'Restricting CloudTrail to one Region per account',
-      'Granting cloudtrail:CreateTrail to all administrators'
+      'Requiring multi-factor authentication before any CloudTrail console access',
+      'Restricting CloudTrail to a single approved Region within each account',
+      'Granting cloudtrail:CreateTrail to every account administrator by default'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 6'],
@@ -32977,10 +33267,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What does Shield Advanced add beyond the protection included with Shield Standard?',
     options: [
-      'Access to the Shield response team, cost protection and advanced attack visibility',
-      'Layer 7 request filtering rules for web applications',
-      'Automatic encryption of traffic to protected resources',
-      'A dedicated network firewall in every VPC'
+      'Access to the Shield response team, cost protection and attack visibility',
+      'Layer 7 request filtering rules applied to protected web applications',
+      'Automatic encryption of all traffic destined for protected resources',
+      'A dedicated managed network firewall deployed into every VPC'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],
@@ -33062,10 +33352,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'What is the security consequence of an account being removed from an AWS Organization during an incident?',
     options: [
-      'It falls outside every SCP, organization trail and delegated security service at once',
-      'Its resources are automatically deleted after a grace period',
-      'Its CloudTrail history is purged from the logging account',
-      'Its IAM roles are converted to standalone users'
+      'It falls outside every SCP, organization trail and security service',
+      'Its resources are automatically deleted after a short grace period',
+      'Its CloudTrail history is purged from the central logging account',
+      'Its IAM roles are silently converted into standalone IAM users'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -33079,10 +33369,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Why should incident evidence be written to a bucket with versioning and Object Lock in a separate account?',
     options: [
-      'It prevents an attacker with production access from altering or deleting the evidence',
-      'It reduces the storage cost of retaining snapshots',
-      'It allows the evidence to be queried with Athena',
-      'It satisfies the requirement to encrypt data in transit'
+      'It stops an attacker with production access altering or deleting evidence',
+      'It reduces the ongoing storage cost of retaining forensic snapshots',
+      'It allows the collected evidence to be queried directly with Athena',
+      'It satisfies the requirement to encrypt the evidence while in transit'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -33096,10 +33386,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'A Security Hub finding indicates public exposure of a storage bucket. Which response is both immediate and low risk?',
     options: [
-      'Apply account-level Block Public Access, then review the bucket policy that caused it',
-      'Delete the bucket and restore it from backup',
-      'Disable the account until the owner responds',
-      'Rotate all IAM credentials in the account'
+      'Apply account-level Block Public Access, then review the bucket policy',
+      'Delete the exposed bucket and restore its contents from backup',
+      'Disable the whole account until the resource owner responds',
+      'Rotate every IAM credential that exists within the account'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -33130,10 +33420,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'A trusted vulnerability scanner triggers GuardDuty findings from its own address every night. What is the correct configuration response?',
     options: [
-      'Add the scanner address to a trusted IP list so its traffic stops generating findings',
-      'Disable the finding type across the whole organization',
-      'Reduce the GuardDuty sampling rate for that VPC',
-      'Move the scanner into a subnet without flow logs'
+      'Add the scanner address to a trusted IP list for that detector',
+      'Disable the finding type across the entire AWS organization',
+      'Reduce the GuardDuty sampling rate applied to that whole VPC',
+      'Move the scanner into a subnet that has no flow logs enabled'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 1'],
@@ -33232,10 +33522,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'How is the maximum lifetime of credentials from AssumeRole constrained?',
     options: [
-      'By the role maximum session duration, which the request cannot exceed',
-      'By the account-wide password policy',
-      'By the permissions boundary attached to the role',
-      'By the identity provider token lifetime only'
+      'By the role maximum session duration, which a request cannot exceed',
+      'By the account-wide IAM password policy currently in force',
+      'By the permissions boundary that is attached to the target role',
+      'By the lifetime of the token issued by the identity provider'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 4'],
@@ -33317,10 +33607,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Before returning a rebuilt instance to service after compromise, what should be confirmed?',
     options: [
-      'That it was rebuilt from a known-good image rather than a snapshot of the compromised host',
-      'That its instance type matches the original for cost parity',
-      'That its private address matches the previous instance',
-      'That the original security group has been reattached unchanged'
+      'That it was rebuilt from a known-good image, not a compromised snapshot',
+      'That its instance type matches the original one for cost parity reasons',
+      'That its private IP address matches the address of the previous instance',
+      'That the original security group has been reattached without modification'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 2'],
@@ -33385,10 +33675,10 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['SCS-C03'],
     question: 'Which control prevents a container image with critical vulnerabilities from being deployed?',
     options: [
-      'A pipeline gate that fails the build on Inspector findings above a threshold',
-      'Enabling runtime monitoring on the cluster',
-      'Scanning the running container after deployment',
-      'Restricting registry access to the deployment role'
+      'A pipeline gate failing the build on Inspector findings above a threshold',
+      'Enabling runtime monitoring on the cluster where the container will run',
+      'Scanning the running container once it has been deployed to production',
+      'Restricting access to the container registry to the deployment role only'
     ],
     correct: 0,
     objectives: ['SCS-C03 Domain 3'],

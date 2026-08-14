@@ -392,3 +392,43 @@ describe('SecAI+ objective pools are deep enough to practise', () => {
     expect(tagged.length / SECAI.length).toBeGreaterThan(0.9);
   });
 });
+
+describe('answer-length tells are held down across every cert', () => {
+  // The original guard covered SecAI+ only, so questions written later for
+  // SC-500 and the AWS Security Specialty reintroduced the tell unchecked:
+  // 27% of the first AWS tranche had the correct answer conspicuously
+  // longest. The invariant belongs to the whole bank, not one cert.
+  const CERTS = ['SecAI', 'SC-500', 'SCS-C03'] as const;
+
+  function conspicuouslyLongest(q: (typeof QUIZ_QUESTIONS)[number]) {
+    const lens = q.options.map((o) => o.length);
+    const sorted = [...lens].sort((a, b) => b - a);
+    if (sorted[1] === 0) return false;
+    const margin = ((sorted[0] - sorted[1]) / sorted[1]) * 100;
+    return lens.indexOf(sorted[0]) === q.correct && margin >= 40;
+  }
+
+  for (const cert of CERTS) {
+    it(`keeps ${cert} correct answers from standing out by length`, () => {
+      const pool = QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert));
+      expect(pool.length).toBeGreaterThan(0);
+      const obvious = pool.filter(conspicuouslyLongest);
+      // A handful of answers are irreducibly longer than their distractors,
+      // e.g. a full service name against three short ones. 3% is the ceiling.
+      expect(obvious.length / pool.length).toBeLessThan(0.03);
+    });
+  }
+
+  it('has no option truncated mid-clause in any cert pool', () => {
+    const DANGLING = /\b(and|or|the|a|an|that|which|while|because|since|whose|its|their|these|those|including|before)$/;
+    const bad: string[] = [];
+    for (const cert of CERTS) {
+      for (const q of QUIZ_QUESTIONS.filter((x) => x.certTags.includes(cert))) {
+        for (const o of q.options) {
+          if (DANGLING.test(o.trim().replace(/[.,;:]$/, ''))) bad.push(`${q.id}: "${o}"`);
+        }
+      }
+    }
+    expect(bad).toEqual([]);
+  });
+});
