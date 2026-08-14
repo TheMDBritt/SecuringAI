@@ -5682,7 +5682,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'AI-SPM in Defender for Cloud helps you:',
-    options: [ 'Automatically remediate prompt injection attempts', 'Replace Sentinel','Train new ML models', 'Discover AI workloads'],
+    options: [
+      'Automatically remediate prompt injection attempts at runtime',
+      'Replace Microsoft Sentinel as the primary SIEM',
+      'Train replacement models on your grounding data',
+      'Discover AI workloads and map their attack paths'
+    ],
     correct: 3,
     explanation: 'AI-SPM (part of Defender CSPM) provides an AI Bill of Materials, identifies exposed Azure OpenAI / Foundry endpoints, missing content filters, sensitive grounding data, and over-permissive identities, and chains these into AI attack paths.',
   },
@@ -5814,7 +5819,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'advanced',
     certTags: ['SC-500'],
     question: 'How does Adaptive Protection link Insider Risk Management with DLP?',
-    options: ['Manually each quarter', 'Automatically IRM risk levels', 'It does not, they are independent', 'Only via PowerShell'],
+    options: [
+      'Reviewers manually tighten DLP for flagged users each quarter',
+      'IRM risk levels drive DLP and Conditional Access tiers dynamically',
+      'The two features operate independently of one another',
+      'Only a scheduled PowerShell script can bridge the two'
+    ],
     correct: 1,
     explanation: 'Adaptive Protection ties IRM risk to DLP and CA: an "elevated" user automatically gets stricter DLP (block egress) and CA (require compliant device + step-up MFA), then relaxes when risk drops, risk-based, least-privilege automation.',
   },
@@ -5946,7 +5956,12 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     difficulty: 'intermediate',
     certTags: ['SC-500'],
     question: 'To prevent network egress from your VNet to a public Azure OpenAI endpoint, you should:',
-    options: [ 'Use SAS tokens', 'Configure the Azure OpenAI resource', 'Whitelist all Azure IPs','Use a NAT gateway'],
+    options: [
+      'Issue SAS tokens to every calling application',
+      'Configure a private endpoint and disable public network access',
+      'Whitelist every Azure datacentre IP range in the NSG',
+      'Route all egress through a NAT gateway with a static IP'
+    ],
     correct: 1,
     explanation: 'Private endpoint binds the Azure OpenAI resource to a private IP inside your VNet, and "Disable public network access" eliminates the internet-facing endpoint entirely. Calls traverse the Microsoft backbone, never the public internet.',
   },
