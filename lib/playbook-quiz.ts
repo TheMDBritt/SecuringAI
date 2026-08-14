@@ -944,7 +944,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Responsible AI',
     category: 'AI Governance',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901', 'SCS-C03'],
+    certTags: ['SecAI', 'AWS-AIF-C01', 'Azure-AI901'],
     question: 'The "AI fairness impossibility theorem" states that:',
     options: [
       'Perfectly fair AI is theoretically achievable with enough data',
@@ -1572,7 +1572,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'NIST AI RMF',
     category: 'AI Governance',
     difficulty: 'beginner',
-    certTags: ['SecAI', 'CAISP', 'SCS-C03'],
+    certTags: ['SecAI', 'CAISP'],
     question: 'The NIST AI RMF is best described as:',
     options: [
       'A set of technical standards for AI model testing',
@@ -1750,7 +1750,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'NIST AI RMF',
     category: 'AI Governance',
     difficulty: 'advanced',
-    certTags: ['SecAI', 'CAISP', 'SCS-C03'],
+    certTags: ['SecAI', 'CAISP'],
     question: 'How does the NIST AI RMF relate to the NIST Cybersecurity Framework (CSF)?',
     options: [
       'The AI RMF replaces the CSF for organizations deploying AI',
@@ -2561,7 +2561,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Google Gemini on Vertex AI',
     category: 'Cloud AI Platforms',
     difficulty: 'beginner',
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What is the primary advantage of accessing Gemini through Vertex AI instead of directly via Google AI Studio for enterprise use?',
     options: [
       'It offers enterprise security, IAM, VPC controls and audit logging',
@@ -3933,7 +3933,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Feature Store',
     category: 'Data Engineering',
     difficulty: 'intermediate',
-    certTags: ['AWS-AIF-C01', 'Google-MLE', 'SCS-C03'],
+    certTags: ['AWS-AIF-C01', 'Google-MLE'],
     question: 'What is the primary benefit of using a Feature Store for ML systems?',
     options: [
       'It automatically selects the best features for each model',
@@ -4662,7 +4662,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Supply Chain',
     category: 'AI Security',
     difficulty: 'intermediate',
-    certTags: ['SecAI', 'GIAC-GASAE', 'SCS-C03'],
+    certTags: ['SecAI', 'GIAC-GASAE'],
     question: 'A threat actor uploads a popular-sounding ML model to Hugging Face with a backdoor that triggers misclassification on inputs containing a specific token sequence. This is an example of:',
     options: [
       'Data poisoning',
@@ -10020,7 +10020,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI GRC',
     category: 'AI Governance',
     difficulty: 'intermediate',
-    certTags: ['GIAC-GASAE', 'CAISP', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GASAE', 'CAISP', 'SecAI'],
     question: 'ISO/IEC 42001 Clause 6.1 requires organizations to determine AI-specific risks and opportunities. How does this differ from traditional ISO 27001 risk management?',
     options: [
       'ISO 42001 replaces ISO 27001 for any organization that deploys AI systems',
@@ -10270,7 +10270,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate',
-    certTags: ['Google-MLE', 'SecAI', 'SCS-C03'],
+    certTags: ['Google-MLE', 'SecAI'],
     question: 'When deploying a custom ML model on Google Cloud Vertex AI, which IAM configuration correctly applies the principle of least privilege for a training pipeline service account?',
     options: [
       'Use the default Compute Engine service account with no extra bindings',
@@ -16729,7 +16729,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Secure Model Serving',
     category: 'MLOps Security',
     difficulty: 'beginner' as const,
-    certTags: ['Google-MLE', 'SecAI', 'CAIS', 'SCS-C03'],
+    certTags: ['Google-MLE', 'SecAI', 'CAIS'],
     question: 'A team deploying a Vertex AI prediction endpoint for an internal ML model wants to ensure only authorized internal services can call it. What is the recommended authentication mechanism?',
     options: [
       'Deploy the endpoint with no authentication and rely on network security alone, internal services will not be exposed to the internet',
@@ -18101,10 +18101,11 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SCS-C03'],
     question: 'Amazon Bedrock Guardrails allows you to define content filters for foundation model applications. Which capability does it provide to prevent models from revealing sensitive personally identifiable information (PII)?',
     options: [
-      'It detects and masks',
-      'It routes PII queries to a separate air-gapped model endpoint',
+      'It detects and masks PII entities in both prompts and responses',
+      'It routes any PII-bearing query to a separate air-gapped model endpoint',
       'It deletes training data containing PII from the foundation model weights',
-      'It encrypts PII with a customer-managed KMS key before storing it in S3'],
+      'It encrypts PII with a customer-managed KMS key before storing it in S3'
+    ],
     correct: 0,
     explanation: 'Amazon Bedrock Guardrails provides a Sensitive Information Filters feature that identifies 30+ PII entity types (names, email, SSN, credit card, etc.) and either blocks or redacts them in both model prompts (inputs) and responses (outputs). This prevents inadvertent PII disclosure from model outputs. Source: AWS Documentation: Amazon Bedrock Guardrails, Sensitive information filters (docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html).',
   },
@@ -18193,12 +18194,13 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     certTags: ['AWS-AIF-C01', 'SCS-C03'],
     question: 'An AWS account running SageMaker endpoints has an IAM role with overly broad S3 permissions. Which AWS service would surface this as a security finding?',
     options: [
-      'Amazon Rekognition',
-      'AWS Batch',
-      'Amazon Comprehend',
-      'AWS Trusted Advisor'],
-    correct: 3,
-    explanation: 'AWS Trusted Advisor includes Security checks that identify overly permissive IAM policies (e.g., wildcard S3 actions), S3 bucket public access, MFA on root account, exposed access keys, and security group rules open to 0.0.0.0/0. For ML workloads, Trusted Advisor helps catch IAM misconfiguration in SageMaker execution roles. Business and Enterprise support plans provide access to all Trusted Advisor checks. Source: AWS Trusted Advisor security checks (docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html).',
+      'Amazon Inspector, which scans workloads for software vulnerabilities',
+      'AWS Trusted Advisor, which checks account-level service configuration',
+      'IAM Access Analyzer, which validates policies and flags overly broad grants',
+      'Amazon Macie, which classifies sensitive data held in S3'
+    ],
+    correct: 2,
+    explanation: 'IAM Access Analyzer is the service that reasons about policies directly: policy validation flags overly permissive grants such as wildcard actions or resources, and external access findings identify resources reachable from outside the zone of trust. Trusted Advisor performs broad account checks such as root MFA and public buckets but does not analyse the reach of a role policy. Inspector scans for software vulnerabilities and Macie classifies data. Source: docs.aws.amazon.com IAM Access Analyzer.sor helps catch IAM misconfiguration in SageMaker execution roles. Business and Enterprise support plans provide access to all Trusted Advisor checks. Source: AWS Trusted Advisor security checks (docs.aws.amazon.com/awssupport/latest/user/trusted-advisor.html).',
   },
   {
     id: 'aws-model-cards-001',
@@ -21707,7 +21709,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Security',
     category: 'AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['CAISP', 'CAIS', 'SCS-C03'],
+    certTags: ['CAISP', 'CAIS'],
     question: 'Which item on an AI security audit checklist is most often overlooked in organizations transitioning from traditional software security to AI security programmes?',
     options: [
       'Model behavioral testing',
@@ -22925,7 +22927,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'ISO 42001',
     category: 'AI Governance',
     difficulty: 'advanced' as const,
-    certTags: ['CAISP', 'SecAI', 'CAIS', 'SCS-C03'],
+    certTags: ['CAISP', 'SecAI', 'CAIS'],
     question: 'ISO/IEC 42001:2023 Clause 6 requires AI-specific risk assessment. How does it differ from ISO 27001 risk assessment?',
     options: [
       'ISO 42001 Clause 6 addresses AI-specific risks, harmful outputs',
@@ -23442,7 +23444,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Security Controls',
     category: 'GCP AI Security',
     difficulty: 'advanced' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Google Cloud ML team needs to ensure their Vertex AI training jobs cannot exfiltrate training data to external locations. Which control BEST enforces this?',
     options: [
       'Configure IAM roles to deny vertex AI training jobs internet access',
@@ -25865,7 +25867,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AI Governance Frameworks',
     category: 'AI Governance',
     difficulty: 'intermediate' as const,
-    certTags: ['GIAC-GOAA', 'CAIS', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GOAA', 'CAIS', 'SecAI'],
     question: 'How does ISO/IEC 42001:2023 relate to ISO/IEC 27001:2022 for an already-ISO-27001-certified organization?',
     options: [
       'A compatible extension sharing the same PDCA management-system structure',
@@ -25917,7 +25919,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'LLM Fine-Tuning Security',
     category: 'AI Security Architecture',
     difficulty: 'advanced' as const,
-    certTags: ['GIAC-GOAA', 'SecAI', 'SCS-C03'],
+    certTags: ['GIAC-GOAA', 'SecAI'],
     question: 'Research has shown that fine-tuning an aligned LLM on a small number of harmful examples can significantly degrade its safety properties. What does this imply for organizations deploying fine-tuned LLMs from third parties?',
     options: [
       'Fine-tuning cannot affect safety alignment',
@@ -26745,7 +26747,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI IAM Security',
     category: 'Google Cloud AI Security',
     difficulty: 'beginner' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'Which IAM role should a Vertex AI training pipeline\'s service account have on the Cloud Storage bucket containing training data, and what is the key security principle applied?',
     options: [
       'Storage Admin, to ensure full management capabilities are always available',
@@ -26760,7 +26762,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Training Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A Vertex AI custom training job needs to access a private Cloud SQL database. What is the most secure network architecture for this connection?',
     options: [
       'Use a Cloud SQL instance with public IP and SSL',
@@ -26790,7 +26792,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'ML Training Data Security',
     category: 'MLOps Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A team stores sensitive PII-containing training data in Cloud Storage for a healthcare prediction model. What encryption and access control combination provides strongest data protection?',
     options: [
       'Use default encryption but grant Storage Admin to the entire data science team for convenience',
@@ -27748,7 +27750,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Vertex AI Pipelines Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'A data scientist team uses Vertex AI Pipelines to orchestrate ML workflows. Which security control ensures pipeline steps only access the data they need?',
     options: [
       'Use network tags to restrict traffic between pipeline containers',
@@ -27763,7 +27765,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'AutoML Security Considerations',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'When using AutoML Tables to train a model on sensitive customer data, what data governance control must an engineer configure?',
     options: [
       'AutoML Tables cannot process datasets with PII',
@@ -27778,7 +27780,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Model Serving Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'How do you prevent unauthorized access to a Vertex AI online prediction endpoint?',
     options: [
       'Set the model\'s serving container to reject requests without a custom HTTP header',
@@ -27868,7 +27870,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     topic: 'Feature Store Security',
     category: 'Google Cloud AI Security',
     difficulty: 'intermediate' as const,
-    certTags: ['Google-MLE', 'SCS-C03'],
+    certTags: ['Google-MLE'],
     question: 'What security benefits does Vertex AI Feature Store provide for ML teams sharing features across models?',
     options: [
       'Feature Store is only a performance optimization tool with no security-specific features',
