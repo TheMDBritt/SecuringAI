@@ -183,11 +183,14 @@ export function ScenarioPicker({
               ].join(' ')}
             >
               <div className="flex items-start justify-between gap-2 mb-1">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-mono text-[9px] text-slate-700 shrink-0">
+                <div className="flex items-start gap-2 min-w-0">
+                  <span className="font-mono text-[9px] text-slate-700 shrink-0 mt-[3px]">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[12px] font-medium text-slate-200 leading-snug group-hover:text-slate-100 transition-colors duration-150 truncate">
+                  {/* Titles wrap to two lines rather than truncating. An ellipsis
+                      in a navigation list hides the one word that tells the
+                      learner what the scenario is. */}
+                  <span className="text-[12px] font-medium text-slate-200 leading-snug group-hover:text-slate-100 transition-colors duration-150 line-clamp-2">
                     {scenario.title}
                   </span>
                 </div>

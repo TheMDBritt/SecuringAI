@@ -590,3 +590,29 @@ describe('Dojo 2 and Dojo 3 scenarios carry a certification mapping', () => {
     expect(dup).toEqual([]);
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The chat box has to make sense for the task in front of it. A GRC drafting
+// scenario asking for "your attack payload" is a coherence bug, and the generic
+// fallbacks hid 54 of them.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('every scenario has a chat affordance written for its task', () => {
+  const chatConsole = readFileSync(
+    join(process.cwd(), 'components/dojo/ChatConsole.tsx'),
+    'utf8',
+  );
+  const section = (start: string, end: string) =>
+    chatConsole.slice(chatConsole.indexOf(start), chatConsole.indexOf(end));
+
+  const d1 = section('DOJO1_SCENARIO_PLACEHOLDERS', 'DOJO2_SCENARIO_SEEDS');
+  const d2 = section('DOJO2_SCENARIO_SEEDS', 'DOJO3_SCENARIO_SEEDS');
+  const d3 = section('DOJO3_SCENARIO_SEEDS', 'const BUBBLE_STYLE');
+
+  it('has a scenario-specific input placeholder or seed for all 70', () => {
+    const missing = SCENARIOS.filter((s) => {
+      const map = s.dojoId === 1 ? d1 : s.dojoId === 2 ? d2 : d3;
+      return !map.includes(`'${s.id}'`);
+    });
+    expect(missing.map((s) => `${s.dojoId}:${s.id}`)).toEqual([]);
+  });
+});

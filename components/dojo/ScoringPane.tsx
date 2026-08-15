@@ -416,6 +416,11 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
   const displayScore = isQualityMode ? (latest?.score ?? 100) : sessionScore;
   const displayRisk  = isQualityMode ? (latest?.riskLevel ?? 'low') : sessionRisk;
 
+  // Nothing has been graded yet. Showing 100/100 and a full green bar before the
+  // learner has submitted anything reads as a perfect score they did not earn,
+  // so the pane holds a neutral placeholder until the first evaluation lands.
+  const awaitingFirstResult = isQualityMode && latest === null;
+
   return (
     <div className="flex h-full">
       {/* Score panel */}
@@ -432,11 +437,11 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             <div className="flex items-end gap-2">
               <span
                 className={[
-                  'text-3xl font-bold font-mono',
-                  RISK_STYLE[displayRisk],
+                  'text-3xl font-bold font-mono tabular-nums',
+                  awaitingFirstResult ? 'text-slate-600' : RISK_STYLE[displayRisk],
                 ].join(' ')}
               >
-                {displayScore}
+                {awaitingFirstResult ? '—' : displayScore}
               </span>
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
               {latest && (
@@ -451,8 +456,12 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               )}
             </div>
 
-            {/* Score bar */}
-            <ScoreBar score={displayScore} riskLevel={displayRisk} />
+            {/* Score bar, empty until the first response is graded */}
+            {awaitingFirstResult ? (
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800" />
+            ) : (
+              <ScoreBar score={displayScore} riskLevel={displayRisk} />
+            )}
 
             {/* Quality label (Dojo 2/3) or attack type (Dojo 1) */}
             {latest && (
@@ -515,8 +524,10 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             {/* Prompt if no evaluations yet */}
             {!latest && (
               <p className="text-xs text-slate-600 italic">
-                {isQualityMode
-                  ? 'Paste logs, alerts, or a security artifact to see the quality evaluation.'
+                {dojoId === 2
+                  ? 'Paste the logs, alert, or telemetry for this workflow to see the quality evaluation.'
+                  : dojoId === 3
+                  ? 'Describe the system, policy, or vendor under assessment to see the quality evaluation.'
                   : 'Send a message to see the evaluation.'}
               </p>
             )}
@@ -533,17 +544,19 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
         {!hasScenario ? (
           <p className="text-xs text-slate-600 italic">
             {isQualityMode
-              ? 'Select a scenario and interact with BlackBeltAI to see how well its analysis covers key security criteria.'
+              ? 'Select a scenario to see the deliverable criteria it is scored against.'
               : 'Run a scenario to see the attack classification, defensive analysis, and mitigations.'}
           </p>
         ) : !latest ? (
           <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5">
             <p className="text-xs text-slate-500 font-mono mb-1">
-              {isQualityMode ? 'Waiting for interaction' : 'Waiting for interaction'}
+              Waiting for your first response
             </p>
             <p className="text-xs text-slate-400 italic">
-              {isQualityMode
-                ? 'Submit a security artifact (logs, alert, behavior description, or policy question) to BlackBeltAI. The evaluator will score the analysis against scenario quality criteria and map it to the top 2026 AI security certifications.'
+              {dojoId === 2
+                ? 'Submit the incident evidence for this workflow and BlackBeltAI will analyse it. The evaluator then scores that analysis against the deliverable criteria shown in the panel on the right and maps the scenario to the certifications it covers.'
+                : dojoId === 3
+                ? 'Describe the system, policy, or vendor under assessment and BlackBeltAI will produce the deliverable. The evaluator then scores it against the criteria shown in the panel on the right and maps the scenario to the frameworks and certifications it covers.'
                 : 'Evaluation appears after your first message. The evaluator will classify the attack type, explain what happened, and provide a defensive takeaway with OWASP mapping.'}
             </p>
           </div>

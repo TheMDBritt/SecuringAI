@@ -1370,6 +1370,21 @@ function applyConfigFilter(checks: QualityCheck[], dojo2Config?: Dojo2Config): Q
   });
 }
 
+/**
+ * The rubric criteria a Dojo 2 or Dojo 3 scenario is scored against.
+ *
+ * Exported so the control panel can show the learner the same list the
+ * evaluator marks against, rather than leaving them to guess what a complete
+ * answer contains. Left panel, right panel, and scoring pane stay in sync
+ * because they all read this.
+ */
+export function getQualityCriteria(dojoId: 2 | 3, scenarioId: string): string[] {
+  const checks = dojoId === 2
+    ? (DOJO2_QUALITY_CHECKS[scenarioId] ?? [])
+    : (DOJO3_QUALITY_CHECKS[scenarioId] ?? []);
+  return checks.map((c) => c.label);
+}
+
 function evaluateQuality(
   dojoId: 2 | 3,
   scenarioId: string,

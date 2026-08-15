@@ -43,6 +43,8 @@ export function DojoTabs() {
   const [selectedScenario, setSelectedScenario] = useState<Scenario | null>(null);
   const [controlConfig, setControlConfig]       = useState<ControlConfig>(DEFAULT_CONTROL_CONFIG);
   const [evaluations, setEvaluations]           = useState<EvaluationResult[]>([]);
+  /** Most recent evaluation, drives the live Deliverable Criteria ticks. */
+  const latestEvaluation = evaluations[evaluations.length - 1];
   /** Ordered list of attack types that succeeded in this session (oldest first). */
   const [successfulAttacks, setSuccessfulAttacks] = useState<AttackType[]>([]);
   /**
@@ -302,6 +304,8 @@ export function DojoTabs() {
             onSetActiveDojo2Scenario={handleSetActiveDojo2Scenario}
             dojo3Config={dojo3Config}
             onDojo3ConfigChange={setDojo3Config}
+            metCriteria={latestEvaluation?.signals ?? []}
+            hasEvaluation={latestEvaluation !== undefined}
           />
         }
         scoringPane={

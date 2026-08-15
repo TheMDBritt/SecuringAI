@@ -35,6 +35,7 @@ import {
   VENDOR_GAP_AREAS,
   type Payload,
 } from '@/lib/dojo-control-content';
+import { getQualityCriteria } from '@/lib/evaluator';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -67,6 +68,14 @@ interface ControlPanelProps {
   // ── Dojo 3: defender toolkit ──────────────────────────────────────────────
   dojo3Config: Dojo3Config;
   onDojo3ConfigChange: (c: Dojo3Config) => void;
+  /**
+   * Criteria the latest response satisfied, from the most recent evaluation's
+   * `signals`. Drives the live tick state on the Deliverable Criteria panel.
+   * Empty array before the first response.
+   */
+  metCriteria?: string[];
+  /** True once at least one response has been evaluated in this session. */
+  hasEvaluation?: boolean;
 }
 
 // ─── Shared UI primitives ─────────────────────────────────────────────────────
@@ -79,6 +88,81 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
       </p>
       {children}
     </div>
+  );
+}
+
+/**
+ * The rubric the response is graded against, shown live.
+ *
+ * This is the same list the evaluator marks, so the panel on the right, the
+ * task on the left, and the score below all describe one thing. Criteria that
+ * the latest response satisfied are ticked; the rest are what is still missing.
+ */
+function DeliverableCriteria({
+  criteria,
+  met,
+  hasResponse,
+}: {
+  criteria: string[];
+  met: string[];
+  hasResponse: boolean;
+}) {
+  if (criteria.length === 0) return null;
+  const metSet = new Set(met);
+  const count = criteria.filter((c) => metSet.has(c)).length;
+
+  return (
+    <PanelSection title="Deliverable Criteria">
+      <div className="mb-2.5 flex items-baseline justify-between">
+        <p className="text-[10px] leading-relaxed text-slate-500">
+          {hasResponse
+            ? 'Graded against these criteria. Unticked items are what is missing.'
+            : 'A complete response covers every item below.'}
+        </p>
+        {hasResponse && (
+          <span className="ml-3 shrink-0 font-mono text-[10px] tabular-nums text-slate-400">
+            {count}/{criteria.length}
+          </span>
+        )}
+      </div>
+      {hasResponse && (
+        <div className="mb-2.5 h-1 w-full overflow-hidden rounded-full bg-slate-800">
+          <div
+            className="h-full rounded-full bg-emerald-500/70 transition-[width] duration-500"
+            style={{ width: `${Math.round((count / criteria.length) * 100)}%` }}
+          />
+        </div>
+      )}
+      <ul className="flex flex-col gap-1.5">
+        {criteria.map((c) => {
+          const ok = metSet.has(c);
+          return (
+            <li
+              key={c}
+              className={[
+                'flex items-start gap-2 rounded border px-2.5 py-1.5 text-xs transition-colors',
+                ok
+                  ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-300'
+                  : hasResponse
+                  ? 'border-slate-700 bg-slate-800/40 text-slate-400'
+                  : 'border-slate-800 bg-slate-800/20 text-slate-500',
+              ].join(' ')}
+            >
+              <span
+                aria-hidden
+                className={[
+                  'mt-0.5 flex h-3 w-3 flex-none items-center justify-center rounded-full border',
+                  ok ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
+                ].join(' ')}
+              >
+                {ok && <span className="text-[8px] font-bold leading-none text-slate-900">✓</span>}
+              </span>
+              <span className="leading-snug">{c}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </PanelSection>
   );
 }
 
@@ -705,6 +789,9 @@ function IncidentLibrary({
 // ─── Dojo 2 Panel ─────────────────────────────────────────────────────────────
 
 interface Dojo2PanelProps {
+  scenarioId: string | null;
+  metCriteria: string[];
+  hasEvaluation: boolean;
   disabled: boolean;
   dojo2Config: Dojo2Config;
   onDojo2ConfigChange: (c: Dojo2Config) => void;
@@ -717,13 +804,20 @@ interface Dojo2PanelProps {
   onSetActiveScenario?: (s: Dojo2IncidentScenario) => void;
 }
 
-function Dojo2Panel({ disabled, dojo2Config, onDojo2ConfigChange, onSendPayload, onInsertText, defaultTaskFilter, onSetActiveScenario }: Dojo2PanelProps) {
+function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Config, onDojo2ConfigChange, onSendPayload, onInsertText, defaultTaskFilter, onSetActiveScenario }: Dojo2PanelProps) {
   function set<K extends keyof Dojo2Config>(key: K, value: Dojo2Config[K]) {
     onDojo2ConfigChange({ ...dojo2Config, [key]: value });
   }
 
   return (
     <div>
+      {/* ── Deliverable criteria, the rubric this response is graded on ──── */}
+      <DeliverableCriteria
+        criteria={scenarioId ? getQualityCriteria(2, scenarioId) : []}
+        met={metCriteria}
+        hasResponse={hasEvaluation}
+      />
+
       {/* ── Incident Library ──────────────────────────────────────────────── */}
       <PanelSection title="Incident Library">
         <p className="text-[10px] text-slate-500 mb-2">
@@ -981,12 +1075,14 @@ const FRAMEWORK_LABEL: Record<FrameworkLens, string> = {
 interface Dojo3PanelProps {
   disabled: boolean;
   scenarioId: string | null;
+  metCriteria: string[];
+  hasEvaluation: boolean;
   dojo3Config: Dojo3Config;
   onDojo3ConfigChange: (c: Dojo3Config) => void;
   onSendPayload: (text: string) => void;
 }
 
-function Dojo3Panel({ disabled, scenarioId, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
+function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Config, onDojo3ConfigChange, onSendPayload }: Dojo3PanelProps) {
   const isRiskScenario         = scenarioId === 'ai-risk-classification';
   const isPolicyScenario       = scenarioId === 'policy-and-controls';
   const isVendorScenario       = scenarioId === 'third-party-vendor-review';
@@ -1037,6 +1133,13 @@ function Dojo3Panel({ disabled, scenarioId, dojo3Config, onDojo3ConfigChange, on
 
   return (
     <div>
+      {/* ── Deliverable criteria, the rubric this response is graded on ──── */}
+      <DeliverableCriteria
+        criteria={scenarioId ? getQualityCriteria(3, scenarioId) : []}
+        met={metCriteria}
+        hasResponse={hasEvaluation}
+      />
+
       {/* ── Framework Lens, applies to every scoring action ───────────────── */}
       <PanelSection title="Framework Lens">
         <p className="text-[10px] text-slate-500 mb-1.5">
@@ -1298,6 +1401,8 @@ export function ControlPanel({
   onSetActiveDojo2Scenario,
   dojo3Config,
   onDojo3ConfigChange,
+  metCriteria = [],
+  hasEvaluation = false,
 }: ControlPanelProps) {
   const hasScenario = scenario !== null;
 
@@ -1355,6 +1460,9 @@ export function ControlPanel({
       {dojoId === 2 && (
         <Dojo2Panel
           disabled={chatLoading}
+          scenarioId={scenario?.id ?? null}
+          metCriteria={metCriteria}
+          hasEvaluation={hasEvaluation}
           dojo2Config={dojo2Config}
           onDojo2ConfigChange={onDojo2ConfigChange}
           onSendPayload={onSendPayload}
@@ -1367,6 +1475,8 @@ export function ControlPanel({
         <Dojo3Panel
           disabled={!hasScenario || chatLoading}
           scenarioId={scenario?.id ?? null}
+          metCriteria={metCriteria}
+          hasEvaluation={hasEvaluation}
           dojo3Config={dojo3Config}
           onDojo3ConfigChange={onDojo3ConfigChange}
           onSendPayload={onSendPayload}
