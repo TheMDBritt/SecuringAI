@@ -10330,7 +10330,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Vector database enumeration',
     ],
     correct: 1,
-    explanation: 'RAG corpus poisoning is a supply-chain attack on retrieval-augmented systems: (1) Mechanical steps: attacker crafts document text with high cosine similarity to expected user queries (so it gets retrieved) plus adversarial instructions; (2) The poisoned document appears in the LLM\'s context window as legitimate retrieved knowledge; (3) Impact: misinformation in enterprise knowledge bases, prompt injection via document, data exfiltration via crafted context instructions; (4) Advanced variant: the attacker uses the target system\'s own embedding model to compute optimal adversarial text that maximizes retrieval rank for target queries; (5) Defenses: access control on document ingestion, provenance tracking, output consistency checks, retrieval auditing, red-teaming the RAG pipeline with adversarial documents before production. Source: GIAC GOAA, Pasquini et al. (2024) Poisoning Web-Scale Training Datasets is Practical, OWASP LLM04:2026 Data and Model Poisoning.',
+    explanation: 'RAG corpus poisoning is a supply-chain attack on retrieval-augmented systems: (1) Mechanical steps: attacker crafts document text with high cosine similarity to expected user queries (so it gets retrieved) plus adversarial instructions; (2) The poisoned document appears in the LLM\'s context window as legitimate retrieved knowledge; (3) Impact: misinformation in enterprise knowledge bases, prompt injection via document, data exfiltration via crafted context instructions; (4) Advanced variant: the attacker uses the target system\'s own embedding model to compute optimal adversarial text that maximizes retrieval rank for target queries; (5) Defenses: access control on document ingestion, provenance tracking, output consistency checks, retrieval auditing, red-teaming the RAG pipeline with adversarial documents before production. Source: GIAC GOAA, Pasquini et al. (2024) Poisoning Web-Scale Training Datasets is Practical, OWASP LLM05:2026 Data and Model Poisoning.',
   },
   {
     id: 'goaa-034',
@@ -25667,7 +25667,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     objectives: ['SecAI:2.1'],
-    explanation: 'MITRE ATLAS (atlas.mitre.org): structured adversarial ML knowledge base built on real-world AI attack case studies. Key differences from ATT&CK: (1) ML-specific tactics: Reconnaissance → ML Model Access → Discovery → Collection → ML Attack Staging → Exfiltration; (2) AI-specific techniques: AML.T0043 (Craft Adversarial Data), AML.T0051 (LLM Prompt Injection), AML.T0057 (LLM Meta Prompt Extraction); (3) Case studies from published research and real incidents. Use for: AI red team planning, threat modeling AI systems, security control mapping. Source: GIAC-GOAA, mitre-atlas.github.io.',
+    explanation: 'MITRE ATLAS (atlas.mitre.org): structured adversarial ML knowledge base built on real-world AI attack case studies. Key differences from ATT&CK: (1) ML-specific tactics: Reconnaissance → ML Model Access → Discovery → Collection → ML Attack Staging → Exfiltration; (2) AI-specific techniques: AML.T0043 (Craft Adversarial Data), AML.T0051 (LLM Prompt Injection), AML.T0057 (LLM Data Leakage); (3) Case studies from published research and real incidents. Use for: AI red team planning, threat modeling AI systems, security control mapping. Source: GIAC-GOAA, mitre-atlas.github.io.',
   },
   {
     id: 'goaa-ext-002',

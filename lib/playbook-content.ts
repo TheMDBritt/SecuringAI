@@ -4364,7 +4364,7 @@ MITRE ATLAS maps adversarial ML attacks to MITRE ATT&CK-style tactics:
 | Poisoning | Backdoor ML Model | AML.T0020 |
 | LLM-Specific | LLM Prompt Injection | AML.T0051 |
 | LLM-Specific | LLM Jailbreak | AML.T0054 |
-| Exfiltration | LLM Information Disclosure | AML.T0056 |
+| Collection | Extract LLM System Prompt | AML.T0056 |
 
 ## OWASP LLM Top 10 (2026)
 
@@ -4894,9 +4894,9 @@ MITRE ATLAS (Adversarial Threat Landscape for AI Systems) catalogs adversarial t
 | Resource Dev | AML.T0018 | Backdoor ML Model | Poison model uploaded to public repo |
 | Initial Access | AML.T0051 | LLM Prompt Injection | Direct or indirect injection |
 | Execution | AML.T0054 | LLM Jailbreak | Role-play, hypothetical bypass |
-| Collection | AML.T0056 | LLM Information Disclosure | System prompt leakage, context exfil |
+| Collection | AML.T0056 | Extract LLM System Prompt | System prompt leakage, context exfil |
 | Impact | AML.T0043 | Craft Adversarial Data | Evasion attacks against classifiers |
-| Impact | AML.T0053 | Poison Training Data | Data poisoning before training |
+| Persistence | AML.T0020 | Poison Training Data | Data poisoning before training |
 
 ## Microsoft pyRIT, Systematic Red Teaming at Scale
 

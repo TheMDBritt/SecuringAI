@@ -126,7 +126,7 @@ export const SECURITYAI_PLUS_TOPICS: Record<string, string[]> = {
     'SecAI+ · Multi-Tenant AI Isolation',
     'SC-500 · Azure OpenAI Data Isolation',
     'CAISP · Context Window Security',
-    'MITRE ATLAS · AML.T0056 LLM Information Disclosure',
+    'MITRE ATLAS · AML.T0056 Extract LLM System Prompt',
   ],
 
   // ── Dojo 3, AI GRC ────────────────────────────────────────────────────────

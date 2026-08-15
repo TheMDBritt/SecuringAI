@@ -1767,7 +1767,7 @@ containment actions.`,
         'AML.T0054: LLM Jailbreak',
         'T1566.002: Phishing: Spearphishing Link',
         'LLM01: Prompt Injection (Indirect, OWASP)',
-        'LLM08: Excessive Agency (OWASP)',
+        'LLM03: Excessive Agency (OWASP)',
       ],
     },
     iocs: {
@@ -1841,8 +1841,8 @@ remediation actions including Copilot plugin permission scoping and email conten
       tactic: 'Reconnaissance / Collection (ATLAS)',
       techniques: [
         'AML.T0040: ML Model Inference API Access',
-        'AML.T0056: LLM Meta Prompt Extraction',
-        'AML.T0057: LLM Data Gathering',
+        'AML.T0056: Extract LLM System Prompt',
+        'AML.T0057: LLM Data Leakage',
         'T1595.002: Active Scanning: Vulnerability Scanning',
       ],
     },
@@ -1927,7 +1927,7 @@ Include false-positive guidance for legitimate ML testing and A/B evaluation pip
         'T1195.001: Supply Chain Compromise: Software Dependencies',
         'T1552.001: Unsecured Credentials: Credentials in Files',
         'LLM01: Prompt Injection (OWASP)',
-        'LLM06: Sensitive Information Disclosure (OWASP)',
+        'LLM02: Sensitive Information Disclosure (OWASP)',
       ],
     },
     iocs: {
@@ -2189,7 +2189,7 @@ physical testing program) mitigations. Map findings to NIST AI RMF MEASURE and M
     mitre: {
       tactic: 'Exfiltration (ATLAS)',
       techniques: [
-        'AML.T0054.001: Prompt Injection: Indirect Prompt Injection',
+        'AML.T0051.001: LLM Prompt Injection: Indirect',
         'AML.T0057: LLM Data Leakage',
         'AML.T0051: LLM Jailbreak',
         'T1567.002: Exfiltration to Cloud Storage',
@@ -2205,7 +2205,7 @@ physical testing program) mitigations. Map findings to NIST AI RMF MEASURE and M
         'Exfil pattern: GET https://img-proxy.analytics-cdn-us.io/?data=<base64-encoded-context>',
         'Affected users: 47 sessions queried the poisoned knowledge base chunk over 6 hours',
         'Data types in exfiltrated context: employee names, email addresses, internal project codenames',
-        'OWASP LLM03: Training Data Poisoning / OWASP LLM01: Prompt Injection (indirect vector)',
+        'OWASP LLM05 Data and Model Poisoning with OWASP LLM01 Prompt Injection, indirect vector',
       ],
     },
     description: 'A customer-facing RAG assistant backed by Azure OpenAI GPT-4o began exfiltrating conversation context to an external domain via Markdown image rendering. Root cause: a malicious PDF uploaded to the shared knowledge base contained a hidden indirect prompt injection payload that redirected the LLM to embed user context in outbound image URLs. Triage the logs to reconstruct the full attack chain.',
@@ -2560,7 +2560,7 @@ HUNT OBJECTIVES:
    query_hr_system() fires within the same conversation_id within 60 seconds
 3. Write a KQL query to detect system prompt content modifications (user_message containing
    injection keywords: "IGNORE", "OVERRIDE", "admin mode", "system prompt", "jailbreak")
-4. Map the attack chain to MITRE ATLAS techniques: AML.T0054 (LLM Prompt Injection),
+4. Map the attack chain to MITRE ATLAS techniques: AML.T0051 (LLM Prompt Injection),
    AML.T0048 (Societal Harm), AML.T0043 (Craft Adversarial Data)
 5. Recommend 3 detection controls specific to agentic AI pipelines
 6. Draft a brief AI-specific incident playbook trigger: when does this escalate to a P1?`,
@@ -3568,7 +3568,7 @@ HUNT OBJECTIVES:
     attackCategory: 'C2 Beaconing' as const,
     mitre: {
       tactic: 'Command and Control',
-      techniques: ['T1071.001: Application Layer Protocol: Web Protocols', 'T1027: Obfuscated Files or Information', 'AML.T0054: LLM Prompt Injection'],
+      techniques: ['T1071.001: Application Layer Protocol: Web Protocols', 'T1027: Obfuscated Files or Information', 'AML.T0051: LLM Prompt Injection'],
     },
     iocs: {
       ips: ['104.18.10.134', '172.64.149.25'],
@@ -3853,7 +3853,7 @@ TASK:
     attackCategory: 'LLM Prompt Injection',
     mitre: {
       tactic: 'Persistence',
-      techniques: ['AML.T0048', 'AML.T0054.002', 'T1565.001'],
+      techniques: ['AML.T0048', 'AML.T0051.001', 'T1565.001'],
     },
     iocs: {
       ips: [],
@@ -4009,7 +4009,7 @@ TASK:
     attackCategory: 'LLM Prompt Injection',
     mitre: {
       tactic: 'Execution',
-      techniques: ['AML.T0054.002', 'T1098', 'T1114.003', 'T1059'],
+      techniques: ['AML.T0051.001', 'T1098', 'T1114.003', 'T1059'],
     },
     iocs: {
       ips: [],
@@ -4066,7 +4066,7 @@ AGENT TRUST MODEL FAILURE:
 
 TASK:
 1. Classify this as indirect prompt injection, explain the attack chain
-2. Map to MITRE ATLAS: AML.T0054.002 (Prompt Injection via External Content)
+2. Map to MITRE ATLAS: AML.T0051.001 (Indirect Prompt Injection)
 3. Draft an immediate containment plan (revoke agent permissions, recall emails, notify CFO)
 4. What architectural controls would prevent this? (input sanitization, permission scoping, HITL checkpoints)
 5. Assess regulatory impact: GDPR (unauthorized disclosure of business data? personal data?)

@@ -675,12 +675,12 @@ function buildDefensiveTakeaway(attackType: AttackType, scenarioId: string): str
 function getOwaspCategory(attackType: AttackType): string {
   const map: Record<AttackType, string> = {
     prompt_injection: 'LLM01: Prompt Injection',
-    data_exfiltration: 'LLM06: Sensitive Information Disclosure',
+    data_exfiltration: 'LLM02: Sensitive Information Disclosure',
     policy_bypass: 'LLM01: Prompt Injection',
-    tool_abuse: 'LLM07: Insecure Plugin Design',
-    mixed_attack: 'LLM01 / LLM06: Multi-Vector Attack',
-    rag_injection: 'LLM01: Prompt Injection (Indirect / RAG)',
-    probing: 'LLM06: Sensitive Information Disclosure',
+    tool_abuse: 'LLM03: Excessive Agency',
+    mixed_attack: 'LLM01 and LLM02, multi-vector attack',
+    rag_injection: 'LLM01: Prompt Injection, indirect via RAG',
+    probing: 'LLM02: Sensitive Information Disclosure',
     benign:             'N/A',
     unknown:            'N/A',
   };
@@ -962,7 +962,7 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Training data lineage and governance assessed', re: /\b(training\s+data|data\s+lineage|data\s+provenance|data\s+governance|GDPR|CCPA|data\s+poisoning|pre.?training|dataset\s+curation|data\s+source|membership\s+inference)\b/i },
     { label: 'Dependency vulnerability surface (SBOM/AI-BOM) reviewed', re: /\b(SBOM|AI.?BOM|bill\s+of\s+material|dependency|CVE|pickle|deserialization|supply\s+chain|ML\s+framework|PyTorch|TensorFlow|container|base\s+image|NVD|OSV)\b/i },
     { label: 'Model card completeness scored against EU AI Act or NIST AI RMF MAP.5', re: /model\s+card|EU\s+AI\s+Act|article\s+18|NIST|MAP\.5|MAP\s+5|technical\s+documentation|completeness|gap|present|missing/i },
-    { label: 'Risk scoring and contractual controls recommended', re: /\b(risk\s+(?:score|rating|level)|high|medium|low|contractual|vendor\s+controls?|DPA|MSA|clause|OWASP\s+LLM09|LLM09|MAP\.5)\b/i },
+    { label: 'Risk scoring and contractual controls recommended', re: /\b(risk\s+(?:score|rating|level)|high|medium|low|contractual|vendor\s+controls?|DPA|MSA|clause|OWASP\s+LLM04|LLM04|MAP\.5)\b/i },
   ],
   'ai-bias-audit': [
     { label: 'Bias metric computed (DIR, EOD, DPD, or AOD)', re: /\b(disparate\s+impact|DIR|four.fifths|equal\s+opportunity|EOD|demographic\s+parity|DPD|average\s+odds|AOD|TPR|FPR|0\.\d+|ratio\s*[:=]?\s*0\.\d+)\b/i },
@@ -1061,7 +1061,7 @@ const DOJO3_ELEMENT_COACHING: Record<string, string> = {
   'Model card completeness scored against EU AI Act or NIST AI RMF MAP.5':
     'EU AI Act Article 18 mandates technical documentation for high-risk AI, missing model card elements are a compliance finding, not just a documentation gap. Prompt: "Score the model card against a completeness checklist (model details, intended use, training data, evaluation, ethical considerations) and map gaps to EU AI Act Article 18 or NIST AI RMF MAP.5."',
   'Risk scoring and contractual controls recommended':
-    'Supply chain assessments that don\'t produce vendor contractual requirements produce no change, gaps must become contract clauses. Prompt: "Score each gap High/Medium/Low and propose required contractual controls for the vendor relationship, mapped to OWASP LLM09 and ISO 42001 Clause 8.4."',
+    'Supply chain assessments that don\'t produce vendor contractual requirements produce no change, gaps must become contract clauses. Prompt: "Score each gap High/Medium/Low and propose required contractual controls for the vendor relationship, mapped to OWASP LLM04 and ISO 42001 Clause 8.4."',
   // ai-bias-audit
   'Bias metric computed (DIR, EOD, DPD, or AOD)':
     'Regulatory bodies (EEOC, EU AI Act) require numeric metrics, an audit without a disparate impact ratio or similar calculation is not defensible. Prompt: "Compute the Disparate Impact Ratio (DIR = P(positive|group A) ÷ P(positive|group B)) and at least one other metric (Equal Opportunity Difference, Demographic Parity Difference)."',

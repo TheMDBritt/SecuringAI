@@ -8,6 +8,8 @@
  * by hand on every change, so the invariants are enforced here instead.
  */
 
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
@@ -428,6 +430,83 @@ describe('answer-length tells are held down across every cert', () => {
           if (DANGLING.test(o.trim().replace(/[.,;:]$/, ''))) bad.push(`${q.id}: "${o}"`);
         }
       }
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The Dojo and the Playbook must teach the SAME OWASP edition. The codes are
+// not stable: LLM08 was Excessive Agency in 2023, Vector and Embedding
+// Weaknesses in 2025, Hidden Context Exposure in 2026. Mixed editions inside
+// one app teach a learner the wrong code for the exam.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('OWASP LLM codes are the 2026 edition everywhere', () => {
+  const SOURCES = [
+    'lib/scenarios.ts',
+    'lib/dojo2-scenarios.ts',
+    'lib/dojo-control-content.ts',
+    'lib/evaluator.ts',
+    'lib/playbook-glossary.ts',
+    'lib/playbook-content.ts',
+    'lib/playbook-quiz.ts',
+    'components/dojo/ScoringPane.tsx',
+  ];
+
+  // Historical names that must never be paired with a code other than the
+  // 2026 one. Keys are lowercase substrings of the rendered label.
+  const NAME_TO_CODE: Record<string, string> = {
+    'prompt injection': 'LLM01',
+    'sensitive information disclosure': 'LLM02',
+    'excessive agency': 'LLM03',
+    'insecure plugin design': 'LLM03',
+    'supply chain': 'LLM04',
+    'data and model poisoning': 'LLM05',
+    'training data poisoning': 'LLM05',
+    'unbounded consumption': 'LLM06',
+    'model denial of service': 'LLM06',
+    'misinformation': 'LLM07',
+    'overreliance': 'LLM07',
+    'hidden context exposure': 'LLM08',
+    'vector and embedding weaknesses': 'LLM09',
+    'improper output handling': 'LLM10',
+    'insecure output handling': 'LLM10',
+  };
+
+  it('never pairs a category name with a non-2026 code', () => {
+    const bad: string[] = [];
+    for (const rel of SOURCES) {
+      const text = readFileSync(join(process.cwd(), rel), 'utf8');
+      const lines = text.split('\n');
+      lines.forEach((line, i) => {
+        // Skip lines that deliberately discuss edition history.
+        if (/\b(2023|2025)\b/.test(line) && /(was|renamed|folded|moved|edition)/i.test(line)) return;
+        for (const m of line.matchAll(/LLM(0[1-9]|10)(?::20\d\d)?[:,\s-]+([A-Za-z][A-Za-z \-]{4,45})/g)) {
+          const code = `LLM${m[1]}`;
+          const label = m[2].toLowerCase();
+          for (const [name, want] of Object.entries(NAME_TO_CODE)) {
+            if (label.startsWith(name) && want !== code) {
+              bad.push(`${rel}:${i + 1} ${code} labelled "${m[2].trim()}" (2026 code is ${want})`);
+            }
+          }
+        }
+      });
+    }
+    expect(bad).toEqual([]);
+  });
+
+  it('uses only codes LLM01 to LLM10 on Dojo scenarios', () => {
+    const text = readFileSync(join(process.cwd(), 'lib/scenarios.ts'), 'utf8');
+    const codes = [...text.matchAll(/'(LLM\d{2})'/g)].map((m) => m[1]);
+    const valid = new Set(Object.keys(OWASP_LLM_2026));
+    expect(codes.filter((c) => !valid.has(c))).toEqual([]);
+  });
+
+  it('never uses a MITRE ATLAS sub-technique under AML.T0054, which has none', () => {
+    const bad: string[] = [];
+    for (const rel of SOURCES) {
+      const text = readFileSync(join(process.cwd(), rel), 'utf8');
+      if (/AML\.T0054\.\d/.test(text)) bad.push(rel);
     }
     expect(bad).toEqual([]);
   });
