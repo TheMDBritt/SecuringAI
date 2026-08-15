@@ -7409,9 +7409,9 @@ Focus: **compliance reporting, governance services**.
 
 **Weeks 3-4, Domains 3 + 4 (36%)**, KMS key policies, envelope encryption, S3 encryption modes, CloudTrail types (management vs data), Security Lake.
 
-**Week 5, Domain 5 (14%)**, GuardDuty finding categories, Security Hub, Inspector, Detective, automated remediation via EventBridge.
+**Week 5, Domains 1 and 2 (16% + 14%)**, GuardDuty finding categories, Security Hub, Inspector, Detective, automated remediation via EventBridge.
 
-**Week 6, Domain 6 (10%) + gaps**, Organizations, Control Tower, AWS Artifact, Audit Manager. Fill gaps from your Progress heatmap.
+**Week 6, Domain 6 (14%) + gaps**, Organizations, Control Tower, AWS Artifact, Audit Manager. Fill gaps from your Progress heatmap.
 
 **Weeks 7-8, Mock exams + hands-on**, Cert Focus = SCS-C03, count = 65 (matches real exam). Take the Mock Exam preset at least 3x with a 170-min timer. Spin up a free AWS account and touch every domain-1 and domain-2 service.
 
@@ -7442,10 +7442,10 @@ Source (secondary, user-transcribed): domain outline + weights in \`docs/cert-ob
   {
     id: 'aws-scsc03-d1-iam',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 1, Identity and Access Management',
+    title: 'AWS SCS-C03 Domain 4, Identity and Access Management',
     certTags: ['SCS-C03'],
     vocab: ['IAM', 'SCP', 'Permission Boundary', 'Session Policy', 'Access Analyzer', 'IAM Identity Center', 'Federation', 'ABAC'],
-    content: `**Domain 1 = 20% of SCS-C03 (~13 questions).** Every serious SCS-C03 question set has policy-diagram walkthroughs. This is where you win or lose the exam.
+    content: `**Domain 4 = 20% of SCS-C03 (~13 questions), the heaviest domain on the exam.** Every serious SCS-C03 question set has policy-diagram walkthroughs. This is where you win or lose the exam.
 
 ### Policy evaluation logic (memorize the order)
 
@@ -7527,10 +7527,10 @@ Three functions the exam asks about:
   {
     id: 'aws-scsc03-d2-infra',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 2, Infrastructure Security',
+    title: 'AWS SCS-C03 Domain 3, Infrastructure Security',
     certTags: ['SCS-C03'],
     vocab: ['VPC', 'Security Group', 'NACL', 'PrivateLink', 'Interface Endpoint', 'Gateway Endpoint', 'Network Firewall', 'WAF', 'Shield', 'Systems Manager Session Manager'],
-    content: `**Domain 2 = 20% of SCS-C03 (~13 questions).** Network topology and traffic-control logic. Second-heaviest domain tied with IAM.
+    content: `**Domain 5 = 18% of SCS-C03 (~12 questions).** Network topology and traffic-control logic. Tied with Data Protection, behind IAM.
 
 ### VPC design
 
@@ -7632,10 +7632,10 @@ Endpoint policies restrict what actions the endpoint permits (defense in depth a
   {
     id: 'aws-scsc03-d3-data-protection',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 3, Data Protection',
+    title: 'AWS SCS-C03 Domain 5, Data Protection',
     certTags: ['SCS-C03'],
     vocab: ['KMS', 'Envelope Encryption', 'Key Policy', 'Grant', 'CMK', 'Secrets Manager', 'SSM Parameter Store', 'Macie', 'ACM', 'DSSE-KMS'],
-    content: `**Domain 3 = 18% of SCS-C03 (~12 questions).** Encryption, key management, secrets, and PII discovery. Deep KMS knowledge is non-negotiable.
+    content: `**Domain 5 = 18% of SCS-C03 (~12 questions).** Encryption, key management, secrets, and PII discovery. Deep KMS knowledge is non-negotiable.
 
 ### KMS key types
 
@@ -7752,10 +7752,10 @@ Rule of thumb: **rotating credential → Secrets Manager; static value → Param
   {
     id: 'aws-scsc03-d4-logging',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 4, Security Logging and Monitoring',
+    title: 'AWS SCS-C03 Domain 1, Detection',
     certTags: ['SCS-C03'],
     vocab: ['CloudTrail', 'CloudTrail Lake', 'CloudWatch Logs', 'CloudWatch Alarms', 'AWS Config', 'Security Lake', 'VPC Flow Logs', 'EventBridge', 'Athena'],
-    content: `**Domain 4 = 18% of SCS-C03 (~12 questions).** Every AWS security answer eventually depends on log evidence. Know which log lands where and which service queries it.
+    content: `**Domain 1 = 16% of SCS-C03 (~10 questions).** Every AWS security answer eventually depends on log evidence. Know which log lands where and which service queries it.
 
 ### CloudTrail
 
@@ -7851,10 +7851,10 @@ Rule of thumb: **rotating credential → Secrets Manager; static value → Param
   {
     id: 'aws-scsc03-d5-threat-detection',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 5, Threat Detection and Incident Response',
+    title: 'AWS SCS-C03 Domain 2, Incident Response',
     certTags: ['SCS-C03'],
     vocab: ['GuardDuty', 'Security Hub', 'Inspector', 'Detective', 'IAM Access Analyzer', 'AWS Incident Manager', 'Trusted Advisor', 'EventBridge Automation'],
-    content: `**Domain 5 = 14% of SCS-C03 (~9 questions).** Detection catalog + response playbook automation. Know each service's job and where their outputs land.
+    content: `**Domain 2 = 14% of SCS-C03 (~9 questions).** Detection catalog + response playbook automation. Know each service's job and where their outputs land.
 
 ### GuardDuty
 
@@ -7967,10 +7967,10 @@ Security Hub finding at severity ≥ 90 → EventBridge → SNS → PagerDuty we
   {
     id: 'aws-scsc03-d6-governance',
     category: 'Cloud AI Platforms',
-    title: 'AWS SCS-C03 Domain 6, Management and Governance',
+    title: 'AWS SCS-C03 Domain 6, Security Foundations and Governance',
     certTags: ['SCS-C03'],
     vocab: ['AWS Organizations', 'Control Tower', 'Service Catalog', 'Artifact', 'Audit Manager', 'License Manager', 'RAM', 'Resource Explorer'],
-    content: `**Domain 6 = 10% of SCS-C03 (~7 questions).** Smallest weight, but easy points if you know the service map, several questions test simple "which service does X?" recognition.
+    content: `**Domain 6 = 14% of SCS-C03 (~9 questions).** Joint-smallest weight with Incident Response, but easy points if you know the service map, several questions test simple "which service does X?" recognition.
 
 ### AWS Organizations
 
