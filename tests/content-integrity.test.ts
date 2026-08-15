@@ -21,6 +21,7 @@ import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import { SCENARIOS } from '@/lib/scenarios';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { evaluate } from '@/lib/evaluator';
+import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
@@ -571,4 +572,21 @@ describe('every Dojo 2 and Dojo 3 scenario is actually scored', () => {
       expect(r.score).toBeLessThan(100);
     });
   }
+});
+
+describe('Dojo 2 and Dojo 3 scenarios carry a certification mapping', () => {
+  it('has cert topics for every Dojo 2 and Dojo 3 scenario', () => {
+    const missing = SCENARIOS.filter(
+      (s) => s.dojoId !== 1 && (SECURITYAI_PLUS_TOPICS[s.id] ?? []).length === 0,
+    );
+    expect(missing.map((s) => s.id)).toEqual([]);
+  });
+
+  it('lists no duplicate topic inside one scenario', () => {
+    const dup: string[] = [];
+    for (const [id, topics] of Object.entries(SECURITYAI_PLUS_TOPICS)) {
+      if (new Set(topics).size !== topics.length) dup.push(id);
+    }
+    expect(dup).toEqual([]);
+  });
 });

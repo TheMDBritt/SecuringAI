@@ -954,6 +954,27 @@ const DOJO2_ELEMENT_COACHING: Record<string, string> = {
 // Teaches learners what a real SOC analyst does after receiving AI analysis.
 
 const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
+  'autonomous-agent-forensics':
+    'What a real responder does next: (1) revokes the agent service credentials and its tool scopes before anything else, ' +
+    '(2) diffs every record the agent wrote against the last known-good snapshot, ' +
+    '(3) replays the action trace in a sandbox to confirm the trigger, ' +
+    '(4) adds an approval gate on the irreversible tools before the agent goes back online.',
+  'ai-model-abuse':
+    'What a real analyst does next: (1) revokes or rate-caps the offending API key immediately, ' +
+    '(2) ships the detection query to the SIEM and back-tests it over the last 30 days, ' +
+    '(3) checks whether extraction probes actually recovered training text and notifies the data owner if so, ' +
+    '(4) opens a platform ticket for per-tenant quotas so the next abuser hits a wall, not a dashboard.',
+  'adversarial-prompt-forensics':
+    'What a real analyst does next: (1) quarantines the ingested document and every session that retrieved it, ' +
+    '(2) extends the input shield to retrieved content, not just user turns, and re-tests with the captured payload, ' +
+    '(3) checks the retrieval log for other sessions served the same chunk, ' +
+    '(4) writes the detection for persona drift and system-prompt fragments appearing in output.',
+  'ransomware-ai-triage':
+    'What a real IR lead does next: (1) isolates the confirmed hosts under human authorisation and preserves memory first, ' +
+    '(2) disables the contractor account and forces a credential reset across the exposed trust boundary, ' +
+    '(3) verifies backup integrity offline before any restore decision, ' +
+    '(4) records which AI-derived conclusions were analyst-verified, because the incident report has to stand up later.',
+
   'log-triage':
     'What a real Tier-1 analyst does next: (1) assigns severity and pages on-call if Critical, ' +
     '(2) adds extracted IOCs to the SIEM blocklist and threat intel platform, ' +
