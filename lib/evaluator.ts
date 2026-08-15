@@ -724,6 +724,44 @@ const DOJO2_CONFIDENCE_RISK_CHECK: QualityCheck = {
 };
 
 const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
+  // ── Scenarios added after the first Dojo 2 build ─────────────────────────
+  // A scenario with no rubric scores a flat 100 and always reads PASS, which
+  // teaches nothing. Every Dojo 2 scenario id in lib/scenarios.ts must appear
+  // here; tests/content-integrity.test.ts enforces it.
+
+  'autonomous-agent-forensics': [
+    { label: 'Agent action trace reconstructed from the audit log', re: /\b(action\s+(trace|log|history)|tool\s+call|invocation|step\s*\d|audit\s+trail|execution\s+trace|sequence\s+of\s+actions)\b/i },
+    { label: 'Triggering input or injected instruction identified', re: /\b(inject\w*|triggering\s+input|poisoned|untrusted\s+(content|input|source)|retrieved\s+document|initial\s+prompt|root\s+trigger)\b/i },
+    { label: 'Excess of authority or scope violation named', re: /\b(excessive\s+agency|over.?privileg\w*|scope\s+violation|beyond\s+its\s+(scope|authority|mandate)|unauthoris?zed\s+action|least\s+privilege|permission\s+boundary)\b/i },
+    { label: 'Blast radius assessed (what the agent actually changed)', re: /\b(blast\s+radius|impact\s+scope|records?\s+(modified|deleted|created)|systems?\s+affected|irreversible|data\s+(written|changed|exfiltrat\w+)|reversib\w+)\b/i },
+    { label: 'Containment and control recommendations given', re: /\b(revoke|disable\s+(the\s+)?(agent|tool)|human.in.the.loop|approval\s+gate|confirmation\s+gate|scope\s+the\s+token|kill\s+switch|rate\s+limit|remediat|contain)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'ai-model-abuse': [
+    { label: 'Abuse type classified (jailbreak / extraction / membership inference)', re: /\b(jailbreak|prompt\s+injection|training\s+data\s+extraction|model\s+extraction|membership\s+inference|model\s+theft|data\s+extraction)\b/i },
+    { label: 'MITRE ATLAS technique attributed (AML T-code)', re: /AML\.T\d{4}(\.\d{3})?/i },
+    { label: 'Anomalous access pattern quantified against baseline', re: /\b(baseline|requests?\s+per\s+(hour|minute|second)|rate|volume|\d[\d,]{2,}\s+requests?|burst|anomal\w+|deviation|standard\s+deviation)\b/i },
+    { label: 'Detection logic or query proposed', re: /\b(detection\s+(rule|logic|query)|sigma|KQL|SPL|alert\s+when|threshold|\|\s*(where|summarize)|signature)\b/i },
+    { label: 'Rate limiting or quota controls recommended', re: /\b(rate\s+limit|quota|throttl\w+|token\s+budget|per.?tenant\s+(cap|limit)|API\s+key\s+(revoc|rotat)|block\s+the\s+key|backoff)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'adversarial-prompt-forensics': [
+    { label: 'Attack vector classified (direct / indirect / jailbreak)', re: /\b(direct\s+(prompt\s+)?injection|indirect\s+(prompt\s+)?injection|jailbreak|RAG\s+injection|retrieved\s+content|via\s+the\s+document)\b/i },
+    { label: 'Evidence cited from the conversation or retrieval log', re: /\b(turn\s*\d|log\s+(shows|entry)|retrieval\s+log|guardrail\s+log|timestamp|the\s+evidence|according\s+to\s+the\s+log|ingested)\b/i },
+    { label: 'Bypassed control identified', re: /\b(input\s+shield|prompt\s+shield|guardrail|only\s+inspect\w*|classifier|filter)\b[^.]{0,80}\b(bypass\w*|miss\w*|fail\w*|not\s+applied|did\s+not|never\s+(saw|scanned))\b|\b(bypassed|evaded)\b/i },
+    { label: 'Root cause stated, not just the symptom', re: /\b(root\s+cause|underlying|because|the\s+cause\s+was|stems?\s+from|trust\s+boundary|treated\s+as\s+trusted)\b/i },
+    { label: 'Specific guardrail configuration change recommended', re: /\b(scan\s+retrieved|apply\s+the\s+shield\s+to|output\s+valid\w+|provenance|fence|delimit|sanitis?ze\s+(retrieved|context)|re.?configure|enable\s+\w+\s+shield)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+  'ransomware-ai-triage': [
+    { label: 'Initial access vector identified', re: /\b(initial\s+access|entry\s+point|VPN|contractor\s+account|phish\w+|valid\s+account|no\s+MFA|credential\s+(theft|stuffing)|T1078|T1133)\b/i },
+    { label: 'Lateral movement path reconstructed', re: /\b(lateral\s+movement|SMB|pivot|remote\s+(service|desktop)|credential\s+access|spread\s+to|from\s+the\s+workstation\s+to|T1021|T1003)\b/i },
+    { label: 'Encryption scope and affected assets quantified', re: /\b(\d+\s+(of\s+\d+\s+)?(file\s+)?servers?|encryption\s+scope|affected\s+(hosts?|assets?|systems?)|in\s+progress|blast\s+radius)\b/i },
+    { label: 'Automated containment actions distinguished from human-gated ones', re: /\b(human.in.the.loop|HITL|human\s+(gate|approval|authoris|authoriz)|manual\s+approval|irreversible|auto\w*\s+(contain|isolat|block)|SOAR\s+playbook)\b/i },
+    { label: 'AI-assisted correlation limits or verification acknowledged', re: /\b(verif\w+|confirm\w+|hallucinat\w+|analyst\s+(review|validat)|do\s+not\s+rely|false\s+positive|corroborat\w+|second\s+source)\b/i },
+    DOJO2_CONFIDENCE_RISK_CHECK,
+  ],
+
   'log-triage': [
     // Require severity word as a label/heading, not buried in prose
     { label: 'Severity assessment provided (Critical / High / Medium / Low)', re: /\b(severity|sev)\b.*\b(critical|high|medium|low)\b|\*\*(critical|high|medium|low)\*\*|\[(critical|high|medium|low)\]/i },
@@ -801,6 +839,51 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
 // criterion is missing. Tells the learner WHY it matters and what prompt to use.
 
 const DOJO2_ELEMENT_COACHING: Record<string, string> = {
+  // ── autonomous-agent-forensics ────────────────────────────────────────────
+  'Agent action trace reconstructed from the audit log':
+    'You cannot investigate an agent you cannot replay. Prompt: "Reconstruct the ordered action trace from the audit log, one line per tool invocation with arguments and result."',
+  'Triggering input or injected instruction identified':
+    'The agent is the weapon, not the attacker, so find the input that aimed it. Prompt: "Identify the exact input that triggered the deviation and where it entered the context."',
+  'Excess of authority or scope violation named':
+    'Naming the authority the agent exceeded is what turns an incident into a control change. Prompt: "Which actions fell outside the agent granted scope, and what permission allowed them?"',
+  'Blast radius assessed (what the agent actually changed)':
+    'Recovery planning needs the set of changed objects, not a severity word. Prompt: "List every record, system, and external party the agent actually touched, and mark which changes are irreversible."',
+  'Containment and control recommendations given':
+    'Forensics without a control change means the same run happens again tomorrow. Prompt: "Give the immediate containment steps and the permanent controls: scope, approval gates, and revocation."',
+  // ── ai-model-abuse ────────────────────────────────────────────────────────
+  'Abuse type classified (jailbreak / extraction / membership inference)':
+    'These three abuses need different detections and different fixes, so the classification drives everything downstream. Prompt: "Separate the request families and classify each as jailbreak, extraction, or membership inference, with the evidence for each."',
+  'MITRE ATLAS technique attributed (AML T-code)':
+    'ATLAS is the shared vocabulary for AI attacks the way ATT&CK is for the rest. Prompt: "Attribute each abuse family to a MITRE ATLAS technique with its AML T-code."',
+  'Anomalous access pattern quantified against baseline':
+    'An access pattern is only anomalous relative to a baseline you state. Prompt: "Quantify the request rate against the normal baseline and state the deviation."',
+  'Detection logic or query proposed':
+    'A finding that does not become a detection is a finding you will make again. Prompt: "Write the detection query and the threshold that would have alerted on this in the first hour."',
+  'Rate limiting or quota controls recommended':
+    'Abuse of a model API is contained at the gateway, not in the model. Prompt: "Specify the rate limits, quotas, and key lifecycle actions that contain this without blocking legitimate tenants."',
+  // ── adversarial-prompt-forensics ──────────────────────────────────────────
+  'Attack vector classified (direct / indirect / jailbreak)':
+    'The three vectors have different entry points and different controls, so guessing here misdirects the whole remediation. Prompt: "Classify the vector as direct injection, indirect injection, or jailbreak, and justify it from the logs."',
+  'Evidence cited from the conversation or retrieval log':
+    'An assertion without a log line is an opinion. Prompt: "Cite the specific turn numbers and log entries that support each conclusion."',
+  'Bypassed control identified':
+    'Knowing which control failed is what tells you what to change. Prompt: "Which guardrail was in place, what did it inspect, and why did this attack pass it?"',
+  'Root cause stated, not just the symptom':
+    'Persona drift is the symptom, the trust boundary is the cause. Prompt: "State the root cause in terms of the trust boundary that was crossed, not the observed behaviour."',
+  'Specific guardrail configuration change recommended':
+    'Vague advice to add guardrails does not change a config file. Prompt: "Name the exact configuration change: which content is scanned, at which stage, and what happens on a hit."',
+  // ── ransomware-ai-triage ──────────────────────────────────────────────────
+  'Initial access vector identified':
+    'Containment that misses the entry point invites re-entry. Prompt: "Identify the initial access vector from the evidence and give its ATT&CK technique."',
+  'Lateral movement path reconstructed':
+    'Scope follows the path, so the path has to come first. Prompt: "Reconstruct the movement path host by host, citing the telemetry for each hop."',
+  'Encryption scope and affected assets quantified':
+    'Recovery decisions need counts and names, not adjectives. Prompt: "Quantify how many assets are encrypted, in progress, and untouched."',
+  'Automated containment actions distinguished from human-gated ones':
+    'Automating an irreversible action at machine speed is how a response becomes a second incident. Prompt: "Split the containment steps into safe-to-automate and human-gated, and justify each gate."',
+  'AI-assisted correlation limits or verification acknowledged':
+    'AI-assisted triage that is trusted without verification imports its errors into the incident record. Prompt: "State which conclusions need analyst verification before action, and how you would corroborate them."',
+
   // log-triage
   'Severity assessment provided (Critical / High / Medium / Low)':
     'Severity is the first decision gate, it determines response priority and paging thresholds. Prompt: "Assign a severity rating (Critical/High/Medium/Low) with justification."',
@@ -914,6 +997,67 @@ const DOJO2_NEXT_ANALYST_STEPS: Record<string, string> = {
 };
 
 const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
+  // ── Scenarios added after the first Dojo 3 build ─────────────────────────
+  // A scenario with no rubric scores a flat 100 and always reads PASS.
+  // Every Dojo 3 scenario id in lib/scenarios.ts must appear here.
+
+  'ai-procurement-assessment': [
+    { label: 'Procurement decision stated (proceed / conditional / decline)', re: /\b(proceed|approve\w*|conditional\w*|decline|reject\w*|do\s+not\s+(proceed|procure))\b/i },
+    { label: 'Vendor AI supply chain risks assessed', re: /\b(sub.?processor|model\s+provenance|training\s+data\s+source|open.?weight|third.?party\s+model|AI.?BOM|supply\s+chain|upstream\s+(model|provider))\b/i },
+    { label: 'Contractual controls specified (DPA / SLA / audit rights)', re: /\b(DPA|MSA|data\s+processing\s+agreement|SLA|audit\s+rights?|right\s+to\s+audit|clause|indemnif\w+|liability|exit\s+(plan|clause))\b/i },
+    { label: 'Framework reference cited (ISO 42001 / NIST AI RMF / EU AI Act)', re: /ISO\s*(\/IEC\s*)?42001|NIST|AI\s+RMF|EU\s+AI\s+Act|article\s+\d+|clause\s+\d/i },
+    { label: 'Residual risk and acceptance owner identified', re: /\b(residual\s+risk|risk\s+(owner|acceptance|accepted\s+by)|accountab\w+|sign.?off|escalat\w+\s+to|governance\s+(board|committee))\b/i },
+  ],
+  'iso42001-gap-analysis': [
+    { label: 'Specific ISO 42001 clauses cited', re: /\b(clause\s*\d|ISO\s*(\/IEC\s*)?42001|annex\s+A(\.\d)?)\b/i },
+    { label: 'Gap severity or maturity rated per clause', re: /\b(gap\s+(severity|rating)|maturity|score\s*[:=]?\s*[0-5]|major\s+nonconform\w+|minor\s+nonconform\w+|partial|absent|fully\s+implemented)\b/i },
+    { label: 'Evidence required for each gap named', re: /\b(evidence|artefact|artifact|record|documented\s+procedure|log|register|policy\s+document|audit\s+trail|demonstrat\w+)\b/i },
+    { label: 'AIMS scope and interested parties addressed', re: /\b(AIMS|scope\s+(statement|of\s+the\s+management\s+system)|interested\s+part\w+|stakeholder|context\s+of\s+the\s+organi[sz]ation|boundar\w+)\b/i },
+    { label: 'Remediation plan with owners and sequencing', re: /\b(remediat\w+|corrective\s+action|owner|responsib\w+|by\s+Q[1-4]|timeline|priorit\w+|phase\s*\d|roadmap)\b/i },
+  ],
+  'ai-continuous-monitoring': [
+    { label: 'Specific metrics or signals defined', re: /\b(metric|KPI|KRI|signal|indicator|drift\s+(score|metric)|accuracy|precision|recall|latency|refusal\s+rate|hallucination\s+rate|cost\s+per)\b/i },
+    { label: 'Thresholds and alerting criteria set', re: /\b(threshold|alert\s+when|exceed\w*|breach\w*|tolerance|control\s+limit|>\s*\d|below\s+\d|percent(age)?\s+drop)\b/i },
+    { label: 'Monitoring cadence or review frequency stated', re: /\b(continuous\w*|real.?time|daily|weekly|monthly|quarterly|cadence|frequency|per\s+release|on\s+each\s+deployment)\b/i },
+    { label: 'Escalation path and owner defined', re: /\b(escalat\w+|owner|on.?call|accountab\w+|notif\w+|governance\s+(board|committee)|model\s+risk|review\s+board)\b/i },
+    { label: 'Framework mapping (NIST AI RMF MEASURE / ISO 42001 clause 9)', re: /NIST|AI\s+RMF|MEASURE(\s+\d)?|MANAGE(\s+\d)?|ISO\s*(\/IEC\s*)?42001|clause\s*9|performance\s+evaluation/i },
+  ],
+  'nist-ai-rmf-profile': [
+    { label: 'All four functions addressed (Govern / Map / Measure / Manage)', re: /Govern[\s\S]{0,600}Map[\s\S]{0,600}Measure[\s\S]{0,600}Manage|Govern[\s\S]{0,600}Manage/i },
+    { label: 'Specific subcategories cited (e.g. MAP 5.1, MEASURE 2.5)', re: /\b(GOVERN|MAP|MEASURE|MANAGE)\s*\d(\.\d)?\b/i },
+    { label: 'Profile scoped to a stated use case and context', re: /\b(use\s+case|context|deployment|in\s+scope|out\s+of\s+scope|target\s+profile|current\s+profile|boundar\w+)\b/i },
+    { label: 'Current state versus target state distinguished', re: /\b(current\s+(state|profile)|target\s+(state|profile)|as.?is|to.?be|gap\s+between|desired\s+state|maturity)\b/i },
+    { label: 'Prioritised actions with owners produced', re: /\b(priorit\w+|action\s+(plan|item)|owner|responsib\w+|sequenc\w+|near.?term|roadmap|phase\s*\d)\b/i },
+  ],
+  'ai-regulatory-cross-reference': [
+    { label: 'All four frameworks addressed', re: /(?=[\s\S]*EU\s+AI\s+Act)(?=[\s\S]*(NIST|AI\s+RMF))(?=[\s\S]*(ISO\s*(\/IEC\s*)?42001|42001))(?=[\s\S]*OWASP)/i },
+    { label: 'Specific clause, article, or function references cited', re: /(article\s*\d+|clause\s*\d(\.\d)?|(GOVERN|MAP|MEASURE|MANAGE)\s*\d(\.\d)?|LLM\d{2})/i },
+    { label: 'Overlapping requirements identified and satisfied once', re: /\b(overlap\w*|satisf\w+\s+(both|all|multiple)|single\s+control|maps?\s+to\s+(both|all)|shared\s+(control|requirement)|de.?duplicat\w+|common\s+control)\b/i },
+    { label: 'Conflicts resolved with a stated governing requirement', re: /\b(conflict\w*|tension|stricter|most\s+stringent|takes\s+precedence|governs|prevails|resolve\w*|which\s+one\s+applies)\b/i },
+    { label: 'Unified artefact with no duplicate controls and no gaps', re: /\b(unified|consolidat\w+|single\s+control\s+set|crosswalk|matrix|no\s+(duplicate|gap)|coverage\s+(map|matrix)|traceab\w+)\b/i },
+  ],
+  'ai-transparency-obligations': [
+    { label: 'EU AI Act Articles 12 to 15 referenced', re: /article\s*1[2-5]|record.?keeping|transparency\s+(obligation|requirement)|accuracy,?\s+robustness|human\s+oversight\s+requirement/i },
+    { label: 'Instructions for use content specified', re: /\b(instructions?\s+for\s+use|intended\s+purpose|IFU|capabilit\w+\s+and\s+limitation|performance\s+characteristic|conditions?\s+of\s+use)\b/i },
+    { label: 'Capability and limitation disclosures drafted', re: /\b(limitation|known\s+(failure|weakness)|accuracy\s+(level|rate)|foreseeable\s+misuse|degrad\w+|not\s+suitable\s+for|out.of.scope\s+use)\b/i },
+    { label: 'Human oversight interface documented', re: /\b(human\s+oversight|Article\s*14|stop\s+button|override|intervene|interpret\s+the\s+output|automation\s+bias|oversight\s+measure)\b/i },
+    { label: 'Deployer versus end user disclosures distinguished', re: /\b(deployer|provider|end\s+user|affected\s+person|downstream|who\s+receives|distinguish\w*\s+between)\b/i },
+  ],
+  'model-drift-governance': [
+    { label: 'Drift root cause classified (data / concept / adversarial / infrastructure)', re: /\b(data\s+drift|concept\s+drift|covariate\s+shift|distribution\s+shift|adversarial\s+degrad\w+|infrastructure\s+change|feature\s+pipeline)\b/i },
+    { label: 'EU AI Act Article 72 post-market surveillance obligations addressed', re: /article\s*72|post.?market\s+surveillance|PMS\s+plan|continuous\s+monitoring\s+obligation/i },
+    { label: 'Article 73 serious incident notification threshold assessed', re: /article\s*73|serious\s+incident|notification\s+(threshold|obligation|window)|report\s+to\s+the\s+(authority|market\s+surveillance)|15\s+days/i },
+    { label: 'Revalidation and redeployment plan produced', re: /\b(revalidat\w+|retrain\w+|re.?deploy\w+|rollback|shadow\s+mode|canary|acceptance\s+criteria|sign.?off\s+before)\b/i },
+    { label: 'ISO 42001 clause 10 improvement process referenced', re: /ISO\s*(\/IEC\s*)?42001|clause\s*10|nonconform\w+|corrective\s+action|continual\s+improvement/i },
+  ],
+  'ai-regulatory-mapping': [
+    { label: 'Multiple regulatory regimes addressed', re: /(?=[\s\S]*(GDPR|EU\s+AI\s+Act))(?=[\s\S]*(NIST|ISO\s*(\/IEC\s*)?42001|CCPA))/i },
+    { label: 'Specific articles or clauses cited', re: /(article\s*\d+|clause\s*\d(\.\d)?|art\.\s*\d+)/i },
+    { label: 'Interaction between regimes explained rather than listed', re: /\b(both\s+apply|neither\s+substitut\w+|in\s+addition\s+to|cumulativ\w+|interact\w+|does\s+not\s+replace|stricter\s+of)\b/i },
+    { label: 'Risk tier or classification determined', re: /\b(high.?risk|limited.?risk|minimal.?risk|prohibited|annex\s+III|automated\s+decision|Article\s*22)\b/i },
+    { label: 'Prioritised remediation plan with jurisdiction ordering', re: /\b(priorit\w+|remediation\s+(plan|calendar)|enforcement|jurisdiction|deadline|by\s+\w+\s+20\d\d|first|sequence)\b/i },
+  ],
+
   'ai-risk-classification': [
     { label: 'EU AI Act risk tier assigned (prohibited / high / limited / minimal)', re: /\b(prohibited|unacceptable.?risk|high.?risk|limited.?risk|minimal.?risk)\b|annex\s+(I|II|III)/i },
     { label: 'NIST AI RMF functions referenced (Govern / Map / Measure / Manage)', re: /NIST|AI\s+RMF|\bGovern\b|\bMap\b|\bMeasure\b|\bManage\b/i },
@@ -983,6 +1127,95 @@ const DOJO3_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
 // ─── Per-element coaching for Dojo 3 ─────────────────────────────────────────
 
 const DOJO3_ELEMENT_COACHING: Record<string, string> = {
+  // ── ai-procurement-assessment ─────────────────────────────────────────────
+  'Procurement decision stated (proceed / conditional / decline)':
+    'An assessment without a decision leaves the business exactly where it started. Prompt: "State the decision, proceed, conditional, or decline, and the conditions attached."',
+  'Vendor AI supply chain risks assessed':
+    'The vendor inherits risk from its own upstream models and processors. Prompt: "Trace the AI supply chain behind this vendor: model provenance, sub-processors, and training data sources."',
+  'Contractual controls specified (DPA / SLA / audit rights)':
+    'A risk that does not become a contract clause is a risk you accepted silently. Prompt: "Convert each gap into a specific contractual control: DPA terms, SLA, audit rights, exit."',
+  'Framework reference cited (ISO 42001 / NIST AI RMF / EU AI Act)':
+    'Framework references make an assessment auditable rather than personal. Prompt: "Cite the clause, article, or subcategory behind each requirement."',
+  'Residual risk and acceptance owner identified':
+    'Residual risk with no named owner is unowned risk. Prompt: "State the residual risk after controls and name the accountable owner who accepts it."',
+  // ── iso42001-gap-analysis ─────────────────────────────────────────────────
+  'Specific ISO 42001 clauses cited':
+    'A gap analysis is only as good as its clause references. Prompt: "Cite the specific ISO 42001 clause or Annex A control for every gap."',
+  'Gap severity or maturity rated per clause':
+    'Unrated gaps cannot be sequenced or resourced. Prompt: "Rate each gap, major or minor nonconformity, or a maturity score, with the reason."',
+  'Evidence required for each gap named':
+    'Certification turns on evidence, not on intent. Prompt: "For each gap, name the artefact an auditor would need to see to close it."',
+  'AIMS scope and interested parties addressed':
+    'An AI management system with an undefined scope cannot be audited. Prompt: "State the AIMS scope, its boundaries, and the interested parties whose requirements apply."',
+  'Remediation plan with owners and sequencing':
+    'A gap list is not a plan until it has owners and an order. Prompt: "Produce a remediation plan with an owner and a target period per gap."',
+  // ── ai-continuous-monitoring ──────────────────────────────────────────────
+  'Specific metrics or signals defined':
+    'Monitoring described in general terms cannot be implemented. Prompt: "Name the specific metrics and signals, with how each is computed."',
+  'Thresholds and alerting criteria set':
+    'A metric with no threshold produces a dashboard nobody reads. Prompt: "Set the threshold and alerting condition for each metric."',
+  'Monitoring cadence or review frequency stated':
+    'Cadence determines how long a failure runs before anyone notices. Prompt: "State the cadence for each signal, continuous, daily, or per release."',
+  'Escalation path and owner defined':
+    'An alert with no route stops at the dashboard. Prompt: "Define who is notified, who decides, and what the escalation path is."',
+  'Framework mapping (NIST AI RMF MEASURE / ISO 42001 clause 9)':
+    'Monitoring is an explicit obligation in both frameworks, so map it. Prompt: "Map each monitoring activity to a NIST AI RMF subcategory and the ISO 42001 clause 9 requirement."',
+  // ── nist-ai-rmf-profile ───────────────────────────────────────────────────
+  'All four functions addressed (Govern / Map / Measure / Manage)':
+    'A profile that skips a function has a structural hole, and GOVERN is the one most often dropped. Prompt: "Cover all four functions, Govern, Map, Measure, and Manage, for this use case."',
+  'Specific subcategories cited (e.g. MAP 5.1, MEASURE 2.5)':
+    'Function names alone are too coarse to act on. Prompt: "Cite the specific subcategories, for example MAP 5.1 or MEASURE 2.5, for each activity."',
+  'Profile scoped to a stated use case and context':
+    'A profile is a use-case-specific instrument, not a generic checklist. Prompt: "State the use case, deployment context, and what is out of scope."',
+  'Current state versus target state distinguished':
+    'Without both states there is no gap and no plan. Prompt: "Give the current profile and the target profile side by side."',
+  'Prioritised actions with owners produced':
+    'An unprioritised profile does not survive contact with a budget. Prompt: "Prioritise the actions and name an owner for each."',
+  // ── ai-regulatory-cross-reference ─────────────────────────────────────────
+  'All four frameworks addressed':
+    'Leaving one framework out is how a compliance gap ships. Prompt: "Address all four: EU AI Act, NIST AI RMF, ISO 42001, and OWASP LLM Top 10."',
+  'Specific clause, article, or function references cited':
+    'Cross-references without identifiers cannot be verified by an auditor. Prompt: "Cite the article, clause, subcategory, or LLM code behind every mapped control."',
+  'Overlapping requirements identified and satisfied once':
+    'Unrecognised overlap is duplicated cost and duplicated evidence. Prompt: "Identify which requirements overlap and give the single control that satisfies them together."',
+  'Conflicts resolved with a stated governing requirement':
+    'Listing two conflicting requirements side by side leaves the decision unmade. Prompt: "Where requirements conflict, state which one governs and why."',
+  'Unified artefact with no duplicate controls and no gaps':
+    'The deliverable is one control set, not four appended lists. Prompt: "Produce a single crosswalk with no duplicate controls and explicit coverage for every requirement."',
+  // ── ai-transparency-obligations ───────────────────────────────────────────
+  'EU AI Act Articles 12 to 15 referenced':
+    'Transparency obligations are article-specific, so general statements do not discharge them. Prompt: "Map each disclosure to Articles 12 to 15."',
+  'Instructions for use content specified':
+    'Instructions for use are a required artefact, not a marketing document. Prompt: "Draft the instructions for use: intended purpose, performance characteristics, and conditions of use."',
+  'Capability and limitation disclosures drafted':
+    'Undisclosed limitations become the deployer liability and the provider nonconformity. Prompt: "State the known limitations, accuracy levels, and reasonably foreseeable misuse."',
+  'Human oversight interface documented':
+    'Article 14 requires oversight that a human can actually exercise. Prompt: "Document the oversight interface: what the human sees, what they can override, and how automation bias is countered."',
+  'Deployer versus end user disclosures distinguished':
+    'The two audiences have different rights and need different documents. Prompt: "Separate the disclosures owed to deployers from those owed to end users and affected persons."',
+  // ── model-drift-governance ────────────────────────────────────────────────
+  'Drift root cause classified (data / concept / adversarial / infrastructure)':
+    'The four causes have different fixes, and retraining the wrong one wastes a cycle. Prompt: "Classify the cause as data drift, concept drift, adversarial degradation, or infrastructure change, with the evidence."',
+  'EU AI Act Article 72 post-market surveillance obligations addressed':
+    'Post-market surveillance is a continuing obligation, not a launch gate. Prompt: "State the Article 72 post-market surveillance obligations this degradation triggers."',
+  'Article 73 serious incident notification threshold assessed':
+    'Missing a notification threshold is a regulatory failure independent of the technical one. Prompt: "Assess whether the Article 73 serious incident threshold is met and state the notification window."',
+  'Revalidation and redeployment plan produced':
+    'Detecting drift without a revalidation path leaves the degraded model in production. Prompt: "Produce the revalidation and redeployment plan, including acceptance criteria and rollback."',
+  'ISO 42001 clause 10 improvement process referenced':
+    'Clause 10 is where the incident becomes a corrective action of record. Prompt: "Route this through ISO 42001 clause 10: nonconformity, corrective action, and continual improvement."',
+  // ── ai-regulatory-mapping ─────────────────────────────────────────────────
+  'Multiple regulatory regimes addressed':
+    'One regime rarely covers an AI deployment on its own. Prompt: "Address every regime in scope, and say why each applies."',
+  'Specific articles or clauses cited':
+    'Named identifiers are what make a mapping checkable. Prompt: "Cite the article or clause for each obligation."',
+  'Interaction between regimes explained rather than listed':
+    'The hard part is how regimes interact, not that they exist. Prompt: "Explain how the regimes interact: which obligations are cumulative, and which is stricter."',
+  'Risk tier or classification determined':
+    'The tier determines which obligations attach at all. Prompt: "Determine the risk tier or classification and cite the basis for it."',
+  'Prioritised remediation plan with jurisdiction ordering':
+    'Enforcement timing, not tidiness, sets the order of work. Prompt: "Prioritise remediation by enforcement exposure and deadline, jurisdiction by jurisdiction."',
+
   // ai-risk-classification
   'EU AI Act risk tier assigned (prohibited / high / limited / minimal)':
     'EU AI Act obligations flow directly from the risk tier, without a tier, you cannot scope controls. Prompt: "Classify this system under the EU AI Act risk tier (prohibited / high / limited / minimal) and cite the Annex III category that justifies the tier."',

@@ -20,6 +20,7 @@ import { AWS_SCSC03_DRILLS } from '@/lib/aws-scsc03-drills';
 import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import { SCENARIOS } from '@/lib/scenarios';
 import { getSystemPrompt } from '@/lib/system-prompts';
+import { evaluate } from '@/lib/evaluator';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
@@ -541,4 +542,33 @@ describe('every Dojo scenario has a scenario-specific system prompt', () => {
     });
     expect(missing.map((s) => s.id)).toEqual([]);
   });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// evaluateQuality() scores `numPassed / total` and returns 100 when a scenario
+// has no rubric, so a missing rubric renders as a confident PASS on any input.
+// 12 of the 29 Dojo 2 and Dojo 3 scenarios shipped that way.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('every Dojo 2 and Dojo 3 scenario is actually scored', () => {
+  // A deliberately empty analysis. Any scenario with a real rubric must mark it
+  // down; a scenario with no rubric returns 100.
+  const JUNK =
+    'Thanks for the question. I looked at this and I think everything is broadly ' +
+    'fine here. There is not much more to add at this stage, so I will leave it ' +
+    'there for now and you can let me know if you want anything else covered.';
+
+  for (const s of SCENARIOS.filter((x) => x.dojoId !== 1)) {
+    it(`scores a contentless response below 100 for ${s.dojoId}:${s.id}`, async () => {
+      const r = await evaluate({
+        dojoId: s.dojoId as 2 | 3,
+        scenarioId: s.id,
+        settings: DEFAULT_CONTROL_CONFIG,
+        messages: [
+          { role: 'user', content: 'Work this scenario for me in full detail please.' },
+          { role: 'assistant', content: JUNK },
+        ],
+      });
+      expect(r.score).toBeLessThan(100);
+    });
+  }
 });
