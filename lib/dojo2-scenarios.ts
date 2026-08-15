@@ -4,7 +4,7 @@
  * Scenario & Data Engine for Dojo 2 (AI-Assisted SOC).
  *
  * Contains:
- * - DOJO2_PREBUILT_SCENARIOS, 47 hand-crafted, SOC-realistic incident scenarios
+ * - DOJO2_PREBUILT_SCENARIOS, 56 hand-crafted, SOC-realistic incident scenarios
  *    covering Log Triage, Alert Enrichment, Detection Rule Generation, Incident
  *    Report Draft, and AI System Compromise Triage at Beginner / Intermediate / Advanced difficulty.
  * - generateDojo2Scenario(), runtime generator that produces randomised but

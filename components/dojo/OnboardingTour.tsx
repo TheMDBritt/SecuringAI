@@ -10,7 +10,7 @@ const STEPS: { title: string; body: string; accent: AccentName }[] = [
     title: '1 · Pick a scenario',
     accent: 'red',
     body:
-      'The left column lists scenarios for the active dojo. Click one to load it, Dojo 1 starts the attack/defence loop, Dojo 2 starts a SOC analyst workflow, Dojo 3 starts a defender workflow.',
+      'The left column lists scenarios for the active dojo. Click one to load it, Dojo 1 starts the attack/defence loop, Dojo 2 starts a SOC analyst workflow, Dojo 3 starts an AI governance, risk and compliance workflow.',
   },
   {
     title: '2 · Toggle controls',
