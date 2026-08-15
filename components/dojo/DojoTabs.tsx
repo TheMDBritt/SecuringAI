@@ -256,6 +256,7 @@ export function DojoTabs() {
 
       {/* Tab content */}
       <DojoLayout
+        hasScenario={selectedScenario !== null}
         scenarioPicker={
           <ScenarioPicker
             scenarios={scenarios}

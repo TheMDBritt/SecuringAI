@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Three-region lab layout.
@@ -32,14 +32,32 @@ export function DojoLayout({
   chatConsole,
   controlPanel,
   scoringPane,
+  hasScenario = false,
 }: {
   scenarioPicker: React.ReactNode;
   chatConsole: React.ReactNode;
   controlPanel: React.ReactNode;
   scoringPane: React.ReactNode;
+  /** True once a scenario is selected. Drives the mobile landing pane. */
+  hasScenario?: boolean;
 }) {
   const [scoringH, setScoringH] = useState(220);
-  const [pane, setPane] = useState<Pane>('chat');
+  // On a narrow screen only one pane is visible at a time. Landing on Chat with
+  // no scenario chosen puts the user on a dead end that reads "Select a scenario
+  // to begin" with no scenario in sight, so the picker is the landing pane until
+  // one is chosen.
+  const [pane, setPane] = useState<Pane>(hasScenario ? 'chat' : 'scenarios');
+  const pickedRef = useRef(hasScenario);
+
+  // Advance to Chat the first time a scenario is selected, so picking one on
+  // mobile takes the user to the thing they picked.
+  useEffect(() => {
+    if (hasScenario && !pickedRef.current) {
+      pickedRef.current = true;
+      setPane('chat');
+    }
+    if (!hasScenario) pickedRef.current = false;
+  }, [hasScenario]);
   const startY = useRef(0);
   const startH = useRef(0);
 
