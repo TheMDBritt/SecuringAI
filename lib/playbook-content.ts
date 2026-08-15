@@ -4261,10 +4261,10 @@ Most enterprises deploying AI today operate at Tier 1-2. CISM practitioners shou
 {
     id: 'sc500-ai-workloads',
     category: 'Microsoft Cloud & AI Security',
-    title: 'Securing Azure AI Workloads (SC-500 Domain 5)',
+    title: 'Securing Azure AI Workloads (SC-500 Domain 3)',
     certTags: ['SC-500', 'SecAI'],
     vocab: ['Azure OpenAI Service', 'Prompt Shields', 'Azure AI Content Safety', 'Purview DSPM for AI', 'Microsoft Security Copilot', 'Defender for AI Workloads'],
-    content: `The SC-500 "Secure AI Workloads & Govern Data with Purview" domain (20-25% of exam) covers securing Azure OpenAI, AI Foundry, Copilot experiences, and governing sensitive data in AI pipelines.
+    content: `The SC-500 AI workload security material sits inside Domain 3, Secure compute (20-25% of the exam), with the governance half in Domain 1. It covers securing Azure OpenAI, AI Foundry, Copilot experiences, and governing sensitive data in AI pipelines.
 
 ## Azure AI Security Stack
 
@@ -4992,15 +4992,14 @@ Structure red team reports around:
 
 | Domain | Weight | Key Topics |
 |--------|--------|------------|
-| Manage Identity & Access | 20-25% | Entra ID, PIM, Conditional Access, Zero Trust |
-| Secure Networking & Infrastructure | 15-20% | Azure Firewall, NSG, Private Endpoints |
-| Secure Compute, Storage, Data | 15-20% | Key Vault, Storage Security, Container Security |
-| Manage Security Operations | 20-25% | Defender XDR, Sentinel/KQL, Security Copilot |
-| Secure AI Workloads & Govern Data | 20-25% | Azure OpenAI, Content Safety, Purview DSPM, AI-SPM |
+| 1. Manage identity, access, and governance | 20-25% | Entra ID, PIM, Conditional Access, app consent, managed identities, AI governance |
+| 2. Secure storage, databases, and networking | 25-30% | Storage security, database protection, private endpoints, Azure Firewall, NSG |
+| 3. Secure compute | 20-25% | VM and server hardening, AKS, Azure Arc, and the AI workload security subsection |
+| 4. Manage and monitor security posture | 20-25% | Defender for Cloud CSPM, multicloud connectors, Sentinel and KQL, Defender XDR |
 
-**Exam tip**: Domain 5 (AI Workloads) is brand new relative to AZ-500. Candidates from AZ-500 should expect significant gap material here.
+**Exam tip**: there is no standalone AI domain. AI workload security is a subsection of Domain 3, Secure compute, and AI governance sits in Domain 1. It is still the material that separates SC-500 from AZ-500, so treat it as a priority even though it does not have its own weight. Source: docs/cert-objectives/sc-500.md.
 
-## Domain 5: Secure AI Workloads & Govern Data with Purview
+## AI workload security, inside Domain 3
 
 This is the distinctive SC-500 domain. It covers the full lifecycle of securing AI applications on Azure.
 
@@ -7132,23 +7131,22 @@ Source: CompTIA SecAI+ CY0-001 V1 Exam Objectives (Document Version 4.0), CompTI
     vocab: ['Microsoft Entra ID', 'Conditional Access', 'PIM', 'Hub-and-Spoke', 'Azure Kubernetes Service', 'Microsoft Purview', 'Prompt Shields', 'Microsoft Sentinel', 'KQL', 'Defender XDR'],
     content: `The SC-500 "Cloud and AI Security Engineer" is Microsoft's mid-level cert covering the Azure + M365 security stack **plus** securing AI workloads (Copilots, Azure OpenAI, Foundry). Microsoft convention: **40-60 questions, 100 minutes, pass at 700/1000 (70%)**, confirm on your official exam page.
 
-### Five domains at a glance
+### Four domains at a glance
 
-| Domain | Topic | What to master |
-|---|---|---|
-| 1 | Securing Access and Identity | Entra ID, Conditional Access, PIM |
-| 2 | Securing Infrastructure and Compute | VM hardening, hub-and-spoke, AKS |
-| 3 | Securing Storage, Databases, and Networking | Data-at-rest + in-transit across Azure |
-| 4 | Securing AI Solutions and Governance | Copilot/Azure OpenAI defense, Purview, jailbreak defense |
-| 5 | Managing and Monitoring Security Posture | Sentinel, KQL, Defender XDR |
+| Domain | Topic | Weight | What to master |
+|---|---|---|---|
+| 1 | Manage identity, access, and governance | 20-25% | Entra ID, Conditional Access, PIM, app consent, managed identities |
+| 2 | Secure storage, databases, and networking | 25-30% | Data at rest and in transit across Azure, private endpoints, network isolation |
+| 3 | Secure compute | 20-25% | VM and server hardening, AKS, and the AI workload security subsection |
+| 4 | Manage and monitor security posture | 20-25% | Defender for Cloud CSPM, multicloud connectors, Microsoft Sentinel, KQL, Defender XDR |
 
-> Weights are not yet published by Microsoft as this file is written. Domain 1 and Domain 5 have historically been the largest slices of the Microsoft security exams; Domain 4 (AI) is the differentiator vs the retiring AZ-500.
+> There is no standalone AI domain. AI workload security (Purview DSPM for AI, Copilot Studio agent protection, Conditional Access for Entra Agent ID, Defender XDR blast-radius analysis) sits inside **Domain 3, Secure compute**, and AI governance sits inside **Domain 1**. Domain 2 is the heaviest slice. Weights are ranges, not fixed counts. Source: docs/cert-objectives/sc-500.md.
 
 Playbook coverage: **Microsoft Cloud & AI Security** category (open the Topics tab and filter for the \`SC-500\` cert tag).
 
 ---
 
-### Domain 1, Securing Access and Identity
+### Domain 1, Manage identity, access, and governance (20-25%)
 
 Core services: **Microsoft Entra ID** (formerly Azure AD), **Conditional Access**, **PIM**, **Identity Protection**, **Workload Identities**.
 
@@ -7162,7 +7160,20 @@ Core services: **Microsoft Entra ID** (formerly Azure AD), **Conditional Access*
 
 **Playbook articles:** *Microsoft Entra ID & Zero Trust Identity* · *SC-500 Hands-On Lab Plan* Lab 1.
 
-### Domain 2, Securing Infrastructure and Compute
+### Domain 2, Secure storage, databases, and networking (25-30%), the heaviest domain
+
+Core: **Storage account controls**, **Key Vault**, **CMK**, **Private Endpoints**, **Azure SQL**, **Cosmos DB**.
+
+- Storage account SC-500 checklist: disable public network access → private endpoints + VNet integration → HTTPS-only → disable shared key auth (Entra-only) → RBAC data-plane roles → CMK with soft-delete + purge protection → Defender for Storage
+- Key Vault: RBAC vs access policies (RBAC is the current guidance), soft-delete + purge protection mandatory for CMK
+- Azure SQL: TDE, Always Encrypted, Managed Identity for app auth, private endpoint
+- Defender for SQL: SQL injection detection, anomalous query alerts
+- Networking: NSG vs ASG vs Azure Firewall, Front Door + WAF for edge, DDoS Protection Standard for high-value public endpoints
+- Cosmos DB: firewall rules, private endpoint, RBAC, always-encrypted
+
+**Playbook articles:** *Microsoft Defender for Cloud* (Storage / SQL / Key Vault plans).
+
+### Domain 3, Secure compute (20-25%)
 
 Core: **Azure VMs**, **Azure Firewall**, **hub-and-spoke** network topology, **Azure Kubernetes Service (AKS)**, **Bastion**, **Just-in-Time VM access**.
 
@@ -7176,20 +7187,7 @@ Core: **Azure VMs**, **Azure Firewall**, **hub-and-spoke** network topology, **A
 
 **Playbook articles:** *Microsoft Defender for Cloud (CSPM + CWPP)*.
 
-### Domain 3, Securing Storage, Databases, and Networking
-
-Core: **Storage account controls**, **Key Vault**, **CMK**, **Private Endpoints**, **Azure SQL**, **Cosmos DB**.
-
-- Storage account SC-500 checklist: disable public network access → private endpoints + VNet integration → HTTPS-only → disable shared key auth (Entra-only) → RBAC data-plane roles → CMK with soft-delete + purge protection → Defender for Storage
-- Key Vault: RBAC vs access policies (RBAC is the current guidance), soft-delete + purge protection mandatory for CMK
-- Azure SQL: TDE, Always Encrypted, Managed Identity for app auth, private endpoint
-- Defender for SQL: SQL injection detection, anomalous query alerts
-- Networking: NSG vs ASG vs Azure Firewall, Front Door + WAF for edge, DDoS Protection Standard for high-value public endpoints
-- Cosmos DB: firewall rules, private endpoint, RBAC, always-encrypted
-
-**Playbook articles:** *Microsoft Defender for Cloud* (Storage / SQL / Key Vault plans).
-
-### Domain 4, Securing AI Solutions and Governance ⭐ SC-500 differentiator
+### AI workload security, inside Domain 3 with governance in Domain 1 ⭐ SC-500 differentiator
 
 Core: **Microsoft 365 Copilot**, **Copilot Studio**, **Azure OpenAI / AI Foundry**, **Prompt Shields**, **Microsoft Purview (DSPM for AI)**, **Defender for AI Workloads**.
 
@@ -7212,7 +7210,7 @@ Defenses:
 
 **Playbook articles:** *Microsoft Purview DSPM for AI* · *Securing Azure OpenAI & Foundry Workloads* · *Microsoft Security Copilot for SOC*.
 
-### Domain 5, Managing and Monitoring Security Posture
+### Domain 4, Manage and monitor security posture (20-25%)
 
 Core: **Microsoft Sentinel**, **KQL**, **Defender XDR**, **Automatic Attack Disruption**, **Defender for Cloud**.
 
@@ -7248,11 +7246,13 @@ Core: **Microsoft Sentinel**, **KQL**, **Defender XDR**, **Automatic Attack Disr
 
 ### 4-week study path
 
-**Week 1, Domain 1 (Identity) + Domain 5 (Sentinel/XDR)**, the largest slices. Run the Entra + Sentinel hands-on labs in *SC-500 Hands-On Lab Plan*.
+**Week 1, Domain 2 (Storage, databases, networking)**, the heaviest slice at 25-30%. Storage hardening, private endpoints, database protection, hub-and-spoke. Onboard a free Azure trial + M365 E5 dev tenant.
 
-**Week 2, Domain 2 + 3 (Infra + Data)**, Defender for Cloud plans, hub-and-spoke, storage hardening. Onboard a free Azure trial + M365 E5 dev tenant.
+**Week 2, Domain 1 (Identity, access, governance)**, Entra ID, Conditional Access, PIM, app registrations and OAuth consent, managed identities. Run the Entra labs in *SC-500 Hands-On Lab Plan*.
 
-**Week 3, Domain 4 (AI)**, the differentiator vs AZ-500. Prompt Shields, DSPM for AI, Defender for AI workloads. Deploy an Azure OpenAI resource with private endpoint + CMK + Prompt Shields.
+**Week 3, Domain 3 (Secure compute) including the AI subsection**, the differentiator vs AZ-500. VM and server hardening, AKS, then Prompt Shields, Purview DSPM for AI, and Defender for AI workloads. Deploy an Azure OpenAI resource with private endpoint + CMK + Prompt Shields.
+
+**Week 3b, Domain 4 (Posture and monitoring)**, Defender for Cloud CSPM, multicloud connectors, Sentinel and KQL, Defender XDR. Run the Sentinel labs.
 
 **Week 4, Mixed drilling**, Cert Focus = SC-500, count = 50, difficulty = All. Retake until ≥85%. Read every playbook article in the *Microsoft Cloud & AI Security* category once more.
 
@@ -7297,7 +7297,7 @@ Source (secondary, user-transcribed): domain outline in \`docs/cert-objectives/s
 
 ---
 
-### Domain 1, Identity and Access Management (20%)
+### Domain 4, Identity and Access Management (20%)
 
 Focus: **policy evaluation logic, SCPs, permission boundaries, federation**.
 
@@ -7314,7 +7314,7 @@ Must know cold:
 
 Common trap: **effective permissions** across identity policy + resource policy + SCP + permission boundary + session policy.
 
-### Domain 2, Infrastructure Security (20%)
+### Domain 3, Infrastructure Security (18%)
 
 Focus: **VPC security, network firewalls, edge protections**.
 
@@ -7329,7 +7329,7 @@ Focus: **VPC security, network firewalls, edge protections**.
 - **Bastion hosts** replaced by **Systems Manager Session Manager**, no inbound SSH, IAM-gated.
 - **PrivateLink** for exposing your service privately to other VPCs / accounts.
 
-### Domain 3, Data Protection (18%)
+### Domain 5, Data Protection (18%)
 
 Focus: **encryption strategies, KMS, Secrets Manager, Macie**.
 
@@ -7345,7 +7345,7 @@ Focus: **encryption strategies, KMS, Secrets Manager, Macie**.
 - **Certificate Manager (ACM)** for free public / private certs on AWS resources (ALB, CloudFront, API Gateway).
 - **AWS Payment Cryptography** for PCI-DSS L1 payment workloads.
 
-### Domain 4, Security Logging and Monitoring (18%)
+### Domain 1, Detection (16%)
 
 Focus: **CloudTrail, CloudWatch, Security Lake**.
 
@@ -7359,7 +7359,7 @@ Focus: **CloudTrail, CloudWatch, Security Lake**.
 - **Athena + Glue** for CloudTrail / VPC Flow Log analysis.
 - **EventBridge** for event-driven security (CloudTrail → EventBridge → Lambda / Step Functions).
 
-### Domain 5, Threat Detection and Incident Response (14%)
+### Domain 2, Incident Response (14%)
 
 Focus: **GuardDuty, Security Hub, automated remediation**.
 
@@ -7372,7 +7372,7 @@ Focus: **GuardDuty, Security Hub, automated remediation**.
 - **AWS Incident Manager**, runbook execution, on-call, chat integration.
 - **Trusted Advisor**, cost / performance / security / fault-tolerance checks; free subset for all accounts, full set with Business/Enterprise Support.
 
-### Domain 6, Management and Governance (10%)
+### Domain 6, Security Foundations and Governance (14%)
 
 Focus: **compliance reporting, governance services**.
 
@@ -7530,7 +7530,7 @@ Three functions the exam asks about:
     title: 'AWS SCS-C03 Domain 3, Infrastructure Security',
     certTags: ['SCS-C03'],
     vocab: ['VPC', 'Security Group', 'NACL', 'PrivateLink', 'Interface Endpoint', 'Gateway Endpoint', 'Network Firewall', 'WAF', 'Shield', 'Systems Manager Session Manager'],
-    content: `**Domain 5 = 18% of SCS-C03 (~12 questions).** Network topology and traffic-control logic. Tied with Data Protection, behind IAM.
+    content: `**Domain 3 = 18% of SCS-C03 (~12 questions).** Network topology and traffic-control logic. Tied with Data Protection, behind IAM.
 
 ### VPC design
 
@@ -8673,10 +8673,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-1',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 1 (IAM)',
+    title: 'AWS SCS-C03 Glossary: Domain 4 (IAM)',
     certTags: ['SCS-C03'],
     vocab: ['Identity-based policy', 'Resource-based policy', 'Permission boundary', 'SCP', 'Trust policy', 'Assume role', 'Temporary credentials', 'Access key', 'MFA', 'SAML', 'OIDC', 'Federation', 'IAM Identity Center', 'Cross-account access'],
-    content: `**Domain 1 vocabulary (Identity and Access Management)**
+    content: `**Domain 4 vocabulary (Identity and Access Management)**
 
 **Identity-based policy**, An IAM policy attached to a user or role that grants permissions. Evaluated as part of the full policy evaluation: all of identity policy, resource policy, and SCPs must allow an action.
 
@@ -8710,10 +8710,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-2',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 2 (Infrastructure Security)',
+    title: 'AWS SCS-C03 Glossary: Domain 3 (Infrastructure Security)',
     certTags: ['SCS-C03'],
     vocab: ['VPC', 'Subnet', 'CIDR', 'Internet Gateway', 'NAT Gateway', 'Security group', 'Network ACL', 'VPC endpoint', 'VPC Flow Logs', 'Route table', 'Bastion host', 'Session Manager', 'ELB', 'ALB'],
-    content: `**Domain 2 vocabulary (Infrastructure Security)**
+    content: `**Domain 3 vocabulary (Infrastructure Security)**
 
 **VPC**, Virtual Private Cloud; an isolated network in AWS where you launch resources. Each VPC has a CIDR range and subnets.
 
@@ -8747,10 +8747,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-3',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 3 (Data Protection)',
+    title: 'AWS SCS-C03 Glossary: Domain 5 (Data Protection)',
     certTags: ['SCS-C03'],
     vocab: ['KMS', 'CMK', 'Data key', 'Envelope encryption', 'SSE-S3', 'SSE-KMS', 'S3 Bucket Key', 'EBS encryption', 'RDS encryption', 'TLS', 'Secrets Manager', 'Parameter Store', 'Macie', 'DLP'],
-    content: `**Domain 3 vocabulary (Data Protection)**
+    content: `**Domain 5 vocabulary (Data Protection)**
 
 **KMS (Key Management Service)**, AWS's centralized key management service. Stores master keys (customer-managed or AWS-managed) and vends data keys for encryption.
 
@@ -8784,10 +8784,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-4',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 4 (Security Logging & Monitoring)',
+    title: 'AWS SCS-C03 Glossary: Domain 1 (Detection)',
     certTags: ['SCS-C03'],
     vocab: ['CloudTrail', 'Management event', 'Data event', 'CloudWatch Logs', 'CloudWatch Alarms', 'EventBridge', 'Security Lake', 'AWS Config', 'VPC Flow Logs', 'Athena', 'Metric filter'],
-    content: `**Domain 4 vocabulary (Security Logging & Monitoring)**
+    content: `**Domain 1 vocabulary (Detection)**
 
 **CloudTrail**, Records all AWS API calls (management events) and optionally data-level access (data events). Logs are immutable; integrity validated with digital signatures.
 
@@ -8815,10 +8815,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-5',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 5 (Threat Detection & IR)',
+    title: 'AWS SCS-C03 Glossary: Domain 2 (Incident Response)',
     certTags: ['SCS-C03'],
     vocab: ['GuardDuty', 'Finding', 'Security Hub', 'ASFF', 'Amazon Detective', 'Incident response', 'SSM Automation', 'Runbook', 'Forensics', 'SIEM', 'SOAR'],
-    content: `**Domain 5 vocabulary (Threat Detection & Incident Response)**
+    content: `**Domain 2 vocabulary (Incident Response)**
 
 **GuardDuty**, Threat detection service using ML. Analyzes CloudTrail, VPC Flow Logs, and DNS logs for suspicious patterns (brute-force, crypto-mining, unusual API calls, data exfiltration).
 
@@ -8846,10 +8846,10 @@ Budget for the whole lab plan: ~$5-15 total if you tear down promptly.
   {
     id: 'aws-scsc03-glossary-domain-6',
     category: 'Glossary',
-    title: 'AWS SCS-C03 Glossary: Domain 6 (Management & Governance)',
+    title: 'AWS SCS-C03 Glossary: Domain 6 (Security Foundations and Governance)',
     certTags: ['SCS-C03'],
     vocab: ['AWS Config', 'Conformance Pack', 'SCPs', 'Organizations', 'IAM Access Analyzer', 'Unused access', 'Policy validation', 'Compliance', 'Audit', 'CIS Benchmark', 'PCI DSS'],
-    content: `**Domain 6 vocabulary (Management & Governance)**
+    content: `**Domain 6 vocabulary (Security Foundations and Governance)**
 
 **AWS Config**, Configuration tracking and compliance auditing. Records resource state changes and evaluates against managed/custom rules.
 
