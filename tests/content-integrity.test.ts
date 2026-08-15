@@ -18,6 +18,9 @@ import { SECAI_DRILLS } from '@/lib/secai-drills';
 import { SC500_DRILLS } from '@/lib/sc500-drills';
 import { AWS_SCSC03_DRILLS } from '@/lib/aws-scsc03-drills';
 import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
+import { SCENARIOS } from '@/lib/scenarios';
+import { getSystemPrompt } from '@/lib/system-prompts';
+import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
 
@@ -509,5 +512,33 @@ describe('OWASP LLM codes are the 2026 edition everywhere', () => {
       if (/AML\.T0054\.\d/.test(text)) bad.push(rel);
     }
     expect(bad).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// getSystemPrompt() falls back to an empty scenario context when a scenario id
+// has no SCENARIO_CONTEXT entry, so a scenario can look complete in the picker
+// while running with nothing but the generic dojo base prompt. 19 of 70
+// scenarios shipped that way. This is the guard.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('every Dojo scenario has a scenario-specific system prompt', () => {
+  it('produces a prompt longer than the dojo base for every scenario', () => {
+    const hollow: string[] = [];
+    for (const s of SCENARIOS) {
+      const base = getSystemPrompt(s.dojoId, '__no_such_scenario__', DEFAULT_CONTROL_CONFIG);
+      const own = getSystemPrompt(s.dojoId, s.id, DEFAULT_CONTROL_CONFIG);
+      if (own.length <= base.length) hollow.push(`${s.dojoId}:${s.id}`);
+    }
+    expect(hollow).toEqual([]);
+  });
+
+  it('names the scenario in its own prompt', () => {
+    const missing = SCENARIOS.filter((s) => {
+      const p = getSystemPrompt(s.dojoId, s.id, DEFAULT_CONTROL_CONFIG).toLowerCase();
+      // At least the first significant word of the title should appear.
+      const word = s.title.toLowerCase().replace(/[^a-z ]/g, ' ').split(/\s+/).filter((w) => w.length > 4)[0];
+      return word ? !p.includes(word) : false;
+    });
+    expect(missing.map((s) => s.id)).toEqual([]);
   });
 });
