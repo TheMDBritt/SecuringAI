@@ -419,7 +419,10 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
   // Nothing has been graded yet. Showing 100/100 and a full green bar before the
   // learner has submitted anything reads as a perfect score they did not earn,
   // so the pane holds a neutral placeholder until the first evaluation lands.
-  const awaitingFirstResult = isQualityMode && latest === null;
+  // Dojo 1 counts down from a clean 100, so the number is real, but showing it
+  // in full green before the learner has done anything reads as a score they
+  // earned. It stays muted, and captioned, until the first turn is evaluated.
+  const awaitingFirstResult = latest === null;
 
   return (
     <div className="flex h-full">
@@ -441,7 +444,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                   awaitingFirstResult ? 'text-slate-600' : RISK_STYLE[displayRisk],
                 ].join(' ')}
               >
-                {awaitingFirstResult ? '—' : displayScore}
+                {awaitingFirstResult && isQualityMode ? '—' : displayScore}
               </span>
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
               {latest && (
@@ -458,7 +461,14 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {/* Score bar, empty until the first response is graded */}
             {awaitingFirstResult ? (
-              <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800" />
+              <>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800" />
+                {!isQualityMode && (
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    Starting posture
+                  </p>
+                )}
+              </>
             ) : (
               <ScoreBar score={displayScore} riskLevel={displayRisk} />
             )}

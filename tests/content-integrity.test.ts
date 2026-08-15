@@ -22,6 +22,7 @@ import { SCENARIOS } from '@/lib/scenarios';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { evaluate } from '@/lib/evaluator';
 import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
+import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
@@ -614,5 +615,42 @@ describe('every scenario has a chat affordance written for its task', () => {
       return !map.includes(`'${s.id}'`);
     });
     expect(missing.map((s) => `${s.dojoId}:${s.id}`)).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Marketing prose carried hardcoded counts that drifted from the data as
+// content was added: "47 prebuilt incidents" against 56, "70 scenarios" on a
+// card describing Dojo 1's 41. Numbers in prose have to match the source.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('prose counts match the data they describe', () => {
+  const pages = ['app/page.tsx', 'app/about/page.tsx', 'app/dojo/page.tsx'].map((rel) => ({
+    rel,
+    text: readFileSync(join(process.cwd(), rel), 'utf8'),
+  }));
+
+  const d1 = SCENARIOS.filter((s) => s.dojoId === 1).length;
+  const d2 = SCENARIOS.filter((s) => s.dojoId === 2).length;
+  const d3 = SCENARIOS.filter((s) => s.dojoId === 3).length;
+
+  it('states the right number of prebuilt incidents', () => {
+    const wrong: string[] = [];
+    for (const { rel, text } of pages) {
+      for (const m of text.matchAll(/(\d+)\s+prebuilt incidents/g)) {
+        if (Number(m[1]) !== DOJO2_PREBUILT_SCENARIOS.length) wrong.push(`${rel}: ${m[0]}`);
+      }
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  it('states scenario counts that exist', () => {
+    const valid = new Set([SCENARIOS.length, d1, d2, d3]);
+    const wrong: string[] = [];
+    for (const { rel, text } of pages) {
+      for (const m of text.matchAll(/(\d+)\s+(?:dojo\s+)?scenarios\b/gi)) {
+        if (!valid.has(Number(m[1]))) wrong.push(`${rel}: ${m[0]}`);
+      }
+    }
+    expect(wrong).toEqual([]);
   });
 });

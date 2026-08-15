@@ -204,8 +204,11 @@ export function ScenarioPicker({
                 </span>
               </div>
 
+              {/* Clamped to three lines. The full objective is in the scenario
+                  brief in the working area, so repeating it in full here pushed
+                  the rest of the list off screen. */}
               {isSelected && (
-                <p className="text-[11px] text-slate-400 leading-snug mt-1 mb-1.5">
+                <p className="text-[11px] text-slate-400 leading-snug mt-1 mb-1.5 line-clamp-3">
                   {scenario.description}
                 </p>
               )}

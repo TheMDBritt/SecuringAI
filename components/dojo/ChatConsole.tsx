@@ -423,7 +423,14 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         if (dojoId === 2 || dojoId === 3) {
           console.warn(`[Dojo${dojoId}] No seed message found for scenario ID "${scenario.id}", using generic fallback.`);
         }
-        seedText = `Scenario loaded: "${scenario.title}" · Dojo ${dojoId} · ${scenario.difficulty}`;
+        // Dojo 1 has no seed text of its own. The scenario brief already states
+        // the title, difficulty and objective, so a "Scenario loaded" line under
+        // it would just repeat what the reader can see.
+        seedText = '';
+      }
+      if (!seedText) {
+        setMessages([]);
+        return;
       }
       setMessages([makeSystemMsg(seedText)]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
