@@ -7,13 +7,7 @@
  * is broken. This one replaces the whole document, so it ships its own minimal
  * styling rather than relying on anything the app provides.
  */
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function GlobalError({ error }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <html lang="en">
       <body
@@ -55,7 +49,10 @@ export default function GlobalError({
             </p>
           )}
           <button
-            onClick={reset}
+            // reset() re-renders from the same cached bundle, which for the
+            // stated cause, a bad deploy or a stale script, throws again
+            // immediately. A real reload is what the copy promises.
+            onClick={() => window.location.reload()}
             style={{
               marginTop: '0.5rem',
               background: '#06b6d4',

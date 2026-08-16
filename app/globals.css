@@ -43,6 +43,24 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
+/* ── Scroll reveal ──────────────────────────────────────────────────────────
+   Content is visible by default. Only once the inline bootstrap in the root
+   layout marks the document as scripted does the hidden start state apply, so
+   a blocked, failed or stale JS bundle can never leave the page blank. */
+html[data-js='1'] .reveal[data-shown='false'] {
+  opacity: 0;
+  transform: translateY(0.75rem);
+}
+.reveal {
+  transition:
+    opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transition: none; }
+}
+html[data-reduce-motion='true'] .reveal { transition: none; }
+
 /* ── Typography rhythm ─────────────────────────────────────────────────────── */
 h1, h2, h3, h4 {
   letter-spacing: -0.011em;

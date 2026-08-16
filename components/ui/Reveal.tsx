@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { prefersReducedMotion } from '@/lib/motion';
 
 /**
  * Reveals content as it scrolls into view.
@@ -30,9 +31,7 @@ export function Reveal({
 
   useEffect(() => {
     const el = ref.current;
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const reduced = prefersReducedMotion();
 
     if (!el || reduced || typeof IntersectionObserver === 'undefined') {
       setShown(true);
@@ -58,11 +57,13 @@ export function Reveal({
     <Tag
       ref={ref as never}
       style={{ transitionDelay: shown ? `${delay}ms` : '0ms' }}
-      className={[
-        'transition-[opacity,transform] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none',
-        shown ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0',
-        className,
-      ].join(' ')}
+      // `reveal` is inert until the inline script in the root layout marks the
+      // document as scripted. Without that gate the prerendered HTML shipped at
+      // opacity 0, so a failed or blocked JS bundle left the page blank with
+      // nothing to explain it. The observer escape hatches cannot help there,
+      // because they need JS to be running in the first place.
+      data-shown={shown ? 'true' : 'false'}
+      className={['reveal', className].join(' ')}
     >
       {children}
     </Tag>

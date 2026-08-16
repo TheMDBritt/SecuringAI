@@ -66,6 +66,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/*
+          Marks the document as scripted before first paint. Scroll-reveal only
+          hides content once this is set, so a blocked or failed JS bundle
+          renders the page fully visible instead of blank. Runs before the body
+          so there is no flash of revealed content.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.dataset.js='1'",
+          }}
+        />
+      </head>
       <body className="min-h-screen bg-navy-900 text-slate-100 antialiased">
         <AppShell>{children}</AppShell>
       </body>

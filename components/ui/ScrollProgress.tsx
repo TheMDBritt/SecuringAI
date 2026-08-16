@@ -33,7 +33,9 @@ export function ScrollProgress() {
   }, []);
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-14 z-40 h-px">
+    // Sits above the top bar but below the sidebar rail, and starts where the
+    // content column starts on lg, so the fill measures the column it tracks.
+    <div aria-hidden="true" className="pointer-events-none fixed inset-x-0 top-14 z-20 h-px lg:left-16">
       <div
         className="h-full origin-left bg-brand-400/70 transition-transform duration-150 ease-out"
         style={{ transform: `scaleX(${pct})` }}

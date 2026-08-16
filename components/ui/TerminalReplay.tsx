@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { prefersReducedMotion } from '@/lib/motion';
 
 export interface TerminalLine {
   kind: 'cmd' | 'ok' | 'warn' | 'fail' | 'note';
@@ -37,9 +38,7 @@ export function TerminalReplay({
 
   useEffect(() => {
     const el = ref.current;
-    const reduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const reduced = prefersReducedMotion();
 
     if (!el || reduced || typeof IntersectionObserver === 'undefined') {
       setShown(lines.length);
@@ -84,7 +83,9 @@ export function TerminalReplay({
 
       {/* Fixed height so the panel does not resize as lines land, which would
           push the whole hero around while someone is reading it. */}
-      <div className="min-h-[13.5rem] space-y-1 px-3.5 py-3 font-mono text-2xs leading-relaxed">
+      {/* Scrolls rather than clipping: at 375px the longest line overruns the
+          panel, and the static markup this replaced wrapped instead. */}
+      <div className="min-h-[13.5rem] space-y-1 overflow-x-auto px-3.5 py-3 font-mono text-2xs leading-relaxed">
         {lines.slice(0, shown).map((l, i) => (
           <div key={i} className="animate-rise-in whitespace-nowrap">
             {l.kind === 'cmd' ? (
