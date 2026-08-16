@@ -8,6 +8,7 @@ import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import { TerminalReplay } from '@/components/ui/TerminalReplay';
 import { Reveal } from '@/components/ui/Reveal';
 import { ScrollProgress } from '@/components/ui/ScrollProgress';
+import { SectionMarker } from '@/components/ui/SectionMarker';
 import type { DojoId } from '@/types';
 
 // ── Live counts, computed from source data at build time ─────────────────────
@@ -180,23 +181,34 @@ export default function LandingPage() {
 
             {/* Right, stats + terminal */}
             <div className="md:col-span-2">
-              {/* Stats grid */}
-              <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden mb-3">
+              {/* A contents list, not a tile grid. These are counts of things
+                  in a library, so they are set as ruled rows with the figure in
+                  the margin, the way a manual lists what it contains. Six
+                  bordered boxes said "dashboard" about something that is an
+                  inventory. */}
+              <dl className="mb-3">
                 {[
-                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `${STATS.certs} certs mapped` },
-                  { n: STATS.scenarios,               label: 'dojo scenarios',  sub: '3 disciplines' },
-                  { n: STATS.glossary, label: 'glossary terms', sub: 'A Z, cert-filtered' },
-                  { n: STATS.articles,                label: 'topic articles',  sub: 'code + tables' },
-                  { n: STATS.incidents,               label: 'SOC incidents',   sub: 'Dojo 2 prebuilt' },
-                  { n: STATS.certs,                   label: 'certs mapped',    sub: 'official domains' },
+                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions', sub: `${STATS.certs} certs mapped` },
+                  { n: STATS.scenarios, label: 'dojo scenarios', sub: '3 disciplines' },
+                  { n: STATS.glossary, label: 'glossary terms', sub: 'A to Z, cert-filtered' },
+                  { n: STATS.articles, label: 'topic articles', sub: 'code and tables' },
+                  { n: STATS.incidents, label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
+                  { n: STATS.certs, label: 'certs mapped', sub: 'official domains' },
                 ].map(({ n, label, sub }) => (
-                  <div key={label} className="bg-slate-900 px-4 py-3.5">
-                    <div className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n}</div>
-                    <div className="text-xs font-medium text-slate-300 mt-0.5">{label}</div>
-                    <div className="text-micro text-slate-400 mt-0.5">{sub}</div>
+                  <div
+                    key={label}
+                    className="flex items-baseline gap-4 border-b border-slate-800/80 py-2 last:border-b-0"
+                  >
+                    <dt className="w-16 shrink-0 text-right font-mono text-lg font-semibold tabular-nums tracking-tight text-slate-100">
+                      {n}
+                    </dt>
+                    <dd className="min-w-0 flex-1">
+                      <span className="text-xs font-medium text-slate-200">{label}</span>
+                      <span className="ml-2 font-mono text-micro text-slate-400">{sub}</span>
+                    </dd>
                   </div>
                 ))}
-              </div>
+              </dl>
               {/* Terminal */}
               <TerminalReplay
                 lines={[
@@ -218,22 +230,20 @@ export default function LandingPage() {
       {/* ── Three dojos ──────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="flex items-baseline justify-between mb-7">
-            <div>
-              <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
-                Three disciplines
-              </p>
-              <h2 className="text-display-sm font-bold text-slate-100">
-                Pick a scenario. Run it. Get scored.
-              </h2>
-            </div>
-            <Link
-              href="/dojo"
-              className="hidden md:inline-block text-2xs font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 px-3 py-1.5 rounded transition-colors"
-            >
-              Open the Dojo →
-            </Link>
-          </div>
+          <SectionMarker
+            index={1}
+            eyebrow="Three disciplines"
+            title="Pick a scenario. Run it. Get scored."
+            annotation="70 scenarios across attack, SOC and governance"
+            action={
+              <Link
+                href="/dojo"
+                className="hidden shrink-0 font-mono text-2xs text-slate-400 transition-colors hover:text-slate-200 md:inline-block"
+              >
+                Open the Dojo →
+              </Link>
+            }
+          />
 
           <div className="grid md:grid-cols-3 gap-4">
             {DOJOS.map((d, i) => {
@@ -294,13 +304,13 @@ export default function LandingPage() {
       {/* ── Scoring table ─────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <Reveal className="mb-6">
-            <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
-              How scoring works
-            </p>
-            <h2 className="text-display-sm font-bold text-slate-100">
-              Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
-            </h2>
+          <Reveal>
+            <SectionMarker
+              index={2}
+              eyebrow="How scoring works"
+              title={<>Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.</>}
+              annotation="Same payload, same config, same result"
+            />
           </Reveal>
 
           <div className="border border-slate-800 rounded-lg overflow-hidden">
@@ -333,13 +343,13 @@ export default function LandingPage() {
       {/* ── Playbook + technique tags ─────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <Reveal className="mb-8 max-w-2xl">
-            <p className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-500">
-              Coverage
-            </p>
-            <h2 className="text-display-sm font-bold text-slate-100">
-              One framework edition. Eleven exams.
-            </h2>
+          <Reveal>
+            <SectionMarker
+              index={3}
+              eyebrow="Coverage"
+              title="One framework edition. Eleven exams."
+              annotation="Codes moved between the 2023, 2025 and 2026 lists"
+            />
           </Reveal>
 
           <div className="grid md:grid-cols-2 gap-10">
@@ -448,18 +458,33 @@ export default function LandingPage() {
       </section>
 
       {/* ── Sources ──────────────────────────────────────────────────────────── */}
+      {/* This is a bibliography, and it was set as a wrapped run of mono
+          fragments. Numbering it and letting it break into columns makes it
+          read as references, which is both what it is and the strongest claim
+          on the page: none of this was written from memory. */}
       <section className="border-b border-slate-800 bg-slate-900/30">
-        <div className="max-w-6xl mx-auto px-6 py-6">
-          <p className="text-2xs font-mono text-slate-400 uppercase tracking-widest mb-3">
-            Sourced from
-          </p>
-          <div className="flex flex-wrap gap-x-5 gap-y-1.5">
-            {SOURCED_FROM.map((f) => (
-              <span key={f} className="text-2xs font-mono text-slate-500">
-                · {f}
-              </span>
+        <div className="mx-auto max-w-6xl px-6 py-10">
+          <Reveal>
+            <SectionMarker
+              index={5}
+              eyebrow="Sourced from"
+              title="Written against the published blueprints."
+              annotation="Every claim traces to one of these"
+            />
+          </Reveal>
+          <ol className="columns-1 gap-x-10 sm:columns-2 lg:columns-3">
+            {SOURCED_FROM.map((f, i) => (
+              <li
+                key={f}
+                className="mb-1.5 flex break-inside-avoid items-baseline gap-2.5 text-2xs"
+              >
+                <span className="font-mono tabular-nums text-slate-500">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-slate-300">{f}</span>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
