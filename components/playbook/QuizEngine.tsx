@@ -1000,21 +1000,23 @@ function SummaryScreen({
   const correct  = results.filter((r) => r.correct).length;
   const skipped  = results.filter((r) => r.skipped).length;
   const total    = results.length;
-  const pct      = Math.round((correct / total) * 100);
+  const pct      = total > 0 ? Math.round((correct / total) * 100) : 0;
   const answered = results.filter((r) => !r.skipped);
   const avgTime  = answered.length > 0
     ? Math.round(answered.reduce((s, r) => s + r.timeTaken, 0) / answered.length / 1000)
     : 0;
 
   const cert = settings?.selectedCert ?? null;
-  const selectedDomainIds = settings?.selectedDomainIds ? new Set(settings.selectedDomainIds) : null;
-  const selectedDomains = cert && selectedDomainIds
-    ? cert.domains.filter((d) => selectedDomainIds.has(d.id))
-    : [];
+  const domainIds = settings?.selectedDomainIds;
 
-  // Domain-level breakdown (when a cert is selected)
+  // Domain-level breakdown (when a cert is selected). The selected-domain list
+  // is derived inside the memo: built outside it, the fresh array and Set on
+  // every render made this dep array never match and the memo never hold.
   const byDomain = useMemo(() => {
-    if (!cert || selectedDomains.length === 0) return null;
+    if (!cert || !domainIds) return null;
+    const ids = new Set(domainIds);
+    const selectedDomains = cert.domains.filter((d) => ids.has(d.id));
+    if (selectedDomains.length === 0) return null;
     return selectedDomains.map((domain) => {
       const domainResults = results.filter((r) =>
         questionMatchesDomain({ category: r.question.category, topic: r.question.topic }, domain),
@@ -1022,7 +1024,7 @@ function SummaryScreen({
       const domCorrect = domainResults.filter((r) => r.correct).length;
       return { domain, total: domainResults.length, correct: domCorrect };
     }).filter((d) => d.total > 0);
-  }, [cert, selectedDomains, results]);
+  }, [cert, domainIds, results]);
 
   // Category breakdown (fallback when no cert selected)
   const byCategory = useMemo(() => {

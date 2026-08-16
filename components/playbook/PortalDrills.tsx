@@ -339,7 +339,7 @@ export default function PortalDrills() {
   if (mode === 'done' && activeDrill) {
     const correct = picks.filter((p, i) => p === activeDrill.steps[i].correct).length;
     const total   = activeDrill.steps.length;
-    const pct     = Math.round((correct / total) * 100);
+    const pct     = total > 0 ? Math.round((correct / total) * 100) : 0;
     const color   = pct >= 80 ? 'text-emerald-400' : pct >= 60 ? 'text-amber-400' : 'text-red-400';
 
     return (

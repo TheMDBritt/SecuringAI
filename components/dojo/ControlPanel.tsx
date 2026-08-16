@@ -178,7 +178,7 @@ function DeliverableCriteria({
         <div className="mb-2.5 h-1 w-full overflow-hidden rounded-full bg-slate-800">
           <div
             className="h-full rounded-full bg-emerald-500/70 transition-[width] duration-500"
-            style={{ width: `${Math.round((count / criteria.length) * 100)}%` }}
+            style={{ width: `${criteria.length ? Math.round((count / criteria.length) * 100) : 0}%` }}
           />
         </div>
       )}

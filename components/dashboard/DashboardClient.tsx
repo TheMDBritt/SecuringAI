@@ -57,18 +57,21 @@ const ICONS = {
   ),
 };
 
+const DIFF_RANK: Record<string, number> = { beginner: 0, intermediate: 1, advanced: 2 };
+
 export function DashboardClient({ catalog }: { catalog: Catalog }) {
   const { state, summary, hydrated } = useProgress();
 
   const attemptedIds = useMemo(() => new Set(state.attackRuns.map((r) => r.scenarioId)), [state.attackRuns]);
-  const completion = Math.round((Math.min(attemptedIds.size, catalog.counts.scenarios) / catalog.counts.scenarios) * 100);
+  const completion = catalog.counts.scenarios
+    ? Math.round((Math.min(attemptedIds.size, catalog.counts.scenarios) / catalog.counts.scenarios) * 100)
+    : 0;
 
   // Recommended next lab: first un-attempted scenario, easiest dojo/difficulty first.
-  const diffRank: Record<string, number> = { beginner: 0, intermediate: 1, advanced: 2 };
   const nextLab = useMemo(() => {
     const pool = [...catalog.scenarios]
       .filter((s) => !attemptedIds.has(s.id))
-      .sort((a, b) => a.dojoId - b.dojoId || (diffRank[a.difficulty] ?? 1) - (diffRank[b.difficulty] ?? 1));
+      .sort((a, b) => a.dojoId - b.dojoId || (DIFF_RANK[a.difficulty] ?? 1) - (DIFF_RANK[b.difficulty] ?? 1));
     return pool[0] ?? catalog.scenarios[0];
   }, [catalog.scenarios, attemptedIds]);
 
