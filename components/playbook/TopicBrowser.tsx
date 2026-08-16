@@ -1,7 +1,52 @@
 'use client';
 import { useState, useMemo, useEffect } from 'react';
+import { ARTICLE_INDEX, type ArticleIndexEntry } from '@/lib/article-index';
 import type { TopicArticle } from '@/types';
-import { TOPIC_ARTICLES } from '@/lib/playbook-content';
+
+/**
+ * Loads one article body, cached for the session.
+ *
+ * All 98 articles were bundled on every Playbook visit, 476kB, to render the
+ * one being read.
+ */
+const articleCache = new Map<string, TopicArticle>();
+
+function useArticle(id: string | null): { article: TopicArticle | null; loading: boolean } {
+  const [article, setArticle] = useState<TopicArticle | null>(id ? articleCache.get(id) ?? null : null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+      setArticle(null);
+      return;
+    }
+    const cached = articleCache.get(id);
+    if (cached) {
+      setArticle(cached);
+      setLoading(false);
+      return;
+    }
+    let live = true;
+    setLoading(true);
+    fetch(`/api/content?article=${encodeURIComponent(id)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((a: TopicArticle) => {
+        articleCache.set(id, a);
+        if (live) {
+          setArticle(a);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (live) setLoading(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, [id]);
+
+  return { article, loading };
+}
 
 const CERT_BADGE: Record<string, string> = {
   'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
@@ -16,7 +61,7 @@ const CERT_BADGE: Record<string, string> = {
   'SC-500':       'bg-brand-500/10 text-brand-400 border-brand-500/30',
 };
 
-const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
+const CATEGORIES = Array.from(new Set(ARTICLE_INDEX.map((a) => a.category)));
 
 // Inline markdown renderer: headings, bold, inline code, fenced code blocks, tables, lists, paragraphs
 function renderMarkdown(md: string): string {
@@ -81,20 +126,22 @@ interface TopicBrowserProps {
 
 export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>(CATEGORIES[0] ?? '');
-  const [selectedArticle, setSelectedArticle]   = useState<TopicArticle | null>(null);
+  const [selectedArticle, setSelectedArticle]   = useState<ArticleIndexEntry | null>(null);
   // Below md the two panes cannot coexist, 390px split two ways leaves the
   // article wrapping every few words. One pane shows at a time instead.
   const [mobilePane, setMobilePane] = useState<'list' | 'article'>('list');
 
   const articlesForCategory = useMemo(
     () =>
-      TOPIC_ARTICLES.filter(
+      ARTICLE_INDEX.filter(
         (a) =>
           a.category === selectedCategory &&
           (!certFilter || a.certTags.includes(certFilter)),
       ),
     [selectedCategory, certFilter],
   );
+
+  const { article: articleBody, loading: articleLoading } = useArticle(selectedArticle?.id ?? null);
 
   // Auto-select first article when the filtered list changes and current selection is no longer in it
   useEffect(() => {
@@ -118,7 +165,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         </div>
         <div className="flex-1 overflow-y-auto">
           {CATEGORIES.map((cat) => {
-            const count = TOPIC_ARTICLES.filter(
+            const count = ARTICLE_INDEX.filter(
               (a) => a.category === cat && (!certFilter || a.certTags.includes(certFilter)),
             ).length;
             return (
@@ -213,11 +260,28 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
               )}
             </div>
 
-            {/* Article body */}
-            <div
-              className="prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: renderMarkdown(selectedArticle.content) }}
-            />
+            {/* Article body, fetched for the article being read */}
+            {articleLoading && !articleBody ? (
+              <div role="status" aria-live="polite" className="space-y-2.5 py-2">
+                {[92, 78, 96, 64].map((w, i) => (
+                  <div
+                    key={i}
+                    className="h-3 animate-pulse rounded bg-slate-800"
+                    style={{ width: `${w}%` }}
+                  />
+                ))}
+                <span className="sr-only">Loading article</span>
+              </div>
+            ) : articleBody ? (
+              <div
+                className="prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: renderMarkdown(articleBody.content) }}
+              />
+            ) : (
+              <p role="alert" className="text-sm text-slate-400">
+                This article could not be loaded. Check your connection and select it again.
+              </p>
+            )}
 
             {/* Navigation */}
             <div className="mt-8 pt-4 border-t border-slate-700 flex items-center justify-between">

@@ -1,19 +1,32 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import type { GlossaryTerm } from '@/types';
-import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { GLOSSARY_INDEX } from '@/lib/glossary-index';
 
+/**
+ * Glossary data, split by what the surface actually needs at each moment.
+ *
+ * The list and the A-Z filter run off the generated index, 77kB. Definitions
+ * are fetched for the term being read, and a debounced server search covers
+ * the definition-body matching the client can no longer do locally. Bundling
+ * all 774 definitions cost 584kB to read one.
+ */
+const defCache = new Map<string, GlossaryTerm>();
+
+// Cert badges are identity, not state. They were red, amber, brand and
+// emerald, assigned per cert with no meaning, in the colours the scorer
+// uses for FAIL, WARN and PASS.
 const CERT_BADGE: Record<string, string> = {
-  'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
-  'AWS-AIF-C01':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'Azure-AI901':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
-  'Azure-AI103':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
-  'Google-MLE':   'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  'GIAC-GOAA':    'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'GIAC-GASAE':   'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'CAISP':        'bg-brand-500/10 text-brand-400 border-brand-500/30',
-  'CAIS':         'bg-red-500/10 text-red-400 border-red-500/30',
-  'SC-500':       'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'SecAI':        'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'AWS-AIF-C01':  'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'Azure-AI901':  'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'Azure-AI103':  'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'Google-MLE':   'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'GIAC-GOAA':    'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'GIAC-GASAE':   'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'CAISP':        'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'CAIS':         'bg-slate-500/10 text-slate-300 border-slate-600/60',
+  'SC-500':       'bg-slate-500/10 text-slate-300 border-slate-600/60',
 };
 
 const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -24,18 +37,75 @@ export default function GlossaryPanel() {
   const [jumpLetter, setJump]   = useState('');
   const [certFilter, setCert]   = useState('All');
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [defs, setDefs] = useState<Record<string, GlossaryTerm>>({});
+
+  // Fetch the definition when a term is opened, unless the search already
+  // brought it back.
+  useEffect(() => {
+    if (!expanded) return;
+    const cached = defCache.get(expanded);
+    if (cached) {
+      setDefs((d) => (d[expanded] ? d : { ...d, [expanded]: cached }));
+      return;
+    }
+    let live = true;
+    fetch(`/api/content?terms=${encodeURIComponent(expanded)}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((hits: GlossaryTerm[]) => {
+        for (const h of hits) defCache.set(h.term, h);
+        if (live && hits[0]) setDefs((d) => ({ ...d, [expanded]: hits[0] }));
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [expanded]);
+
+  // Server-side matches on definition bodies, merged with the instant local
+  // match on term names so typing stays responsive and deep search still works.
+  const [deepMatches, setDeepMatches] = useState<Set<string> | null>(null);
+  const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    const q = search.trim();
+    if (q.length < 3) {
+      setDeepMatches(null);
+      setSearching(false);
+      return;
+    }
+    let live = true;
+    setSearching(true);
+    const t = setTimeout(() => {
+      fetch(`/api/content?q=${encodeURIComponent(q)}`)
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+        .then((hits: GlossaryTerm[]) => {
+          for (const h of hits) defCache.set(h.term, h);
+          if (live) {
+            setDeepMatches(new Set(hits.map((h) => h.term)));
+            setSearching(false);
+          }
+        })
+        .catch(() => {
+          if (live) setSearching(false);
+        });
+    }, 220);
+    return () => {
+      live = false;
+      clearTimeout(t);
+    };
+  }, [search]);
 
   // Stage 1: apply search + cert filter (used to determine available A Z letters)
-  const certFiltered: GlossaryTerm[] = useMemo(() => {
-    const q = search.toLowerCase();
-    return GLOSSARY_TERMS
-      .filter((t) => !q || t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q))
+  const certFiltered = useMemo(() => {
+    const q = search.toLowerCase().trim();
+    return GLOSSARY_INDEX
+      .filter((t) => !q || t.term.toLowerCase().includes(q) || (deepMatches?.has(t.term) ?? false))
       .filter((t) => certFilter === 'All' || t.certTags.includes(certFilter))
       .sort((a, b) => a.term.localeCompare(b.term));
-  }, [search, certFilter]);
+  }, [search, certFilter, deepMatches]);
 
   // Stage 2: apply jump letter on top of stage 1
-  const filtered: GlossaryTerm[] = useMemo(() => {
+  const filtered = useMemo(() => {
     if (!jumpLetter) return certFiltered;
     return certFiltered.filter((t) => t.term.toUpperCase().startsWith(jumpLetter));
   }, [certFiltered, jumpLetter]);
@@ -120,7 +190,9 @@ export default function GlossaryPanel() {
       {/* Term list */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
         {filtered.length === 0 && (
-          <p className="text-sm text-slate-400 font-mono mt-8 text-center">No terms match your search.</p>
+          <p className="mt-8 text-center font-mono text-sm text-slate-400">
+            {searching ? 'Searching definitions…' : 'No terms match your search.'}
+          </p>
         )}
         {filtered.map((term) => {
           const isOpen = expanded === term.term;
@@ -140,8 +212,10 @@ export default function GlossaryPanel() {
                       {term.category}
                     </span>
                   </div>
-                  {!isOpen && (
-                    <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{term.definition}</p>
+                  {!isOpen && defCache.get(term.term) && (
+                    <p className="mt-0.5 line-clamp-1 text-xs text-slate-400">
+                      {defCache.get(term.term)!.definition}
+                    </p>
                   )}
                 </div>
                 <svg
@@ -153,7 +227,17 @@ export default function GlossaryPanel() {
               </button>
               {isOpen && (
                 <div className="px-4 pb-4 border-t border-slate-700/50 bg-slate-800/30">
-                  <p className="text-sm text-slate-300 mt-3 leading-relaxed">{term.definition}</p>
+                  {defs[term.term] ? (
+                    <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                      {defs[term.term].definition}
+                    </p>
+                  ) : (
+                    <div role="status" aria-live="polite" className="mt-3 space-y-2">
+                      <div className="h-3 w-11/12 animate-pulse rounded bg-slate-800" />
+                      <div className="h-3 w-8/12 animate-pulse rounded bg-slate-800" />
+                      <span className="sr-only">Loading definition</span>
+                    </div>
+                  )}
                   {term.certTags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-3">
                       {term.certTags.map((tag) => (
@@ -169,10 +253,10 @@ export default function GlossaryPanel() {
                       ))}
                     </div>
                   )}
-                  {term.related.length > 0 && (
+                  {(defs[term.term]?.related.length ?? 0) > 0 && (
                     <div className="mt-3">
-                      <span className="text-micro font-mono text-slate-400 uppercase tracking-wide">Related: </span>
-                      <span className="text-2xs text-brand-400">{term.related.join(' · ')}</span>
+                      <span className="font-mono text-micro uppercase tracking-wide text-slate-400">Related: </span>
+                      <span className="text-2xs text-brand-400">{defs[term.term]!.related.join(' · ')}</span>
                     </div>
                   )}
                 </div>
