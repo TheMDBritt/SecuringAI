@@ -114,6 +114,35 @@ describe('every Dojo 3 scenario earns its rubric on a real brief', () => {
   }
 });
 
+describe('a task instruction is not a deployment brief', () => {
+  // The control panel sends prompts like this. They ask for an artifact; they
+  // do not describe a system.
+  const PANEL_PROMPT =
+    'Draft the Intended Use section of a model card: describe the primary use case, the target users, and explicitly state out-of-scope uses where the model should NOT be applied.';
+
+  it('asserts no risk tier when no system was described', () => {
+    const out = generateDojo3Analysis(PANEL_PROMPT, 'ai-model-transparency', CONFIG);
+    // Claiming "Minimal Risk" here would be a fabricated classification of a
+    // system that was never described.
+    expect(out).not.toMatch(/EU AI Act risk tier:/);
+    expect(out).toMatch(/no risk tier is asserted/i);
+    expect(out).toMatch(/Risk Level.*Not assessed/i);
+  });
+
+  it('leads with the artifact that was actually requested', () => {
+    const out = generateDojo3Analysis(PANEL_PROMPT, 'ai-model-transparency', CONFIG);
+    const modelCard = out.indexOf('### Model card');
+    const nist = out.indexOf('### NIST AI RMF profile');
+    expect(modelCard).toBeGreaterThan(-1);
+    expect(modelCard).toBeLessThan(nist);
+  });
+
+  it('still classifies when the brief does describe a system', () => {
+    const out = generateDojo3Analysis(HIRING_BRIEF, 'ai-model-transparency', CONFIG);
+    expect(out).toMatch(/EU AI Act risk tier: High-Risk/);
+  });
+});
+
 describe('it refuses to classify nothing', () => {
   const THIN = 'We want to use AI. Thoughts?';
 

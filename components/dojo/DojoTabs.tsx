@@ -249,8 +249,10 @@ export function DojoTabs() {
                 {/* Dimmed with a colour rather than opacity: opacity-50 over
                     slate-400 measured 2.68:1, well under AA, and this is live
                     information rather than a disabled control. */}
+                {/* Was `{scenarioCount}s` — "41s" in a mono font next to a
+                    label reads as a duration, not a count. */}
                 <span className={['text-micro font-mono', isActive ? 'text-brand-200' : 'text-slate-500'].join(' ')}>
-                  {scenarioCount}s
+                  {scenarioCount} scenarios
                 </span>
               </div>
               <span className="text-sm font-medium mt-0.5">{tab.label}</span>

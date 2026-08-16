@@ -566,7 +566,9 @@ export function generateDojo3Analysis(
       '- **Autonomy** — whether a human reviews the output before it takes effect',
       '- **Deployment** — who the users are, which jurisdictions, and whether it is internal or customer-facing',
       '',
-      'Load one of the prebuilt briefs from the control panel for a worked example.',
+      // The Dojo 3 panel offers section prompts, not prebuilt briefs. Pointing
+      // at something that is not on screen is worse than no pointer at all.
+      'The control panel on the right also has ready-made prompts for each section of this artifact.',
       '',
       '**Confidence**: Low — insufficient information to classify.',
     ].join('\n');
@@ -576,8 +578,30 @@ export function generateDojo3Analysis(
   const lens = config.frameworkLens ?? 'all';
   const S: string[] = [];
 
+  // Is this a task instruction rather than a system description?
+  //
+  // The control panel's buttons send prompts like "Draft the Intended Use
+  // section of a model card" — a request for an artifact, not a brief about a
+  // deployment. Classifying one produced "Minimal Risk: no Annex III category
+  // evidenced", which is a fabricated tier for a system that was never
+  // described, and it buried the section the learner actually asked for under
+  // a classification they did not.
+  const isTaskInstruction =
+    /^\s*(draft|generate|produce|map|document|write|create|conduct|assess|list|define|outline)\b/i.test(userText) &&
+    !facts.automatedDecision &&
+    !facts.personalData;
+
   S.push(`## AI governance review — ${scenarioId}`, '');
-  S.push(`**EU AI Act risk tier: ${cls.tier}**`, '', `Basis: ${cls.basis}.`, '');
+
+  if (isTaskInstruction) {
+    S.push(
+      '> Producing the requested section. No deployment brief was supplied, so no risk tier is asserted here — ' +
+        'describe the system (purpose, data, autonomy, deployment) to get the classification and the control set that follows from it.',
+      '',
+    );
+  } else {
+    S.push(`**EU AI Act risk tier: ${cls.tier}**`, '', `Basis: ${cls.basis}.`, '');
+  }
 
   if (cls.tier === 'Prohibited') {
     S.push(
@@ -596,12 +620,18 @@ export function generateDojo3Analysis(
     );
   }
 
-  S.push(...scoringSection(cls.tier, facts));
+  // The requested artifact leads when one was requested; the framework
+  // scaffolding follows it rather than burying it.
+  if (isTaskInstruction) {
+    S.push(...scenarioSections(scenarioId, userText, facts, cls.tier));
+  }
+
+  if (!isTaskInstruction) S.push(...scoringSection(cls.tier, facts));
   if (lens === 'all' || lens === 'nist') S.push(...nistSection(cls.tier, facts));
   if (lens === 'all' || lens === 'eu') S.push(...owaspSection(userText));
   if (lens === 'all' || lens === 'iso') S.push(...isoSection(cls.tier));
 
-  S.push(...scenarioSections(scenarioId, userText, facts, cls.tier));
+  if (!isTaskInstruction) S.push(...scenarioSections(scenarioId, userText, facts, cls.tier));
   S.push(...controlsSection(cls.tier, facts));
   S.push(...remediationSection(cls.tier));
 
@@ -610,7 +640,7 @@ export function generateDojo3Analysis(
       `${facts.cited.length ? ` citing ${facts.cited.slice(0, 3).join(', ')}` : ''}. ` +
       'A classification is only as good as the description it was made from; confirm with counsel before it is recorded.',
   );
-  S.push(`**Risk Level**: ${cls.tier}`);
+  S.push(`**Risk Level**: ${isTaskInstruction ? 'Not assessed — no deployment brief supplied' : cls.tier}`);
 
   return S.join('\n');
 }

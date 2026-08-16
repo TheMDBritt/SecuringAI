@@ -366,6 +366,64 @@ function ScenarioBrief({
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+/**
+ * The console's opening screen.
+ *
+ * This is the largest area on the page and the first thing a new learner sees.
+ * It previously held a speech-bubble icon and the words "Select a scenario to
+ * begin" floating in roughly 500px of empty space — it filled the room without
+ * using it, and left the actual loop of the lab to be discovered by trial.
+ *
+ * The three steps are the loop each dojo actually runs on, in the numbered
+ * field-manual form the right-hand panel already uses, so the empty state
+ * teaches the interface instead of apologising for being empty.
+ */
+const DOJO_STEPS: Record<1 | 2 | 3, Array<{ n: string; title: string; body: string }>> = {
+  1: [
+    { n: '01', title: 'Pick a scenario', body: 'Each one is a different attack class, from prompt injection through to agent orchestration hijack.' },
+    { n: '02', title: 'Set the guardrails', body: 'The switches on the right decide whether the attack lands. Leave them off to watch it succeed.' },
+    { n: '03', title: 'Attack, then re-run', body: 'Send a payload, read the score, change one control, and send the same payload again.' },
+  ],
+  2: [
+    { n: '01', title: 'Pick a task type', body: 'Log triage, alert enrichment, detection engineering, incident reporting, or threat hunting.' },
+    { n: '02', title: 'Load an incident', body: 'Use the library in the right-hand panel, or paste your own logs into the composer below.' },
+    { n: '03', title: 'Tune the analyst', body: 'IOC extraction, ATT&CK mapping and correlation each change the analysis and how it scores.' },
+  ],
+  3: [
+    { n: '01', title: 'Pick a governance task', body: 'Risk classification, bias audit, vendor review, incident response, and more.' },
+    { n: '02', title: 'Describe the system', body: 'Purpose, data, autonomy and deployment context. Classification follows from these four.' },
+    { n: '03', title: 'Choose a framework lens', body: 'EU AI Act, NIST AI RMF or ISO 42001, then work the artifact section by section.' },
+  ],
+};
+
+function ConsoleEmptyState({ dojoId }: { dojoId: 1 | 2 | 3 }) {
+  const steps = DOJO_STEPS[dojoId] ?? DOJO_STEPS[1];
+  return (
+    <div className="flex flex-1 items-center justify-center px-4 py-8">
+      <div className="w-full max-w-md">
+        <p className="font-mono text-micro uppercase tracking-[0.14em] text-slate-500">
+          How this dojo works
+        </p>
+        <div className="mt-4 flex flex-col gap-px overflow-hidden rounded-lg border border-surface-border bg-surface-border/60">
+          {steps.map((s) => (
+            <div key={s.n} className="flex gap-3 bg-navy-900 p-3.5">
+              <span className="shrink-0 font-mono text-2xs tabular-nums text-brand-300">{s.n}</span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-slate-100">{s.title}</p>
+                <p className="mt-0.5 text-2xs leading-relaxed text-slate-400">{s.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-2xs leading-relaxed text-slate-500">
+          Outcomes are deterministic: the same payload against the same guardrail state always
+          produces the same result, so you can change one control and see exactly what it did.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
   function ChatConsole(
     {
@@ -758,34 +816,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
-          {!hasScenario && messages.length === 0 && (
-            <div className="flex-1 flex items-center justify-center mt-16">
-              <div className="text-center">
-                <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center mx-auto mb-3">
-                  <svg
-                    className="w-5 h-5 text-slate-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                  </svg>
-                </div>
-                <p className="text-sm text-slate-500">Select a scenario to begin</p>
-                {dojoId === 2 && (
-                  <p className="text-xs text-slate-400 mt-1 font-mono max-w-[220px] mx-auto leading-relaxed">
-                    Then load an incident from the panel →<br />
-                    or type your own logs below
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
+          {!hasScenario && messages.length === 0 && <ConsoleEmptyState dojoId={dojoId} />}
 
           {hasScenario && scenario && messages.length === 0 && (
             <ScenarioBrief

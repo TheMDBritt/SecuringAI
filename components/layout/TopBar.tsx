@@ -66,16 +66,21 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
         </svg>
       </a>
 
-      <Link
-        href="/dojo"
-        // Present on every page, so eager prefetch means every visit pays for
-        // the Dojo's chunk. Hover still prefetches, which covers the case where
-        // someone is actually about to click it.
-        prefetch={false}
-        className="ui-btn ui-btn-primary hidden px-3.5 py-1.5 text-xs sm:inline-flex"
-      >
-        Enter the Dojo
-      </Link>
+      {/* Hidden on the Dojo itself: a primary call to action that navigates to
+          the page you are already on is a dead end, and it was competing for
+          attention with the scenario list that actually needs the click. */}
+      {!pathname.startsWith('/dojo') && (
+        <Link
+          href="/dojo"
+          // Present on every page, so eager prefetch means every visit pays for
+          // the Dojo's chunk. Hover still prefetches, which covers the case where
+          // someone is actually about to click it.
+          prefetch={false}
+          className="ui-btn ui-btn-primary hidden px-3.5 py-1.5 text-xs sm:inline-flex"
+        >
+          Enter the Dojo
+        </Link>
+      )}
     </header>
   );
 }

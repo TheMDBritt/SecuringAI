@@ -26,6 +26,8 @@ const PANES: { id: Pane; label: string }[] = [
 
 const MIN_SCORING_H = 120;
 const MAX_SCORING_H = 520;
+/** Height the pane grows to once a scenario is running and results appear. */
+const WORKING_SCORING_H = 260;
 
 export function DojoLayout({
   scenarioPicker,
@@ -41,7 +43,12 @@ export function DojoLayout({
   /** True once a scenario is selected. Drives the mobile landing pane. */
   hasScenario?: boolean;
 }) {
-  const [scoringH, setScoringH] = useState(220);
+  // Opens compact and grows once there is a result to read. It used to open at
+  // the working height on every visit, so a quarter of the viewport was held by
+  // a pane reading "No active scenario" before anything had happened.
+  const [scoringH, setScoringH] = useState(MIN_SCORING_H);
+  // A height the user chose themselves is never overridden by the auto-grow.
+  const userResized = useRef(false);
   // On a narrow screen only one pane is visible at a time. Landing on Chat with
   // no scenario chosen puts the user on a dead end that reads "Select a scenario
   // to begin" with no scenario in sight, so the picker is the landing pane until
@@ -55,13 +62,18 @@ export function DojoLayout({
     if (hasScenario && !pickedRef.current) {
       pickedRef.current = true;
       setPane('chat');
+      if (!userResized.current) setScoringH(WORKING_SCORING_H);
     }
-    if (!hasScenario) pickedRef.current = false;
+    if (!hasScenario) {
+      pickedRef.current = false;
+      if (!userResized.current) setScoringH(MIN_SCORING_H);
+    }
   }, [hasScenario]);
   const startY = useRef(0);
   const startH = useRef(0);
 
   const applyHeight = useCallback((next: number) => {
+    userResized.current = true;
     setScoringH(Math.min(MAX_SCORING_H, Math.max(MIN_SCORING_H, next)));
   }, []);
 

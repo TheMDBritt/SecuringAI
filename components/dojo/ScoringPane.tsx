@@ -444,7 +444,12 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                   awaitingFirstResult ? 'text-slate-400' : RISK_STYLE[displayRisk],
                 ].join(' ')}
               >
-                {awaitingFirstResult && isQualityMode ? '—' : displayScore}
+                {/* The dash used to be shown only in quality mode, so Dojo 1
+                    displayed its 100 starting posture before a single message
+                    had been sent — directly above a caption reading "Send a
+                    message to see the evaluation". A number that large reads
+                    as a result achieved, not as a starting value. */}
+                {awaitingFirstResult ? '—' : displayScore}
               </span>
               <span className="text-sm text-slate-400 mb-0.5">/ 100</span>
               {latest && (
