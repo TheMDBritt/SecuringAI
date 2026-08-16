@@ -102,7 +102,7 @@ export function ProgressClient({
                   </div>
                   <span className="font-mono text-sm text-slate-400">{d.pct}%</span>
                 </div>
-                <ProgressBar className="mt-3" value={d.pct} tone={d.tone} />
+                <ProgressBar className="mt-3" value={d.pct} tone={d.tone} label={`${d.title} scenarios complete`} />
                 <ul className="mt-4 max-h-64 space-y-1.5 overflow-y-auto pr-1">
                   {d.list.map((s) => {
                     const st = attemptStats.get(s.id);
@@ -153,7 +153,7 @@ export function ProgressClient({
                           <span className={c.accuracy >= 70 ? 'font-semibold text-emerald-300' : 'font-semibold text-amber-300'}>{c.accuracy}%</span>
                         </td>
                         <td className="py-3">
-                          <ProgressBar value={c.accuracy} tone={c.accuracy >= 70 ? 'emerald' : 'amber'} height="h-1.5" className="max-w-[200px]" />
+                          <ProgressBar value={c.accuracy} tone={c.accuracy >= 70 ? 'emerald' : 'amber'} height="h-1.5" className="max-w-[200px]" label={`${certName(c.certId)} quiz accuracy`} />
                         </td>
                       </tr>
                     ))}

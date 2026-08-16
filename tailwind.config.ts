@@ -10,6 +10,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Tailwind's stock slate-500 (#64748b) is the app's muted-text tone, on
+        // roughly 170 elements. Against the navy surfaces it lands between
+        // 3.05:1 and 4.11:1, so every one of those failed WCAG AA's 4.5:1 for
+        // body text — the single largest accessibility defect in the app.
+        //
+        // This value clears 4.5:1 on all five navy grounds, the tightest one
+        // being navy-700 at 4.61:1. Overriding the token fixes each usage at
+        // once and keeps the hierarchy (slate-400 above it, slate-600 below).
+        // slate-500 also backs some low-opacity fills and hover borders, where
+        // a slightly lighter value is neutral to mildly helpful.
+        slate: {
+          500: '#8592a6',
+        },
         // Enterprise deep-navy surface scale (bluer, richer than default slate)
         navy: {
           950: '#070c17',

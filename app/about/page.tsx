@@ -336,7 +336,7 @@ export default function AboutPage() {
             <div className="flex gap-3 shrink-0">
               <Link
                 href="/dojo"
-                className="px-5 py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm transition-colors duration-150"
+                className="px-5 py-2.5 rounded bg-brand-500 hover:bg-brand-400 text-navy-950 font-semibold text-sm transition-colors duration-150"
               >
                 Enter the dojo →
               </Link>

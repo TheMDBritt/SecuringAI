@@ -76,10 +76,17 @@ export function renderMarkdown(md: string): string {
     .replace(/^(\d+)\. (.+)$/gm, '<li class="text-sm text-slate-300 leading-relaxed ml-4 list-decimal">$2</li>')
     .replace(/(<li[\s\S]*?<\/li>\n?)+/g, '<ul class="space-y-0.5 my-2">$&</ul>');
 
-  // 7. Paragraphs, wrap non-tag lines
+  // 7. Paragraphs, wrap lines that are not already a block element.
+  //
+  // The skip list is spelled out rather than matched by first letter. It used
+  // to be `<[htupd]`, which has no `l`, so every <li> after the first — the
+  // first shares its line with the <ul> opening tag — was wrapped in a <p>.
+  // That put <p> elements directly inside <ul>, which is invalid and which
+  // screen readers report as a broken list.
+  const BLOCK_START = /^(?!<\/?(?:h[1-6]|p|div|table|thead|tbody|tr|th|td|ul|ol|li|pre)\b)(.+)$/gm;
   md = md
     .replace(/\n\n/g, '\n')
-    .replace(/^(?!<[htupd])(.+)$/gm, '<p class="text-sm text-slate-300 leading-relaxed my-2">$1</p>');
+    .replace(BLOCK_START, '<p class="text-sm text-slate-300 leading-relaxed my-2">$1</p>');
 
   return md;
 }

@@ -138,7 +138,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                   </div>
                   <span className="font-mono text-xs text-slate-400">{d.done}/{d.total}</span>
                 </div>
-                <ProgressBar value={hydrated ? d.pct : 0} tone={d.tone} />
+                <ProgressBar value={hydrated ? d.pct : 0} tone={d.tone} label={`${d.title} scenarios complete`} />
               </div>
             ))}
           </div>
@@ -158,7 +158,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                     <span className="text-slate-300">{b.label}</span>
                     <span className="font-mono text-slate-500">{b.v}</span>
                   </div>
-                  <ProgressBar value={(b.v / diffTotal) * 100} tone={b.tone} height="h-1.5" />
+                  <ProgressBar value={(b.v / diffTotal) * 100} tone={b.tone} height="h-1.5" label={`${b.label} attempts`} />
                 </div>
               ))}
             </div>

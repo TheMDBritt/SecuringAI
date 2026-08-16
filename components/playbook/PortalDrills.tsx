@@ -133,6 +133,16 @@ export default function PortalDrills() {
           </div>
         </div>
 
+        {/*
+          The cert switcher is a tablist, so each tab's aria-controls has to
+          resolve to a real panel. Without this wrapper the attribute pointed at
+          an id that was never rendered, which is an invalid reference rather
+          than a missing nicety: a screen reader following the tab lands
+          nowhere. The bucket filter and the drill cards together are what the
+          selected cert controls.
+        */}
+        <div {...certTabs.panelProps(certId)} className="focus-visible:outline-none">
+
         {/* Bucket filter, labels vary per cert (SC-500: portals; SecAI+: domains) */}
         <div className="flex flex-wrap gap-1.5">
           <button
@@ -202,6 +212,7 @@ export default function PortalDrills() {
               </div>
             </button>
           ))}
+        </div>
         </div>
       </div>
     );
@@ -326,7 +337,7 @@ export default function PortalDrills() {
         {pick !== null && (
           <button
             onClick={handleNext}
-            className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
+            className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 text-navy-950 text-sm font-semibold transition-colors"
           >
             {stepIdx + 1 >= activeDrill.steps.length ? 'See results →' : 'Next step →'}
           </button>
@@ -388,7 +399,7 @@ export default function PortalDrills() {
         <div className="flex gap-2">
           <button
             onClick={() => activeDrill && startDrill(activeDrill)}
-            className="flex-1 py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
+            className="flex-1 py-2.5 rounded bg-brand-500 hover:bg-brand-400 text-navy-950 text-sm font-semibold transition-colors"
           >
             Retry drill
           </button>

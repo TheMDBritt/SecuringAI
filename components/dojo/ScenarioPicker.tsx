@@ -224,7 +224,7 @@ export function ScenarioPicker({
                   {scenario.owaspTags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-micro px-1 py-0.5 rounded bg-slate-700/80 text-slate-400 font-mono"
+                      className="text-micro px-1 py-0.5 rounded bg-slate-700/80 text-slate-300 font-mono"
                     >
                       {tag}
                     </span>

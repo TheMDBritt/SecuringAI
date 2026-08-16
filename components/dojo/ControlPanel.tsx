@@ -234,7 +234,9 @@ function Toggle({
   return (
     <label className="flex items-start justify-between gap-2 cursor-pointer py-1">
       <div>
-        <span className={['text-xs text-slate-300 block', disabled && 'opacity-40'].join(' ')}>
+        {/* opacity-40 over slate-300 measured 2.94:1. The switch itself may be
+            disabled, but its label still has to be readable to explain why. */}
+        <span className={['block text-xs', disabled ? 'text-slate-500' : 'text-slate-300'].join(' ')}>
           {label}
         </span>
         {description && (
@@ -439,7 +441,16 @@ function Dojo1Panel({
             the panel with no affordance, so it read as truncated content
             rather than as a list you can scroll. */}
         <div className="relative mt-2">
-          <div className="flex max-h-80 flex-col gap-1 overflow-y-auto pr-1">
+          {/* Focusable so the list can be scrolled from the keyboard. Its
+              buttons go disabled while a scenario is not running, and disabled
+              buttons leave the tab order — at which point nothing inside the
+              region can be reached and the overflow becomes pointer-only. */}
+          <div
+            className="flex max-h-80 flex-col gap-1 overflow-y-auto pr-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-400"
+            tabIndex={0}
+            role="group"
+            aria-label="Example payloads"
+          >
           {PAYLOADS.map((p) => (
             <button
               key={p.label}

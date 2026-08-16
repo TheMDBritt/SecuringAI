@@ -246,7 +246,10 @@ export function DojoTabs() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-micro text-slate-500 font-mono">{tab.sublabel}</span>
-                <span className={['text-micro font-mono opacity-50', isActive ? '' : 'text-slate-400'].join(' ')}>
+                {/* Dimmed with a colour rather than opacity: opacity-50 over
+                    slate-400 measured 2.68:1, well under AA, and this is live
+                    information rather than a disabled control. */}
+                <span className={['text-micro font-mono', isActive ? 'text-brand-200' : 'text-slate-500'].join(' ')}>
                   {scenarioCount}s
                 </span>
               </div>

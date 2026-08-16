@@ -167,7 +167,7 @@ export function OnboardingTour() {
             <button
               ref={primaryRef}
               onClick={next}
-              className="px-4 py-1.5 text-xs rounded bg-brand-600 hover:bg-brand-500 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="px-4 py-1.5 text-xs rounded bg-brand-500 hover:bg-brand-400 text-navy-950 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               {isLast ? 'Start training →' : 'Next'}
             </button>

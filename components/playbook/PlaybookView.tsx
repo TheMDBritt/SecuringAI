@@ -142,7 +142,8 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               {s.count && (
                 <span className={[
                   'text-micro font-mono',
-                  section === s.id ? 'text-brand-500/60' : 'text-slate-500',
+                  // brand-500 at 60% alpha measured 3.2:1 on the panel ground.
+                  section === s.id ? 'text-brand-300' : 'text-slate-500',
                 ].join(' ')}>
                   {s.count}
                 </span>

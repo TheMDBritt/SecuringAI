@@ -136,8 +136,13 @@ export function DojoLayout({
             'shrink-0 overflow-y-auto border-slate-700 bg-slate-900',
             'w-full border-r-0 lg:w-72 lg:border-r',
             pane === 'scenarios' ? 'block' : 'hidden lg:block',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-400',
           ].join(' ')}
           aria-label="Scenario picker"
+          // A region that scrolls but cannot be focused is unreachable by
+          // keyboard: there is no way to scroll it without a pointer. tabIndex
+          // puts it in the tab order so arrow keys can move it.
+          tabIndex={0}
         >
           {scenarioPicker}
         </aside>
@@ -158,8 +163,10 @@ export function DojoLayout({
             'shrink-0 overflow-y-auto bg-slate-900',
             'w-full lg:w-80',
             pane === 'controls' ? 'block' : 'hidden lg:block',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-400',
           ].join(' ')}
           aria-label="Control panel"
+          tabIndex={0}
         >
           {controlPanel}
         </aside>

@@ -242,7 +242,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
               s === step
                 ? 'border-brand-500 bg-brand-500/20 text-brand-300'
                 : s < step
-                  ? 'border-brand-500/40 bg-brand-500/10 text-brand-500/60'
+                  ? 'border-brand-500/40 bg-brand-500/10 text-brand-200'
                   : 'border-slate-700 bg-transparent text-slate-400',
             ].join(' ')}
           >
@@ -318,7 +318,7 @@ function Step1SelectExam({
         <button
           disabled={selected === null}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           Continue
         </button>
@@ -431,7 +431,7 @@ function Step2SelectDomains({
         <button
           disabled={selectedDomainIds.size === 0 || totalSelected === 0}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           {totalSelected > 0
             ? `Continue, ${totalSelected} questions available`
@@ -675,7 +675,7 @@ function Step3Options({
         <button
           disabled={pool.length === 0}
           onClick={() => onStart(buildSettings())}
-          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           Start Quiz
         </button>
@@ -978,7 +978,7 @@ function ResultScreen({
 
       <button
         onClick={onNext}
-        className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
+        className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 text-navy-950 text-sm font-semibold transition-colors"
       >
         {index + 1 >= total ? 'See Results' : 'Next Question →'}
         <span className="ml-2 font-mono text-micro opacity-60">Enter</span>

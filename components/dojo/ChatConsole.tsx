@@ -892,7 +892,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               className={[
                 'px-4 py-2 rounded text-sm font-medium transition-colors self-end',
                 hasScenario && input.trim() && !loading
-                  ? 'bg-brand-600 hover:bg-brand-500 text-white'
+                  ? 'bg-brand-500 hover:bg-brand-400 text-navy-950'
                   : 'bg-slate-700 text-slate-500 cursor-not-allowed',
               ].join(' ')}
             >

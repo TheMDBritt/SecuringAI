@@ -128,11 +128,19 @@ const PROGRESS_TONE: Record<Tone, string> = {
 
 export function ProgressBar({
   value,
+  label,
   tone = 'brand',
   className,
   height = 'h-2',
 }: {
   value: number;
+  /**
+   * What this bar measures, e.g. "Dojo 1 completion". A progressbar with no
+   * accessible name is announced as a bare percentage, which gives a screen
+   * reader user a number but not what it counts. Required rather than optional
+   * so a new call site cannot silently reintroduce an unnamed bar.
+   */
+  label: string;
   tone?: Tone;
   className?: string;
   height?: string;
@@ -147,6 +155,7 @@ export function ProgressBar({
         )}
         style={{ width: `${pct}%` }}
         role="progressbar"
+        aria-label={label}
         aria-valuenow={Math.round(pct)}
         aria-valuemin={0}
         aria-valuemax={100}

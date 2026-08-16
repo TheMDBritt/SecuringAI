@@ -300,7 +300,10 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
               <div className="px-4 pb-3">
                 <button
                   onClick={() => onCertFilter(cert.id)}
-                  className={`w-full text-2xs font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
+                  // opacity-70 dropped the label to 3.36:1. The resting state
+                  // reads as secondary from the tinted fill alone; fading the
+                  // text as well only cost legibility.
+                  className={`w-full text-2xs font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} hover:brightness-125`}
                 >
                   Filter by {cert.id} · {quizCount} Qs →
                 </button>

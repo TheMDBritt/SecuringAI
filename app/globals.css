@@ -168,9 +168,20 @@ code {
     @apply inline-flex items-center justify-center gap-2 rounded-lg text-sm font-semibold
       transition-all duration-150 focus-visible:outline-none disabled:opacity-50 disabled:pointer-events-none;
   }
+  /*
+   * White on brand-600 measured 3.68:1 — under AA, on the app's main call to
+   * action. Rather than darken the fill until white passes, which mutes the one
+   * colour allowed to mean "interactive", the button now runs the ramp the
+   * other way: the bright aqua carries dark navy text at 8.05:1. It reads as a
+   * stronger CTA than washed teal-with-white did.
+   *
+   * The glow was also keyed to rgba(37,99,235) — the old default-blue brand,
+   * left behind when the ramp moved to aqua — so it cast a blue halo under a
+   * cyan button. Now keyed to the actual brand.
+   */
   .ui-btn-primary {
-    @apply bg-brand-600 text-white hover:bg-brand-500 shadow-[0_2px_12px_-4px_rgba(37,99,235,0.6)]
-      hover:shadow-[0_4px_18px_-4px_rgba(37,99,235,0.7)] active:translate-y-px;
+    @apply bg-brand-500 text-navy-950 hover:bg-brand-400 shadow-[0_2px_12px_-4px_rgba(6,182,212,0.55)]
+      hover:shadow-[0_4px_18px_-4px_rgba(34,211,238,0.65)] active:translate-y-px;
   }
   .ui-btn-secondary {
     @apply border border-surface-border bg-surface-raised/60 text-slate-200 hover:border-slate-500 hover:bg-surface-raised;

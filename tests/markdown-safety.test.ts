@@ -59,3 +59,41 @@ describe('article markdown rendering is not an injection point', () => {
     expect(offenders.map((a) => a.id)).toEqual([]);
   });
 });
+
+describe('article markdown produces valid block structure', () => {
+  it('puts nothing but list items directly inside a list', () => {
+    const html = render('- alpha\n- beta\n- gamma');
+    // Strip the <li> elements; what remains inside the <ul> must be the
+    // wrapper and whitespace only. A <p> here is invalid and is reported by
+    // screen readers as a broken list.
+    const inner = /<ul[^>]*>([\s\S]*?)<\/ul>/.exec(html)?.[1] ?? '';
+    expect(inner).not.toContain('<p');
+    expect(inner.replace(/<li[^>]*>[\s\S]*?<\/li>/g, '').trim()).toBe('');
+  });
+
+  it('wraps every list item, not just the first', () => {
+    const html = render('- alpha\n- beta\n- gamma');
+    expect((html.match(/<li\b/g) ?? []).length).toBe(3);
+    expect((html.match(/<ul\b/g) ?? []).length).toBe(1);
+  });
+
+  it('numbered lists are structured too', () => {
+    const html = render('1. one\n2. two');
+    const inner = /<ul[^>]*>([\s\S]*?)<\/ul>/.exec(html)?.[1] ?? '';
+    expect(inner).not.toContain('<p');
+    expect((html.match(/<li\b/g) ?? []).length).toBe(2);
+  });
+
+  it('still wraps ordinary prose in paragraphs', () => {
+    expect(render('just a sentence')).toContain('<p');
+  });
+
+  it('no shipped article emits a <p> directly inside a list', () => {
+    const bad = TOPIC_ARTICLES.filter((a) =>
+      Array.from(render(a.content).matchAll(/<ul[^>]*>([\s\S]*?)<\/ul>/g)).some((m) =>
+        m[1].includes('<p'),
+      ),
+    );
+    expect(bad.map((a) => a.id)).toEqual([]);
+  });
+});

@@ -28,7 +28,7 @@ function Row({ stat, label }: { stat: ObjectiveStat; label: string | undefined }
         </span>
       </div>
 
-      <ProgressBar value={pct ?? 0} tone={masteryTone(pct)} height="h-1" className="mt-1.5" />
+      <ProgressBar value={pct ?? 0} tone={masteryTone(pct)} height="h-1" className="mt-1.5" label={`Objective ${stat.number} mastery`} />
 
       <p className="mt-1 font-mono text-micro text-slate-400">
         {stat.seen} of {stat.pool} questions seen
