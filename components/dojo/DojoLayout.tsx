@@ -110,7 +110,7 @@ export function DojoLayout({
       <div
         className="flex shrink-0 items-center gap-1 border-b border-slate-700 bg-slate-900 px-2 py-1.5 lg:hidden"
         role="tablist"
-        aria-label="Lab panels"
+        aria-label="Dojo panels"
       >
         {PANES.map((p) => (
           <button
@@ -121,7 +121,7 @@ export function DojoLayout({
             className={[
               'flex-1 rounded px-2 py-1.5 text-[11px] font-mono transition-colors',
               pane === p.id
-                ? 'bg-violet-500/10 text-violet-300 ring-1 ring-violet-500/30'
+                ? 'bg-brand-500/10 text-brand-300 ring-1 ring-brand-500/30'
                 : 'text-slate-500 hover:text-slate-300',
             ].join(' ')}
           >
@@ -176,7 +176,7 @@ export function DojoLayout({
         aria-valuemax={MAX_SCORING_H}
         onMouseDown={onDragStart}
         onKeyDown={onSeparatorKey}
-        className="group hidden h-[5px] shrink-0 cursor-row-resize items-center justify-center border-t border-slate-700 bg-slate-800/60 transition-colors duration-150 hover:bg-slate-700 focus-visible:bg-violet-600 lg:flex"
+        className="group hidden h-[5px] shrink-0 cursor-row-resize items-center justify-center border-t border-slate-700 bg-slate-800/60 transition-colors duration-150 hover:bg-slate-700 focus-visible:bg-brand-600 lg:flex"
       >
         <div className="h-[3px] w-10 rounded-full bg-slate-700 transition-colors duration-150 group-hover:bg-slate-500" />
       </div>

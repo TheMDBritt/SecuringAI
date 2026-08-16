@@ -21,7 +21,7 @@ const IconDashboard = (
   </svg>
 );
 
-const IconLabs = (
+const IconDojo = (
   <svg className={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M9 3h6" />
     <path d="M10 3v5.5L5.5 17a2 2 0 0 0 1.8 3h9.4a2 2 0 0 0 1.8-3L14 8.5V3" />
@@ -69,7 +69,7 @@ const IconAbout = (
 
 export const PRIMARY_NAV: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: IconDashboard },
-  { href: '/dojo', label: 'Labs', icon: IconLabs, match: '/dojo' },
+  { href: '/dojo', label: 'Dojo', icon: IconDojo, match: '/dojo' },
   { href: '/playbook', label: 'Playbook', icon: IconPlaybook, match: '/playbook' },
   { href: '/progress', label: 'Progress', icon: IconProgress },
 ];

@@ -4,7 +4,7 @@ import { AppShell } from '@/components/layout/AppShell';
 
 const TITLE = 'Securing AI: Enterprise AI Security Training Platform';
 const DESCRIPTION =
-  'Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 1,876 quiz questions, 775 glossary terms and 70 scenario labs across 11 AI and cloud security certifications including CompTIA SecAI+, SC-500, AWS Certified Security - Specialty, GIAC GOAA, EC-Council CAIS, and CAISP.';
+  'Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 2,113 quiz questions, 774 glossary terms and 70 dojo scenarios across 11 AI and cloud security certifications including CompTIA SecAI+, SC-500, AWS Certified Security - Specialty, GIAC GOAA, EC-Council CAIS, and CAISP.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),
@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     'prompt injection',
     'OWASP LLM Top 10',
     'CompTIA SecAI+',
-    'AWS Certified Security Specialty',
     'AWS Certified Security Specialty',
     'CAISP',
     'EC-Council C|AI Security',

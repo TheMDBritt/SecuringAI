@@ -21,14 +21,14 @@ const VERDICT_STYLE = {
 const RISK_STYLE = {
   low:      'text-emerald-400',
   medium:   'text-amber-400',
-  high:     'text-orange-400',
+  high:     'text-amber-400',
   critical: 'text-red-400',
 };
 
 const SCORE_BAR_COLOR = {
   low:      'bg-emerald-500',
   medium:   'bg-amber-500',
-  high:     'bg-orange-500',
+  high:     'bg-amber-500',
   critical: 'bg-red-500',
 };
 
@@ -199,7 +199,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
           <ul className="flex flex-col gap-0.5">
             {e.signals.map((s, i) => (
               <li key={i} className="text-[10px] text-slate-400 font-mono flex gap-1.5">
-                <span className="text-cyan-600 shrink-0">▸</span>
+                <span className="text-brand-600 shrink-0">▸</span>
                 {s}
               </li>
             ))}
@@ -274,7 +274,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fm.mitreAtlas.map((tag) => (
-                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-orange-500/25 bg-orange-500/8 text-orange-300/80 font-mono">
+                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/25 bg-amber-500/8 text-amber-300/80 font-mono">
                         {tag}
                       </span>
                     ))}
@@ -288,7 +288,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fm.nistAiRmf.map((fn) => (
-                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded border border-blue-500/25 bg-blue-500/8 text-blue-300/80 font-mono">
+                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono">
                         {fn}
                       </span>
                     ))}
@@ -369,7 +369,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
           <ul className="flex flex-col gap-0.5">
             {e.recommendedMitigations.map((m, i) => (
               <li key={i} className="text-[10px] text-slate-400 flex gap-1.5">
-                <span className="text-cyan-600 shrink-0">→</span>
+                <span className="text-brand-600 shrink-0">→</span>
                 {m}
               </li>
             ))}
@@ -391,7 +391,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
             {e.securityAITopics.map((topic) => (
               <span
                 key={topic}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-cyan-500/25 bg-cyan-500/8 text-cyan-300/80 font-mono"
+                className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono"
               >
                 {topic}
               </span>
@@ -503,9 +503,9 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               </span>
             )}
 
-            {/* SecurityAI+ primary topic (Dojo 2/3) */}
+            {/* SecAI+ primary topic (Dojo 2/3) */}
             {isQualityMode && latest?.securityAITopics && latest.securityAITopics.length > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-cyan-500/30 bg-cyan-500/5 text-cyan-400 font-mono w-fit">
+              <span className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/30 bg-brand-500/5 text-brand-400 font-mono w-fit">
                 {latest.securityAITopics[0]}
               </span>
             )}

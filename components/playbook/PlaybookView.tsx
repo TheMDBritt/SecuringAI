@@ -105,7 +105,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
           </span>
           {certFilter && (
             <div className="flex items-center gap-1 ml-1">
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400">
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                 {certFilter}
               </span>
               <button
@@ -134,7 +134,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               className={[
                 'shrink-0 px-2.5 py-1.5 rounded text-[11px] font-mono transition-colors duration-150 flex items-center gap-1',
                 section === s.id
-                  ? 'bg-violet-500/10 border border-violet-500/30 text-violet-300'
+                  ? 'bg-brand-500/10 border border-brand-500/30 text-brand-300'
                   : 'text-slate-500 hover:text-slate-300 border border-transparent hover:border-slate-700',
               ].join(' ')}
             >
@@ -142,7 +142,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               {s.count && (
                 <span className={[
                   'text-[9px] font-mono',
-                  section === s.id ? 'text-violet-500/60' : 'text-slate-700',
+                  section === s.id ? 'text-brand-500/60' : 'text-slate-700',
                 ].join(' ')}>
                   {s.count}
                 </span>

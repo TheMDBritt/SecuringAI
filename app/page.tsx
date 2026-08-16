@@ -4,11 +4,14 @@ import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 import { Footer } from '@/components/layout/Footer';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import type { DojoId } from '@/types';
 
 // ── Live counts, computed from source data at build time ─────────────────────
 const STATS = {
   scenarios: SCENARIOS.length,
+  d1: SCENARIOS.filter((s) => s.dojoId === 1).length,
+  d3: SCENARIOS.filter((s) => s.dojoId === 3).length,
   quizQs:    CONTENT_COUNTS.quizQuestions,
   glossary:  CONTENT_COUNTS.glossaryTerms,
   articles:  CONTENT_COUNTS.topicArticles,
@@ -31,7 +34,7 @@ const DOJOS: DojoCard[] = [
     id: 1,
     label: 'Dojo 1',
     title: 'LLM Attack & Defense',
-    summary: 'Attack a live LLM under configurable guardrails across 41 scenarios, prompt injection, many-shot jailbreaks, GCG adversarial suffixes, RAG poisoning, agentic tool abuse, code interpreter injection, MCP server exploitation, chain-of-thought hijacking, alignment exploitation, function name confusion, system prompt reflection leaks, vision adversarial attacks, agent memory poisoning, and semantic cache poisoning. Guardrail state deterministically decides each outcome.',
+    summary: 'Attack a live model, then defend it. Set the guardrails, pick a technique, and watch which control decides the outcome. Nothing is random: the same payload against the same configuration produces the same result every time, so you can change one setting and see exactly what it bought you.',
     accent: 'red',
     detail: 'Injection Shield · Strict Policy · Tool Access · RAG Sanitiser',
   },
@@ -39,7 +42,7 @@ const DOJOS: DojoCard[] = [
     id: 2,
     label: 'Dojo 2',
     title: 'AI-Assisted SOC',
-    summary: 'Operate as an AI SOC analyst across 12 workflow scenarios with 56 prebuilt incidents, log triage, alert enrichment, Sigma/KQL detection rules, IR drafting, adversarial prompt forensics, AI model abuse investigation, and ransomware incident response with AI-assisted triage.',
+    summary: 'Work incidents the way an analyst does. Load real evidence, direct the AI through the analysis, then read its output critically. You are graded on the analysis you produced, not on the prompt you typed, because a confident wrong answer is the failure mode that matters.',
     accent: 'cyan',
     detail: 'Log Triage · Alert Enrichment · Detection Rule Gen · IR Report',
   },
@@ -47,100 +50,26 @@ const DOJOS: DojoCard[] = [
     id: 3,
     label: 'Dojo 3',
     title: 'AI GRC',
-    summary: 'Govern AI deployments: classify under EU AI Act risk tiers, draft ISO 42001 controls, run vendor reviews, investigate model failures under Article 73, and map controls across EU AI Act + ISO 42001 + NIST AI RMF simultaneously.',
+    summary: 'Produce the artefacts a regulator or an auditor would ask for. Classify a system, draft the controls, review a vendor, and resolve the conflicts between frameworks rather than listing them side by side. Every deliverable is scored against named clauses.',
     accent: 'emerald',
     detail: 'EU AI Act · NIST AI RMF · ISO/IEC 42001 · Vendor Risk',
   },
 ];
 
-const TECHNIQUES = [
-  { label: 'Prompt Injection',           tag: 'LLM01',         dojo: 1 },
-  { label: 'Insecure Output',            tag: 'LLM02',         dojo: 1 },
-  { label: 'Training Data Poisoning',    tag: 'LLM03',         dojo: 1 },
-  { label: 'Supply Chain Risk',          tag: 'LLM05',         dojo: 1 },
-  { label: 'Sensitive Data Leak',        tag: 'LLM06',         dojo: 1 },
-  { label: 'System Prompt Leakage',      tag: 'LLM07',         dojo: 1 },
-  { label: 'Excessive Agency',           tag: 'LLM08',         dojo: 1 },
-  { label: 'RAG / Vector Attacks',       tag: 'LLM09',         dojo: 1 },
-  { label: 'Misinformation',             tag: 'LLM09:2026',    dojo: 1 },
-  { label: 'Model Theft',                tag: 'LLM10',         dojo: 1 },
-  { label: 'Indirect Injection',         tag: 'AML.T0054.001', dojo: 1 },
-  { label: 'Model Inversion',            tag: 'AML.T0024',     dojo: 1 },
-  { label: 'Vector DB Poisoning',        tag: 'LLM09:2026',    dojo: 1 },
-  { label: 'Confused Deputy',            tag: 'LLM08',         dojo: 1 },
-  { label: 'Embedding Inversion',        tag: 'AML.T0024',     dojo: 1 },
-  { label: 'Log Triage',                 tag: 'SOC',           dojo: 2 },
-  { label: 'Alert Enrichment',           tag: 'SOC',           dojo: 2 },
-  { label: 'Sigma / KQL Gen',            tag: 'SecAI+',        dojo: 2 },
-  { label: 'IR Report Drafting',         tag: 'SOC',           dojo: 2 },
-  { label: 'AI SOAR Automation',         tag: 'GASAE',         dojo: 2 },
-  { label: 'EU AI Act Risk Tier',        tag: 'Annex III',     dojo: 3 },
-  { label: 'ISO 42001 Controls',         tag: 'GRC',           dojo: 3 },
-  { label: 'Vendor Gap Analysis',        tag: 'GRC',           dojo: 3 },
-  { label: 'NIST AI RMF Profile',        tag: 'GRC',           dojo: 3 },
-  { label: 'AI Red Teaming',             tag: 'ATLAS',         dojo: 1 },
-  { label: 'Many-Shot Jailbreak',        tag: 'LLM01',         dojo: 1 },
-  { label: 'Crescendo Attack',           tag: 'Red Team',      dojo: 1 },
-  { label: 'Backdoor / Trojan',          tag: 'AML.T0018',     dojo: 1 },
-  { label: 'Semantic Cache Poisoning',   tag: 'LLM09:2026',    dojo: 1 },
-  { label: 'Purview DSPM for AI',        tag: 'AI-103',        dojo: 3 },
-  { label: 'Security Copilot KQL',       tag: 'SC-500',        dojo: 2 },
-  { label: 'Context Window Overflow',    tag: 'LLM01:2026',    dojo: 1 },
-  { label: 'Supply Chain Poisoning',     tag: 'LLM04:2026',    dojo: 1 },
-  { label: 'Agent Forensics',            tag: 'AML.T0051',     dojo: 2 },
-  { label: 'AI Continuous Monitoring',   tag: 'ISO 42001',     dojo: 3 },
-  { label: 'MCP Server Security',        tag: 'LLM06:2026',    dojo: 1 },
-  { label: 'Zero-Width Steganography',   tag: 'LLM01:2026',    dojo: 1 },
-  { label: 'Markdown Rendering Attack',  tag: 'LLM02:2026',    dojo: 1 },
-  { label: 'Token Exhaustion DoS',       tag: 'LLM10:2026',    dojo: 1 },
-  { label: 'Hypothetical Framing',       tag: 'Red Team',      dojo: 1 },
-  { label: 'Credential Harvesting',      tag: 'LLM06',         dojo: 1 },
-  { label: 'PGD Adversarial Attack',     tag: 'AML.T0015',     dojo: 1 },
-  { label: 'Membership Inference',       tag: 'AML.T0024',     dojo: 1 },
-  { label: 'Spotlighting Defense',       tag: 'Defense',       dojo: 1 },
-  { label: 'Code Interpreter Injection', tag: 'LLM08',         dojo: 1 },
-  { label: 'Adversarial Prompt Forensics', tag: 'SOC',         dojo: 2 },
-  { label: 'AI Model Abuse Triage',      tag: 'AML.T0040',     dojo: 2 },
-  { label: 'PyRIT Red Teaming',          tag: 'AI Red Team',   dojo: 1 },
-  { label: 'EU AI Act Art. 73 Report',   tag: 'EU AI Act',     dojo: 3 },
-  { label: 'Sycophancy Exploitation',    tag: 'LLM01',         dojo: 1 },
-  { label: 'MCP Server Injection',       tag: 'LLM08',         dojo: 1 },
-  { label: 'Vision Adversarial Attack',  tag: 'AML.T0068',     dojo: 1 },
-  { label: 'Agent Memory Poisoning',     tag: 'LLM01:2026',    dojo: 1 },
-  { label: 'Cross-Tenant Data Leakage',  tag: 'LLM06:2026',    dojo: 1 },
-  { label: 'Ransomware AI Triage',       tag: 'T1486',         dojo: 2 },
-  { label: 'Multi-Framework Mapping',    tag: 'EU AI Act',     dojo: 3 },
-  { label: 'GCG Adversarial Suffix',     tag: 'AML.T0054',     dojo: 1 },
-  { label: 'DP-SGD Privacy Training',    tag: 'SecAI+',        dojo: 3 },
-  { label: 'Output Validation',          tag: 'LLM02:2026',    dojo: 1 },
-  { label: 'Agent Trust Boundary',       tag: 'LLM08',         dojo: 1 },
-  { label: 'Chain-of-Thought Hijacking', tag: 'AML.T0054',     dojo: 1 },
-  { label: 'System Prompt Reflection',   tag: 'AML.T0056',     dojo: 1 },
-  { label: 'Alignment Exploitation',     tag: 'AML.T0020',     dojo: 1 },
-  { label: 'Function Name Confusion',    tag: 'LLM08',         dojo: 1 },
-  { label: 'Base64 Encoding Bypass',     tag: 'LLM01',         dojo: 1 },
-  { label: 'Nested Roleplay Jailbreak',  tag: 'LLM01',         dojo: 1 },
-  { label: 'Instruction Shadowing',      tag: 'AML.T0054.001', dojo: 1 },
-  { label: 'Agentic Goal Hijacking',     tag: 'LLM08',         dojo: 1 },
-  { label: 'Prompt Chaining Attack',     tag: 'LLM01',         dojo: 1 },
-  { label: 'MCP Tool Injection',         tag: 'LLM08:2026',    dojo: 1 },
-  { label: 'AI Transparency (Art.13)',   tag: 'EU AI Act',     dojo: 3 },
-  { label: 'Post-Market Surveillance',   tag: 'EU AI Act',     dojo: 3 },
-  { label: 'Multi-Framework Mapping',    tag: 'ISO 42001',     dojo: 3 },
-];
+
 
 const CERT_CHIPS = [
-  { id: 'SecAI',       label: 'CompTIA SecAI+',           color: 'text-red-400 border-red-500/30' },
-  { id: 'CAISP',       label: 'CAISP',                    color: 'text-purple-400 border-purple-500/30' },
-  { id: 'CAIS',        label: 'EC-Council C|AI Security',  color: 'text-rose-400 border-rose-500/30' },
-  { id: 'GIAC-GOAA',   label: 'GIAC GOAA',                color: 'text-orange-400 border-orange-500/30' },
-  { id: 'GIAC-GASAE',  label: 'GIAC GASAE',               color: 'text-orange-400 border-orange-500/30' },
-  { id: 'SC-500',      label: 'Microsoft SC-500',          color: 'text-cyan-400 border-cyan-500/30' },
-  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01',              color: 'text-amber-400 border-amber-500/30' },
-  { id: 'SCS-C03',     label: 'AWS Security Specialty',    color: 'text-amber-400 border-amber-500/30' },
-  { id: 'Azure-AI103', label: 'Azure AI-103',              color: 'text-blue-400 border-blue-500/30' },
-  { id: 'Azure-AI901', label: 'Azure AI-901',              color: 'text-blue-400 border-blue-500/30' },
-  { id: 'Google-MLE',  label: 'Google MLE',               color: 'text-emerald-400 border-emerald-500/30' },
+  { id: 'SecAI',       label: 'CompTIA SecAI+' },
+  { id: 'CAISP',       label: 'CAISP' },
+  { id: 'CAIS',        label: 'EC-Council C|AI Security' },
+  { id: 'GIAC-GOAA',   label: 'GIAC GOAA' },
+  { id: 'GIAC-GASAE',  label: 'GIAC GASAE' },
+  { id: 'SC-500',      label: 'Microsoft SC-500' },
+  { id: 'AWS-AIF-C01', label: 'AWS AIF-C01' },
+  { id: 'SCS-C03',     label: 'AWS Security Specialty' },
+  { id: 'Azure-AI103', label: 'Azure AI-103' },
+  { id: 'Azure-AI901', label: 'Azure AI-901' },
+  { id: 'Google-MLE',  label: 'Google MLE' },
 ];
 
 const SOURCED_FROM = [
@@ -153,7 +82,7 @@ const SOURCED_FROM = [
   'NIST SP 800-218A',
   'NIST AI 100-1',
   'GIAC GOAA / GASAE Syllabi',
-  'CompTIA SecurityAI+ Objectives',
+  'CompTIA SecAI+ Objectives',
   'EC-Council C|AI Security Outline',
   'Microsoft SC-500 / AI-103 Study Guide',
   'AWS AI Practitioner Exam Guide',
@@ -166,21 +95,21 @@ const SOURCED_FROM = [
 const SCORING_ROWS = [
   {
     dojo: 'Dojo 1',
-    color: 'text-red-400',
+    color: 'text-slate-300',
     engine: 'Outcome engine',
     how: 'Guardrail config (Injection Shield, Strict Policy, Tools, RAG) deterministically produces vulnerable / partial / blocked per turn. Session score starts at 100 and decays on each successful attack; chained attacks stack penalties.',
     maps: 'OWASP LLM Top 10 · MITRE ATLAS',
   },
   {
     dojo: 'Dojo 2',
-    color: 'text-cyan-400',
+    color: 'text-slate-300',
     engine: 'Quality rubric',
     how: 'Per-scenario regex rubrics score IOC extraction, MITRE T-codes, executive summaries, detection rule structure, and confidence blocks. Disabled analyst controls are excluded from scoring.',
     maps: 'MITRE ATT&CK · SecAI+ · GIAC GASAE',
   },
   {
     dojo: 'Dojo 3',
-    color: 'text-emerald-400',
+    color: 'text-slate-300',
     engine: 'Framework rubric',
     how: 'Evaluator checks EU AI Act tier assignment, NIST AI RMF function references, ISO 42001 control citations, and vendor gap coverage, returns per-element coaching on missing criteria.',
     maps: 'EU AI Act · ISO 42001 · NIST AI RMF',
@@ -206,20 +135,20 @@ export default function LandingPage() {
               <h1 className="text-[38px] md:text-[54px] font-bold tracking-tight text-white leading-[1.05]">
                 Attack LLMs.<br />
                 Defend against them.<br />
-                <span className="bg-gradient-to-r from-brand-300 to-cyan-300 bg-clip-text text-transparent">Govern AI risk.</span>
+                <span className="bg-gradient-to-r from-brand-300 to-brand-300 bg-clip-text text-transparent">Govern AI risk.</span>
               </h1>
               <p className="mt-6 text-[16px] text-slate-300 max-w-[520px] leading-relaxed">
-                Three hands-on labs. Attack a live LLM under configurable guardrails, triage
+                Three hands-on dojos. Attack a live LLM under configurable guardrails, triage
                 AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
                 and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
                 {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
               </p>
               {/* One clear entry point. The dashboard used to be the primary
-                  CTA, but it is empty for a first-time visitor, so the labs
+                  CTA, but it is empty for a first-time visitor, so the Dojo
                   lead instead and the dashboard drops to a tertiary link. */}
               <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link href="/dojo" className="ui-btn ui-btn-primary px-5 py-2.5 text-sm">
-                  Start with a lab &rarr;
+                  Enter the Dojo &rarr;
                 </Link>
                 <Link href="/playbook" className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm">
                   Study the playbook
@@ -273,7 +202,7 @@ export default function LandingPage() {
                 </div>
                 <div className="text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-brand-400">dojo</span>
                   <span className="text-slate-400"> load prompt-injection --shield strict</span>
                 </div>
                 <div className="mt-1 text-slate-500">
@@ -283,7 +212,7 @@ export default function LandingPage() {
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">dojo</span>
+                  <span className="text-brand-400">dojo</span>
                   <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
                 </div>
                 <div className="mt-1 text-slate-500">
@@ -293,22 +222,22 @@ export default function LandingPage() {
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-brand-400">quiz</span>
                   <span className="text-slate-400"> start GIAC-GOAA --domain d4 --count 25</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-violet-400">STARTED</span>
+                  <span className="text-brand-400">STARTED</span>
                   <span className="text-slate-600"> Prompt Injection &amp; LLM Bypass · 25q</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">$ </span>
-                  <span className="text-cyan-400">quiz</span>
+                  <span className="text-brand-400">quiz</span>
                   <span className="text-slate-400"> start CAISP --domain audit --mock</span>
                 </div>
                 <div className="mt-1 text-slate-500">
                   <span className="text-slate-700">→ </span>
-                  <span className="text-violet-400">MOCK</span>
+                  <span className="text-brand-400">MOCK</span>
                   <span className="text-slate-600"> AI Security Assessment · 60q · timed</span>
                 </div>
               </div>
@@ -333,7 +262,7 @@ export default function LandingPage() {
               href="/dojo"
               className="hidden md:inline-block text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 px-3 py-1.5 rounded transition-colors"
             >
-              Open dojo →
+              Open the Dojo →
             </Link>
           </div>
 
@@ -364,20 +293,19 @@ export default function LandingPage() {
                   <p className={['text-[10px] font-mono mb-4', accent.text, 'opacity-60'].join(' ')}>
                     {d.detail}
                   </p>
-                  <ul className="flex flex-col gap-1 border-t border-slate-800 pt-3">
-                    {scenarios.slice(0, 7).map((s) => (
-                      <li key={s.id} className="text-[11px] text-slate-500 flex gap-1.5 items-start">
-                        <span className="text-slate-700 mt-px shrink-0">·</span>
-                        {s.title}
-                      </li>
-                    ))}
-                    {scenarios.length > 7 && (
-                      <li className="text-[11px] text-slate-600 flex gap-1.5 items-start">
-                        <span className="text-slate-700 mt-px shrink-0">·</span>
-                        +{scenarios.length - 7} more
-                      </li>
-                    )}
-                  </ul>
+                  <div className="border-t border-slate-800 pt-3">
+                    <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                      {scenarios.length} scenarios, including
+                    </p>
+                    <ul className="flex flex-col gap-1">
+                      {scenarios.slice(0, 4).map((s) => (
+                        <li key={s.id} className="flex items-start gap-1.5 text-[11px] text-slate-500">
+                          <span className="mt-px shrink-0 text-slate-700">·</span>
+                          {s.title}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                   <span
                     className={[
                       'mt-4 text-[11px] font-mono opacity-50 group-hover:opacity-100 transition-opacity duration-150',
@@ -437,30 +365,23 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="grid md:grid-cols-2 gap-10">
 
-            {/* Technique tags */}
+            {/* Coverage, stated once and correctly */}
             <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
-                {TECHNIQUES.length} attack &amp; defense techniques
+              <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                OWASP LLM Top 10, 2026 edition
               </p>
-              <div className="flex flex-wrap gap-1.5">
-                {TECHNIQUES.map((t) => (
-                  <span
-                    key={`${t.label}-${t.tag}`}
-                    className="inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-700 bg-slate-800/60 text-slate-400"
-                  >
-                    {t.label}
-                    <span className="text-slate-600">·</span>
-                    <span className={
-                      t.dojo === 1 ? 'text-red-500/70' :
-                      t.dojo === 2 ? 'text-cyan-500/70' :
-                      'text-emerald-500/70'
-                    }>{t.tag}</span>
-                  </span>
+              <ol className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
+                {(Object.entries(OWASP_LLM_2026) as [string, string][]).map(([code, name]) => (
+                  <li key={code} className="flex items-baseline gap-2.5 text-xs">
+                    <span className="font-mono text-[11px] tabular-nums text-brand-400/70">{code}</span>
+                    <span className="text-slate-400">{name}</span>
+                  </li>
                 ))}
-              </div>
-              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
-                Sourced from OWASP LLM Top 10 (2026), MITRE ATT&amp;CK + ATLAS, and official exam study guides.
-                Each tag maps to the framework reference, type the attack and see which guardrail decides the outcome.
+              </ol>
+              <p className="mt-4 text-xs leading-relaxed text-slate-500">
+                Every scenario, question, and glossary entry uses this edition. The codes moved
+                between the 2023, 2025, and 2026 lists, so material written against an older one
+                teaches the wrong answer. Scenarios also carry MITRE ATLAS technique IDs.
               </p>
             </div>
 
@@ -473,7 +394,7 @@ export default function LandingPage() {
                 {CERT_CHIPS.map((c) => (
                   <span
                     key={c.id}
-                    className={`text-[11px] font-mono px-2 py-0.5 rounded border ${c.color} bg-transparent`}
+                    className="rounded border border-slate-700 bg-transparent px-2 py-0.5 font-mono text-[11px] text-slate-300"
                   >
                     {c.label}
                   </span>
@@ -522,19 +443,26 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { n: STATS.quizQs.toLocaleString(), label: 'quiz questions',  sub: `across ${STATS.certs} certs, mapped to exam domains` },
-                { n: STATS.glossary, label: 'glossary terms', sub: 'cert-tagged, A Z filterable by cert' },
-                { n: STATS.articles,                label: 'topic articles',  sub: 'with code examples and comparison tables' },
-                { n: STATS.certs,                   label: 'cert maps',       sub: 'official exam objectives + domain weights' },
-              ].map(({ n, label, sub }) => (
-                <div key={label} className="p-4 rounded-lg border border-slate-800 bg-slate-900/40">
-                  <div className="text-xl font-bold text-slate-100 font-mono">{n}</div>
-                  <div className="text-xs font-medium text-slate-300 mt-0.5">{label}</div>
-                  <div className="text-[10px] text-slate-600 mt-1 leading-tight">{sub}</div>
-                </div>
-              ))}
+            {/* The four headline numbers already appear in the hero. Repeating
+                them here filled space without telling the reader anything new,
+                so this side carries what the Playbook actually contains. */}
+            <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+              <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-slate-500">
+                What is covered
+              </p>
+              <dl className="divide-y divide-slate-800/80">
+                {[
+                  ['CompTIA SecAI+', 'CY0-001, all four domains, objective-tagged'],
+                  ['Microsoft SC-500', 'Four domains, current published weightings'],
+                  ['AWS Security Specialty', 'SCS-C03, six domains including GenAI controls'],
+                  ['Eight further certs', 'CAISP, CAIS, GIAC GOAA and GASAE, Azure, Google'],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0">
+                    <dt className="text-xs font-medium text-slate-200">{k}</dt>
+                    <dd className="text-[11px] leading-relaxed text-slate-500">{v}</dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </div>
@@ -572,12 +500,12 @@ export default function LandingPage() {
                 </p>
                 <div className="mt-4 grid grid-cols-3 gap-3">
                   {[
-                    { label: 'Dojo 1', sub: '32 attack scenarios',   color: 'text-red-400' },
-                    { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents`, color: 'text-cyan-400' },
-                    { label: 'Dojo 3', sub: '15 GRC scenarios',    color: 'text-emerald-400' },
+                    { label: 'Dojo 1', sub: `${STATS.d1} attack scenarios` },
+                    { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents` },
+                    { label: 'Dojo 3', sub: `${STATS.d3} GRC scenarios` },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
-                      <div className={`text-[11px] font-mono font-semibold ${d.color}`}>{d.label}</div>
+                      <div className="font-mono text-[11px] font-semibold text-slate-200">{d.label}</div>
                       <div className="text-[10px] text-slate-500 mt-0.5">{d.sub}</div>
                     </div>
                   ))}
@@ -588,7 +516,7 @@ export default function LandingPage() {
                   href="/dojo"
                   className="ui-btn ui-btn-primary px-6 py-2.5 text-sm text-center"
                 >
-                  Enter the dojo →
+                  Enter the Dojo →
                 </Link>
                 <Link
                   href="/playbook"

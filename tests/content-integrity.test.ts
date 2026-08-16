@@ -8,7 +8,7 @@
  * by hand on every change, so the invariants are enforced here instead.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
@@ -780,5 +780,58 @@ describe('Dojo 1 scenarios have their own simulated outcomes', () => {
       return out.includes(generic);
     });
     expect(fellBack.map((s) => s.id)).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Naming and colour were both drifting. The practice area was called Dojo in
+// 100 places and Labs in 11; the CompTIA cert was written SecurityAI+, which is
+// not its name, in 14. Colour had no system at all: ten accent hues across 773
+// class names, including three used decoratively that also mean FAIL, WARN and
+// PASS in the scoring pane.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('the product speaks with one voice', () => {
+  function tsxUnder(dir: string): string[] {
+    return readdirSync(join(process.cwd(), dir), { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? tsxUnder(`${dir}/${e.name}`) : e.name.endsWith('.tsx') ? [`${dir}/${e.name}`] : [],
+    );
+  }
+  const uiFiles = [...tsxUnder('app'), ...tsxUnder('components')];
+  const read = (f: string) => readFileSync(join(process.cwd(), f), 'utf8');
+
+  it('never calls the practice area anything but the Dojo', () => {
+    const offenders: string[] = [];
+    for (const f of uiFiles) {
+      read(f)
+        .split('\n')
+        .forEach((line, i) => {
+          const isComment = /^\s*(\/\/|\*|\/\*)/.test(line);
+          const stripped = line.replace(/className=(?:"[^"]*"|\{[^}]*\})/g, '');
+          if (!isComment && /\blabs?\b/i.test(stripped) && !/^import|Icon/i.test(stripped.trim())) {
+            offenders.push(`${f}:${i + 1} ${line.trim().slice(0, 70)}`);
+          }
+        });
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it('never writes the CompTIA cert as SecurityAI+', () => {
+    const offenders = uiFiles.filter((f) => read(f).includes('SecurityAI+'));
+    expect(offenders).toEqual([]);
+  });
+
+  it('uses only the four system hues', () => {
+    // brand = interactive, emerald/amber/red = state, slate/navy = neutral.
+    const ALLOWED = new Set(['brand', 'emerald', 'amber', 'red', 'slate', 'navy', 'surface', 'white', 'black']);
+    const found = new Set<string>();
+    for (const f of uiFiles) {
+      for (const m of read(f).matchAll(
+        /\b(?:bg|text|border|from|to|via|ring|divide|outline|fill|stroke)-([a-z]+)-\d{2,3}\b/g,
+      )) {
+        found.add(m[1]);
+      }
+    }
+    const rogue = [...found].filter((h) => !ALLOWED.has(h));
+    expect(rogue).toEqual([]);
   });
 });

@@ -230,16 +230,16 @@ function StepIndicator({ step }: { step: SetupStep }) {
             className={[
               'w-5 h-5 rounded-full border flex items-center justify-center font-mono text-[10px] transition-colors',
               s === step
-                ? 'border-violet-500 bg-violet-500/20 text-violet-300'
+                ? 'border-brand-500 bg-brand-500/20 text-brand-300'
                 : s < step
-                  ? 'border-violet-500/40 bg-violet-500/10 text-violet-500/60'
+                  ? 'border-brand-500/40 bg-brand-500/10 text-brand-500/60'
                   : 'border-slate-700 bg-transparent text-slate-600',
             ].join(' ')}
           >
             {s}
           </div>
           {s < 3 && (
-            <div className={['w-6 h-px', s < step ? 'bg-violet-500/40' : 'bg-slate-700'].join(' ')} />
+            <div className={['w-6 h-px', s < step ? 'bg-brand-500/40' : 'bg-slate-700'].join(' ')} />
           )}
         </div>
       ))}
@@ -279,7 +279,7 @@ function Step1SelectExam({
                 className={[
                   'text-left p-3 rounded-lg border transition-all',
                   isSelected
-                    ? 'border-violet-500 bg-violet-500/10'
+                    ? 'border-brand-500 bg-brand-500/10'
                     : 'border-slate-700 hover:border-slate-600 bg-slate-800/40 hover:bg-slate-800/70',
                 ].join(' ')}
               >
@@ -308,7 +308,7 @@ function Step1SelectExam({
         <button
           disabled={selected === null}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
         >
           Continue
         </button>
@@ -373,7 +373,7 @@ function Step2SelectDomains({
         <p className="text-[10px] text-slate-500 font-mono uppercase tracking-wide">Domains</p>
         <button
           onClick={allSelected ? onDeselectAll : onSelectAll}
-          className="text-[10px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-2 py-0.5 rounded transition-colors"
+          className="text-[10px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded transition-colors"
         >
           {allSelected ? 'Deselect All' : 'Select All'}
         </button>
@@ -391,14 +391,14 @@ function Step2SelectDomains({
               className={[
                 'w-full text-left flex items-start gap-3 px-3 py-2.5 rounded-lg border transition-all',
                 checked
-                  ? 'border-violet-500/50 bg-violet-500/8'
+                  ? 'border-brand-500/50 bg-brand-500/8'
                   : 'border-slate-700 hover:border-slate-600 bg-slate-800/30',
               ].join(' ')}
             >
               {/* Checkbox */}
               <div className={[
                 'mt-0.5 w-3.5 h-3.5 rounded border flex-shrink-0 flex items-center justify-center transition-colors',
-                checked ? 'border-violet-500 bg-violet-500' : 'border-slate-600',
+                checked ? 'border-brand-500 bg-brand-500' : 'border-slate-600',
               ].join(' ')}>
                 {checked && <div className="w-1.5 h-1 border-b border-r border-white rotate-[-45deg] mt-[-1px]" />}
               </div>
@@ -421,7 +421,7 @@ function Step2SelectDomains({
         <button
           disabled={selectedDomainIds.size === 0 || totalSelected === 0}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
         >
           {totalSelected > 0
             ? `Continue, ${totalSelected} questions available`
@@ -589,7 +589,7 @@ function Step3Options({
                 className={[
                   'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors capitalize',
                   difficulty === d
-                    ? 'border-violet-500/50 bg-violet-500/10 text-violet-300'
+                    ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -617,7 +617,7 @@ function Step3Options({
                 className={[
                   'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
                   experience.includes(e.id)
-                    ? 'border-cyan-500/50 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
                 aria-pressed={experience.includes(e.id)}
@@ -628,9 +628,9 @@ function Step3Options({
             ))}
           </div>
           <p className="text-[10px] font-mono text-slate-600 mt-1.5">
-            <span className="text-cyan-500">Unseen</span> = never attempted ·{' '}
-            <span className="text-cyan-500">Weak</span> = accuracy &lt; 70% ·{' '}
-            <span className="text-cyan-500">Strong</span> = accuracy ≥ 70%
+            <span className="text-brand-500">Unseen</span> = never attempted ·{' '}
+            <span className="text-brand-500">Weak</span> = accuracy &lt; 70% ·{' '}
+            <span className="text-brand-500">Strong</span> = accuracy ≥ 70%
           </p>
         </div>
 
@@ -645,7 +645,7 @@ function Step3Options({
                 className={[
                   'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
                   count === n
-                    ? 'border-violet-500/50 bg-violet-500/10 text-violet-300'
+                    ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -665,7 +665,7 @@ function Step3Options({
         <button
           disabled={pool.length === 0}
           onClick={() => onStart(buildSettings())}
-          className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
         >
           Start Quiz
         </button>
@@ -778,9 +778,9 @@ function QuestionScreen({
     <div className="flex flex-col h-full min-h-0 px-6 py-5">
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
-        <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-cyan-500/30 bg-cyan-500/5'}`}>
-          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-cyan-400'}`}>Mock {certId ?? 'Exam'}</span>
-          <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-cyan-300'}`}>{timerStr}</span>
+        <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-brand-500/30 bg-brand-500/5'}`}>
+          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-brand-400'}`}>Mock {certId ?? 'Exam'}</span>
+          <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-brand-300'}`}>{timerStr}</span>
           <button
             onClick={onAbandonExam}
             className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-0.5 rounded"
@@ -802,7 +802,7 @@ function QuestionScreen({
           </div>
         </div>
         <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
-          <div className="h-full bg-violet-500 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-brand-500 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
@@ -818,7 +818,7 @@ function QuestionScreen({
           if (chosen !== null) {
             if (examMode) {
               style = i === chosen
-                ? 'border-cyan-500/60 bg-cyan-500/10 text-cyan-200'
+                ? 'border-brand-500/60 bg-brand-500/10 text-brand-200'
                 : 'border-slate-700/50 text-slate-600 opacity-60';
             } else if (i === question.correct) {
               style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
@@ -924,7 +924,7 @@ function ResultScreen({
 
       <button
         onClick={onNext}
-        className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-colors"
+        className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
       >
         {index + 1 >= total ? 'See Results' : 'Next Question →'}
       </button>
@@ -1041,7 +1041,7 @@ function SummaryScreen({
                       {dPct < 70 && dTotal > 0 && (
                         <button
                           onClick={() => onGenerateMore(domain.categories[0] ?? '')}
-                          className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
+                          className="text-[9px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
                         >
                           more →
                         </button>
@@ -1075,7 +1075,7 @@ function SummaryScreen({
                       {catPct < 70 && (
                         <button
                           onClick={() => onGenerateMore(cat)}
-                          className="text-[9px] font-mono text-violet-400 hover:text-violet-300 border border-violet-500/30 px-1.5 py-0.5 rounded"
+                          className="text-[9px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
                         >
                           more →
                         </button>
@@ -1095,7 +1095,7 @@ function SummaryScreen({
       <div className="flex gap-2 pt-1">
         <button
           onClick={onRetry}
-          className="flex-1 py-2.5 rounded border border-violet-500/40 hover:border-violet-500/70 bg-violet-500/5 hover:bg-violet-500/10 text-violet-300 text-sm font-semibold transition-colors"
+          className="flex-1 py-2.5 rounded border border-brand-500/40 hover:border-brand-500/70 bg-brand-500/5 hover:bg-brand-500/10 text-brand-300 text-sm font-semibold transition-colors"
         >
           Retry Same Settings
         </button>
@@ -1346,14 +1346,14 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   return (
     <div className="flex flex-col h-full min-h-0">
       {preloadedLabel && (mode === 'question' || mode === 'result') && (
-        <div className="px-4 py-2 border-b border-cyan-500/20 bg-cyan-500/5 flex items-center gap-2">
-          <span className="text-[11px] font-mono text-cyan-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
+        <div className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
+          <span className="text-[11px] font-mono text-brand-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
         </div>
       )}
       {generating && (
-        <div role="status" aria-live="polite" className="px-4 py-2 border-b border-violet-500/20 bg-violet-500/5 flex items-center gap-2">
-          <div aria-hidden="true" className="w-3 h-3 border border-violet-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[11px] font-mono text-violet-400">Generating new questions...</span>
+        <div role="status" aria-live="polite" className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
+          <div aria-hidden="true" className="w-3 h-3 border border-brand-500 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[11px] font-mono text-brand-400">Generating new questions...</span>
         </div>
       )}
       {genError && (

@@ -8,8 +8,8 @@ export const metadata = {
 };
 
 const QUICK_LINKS = [
-  { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next lab.' },
-  { href: '/dojo', label: 'Labs', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
+  { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next scenario.' },
+  { href: '/dojo', label: 'Dojo', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
   { href: '/playbook', label: 'Playbook', desc: '1,876 questions, 775 glossary terms, cert maps and 98 topic articles.' },
   { href: '/progress', label: 'Progress', desc: 'Per-discipline and per-certification analytics.' },
 ];
@@ -22,7 +22,7 @@ const DISCIPLINES = [
     body: 'Fire prompt-injection, jailbreak, exfiltration, tool-abuse, and RAG-poisoning payloads at a sandboxed model while toggling guardrails. A deterministic outcome engine decides whether each attempt is vulnerable, partial, or blocked.',
   },
   {
-    tone: 'cyan' as const,
+    tone: 'brand' as const,
     tag: 'Dojo 2',
     title: 'AI-Assisted SOC',
     body: 'Operate as an AI-augmented analyst across log triage, alert enrichment, detection-rule generation, and incident reporting. Responses are scored against a quality rubric, IOC extraction, MITRE ATT&CK mapping, and executive summaries.',
@@ -38,7 +38,7 @@ const DISCIPLINES = [
 const FAQ = [
   {
     q: 'Do I need an account?',
-    a: 'No. Securing AI has no logins, no tracking, and no ads. Your quiz sessions and lab attempts are stored only in your browser’s local storage and can be exported or cleared any time from Settings.',
+    a: 'No. Securing AI has no logins, no tracking, and no ads. Your quiz sessions and dojo attempts are stored only in your browser’s local storage and can be exported or cleared any time from Settings.',
   },
   {
     q: 'How is my score calculated?',

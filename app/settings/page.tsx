@@ -134,7 +134,7 @@ export default function SettingsPage() {
         <SectionHeading
           eyebrow="Privacy"
           title="Training data"
-          description="Your quiz sessions and lab attempts are stored only in this browser's local storage."
+          description="Your quiz sessions and dojo attempts are stored only in this browser's local storage."
         />
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
@@ -143,7 +143,7 @@ export default function SettingsPage() {
           </div>
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
             <p className="text-2xl font-bold text-slate-100">{hydrated ? counts.attack : 0}</p>
-            <p className="text-[13px] text-slate-500">Lab attempts stored</p>
+            <p className="text-[13px] text-slate-500">Dojo attempts stored</p>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2.5">

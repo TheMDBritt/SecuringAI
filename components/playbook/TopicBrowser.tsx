@@ -6,14 +6,14 @@ import { TOPIC_ARTICLES } from '@/lib/playbook-content';
 const CERT_BADGE: Record<string, string> = {
   'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
   'AWS-AIF-C01':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'Azure-AI901':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'Azure-AI103':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI901':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'Azure-AI103':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
   'Google-MLE':   'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  'CAIS':         'bg-rose-500/10 text-rose-400 border-rose-500/30',
-  'SC-500':       'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'GIAC-GOAA':    'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'GIAC-GASAE':   'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'CAISP':        'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'CAIS':         'bg-red-500/10 text-red-400 border-red-500/30',
+  'SC-500':       'bg-brand-500/10 text-brand-400 border-brand-500/30',
 };
 
 const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
@@ -22,7 +22,7 @@ const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
 function renderMarkdown(md: string): string {
   // 1. Fenced code blocks (```... ```), must run before inline code
   md = md.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) =>
-    `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-[11px] font-mono text-violet-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
+    `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-[11px] font-mono text-brand-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
   );
 
   // 2. Tables, | col | col | rows
@@ -47,7 +47,7 @@ function renderMarkdown(md: string): string {
   md = md.replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>');
 
   // 5. Inline code (after fenced blocks already removed)
-  md = md.replace(/`([^`]+)`/g, '<code class="text-[11px] bg-slate-700/60 text-violet-300 px-1 py-0.5 rounded font-mono">$1</code>');
+  md = md.replace(/`([^`]+)`/g, '<code class="text-[11px] bg-slate-700/60 text-brand-300 px-1 py-0.5 rounded font-mono">$1</code>');
 
   // 6. Lists
   md = md
@@ -116,7 +116,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 className={[
                   'w-full text-left px-3 py-2.5 text-[11px] border-b border-slate-700/40 transition-colors flex items-center justify-between gap-1',
                   selectedCategory === cat
-                    ? 'bg-violet-500/10 text-violet-300 border-l-2 border-l-violet-500'
+                    ? 'bg-brand-500/10 text-brand-300 border-l-2 border-l-brand-500'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-300',
                 ].join(' ')}
               >
@@ -140,7 +140,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 className={[
                   'w-full text-left px-3 py-2 text-[11px] border-b border-slate-700/30 transition-colors',
                   selectedArticle?.id === article.id
-                    ? 'bg-violet-500/10 text-violet-300'
+                    ? 'bg-brand-500/10 text-brand-300'
                     : 'text-slate-500 hover:bg-slate-800 hover:text-slate-300',
                 ].join(' ')}
               >
@@ -173,7 +173,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
             {/* Article header */}
             <div className="mb-4 pb-4 border-b border-slate-700">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400">
+                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                   {selectedArticle.category}
                 </span>
                 {selectedArticle.certTags.map((tag) => (
@@ -193,7 +193,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 <div className="mt-2 flex items-center gap-1.5 flex-wrap">
                   <span className="text-[10px] font-mono text-slate-600">Key terms:</span>
                   {selectedArticle.vocab.map((v) => (
-                    <span key={v} className="text-[10px] font-mono text-violet-400/70 hover:text-violet-400 cursor-default">
+                    <span key={v} className="text-[10px] font-mono text-brand-400/70 hover:text-brand-400 cursor-default">
                       {v}
                     </span>
                   ))}
@@ -218,7 +218,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                     {prev ? (
                       <button
                         onClick={() => setSelectedArticle(prev)}
-                        className="text-xs text-slate-500 hover:text-violet-400 transition-colors"
+                        className="text-xs text-slate-500 hover:text-brand-400 transition-colors"
                       >
                         ← {prev.title}
                       </button>
@@ -226,7 +226,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                     {next ? (
                       <button
                         onClick={() => setSelectedArticle(next)}
-                        className="text-xs text-slate-500 hover:text-violet-400 transition-colors"
+                        className="text-xs text-slate-500 hover:text-brand-400 transition-colors"
                       >
                         {next.title} →
                       </button>

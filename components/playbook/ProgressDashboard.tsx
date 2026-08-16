@@ -60,8 +60,8 @@ function Sparkline({ points }: { points: number[] }) {
   const lastY = yFor(points[points.length - 1]);
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="h-10 w-full" preserveAspectRatio="none">
-      <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-violet-400" />
-      <circle cx={((points.length - 1) * step).toFixed(1)} cy={lastY.toFixed(1)} r="2.5" className="fill-violet-300" />
+      <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-brand-400" />
+      <circle cx={((points.length - 1) * step).toFixed(1)} cy={lastY.toFixed(1)} r="2.5" className="fill-brand-300" />
     </svg>
   );
 }
@@ -215,7 +215,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             <select
               value={cert}
               onChange={(e) => setCert(e.target.value)}
-              className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-violet-500/50"
+              className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-brand-500/50"
             >
               {availableCerts.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -303,7 +303,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                           <div className="flex items-center gap-2">
                             <span className={`font-mono font-bold ${pctColor(pct)}`}>{pct}%</span>
                             <span className="text-slate-300">{s.correct}/{s.count}</span>
-                            {s.examMode && <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">exam</span>}
+                            {s.examMode && <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/30">exam</span>}
                             {s.skipped > 0 && <span className="text-[9px] font-mono text-slate-600">· {s.skipped} skipped</span>}
                           </div>
                           <p className="text-[10px] font-mono text-slate-600 mt-0.5 truncate">
@@ -363,7 +363,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                       className={[
                         'text-[10px] font-mono px-1.5 py-0.5 rounded border',
                         sortKey === k
-                          ? 'border-violet-500/40 text-violet-300 bg-violet-500/10'
+                          ? 'border-brand-500/40 text-brand-300 bg-brand-500/10'
                           : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-500',
                       ].join(' ')}
                     >
@@ -433,7 +433,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                                 {onLaunchQuiz && (
                                   <button
                                     onClick={(e) => { e.stopPropagation(); onLaunchQuiz([q], 'Drill this question'); }}
-                                    className="text-[11px] font-mono px-2.5 py-1.5 rounded border border-violet-500/40 text-violet-300 bg-violet-500/5 hover:bg-violet-500/10"
+                                    className="text-[11px] font-mono px-2.5 py-1.5 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10"
                                   >
                                     ↻ Quiz me on this question
                                   </button>

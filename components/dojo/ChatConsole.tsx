@@ -256,7 +256,7 @@ const DOJO3_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }
 };
 
 const BUBBLE_STYLE: Record<ChatMessage['role'], string> = {
-  user: 'bg-cyan-600/20 border border-cyan-600/40 text-slate-100 max-w-[75%]',
+  user: 'bg-brand-600/20 border border-brand-600/40 text-slate-100 max-w-[75%]',
   assistant: 'bg-slate-800 border border-slate-700 text-slate-200 max-w-[80%]',
   system:
     'bg-slate-800/40 border border-slate-700/40 text-slate-500 text-xs italic px-4 py-1.5',
@@ -688,13 +688,13 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             )}
             {/* RAG active badge */}
             {controlConfig.ragEnabled && ragContext.trim() && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/15 border border-purple-500/30 text-purple-400 font-mono shrink-0">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono shrink-0">
                 RAG
               </span>
             )}
             {/* Tool Forge active badge */}
             {toolForgeResponse.trim() && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-400 font-mono shrink-0">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono shrink-0">
                 TOOL
               </span>
             )}
@@ -801,8 +801,8 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             return (
               <div key={msg.id} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {!isUser && (
-                  <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 mt-0.5">
-                    <span className="text-[10px] font-bold text-cyan-400">BB</span>
+                  <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-brand-500/10 border border-brand-500/30 mt-0.5">
+                    <span className="text-[10px] font-bold text-brand-400">BB</span>
                   </div>
                 )}
                 <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
@@ -826,13 +826,13 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
 
           {loading && (
             <div className="flex gap-2">
-              <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-cyan-500/10 border border-cyan-500/30 mt-0.5">
-                <span className="text-[10px] font-bold text-cyan-400">BB</span>
+              <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-brand-500/10 border border-brand-500/30 mt-0.5">
+                <span className="text-[10px] font-bold text-brand-400">BB</span>
               </div>
               <div className="bg-slate-800 border border-slate-700 rounded px-4 py-3 flex gap-1.5 items-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:0ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:200ms]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse [animation-delay:400ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500/70 animate-pulse [animation-delay:0ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500/70 animate-pulse [animation-delay:200ms]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-brand-500/70 animate-pulse [animation-delay:400ms]" />
               </div>
             </div>
           )}
@@ -864,7 +864,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               className={[
                 'flex-1 resize-none rounded border px-3 py-2 text-sm font-mono',
                 'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-600',
-                'focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500',
+                'focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
                 (!hasScenario || loading) && 'opacity-40 cursor-not-allowed',
               ].join(' ')}
               onKeyDown={(e) => {
@@ -880,7 +880,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               className={[
                 'px-4 py-2 rounded text-sm font-medium transition-colors self-end',
                 hasScenario && input.trim() && !loading
-                  ? 'bg-cyan-600 hover:bg-cyan-500 text-white'
+                  ? 'bg-brand-600 hover:bg-brand-500 text-white'
                   : 'bg-slate-700 text-slate-500 cursor-not-allowed',
               ].join(' ')}
             >

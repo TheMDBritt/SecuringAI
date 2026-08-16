@@ -47,7 +47,7 @@ export interface EvaluationResult {
   leakedDataCategory?: string;
   /** Dojo 1 only, attack chain metadata when multiple attacks succeeded in the session. */
   attackChain?: { chain: AttackType[]; chainPenalty: number };
-  /** Dojo 2/3 only, SecurityAI+ exam topics connected to this scenario/evaluation. */
+  /** Dojo 2/3 only, SecAI+ exam topics connected to this scenario/evaluation. */
   securityAITopics?: string[];
 }
 

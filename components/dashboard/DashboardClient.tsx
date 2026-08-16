@@ -28,7 +28,9 @@ interface Catalog {
   dojoMeta: Record<1 | 2 | 3, { title: string; accent: string }>;
 }
 
-const DOJO_TONE: Record<1 | 2 | 3, 'red' | 'cyan' | 'emerald'> = { 1: 'red', 2: 'cyan', 3: 'emerald' };
+// Colour reports state, not identity. All three dojos carry the brand tone;
+// they are told apart by their labels, as they are everywhere else.
+const DOJO_TONE: Record<1 | 2 | 3, 'brand'> = { 1: 'brand', 2: 'brand', 3: 'brand' };
 const DOJO_HEX: Record<string, string> = { red: '#f87171', cyan: '#22d3ee', emerald: '#34d399' };
 
 const ICONS = {
@@ -92,14 +94,14 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       <PageHeader
         eyebrow="Security Operations"
         title="Training Dashboard"
-        description="Your live view across all three disciplines, attack defense, SOC operations, and AI governance, with completion, accuracy, and a recommended next lab."
+        description="Your live view across all three disciplines, attack defense, SOC operations, and AI governance, with completion, accuracy, and a recommended next scenario."
         actions={
           <>
             <ButtonLink href="/playbook" variant="secondary" size="md">
               Study playbook
             </ButtonLink>
             <ButtonLink href="/dojo" variant="primary" size="md">
-              Enter Labs
+              Enter the Dojo
             </ButtonLink>
           </>
         }
@@ -108,8 +110,8 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Overall completion" value={`${hydrated ? completion : 0}%`} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
-        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="cyan" icon={ICONS.check} />
-        <StatCard label="Lab attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="violet" icon={ICONS.target} />
+        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
+        <StatCard label="Dojo attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} />
       </div>
 
       {/* Main grid, current dojo progress full width now */}
@@ -119,7 +121,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           <SectionHeading
             eyebrow="Discipline progress"
             title="Current dojo progress"
-            action={<Link href="/dojo" className="text-[13px] font-medium text-brand-300 hover:text-brand-200">Open Labs →</Link>}
+            action={<Link href="/dojo" className="text-[13px] font-medium text-brand-300 hover:text-brand-200">Open the Dojo →</Link>}
           />
           <div className="mt-5 space-y-5">
             {perDojoRows.map((d) => (
@@ -139,7 +141,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         </Card>
       </div>
 
-      {/* Second grid, difficulty mix + next lab */}
+      {/* Second grid, difficulty mix + next scenario */}
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Difficulty distribution */}
         <Card className="p-5">
@@ -158,14 +160,14 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
             </div>
           ) : (
             <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
-              Attempt labs across beginner, intermediate, and advanced scenarios to see your difficulty coverage.
+              Run beginner, intermediate, and advanced scenarios to see your difficulty coverage.
             </p>
           )}
         </Card>
 
-        {/* Recommended next lab */}
+        {/* Recommended next scenario */}
         <Card hover className="flex flex-col p-5">
-          <SectionHeading eyebrow="Recommended" title="Next lab" />
+          <SectionHeading eyebrow="Recommended" title="Next scenario" />
           {nextLab ? (
             <div className="mt-4 flex flex-1 flex-col">
               <Badge tone={DOJO_TONE[nextLab.dojoId]} mono className="w-fit">
@@ -175,7 +177,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
               <p className="mt-1.5 text-[13px] capitalize text-slate-500">{nextLab.difficulty} difficulty</p>
               <div className="flex-1" />
               <ButtonLink href="/dojo" variant="primary" size="md" className="mt-5 w-full">
-                Start this lab →
+                Start this scenario →
               </ButtonLink>
             </div>
           ) : null}
@@ -228,8 +230,8 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
               className="mt-4"
               icon={ICONS.target}
               title="No activity yet"
-              description="Your quiz sessions and lab attempts will appear here as you train. Nothing leaves your browser."
-              action={<ButtonLink href="/dojo" variant="primary" size="sm">Run your first lab</ButtonLink>}
+              description="Your quiz sessions and dojo attempts will appear here as you train. Nothing leaves your browser."
+              action={<ButtonLink href="/dojo" variant="primary" size="sm">Run your first scenario</ButtonLink>}
             />
           )}
         </Card>
@@ -239,7 +241,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           <SectionHeading eyebrow="Platform" title="Content library" />
           <dl className="mt-4 space-y-3">
             {[
-              { k: 'Scenario labs', v: catalog.counts.scenarios },
+              { k: 'Dojo scenarios', v: catalog.counts.scenarios },
               { k: 'Quiz questions', v: catalog.counts.questions.toLocaleString() },
               { k: 'Glossary terms', v: catalog.counts.glossary.toLocaleString() },
               { k: 'SOC incidents', v: catalog.counts.incidents },

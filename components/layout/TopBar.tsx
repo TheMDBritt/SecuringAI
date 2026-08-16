@@ -67,7 +67,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
       </a>
 
       <Link href="/dojo" className="ui-btn ui-btn-primary hidden px-3.5 py-1.5 text-[13px] sm:inline-flex">
-        Enter Labs
+        Enter the Dojo
       </Link>
     </header>
   );

@@ -8,7 +8,7 @@ import { DashboardClient, type CatalogScenario } from '@/components/dashboard/Da
 export const metadata = {
   title: 'Dashboard',
   description:
-    'Your executive AI security training dashboard, completion, quiz accuracy, difficulty distribution, recent activity, and recommended next lab.',
+    'Your executive AI security training dashboard, completion, quiz accuracy, difficulty distribution, recent activity, and recommended next scenario.',
 };
 
 const DOJO_META: Record<1 | 2 | 3, { title: string; accent: string }> = {

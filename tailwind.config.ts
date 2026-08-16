@@ -18,18 +18,22 @@ const config: Config = {
           800: '#131d33',
           700: '#1c2942',
         },
-        // Cyber blue, primary brand accent
+        // Primary brand accent. Was default Tailwind blue-500, which is the
+        // house colour of roughly every developer tool ever shipped. This ramp
+        // is an aqua that holds its own against the navy ground, stays clearly
+        // separable from the emerald used for PASS, and is the one hue allowed
+        // to mean "interactive" anywhere in the product.
         brand: {
-          50:  '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50:  '#ecfeff',
+          100: '#cffafe',
+          200: '#a5f3fc',
+          300: '#67e8f9',
+          400: '#22d3ee',
+          500: '#06b6d4',
+          600: '#0891b2',
+          700: '#0e7490',
+          800: '#155e75',
+          900: '#164e63',
         },
         surface: {
           DEFAULT: '#0b1120',
@@ -37,12 +41,12 @@ const config: Config = {
           raised: '#16223a',
           border: '#24324d',
         },
-        accent: {
-          cyan: '#06b6d4',
-          blue: '#3b82f6',
-          emerald: '#10b981',
-          amber: '#f59e0b',
-          red: '#ef4444',
+        // State only. These never appear decoratively; if something is one of
+        // these colours it is reporting an outcome.
+        state: {
+          pass: '#10b981',
+          warn: '#f59e0b',
+          fail: '#ef4444',
         },
       },
       fontFamily: {
@@ -52,13 +56,13 @@ const config: Config = {
       boxShadow: {
         card: '0 1px 2px 0 rgba(0,0,0,0.30), 0 1px 3px 0 rgba(0,0,0,0.20)',
         elevated: '0 10px 30px -12px rgba(2,8,23,0.75), 0 4px 12px -4px rgba(2,8,23,0.5)',
-        glow: '0 0 0 1px rgba(59,130,246,0.35), 0 8px 24px -8px rgba(59,130,246,0.35)',
+        glow: '0 0 0 1px rgba(34,211,238,0.30), 0 8px 24px -8px rgba(34,211,238,0.30)',
       },
       backgroundImage: {
         'grid-faint':
           'linear-gradient(to right, rgba(148,163,184,0.045) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.045) 1px, transparent 1px)',
         'brand-radial':
-          'radial-gradient(60% 60% at 50% 0%, rgba(37,99,235,0.14) 0%, rgba(6,182,212,0.05) 40%, transparent 75%)',
+          'radial-gradient(60% 60% at 50% 0%, rgba(6,182,212,0.13) 0%, rgba(34,211,238,0.05) 42%, transparent 75%)',
       },
       keyframes: {
         'fade-in': {

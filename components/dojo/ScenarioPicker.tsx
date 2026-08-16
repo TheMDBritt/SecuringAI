@@ -15,10 +15,13 @@ interface ScenarioPickerProps {
 
 const DIFFICULTY_BADGE = DIFFICULTY_BADGE_CLASSES;
 
+// Selection is an interaction state, so it uses the brand accent in every
+// dojo. It previously used red, brand and emerald, which meant the highlight
+// on a selected Dojo 1 card was the same red the evaluator uses for FAIL.
 const DOJO_ACCENT: Record<DojoId, { selected: string; dot: string; label: string }> = {
-  1: { selected: 'border-red-500/60 bg-red-500/5',    dot: 'bg-red-500',     label: 'LLM Attack & Defense' },
-  2: { selected: 'border-cyan-500/60 bg-cyan-500/5',  dot: 'bg-cyan-500',    label: 'AI-Assisted SOC' },
-  3: { selected: 'border-emerald-500/60 bg-emerald-500/5', dot: 'bg-emerald-500', label: 'AI GRC' },
+  1: { selected: 'border-brand-500/60 bg-brand-500/5', dot: 'bg-brand-500', label: 'LLM Attack & Defense' },
+  2: { selected: 'border-brand-500/60 bg-brand-500/5', dot: 'bg-brand-500', label: 'AI-Assisted SOC' },
+  3: { selected: 'border-brand-500/60 bg-brand-500/5', dot: 'bg-brand-500', label: 'AI GRC' },
 };
 
 const DOJO_HEADER_DESC: Record<DojoId, string> = {
@@ -37,20 +40,20 @@ const CONTEXT_LABELS: Record<string, string> = {
   none: 'None', limited: 'Limited', full: 'Full',
 };
 const RISK_COLOR: Record<string, string> = {
-  low: 'text-emerald-400', medium: 'text-amber-400', high: 'text-orange-400', critical: 'text-red-400',
+  low: 'text-emerald-400', medium: 'text-amber-400', high: 'text-amber-400', critical: 'text-red-400',
 };
 const CONFIDENCE_COLOR: Record<string, string> = {
   low: 'text-slate-400', medium: 'text-amber-400', high: 'text-emerald-400',
 };
 const TASK_BADGE: Record<string, string> = {
-  'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  'detection-rule-gen':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'incident-report-draft':'bg-teal-500/10 text-teal-400 border-teal-500/30',
+  'log-triage':           'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'alert-enrichment':     'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'detection-rule-gen':   'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'incident-report-draft':'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
   'threat-hunt':          'bg-amber-500/10 text-amber-400 border-amber-500/30',
   'malware-behavior':     'bg-red-500/10 text-red-400 border-red-500/30',
-  'cloud-identity-abuse': 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-  'ai-system-compromise': 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+  'cloud-identity-abuse': 'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'ai-system-compromise': 'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
 function ConfigRow({ label, value, valueClass }: { label: string; value: string; valueClass?: string }) {
@@ -70,7 +73,7 @@ function FeaturePill({ label, enabled }: { label: string; enabled: boolean }) {
       className={[
         'text-[9px] px-1.5 py-0.5 rounded border font-mono',
         enabled
-          ? 'border-cyan-500/40 bg-cyan-500/10 text-cyan-400'
+          ? 'border-brand-500/40 bg-brand-500/10 text-brand-400'
           : 'border-slate-700 text-slate-600',
       ].join(' ')}
     >
@@ -89,8 +92,8 @@ function Dojo2ActivePreview({
   config: Dojo2Config;
 }) {
   return (
-    <div className="border border-cyan-500/30 rounded bg-cyan-500/5 p-2.5">
-      <p className="text-[10px] font-mono text-cyan-500 uppercase tracking-widest mb-2">
+    <div className="border border-brand-500/30 rounded bg-brand-500/5 p-2.5">
+      <p className="text-[10px] font-mono text-brand-500 uppercase tracking-widest mb-2">
         Active Scenario
       </p>
 

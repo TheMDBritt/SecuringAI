@@ -20,7 +20,7 @@ export default function NotFound() {
       <div className="flex flex-wrap gap-3 justify-center">
         <Link
           href="/"
-          className="px-5 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white text-sm font-medium transition-colors"
+          className="px-5 py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition-colors"
         >
           Home
         </Link>

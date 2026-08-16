@@ -29,15 +29,13 @@ export function Card({
 }
 
 // ── Badge ────────────────────────────────────────────────────────────────────
-type Tone = 'brand' | 'cyan' | 'emerald' | 'amber' | 'red' | 'violet' | 'slate';
+type Tone = 'brand' | 'emerald' | 'amber' | 'red' | 'slate';
 
 const BADGE_TONE: Record<Tone, string> = {
   brand: 'bg-brand-500/12 text-brand-300 border-brand-500/30',
-  cyan: 'bg-cyan-500/12 text-cyan-300 border-cyan-500/30',
   emerald: 'bg-emerald-500/12 text-emerald-300 border-emerald-500/30',
   amber: 'bg-amber-500/12 text-amber-300 border-amber-500/30',
   red: 'bg-red-500/12 text-red-300 border-red-500/30',
-  violet: 'bg-violet-500/12 text-violet-300 border-violet-500/30',
   slate: 'bg-slate-500/10 text-slate-300 border-slate-500/25',
 };
 
@@ -121,12 +119,10 @@ export function Button({
 
 // ── ProgressBar ──────────────────────────────────────────────────────────────
 const PROGRESS_TONE: Record<Tone, string> = {
-  brand: 'from-brand-500 to-cyan-400',
-  cyan: 'from-cyan-500 to-sky-400',
-  emerald: 'from-emerald-500 to-teal-400',
-  amber: 'from-amber-500 to-orange-400',
-  red: 'from-red-500 to-rose-400',
-  violet: 'from-violet-500 to-fuchsia-400',
+  brand: 'from-brand-500 to-brand-400',
+  emerald: 'from-emerald-500 to-emerald-400',
+  amber: 'from-amber-500 to-amber-400',
+  red: 'from-red-500 to-red-400',
   slate: 'from-slate-500 to-slate-400',
 };
 

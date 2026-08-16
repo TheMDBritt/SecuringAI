@@ -208,7 +208,7 @@ function Toggle({
         onClick={() => onChange(!enabled)}
         className={[
           'mt-0.5 w-9 h-5 rounded-full border transition-colors relative shrink-0',
-          enabled ? 'bg-cyan-600 border-cyan-500' : 'bg-slate-700 border-slate-600',
+          enabled ? 'bg-brand-600 border-brand-500' : 'bg-slate-700 border-slate-600',
           disabled && 'opacity-40 cursor-not-allowed',
         ].join(' ')}
       >
@@ -245,7 +245,7 @@ function SegmentedControl<T extends string>({
             'flex-1 py-1 text-[11px] font-medium transition-colors',
             i > 0 && 'border-l border-slate-700',
             value === opt.value
-              ? 'bg-cyan-500/20 text-cyan-400'
+              ? 'bg-brand-500/20 text-brand-400'
               : 'text-slate-500 hover:text-slate-300',
             disabled && 'cursor-not-allowed opacity-40',
           ].join(' ')}
@@ -341,12 +341,12 @@ function GuardrailControls({
 
 const TAG_STYLE: Record<string, string> = {
   inject:   'bg-red-500/10 text-red-400 border-red-500/30',
-  bypass:   'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  exfil:    'bg-purple-500/10 text-purple-400 border-purple-500/30',
+  bypass:   'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  exfil:    'bg-brand-500/10 text-brand-400 border-brand-500/30',
   rag:      'bg-amber-500/10 text-amber-400 border-amber-500/30',
   supply:   'bg-slate-500/20 text-slate-300 border-slate-500/40',
-  tool:     'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
-  advanced: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+  tool:     'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  advanced: 'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
 interface Dojo1PanelProps {
@@ -439,7 +439,7 @@ function Dojo1Panel({
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="flex items-center gap-1.5">
             {hasRagContext ? (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/15 border border-purple-500/30 text-purple-400 font-mono">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono">
                 active
               </span>
             ) : (
@@ -474,7 +474,7 @@ function Dojo1Panel({
             'bg-slate-800 placeholder-slate-600 focus:outline-none',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             hasRagContext && ragEnabled
-              ? 'border-purple-500/40 text-purple-200 focus:border-purple-400'
+              ? 'border-brand-500/40 text-brand-200 focus:border-brand-400'
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
@@ -488,7 +488,7 @@ function Dojo1Panel({
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="flex items-center gap-1.5">
             {hasToolForge ? (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-400 font-mono">
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono">
                 active
               </span>
             ) : (
@@ -518,7 +518,7 @@ function Dojo1Panel({
             'bg-slate-800 placeholder-slate-600 focus:outline-none',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             hasToolForge
-              ? 'border-orange-500/40 text-orange-200 focus:border-orange-400'
+              ? 'border-amber-500/40 text-amber-200 focus:border-amber-400'
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
@@ -571,7 +571,7 @@ const CONFIDENCE_OPTIONS: { value: ConfidenceAssessment; label: string; color: s
 const RISK_OPTIONS: { value: Dojo2Config['riskAssessment']; label: string; color: string }[] = [
   { value: 'low',      label: 'Low',      color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
   { value: 'medium',   label: 'Medium',   color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
-  { value: 'high',     label: 'High',     color: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+  { value: 'high',     label: 'High',     color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
   { value: 'critical', label: 'Critical', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
 ];
 
@@ -579,11 +579,11 @@ const RISK_OPTIONS: { value: Dojo2Config['riskAssessment']; label: string; color
 const DIFF_BADGE = DIFFICULTY_BADGE_CLASSES;
 
 const TASK_BADGE: Record<Dojo2TaskType, string> = {
-  'log-triage':           'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'alert-enrichment':     'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  'detection-rule-gen':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'incident-report-draft':'bg-teal-500/10 text-teal-400 border-teal-500/30',
-  'threat-hunt':          'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'log-triage':           'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'alert-enrichment':     'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'detection-rule-gen':   'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'incident-report-draft':'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+  'threat-hunt':          'bg-brand-500/10 text-brand-400 border-brand-500/30',
   'malware-behavior':     'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
@@ -645,7 +645,7 @@ function IncidentLibrary({
             className={[
               'text-[10px] px-1.5 py-0.5 rounded border font-mono transition-colors',
               filterTask === t
-                ? 'border-cyan-500 bg-cyan-500/15 text-cyan-300'
+                ? 'border-brand-500 bg-brand-500/15 text-brand-300'
                 : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600',
             ].join(' ')}
           >
@@ -664,12 +664,12 @@ function IncidentLibrary({
             className={[
               'w-full text-left px-2.5 py-2 rounded border transition-all group',
               'border-slate-700 bg-slate-800/40',
-              'hover:border-cyan-500/50 hover:bg-cyan-500/5',
+              'hover:border-brand-500/50 hover:bg-brand-500/5',
               'disabled:opacity-40 disabled:cursor-not-allowed',
             ].join(' ')}
           >
             <div className="flex items-start justify-between gap-1.5 mb-1">
-              <span className="text-[11px] font-medium text-slate-200 leading-snug group-hover:text-cyan-200 transition-colors">
+              <span className="text-[11px] font-medium text-slate-200 leading-snug group-hover:text-brand-200 transition-colors">
                 {s.title}
               </span>
               <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[s.difficulty]].join(' ')}>
@@ -683,7 +683,7 @@ function IncidentLibrary({
               <span className="text-[9px] text-slate-600 font-mono">{s.mitre.techniques[0].split(', ')[0]}</span>
             </div>
             <p className="text-[10px] text-slate-500 leading-relaxed">{s.description}</p>
-            <p className="text-[9px] text-cyan-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <p className="text-[9px] text-brand-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
               ↳ Click to load into chat input
             </p>
           </button>
@@ -714,7 +714,7 @@ function IncidentLibrary({
                     className={[
                       'text-[9px] px-1.5 py-0.5 rounded border font-mono transition-colors',
                       genAttack === cat
-                        ? 'border-cyan-500 bg-cyan-500/15 text-cyan-300'
+                        ? 'border-brand-500 bg-brand-500/15 text-brand-300'
                         : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300',
                       'disabled:opacity-40 disabled:cursor-not-allowed',
                     ].join(' ')}
@@ -752,7 +752,7 @@ function IncidentLibrary({
             <button
               disabled={disabled}
               onClick={handleGenerate}
-              className="w-full py-1.5 rounded border border-cyan-700/50 bg-cyan-500/10 text-cyan-400 text-xs font-medium hover:border-cyan-500/70 hover:bg-cyan-500/15 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-1.5 rounded border border-brand-700/50 bg-brand-500/10 text-brand-400 text-xs font-medium hover:border-brand-500/70 hover:bg-brand-500/15 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Generate Scenario →
             </button>
@@ -781,7 +781,7 @@ function IncidentLibrary({
                   <button
                     disabled={disabled}
                     onClick={() => { onLoad(generated.incidentData); onSetActiveScenario?.(generated); }}
-                    className="flex-1 py-1 text-[10px] rounded border border-cyan-700/50 bg-cyan-500/10 text-cyan-400 hover:border-cyan-500/70 transition-colors disabled:opacity-40"
+                    className="flex-1 py-1 text-[10px] rounded border border-brand-700/50 bg-brand-500/10 text-brand-400 hover:border-brand-500/70 transition-colors disabled:opacity-40"
                   >
                     Load into Chat →
                   </button>
@@ -865,7 +865,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 className={[
                   'w-full text-left px-2.5 py-2 rounded border transition-colors',
                   isActive
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -894,7 +894,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 className={[
                   'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
                   isActive
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -920,7 +920,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 className={[
                   'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
                   isActive
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -974,7 +974,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 className={[
                   'w-full text-left px-2.5 py-1.5 rounded border transition-colors',
                   isActive
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -1049,7 +1049,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 className={[
                   'w-full text-left px-2.5 py-2 rounded border transition-colors',
                   isActive
-                    ? 'border-cyan-500 bg-cyan-500/10 text-cyan-300'
+                    ? 'border-brand-500 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 bg-slate-800/40 text-slate-400 hover:border-slate-600 hover:text-slate-200',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -1081,7 +1081,7 @@ const FRAMEWORK_OPTIONS: { value: FrameworkLens; label: string }[] = [
 
 const RISK_TIER_OPTIONS: { value: Exclude<RiskTier, 'unset'>; label: string; color: string }[] = [
   { value: 'prohibited', label: 'Prohibited', color: 'bg-red-500/20 text-red-400 border-red-500/40' },
-  { value: 'high',       label: 'High',       color: 'bg-orange-500/20 text-orange-400 border-orange-500/40' },
+  { value: 'high',       label: 'High',       color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
   { value: 'limited',    label: 'Limited',    color: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
   { value: 'minimal',    label: 'Minimal',    color: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40' },
 ];

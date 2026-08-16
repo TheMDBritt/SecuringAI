@@ -17259,7 +17259,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     objectives: ['SecAI:1.3', 'SecAI:2.6'],
-    explanation: 'AI-SPM critical risk ranking: (1) Public inference endpoint (no NSG/Private Link) = internet-exposed attack surface for prompt injection and abuse; (2) Over-permissioned identity (subscription write) = compromise of the AI service leads to full subscription takeover; (3) Disabled content filtering = no defense layer against harmful outputs or prompt injection. These three together create a complete attack chain: attacker reaches the model → injects instructions → uses the over-permissioned identity to execute lateral movement. Model versioning and GPU encryption are important but not immediately exploitable. Source: CompTIA SecurityAI+ Domain 2; Microsoft Defender for Cloud AI recommendations.',
+    explanation: 'AI-SPM critical risk ranking: (1) Public inference endpoint (no NSG/Private Link) = internet-exposed attack surface for prompt injection and abuse; (2) Over-permissioned identity (subscription write) = compromise of the AI service leads to full subscription takeover; (3) Disabled content filtering = no defense layer against harmful outputs or prompt injection. These three together create a complete attack chain: attacker reaches the model → injects instructions → uses the over-permissioned identity to execute lateral movement. Model versioning and GPU encryption are important but not immediately exploitable. Source: CompTIA SecAI+ Domain 2; Microsoft Defender for Cloud AI recommendations.',
   },
   {
     id: 'secai-d2-022',
@@ -17275,7 +17275,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Bypass all content filters, since knowing the system prompt proves the attacker has administrative access to the deployment'],
     correct: 0,
     objectives: ['SecAI:2.1', 'SecAI:2.3'],
-    explanation: 'LLM08 Hidden Context Exposure in the OWASP LLM Top 10 2026: (1) Information value: system prompts often reveal personas, business logic, tool names, API endpoints, data sources, and security constraints the operator tried to keep confidential; (2) Exploitation paths: (a) Targeted jailbreaks exploiting known constraints, (b) Persona impersonation and competitor intelligence, (c) Identification of connected tools/APIs for further attacks, (d) Template for building a replica/jailbroken version; (3) Note: extraction doesn\'t grant modification rights or API key access, those are separate vulnerabilities; (4) Defense: avoid embedding secrets in system prompts, use platform confidentiality features, design prompts assuming they may be read. Source: OWASP LLM Top 10 v2 2025 LLM07; CompTIA SecurityAI+ Domain 2. CY0-001 objective 2.6 files this under sensitive information disclosure.',
+    explanation: 'LLM08 Hidden Context Exposure in the OWASP LLM Top 10 2026: (1) Information value: system prompts often reveal personas, business logic, tool names, API endpoints, data sources, and security constraints the operator tried to keep confidential; (2) Exploitation paths: (a) Targeted jailbreaks exploiting known constraints, (b) Persona impersonation and competitor intelligence, (c) Identification of connected tools/APIs for further attacks, (d) Template for building a replica/jailbroken version; (3) Note: extraction doesn\'t grant modification rights or API key access, those are separate vulnerabilities; (4) Defense: avoid embedding secrets in system prompts, use platform confidentiality features, design prompts assuming they may be read. Source: OWASP LLM Top 10 v2 2025 LLM07; CompTIA SecAI+ Domain 2. CY0-001 objective 2.6 files this under sensitive information disclosure.',
   },
   {
     id: 'secai-d2-023',
@@ -17291,7 +17291,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Fairness harms'],
     correct: 3,
     objectives: ['SecAI:4.2'],
-    explanation: 'AI-specific harm categories (Microsoft AI Red Team, NIST AI RMF MEASURE): Traditional software security covers authentication, authorization, confidentiality, availability, integrity. AI systems introduce additional harm categories: (1) Fairness/bias harms: demographic disparities in model outputs that cause real-world harm, unique to AI; (2) Hallucination harms: factually incorrect outputs presented with high confidence; (3) Representational harms: stereotyping or denigrating content about specific groups; (4) Privacy harms: unintended disclosure of training data. While data exfiltration, DoS, and authentication bypass exist in AI contexts, they also appear in traditional software. Fairness harms are AI-specific, traditional software doesn\'t "decide" outcomes in probabilistic ways that systematically disadvantage groups. Source: Microsoft Responsible AI Standard; CompTIA SecurityAI+ Domain 2; NIST AI RMF.',
+    explanation: 'AI-specific harm categories (Microsoft AI Red Team, NIST AI RMF MEASURE): Traditional software security covers authentication, authorization, confidentiality, availability, integrity. AI systems introduce additional harm categories: (1) Fairness/bias harms: demographic disparities in model outputs that cause real-world harm, unique to AI; (2) Hallucination harms: factually incorrect outputs presented with high confidence; (3) Representational harms: stereotyping or denigrating content about specific groups; (4) Privacy harms: unintended disclosure of training data. While data exfiltration, DoS, and authentication bypass exist in AI contexts, they also appear in traditional software. Fairness harms are AI-specific, traditional software doesn\'t "decide" outcomes in probabilistic ways that systematically disadvantage groups. Source: Microsoft Responsible AI Standard; CompTIA SecAI+ Domain 2; NIST AI RMF.',
   },
   {
     id: 'secai-d2-024',
@@ -17308,7 +17308,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     objectives: ['SecAI:2.2', 'SecAI:2.6'],
-    explanation: 'RLHF limitations, CompTIA SecAI+ Domain 2 and CAIS Domain 3: (1) Empirical, not formal: RLHF reduces frequency of harmful outputs, it doesn\'t eliminate them; (2) Novel attacks bypass: jailbreaks, adversarial prompts, and attack patterns not in RLHF training data can succeed; (3) Distribution shift: deployment context differs from training context, safety alignment may not generalize; (4) Security stack: RLHF + input filters (Prompt Shields) + output filters (content safety classifiers) + rate limiting + audit logging + human review processes. Defense-in-depth principle: no single layer is sufficient. Source: CompTIA SecurityAI+ Domain 2; Anthropic Constitutional AI paper; OWASP LLM Security Cheat Sheet.',
+    explanation: 'RLHF limitations, CompTIA SecAI+ Domain 2 and CAIS Domain 3: (1) Empirical, not formal: RLHF reduces frequency of harmful outputs, it doesn\'t eliminate them; (2) Novel attacks bypass: jailbreaks, adversarial prompts, and attack patterns not in RLHF training data can succeed; (3) Distribution shift: deployment context differs from training context, safety alignment may not generalize; (4) Security stack: RLHF + input filters (Prompt Shields) + output filters (content safety classifiers) + rate limiting + audit logging + human review processes. Defense-in-depth principle: no single layer is sufficient. Source: CompTIA SecAI+ Domain 2; Anthropic Constitutional AI paper; OWASP LLM Security Cheat Sheet.',
   },
   {
     id: 'secai-d2-025',
@@ -17324,7 +17324,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Indirect prompt injection via documents, emails, or database records the chatbot processes'],
     correct: 3,
     objectives: ['SecAI:2.6'],
-    explanation: 'Red team prioritization (likelihood × impact): (1) Indirect prompt injection in enterprise RAG: (a) High likelihood, most enterprise deployments process untrusted external content (emails, web, documents) without sanitization; (b) High impact, attacker controls AI that has access to enterprise data, sends emails, accesses APIs, and can exfiltrate data with user-level permissions; (c) Low barrier to entry, crafting injections in external documents doesn\'t require API access; (2) Model extraction: high impact but millions of queries required, detected and rate-limited before completion; (3) Membership inference: lower impact unless PII in training data; (4) GPU side-channel: cloud hypervisor isolation makes this impractical. Source: CompTIA SecurityAI+ Domain 2; GIAC GOAA Domain 4; Greshake et al. 2023.',
+    explanation: 'Red team prioritization (likelihood × impact): (1) Indirect prompt injection in enterprise RAG: (a) High likelihood, most enterprise deployments process untrusted external content (emails, web, documents) without sanitization; (b) High impact, attacker controls AI that has access to enterprise data, sends emails, accesses APIs, and can exfiltrate data with user-level permissions; (c) Low barrier to entry, crafting injections in external documents doesn\'t require API access; (2) Model extraction: high impact but millions of queries required, detected and rate-limited before completion; (3) Membership inference: lower impact unless PII in training data; (4) GPU side-channel: cloud hypervisor isolation makes this impractical. Source: CompTIA SecAI+ Domain 2; GIAC GOAA Domain 4; Greshake et al. 2023.',
   },
 
   // ─── SecAI+ Domain 3: AI in Security Operations ───────────────────────────
@@ -17343,7 +17343,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
     correct: 0,
     objectives: ['SecAI:2.5', 'SecAI:3.1'],
-    explanation: 'Security Copilot\'s security-specific design: (1) Grounded responses: outputs reference specific signals from connected sources (Sentinel incidents, Defender alerts, Intune device data, Entra sign-in logs), not general knowledge; (2) Plugin architecture: Microsoft Threat Intelligence, ExternalAttackSurface Management, custom APIs, analysts can add organization-specific data sources; (3) Audit logging: all queries and responses are logged for SOC accountability; (4) Data residency: organization data is not used to train the shared model; (5) Limitation: hallucination risk still exists, cite-and-verify methodology recommended. Source: Microsoft Security Copilot documentation; SC-500 Domain 4; CompTIA SecurityAI+ Domain 3.',
+    explanation: 'Security Copilot\'s security-specific design: (1) Grounded responses: outputs reference specific signals from connected sources (Sentinel incidents, Defender alerts, Intune device data, Entra sign-in logs), not general knowledge; (2) Plugin architecture: Microsoft Threat Intelligence, ExternalAttackSurface Management, custom APIs, analysts can add organization-specific data sources; (3) Audit logging: all queries and responses are logged for SOC accountability; (4) Data residency: organization data is not used to train the shared model; (5) Limitation: hallucination risk still exists, cite-and-verify methodology recommended. Source: Microsoft Security Copilot documentation; SC-500 Domain 4; CompTIA SecAI+ Domain 3.',
   },
   {
     id: 'secai-d3-017',
@@ -17359,7 +17359,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Pre-shared verbal code words or call-back protocols that require out-of-band verification through a known-good number'],
     correct: 3,
     objectives: ['SecAI:3.2'],
-    explanation: 'Deepfake audio BEC defense layers: (1) Pre-shared code words: establish a secret word/phrase between executives and finance teams for high-value authorizations, attackers cannot know these without prior access; (2) Call-back protocol: never act on an unsolicited call; call back the executive on their known corporate phone number independently; (3) Out-of-band dual approval: two authorized signatories via independent channels; (4) Deepfake detectors: real-time AI voice authentication exists (e.g., Pindrop, Nuance) but has false-positive/negative limitations and isn\'t universal; (5) Email confirmation: attackers may also compromise email, not sufficient alone. The code-word/callback defense remains the most reliable because it doesn\'t depend on technical detection capability. Source: CompTIA SecurityAI+ Domain 3; FBI BEC guidance; CISA AI security advisory.',
+    explanation: 'Deepfake audio BEC defense layers: (1) Pre-shared code words: establish a secret word/phrase between executives and finance teams for high-value authorizations, attackers cannot know these without prior access; (2) Call-back protocol: never act on an unsolicited call; call back the executive on their known corporate phone number independently; (3) Out-of-band dual approval: two authorized signatories via independent channels; (4) Deepfake detectors: real-time AI voice authentication exists (e.g., Pindrop, Nuance) but has false-positive/negative limitations and isn\'t universal; (5) Email confirmation: attackers may also compromise email, not sufficient alone. The code-word/callback defense remains the most reliable because it doesn\'t depend on technical detection capability. Source: CompTIA SecAI+ Domain 3; FBI BEC guidance; CISA AI security advisory.',
   },
 
   // ─── CAISP Domain 1 · AI & LLM Security Fundamentals ─────────────────────
@@ -17411,7 +17411,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'Label bias'],
     correct: 0,
     objectives: ['SecAI:4.2'],
-    explanation: 'Historical/societal bias in AI: (1) The training data reflects historical patterns that may themselves be biased, in this case, historical promotions that discriminated against minority groups; (2) The model learns to replicate historical decisions, perpetuating past discrimination at scale and speed; (3) Detection: disparate impact ratio (minority accuracy / majority accuracy), EU AI Act Annex III flags this for high-risk systems; (4) Mitigation: (a) Pre-processing: reweigh or resample training data; (b) In-processing: fairness constraints during training; (c) Post-processing: calibrate thresholds per group; (4) Even after debiasing, the model may exhibit proxy discrimination (using zip code, name, or other correlated features). Source: CompTIA SecurityAI+ Domain 4; AWS AIF-C01 Domain 4; NIST AI RMF MEASURE 2.5.',
+    explanation: 'Historical/societal bias in AI: (1) The training data reflects historical patterns that may themselves be biased, in this case, historical promotions that discriminated against minority groups; (2) The model learns to replicate historical decisions, perpetuating past discrimination at scale and speed; (3) Detection: disparate impact ratio (minority accuracy / majority accuracy), EU AI Act Annex III flags this for high-risk systems; (4) Mitigation: (a) Pre-processing: reweigh or resample training data; (b) In-processing: fairness constraints during training; (c) Post-processing: calibrate thresholds per group; (4) Even after debiasing, the model may exhibit proxy discrimination (using zip code, name, or other correlated features). Source: CompTIA SecAI+ Domain 4; AWS AIF-C01 Domain 4; NIST AI RMF MEASURE 2.5.',
   },
   {
     id: 'ethics-resp-002',
@@ -17427,7 +17427,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
       'The derogatory_marks feature contributed substantially toward the denial decision for this applicant'],
     correct: 3,
     objectives: ['SecAI:4.2'],
-    explanation: 'SHAP interpretation: (1) SHAP values are additive contributions, the sum of all feature SHAP values + baseline prediction = the model\'s output for this instance; (2) Sign: positive SHAP → pushes prediction toward positive class (approval); negative SHAP → pushes toward negative class (denial); (3) Large negative SHAP for derogatory_marks: this feature contributed the most to this denial, more than other features; (4) Application: adverse action notices can cite the top negative SHAP features as the reasons for denial, required by FCRA for credit decisions; (5) SHAP is post-hoc and model-agnostic, works on any trained model. Source: SHAP documentation; CompTIA SecurityAI+ Domain 4; Azure Responsible AI documentation.',
+    explanation: 'SHAP interpretation: (1) SHAP values are additive contributions, the sum of all feature SHAP values + baseline prediction = the model\'s output for this instance; (2) Sign: positive SHAP → pushes prediction toward positive class (approval); negative SHAP → pushes toward negative class (denial); (3) Large negative SHAP for derogatory_marks: this feature contributed the most to this denial, more than other features; (4) Application: adverse action notices can cite the top negative SHAP features as the reasons for denial, required by FCRA for credit decisions; (5) SHAP is post-hoc and model-agnostic, works on any trained model. Source: SHAP documentation; CompTIA SecAI+ Domain 4; Azure Responsible AI documentation.',
   },
 
   // ─── New AWS-AIF-C01 Domain 5 questions ───────────────────────────────────
@@ -23191,7 +23191,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     explanation: 'PyRIT (Python Risk Identification Toolkit) is Microsoft\'s open-source framework for automated red-teaming of generative AI systems. It orchestrates adversarial prompt generation, attack variation, and safety evaluation at scale, covering jailbreaks, harmful content, and policy violations. It is not for NLP benchmarking, synthetic training data, or static code analysis. Available at github.com/Azure/PyRIT. SC-500 Domain 2.',
   },
 
-  // ── CompTIA SecurityAI+ (SecAI+) Extended Domain Coverage ─────────────────────
+  // ── CompTIA SecAI+ (SecAI+) Extended Domain Coverage ─────────────────────
   {
     id: 'secai-r2-001',
     topic: 'AI System Hardening',

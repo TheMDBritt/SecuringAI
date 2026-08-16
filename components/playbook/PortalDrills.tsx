@@ -123,7 +123,7 @@ export default function PortalDrills() {
                 className={[
                   'shrink-0 whitespace-nowrap text-[10px] font-mono px-2.5 py-1 rounded border transition-colors',
                   certId === s.certId
-                    ? 'bg-violet-500/10 border-violet-500/40 text-violet-300'
+                    ? 'bg-brand-500/10 border-brand-500/40 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
                 ].join(' ')}
               >
@@ -198,7 +198,7 @@ export default function PortalDrills() {
               )}
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-600">
                 <span>{d.steps.length} steps</span>
-                <span className="text-violet-400">Start drill →</span>
+                <span className="text-brand-400">Start drill →</span>
               </div>
             </button>
           ))}
@@ -250,7 +250,7 @@ export default function PortalDrills() {
             <span>{Math.round(progress)}%</span>
           </div>
           <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-violet-500 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-brand-500 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
@@ -326,7 +326,7 @@ export default function PortalDrills() {
         {pick !== null && (
           <button
             onClick={handleNext}
-            className="w-full py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-colors"
+            className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
           >
             {stepIdx + 1 >= activeDrill.steps.length ? 'See results →' : 'Next step →'}
           </button>
@@ -388,7 +388,7 @@ export default function PortalDrills() {
         <div className="flex gap-2">
           <button
             onClick={() => activeDrill && startDrill(activeDrill)}
-            className="flex-1 py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-sm font-semibold transition-colors"
+            className="flex-1 py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
           >
             Retry drill
           </button>

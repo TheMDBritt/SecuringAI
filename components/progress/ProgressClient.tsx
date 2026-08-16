@@ -27,7 +27,9 @@ interface Cert {
   provider: string;
 }
 
-const DOJO_TONE: Record<1 | 2 | 3, 'red' | 'cyan' | 'emerald'> = { 1: 'red', 2: 'cyan', 3: 'emerald' };
+// Colour reports state, not identity. All three dojos carry the brand tone;
+// they are told apart by their labels, as they are everywhere else.
+const DOJO_TONE: Record<1 | 2 | 3, 'brand'> = { 1: 'brand', 2: 'brand', 3: 'brand' };
 
 export function ProgressClient({
   scenarios,
@@ -73,10 +75,10 @@ export function ProgressClient({
         <EmptyState
           className="mt-8"
           title="No training data yet"
-          description="Complete a quiz in the Playbook or run an attack in the Labs and your progress will build here automatically."
+          description="Complete a quiz in the Playbook or run an attack in the Dojo and your progress will build here automatically."
           action={
             <div className="flex gap-2.5">
-              <ButtonLink href="/dojo" variant="primary" size="sm">Enter Labs</ButtonLink>
+              <ButtonLink href="/dojo" variant="primary" size="sm">Enter the Dojo</ButtonLink>
               <ButtonLink href="/playbook" variant="secondary" size="sm">Open Playbook</ButtonLink>
             </div>
           }
@@ -84,8 +86,8 @@ export function ProgressClient({
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="cyan" />
-            <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} labs`} tone="violet" />
+            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
+            <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} dojo runs`} tone="brand" />
             <StatCard label="Questions answered" value={summary.questionsAnswered} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
           </div>
 
@@ -171,7 +173,7 @@ export function ProgressClient({
                 const body = (
                   <>
                     <Badge tone={r.tone === 'red' ? 'red' : r.tone === 'emerald' ? 'emerald' : 'amber'}>
-                      {r.kind === 'quiz' ? 'Quiz' : 'Lab'}
+                      {r.kind === 'quiz' ? 'Quiz' : 'Dojo'}
                     </Badge>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>

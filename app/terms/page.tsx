@@ -4,7 +4,7 @@ import { Card, PageHeader, SectionHeading } from '@/components/ui';
 export const metadata = {
   title: 'Terms of use',
   description:
-    'Terms covering study material accuracy, acceptable use of the AI labs, trademarks, and liability.',
+    'Terms covering study material accuracy, acceptable use of the AI dojos, trademarks, and liability.',
 };
 
 const UPDATED = '12 August 2026';
@@ -43,14 +43,14 @@ export default function TermsPage() {
       </Card>
 
       <Card className="mt-4 space-y-4 p-5">
-        <SectionHeading title="Acceptable use of the labs" />
+        <SectionHeading title="Acceptable use of the dojos" />
         <p className="text-sm leading-relaxed text-slate-300">
-          The labs teach adversarial techniques against AI systems, including
+          The dojos teach adversarial techniques against AI systems, including
           prompt injection and jailbreak framings. The payloads are illustrative
           study material, not working exploits, and every scenario runs against a
           simulated target.
         </p>
-        <p className="text-sm leading-relaxed text-slate-300">By using the labs you agree that you will not:</p>
+        <p className="text-sm leading-relaxed text-slate-300">By using the dojos you agree that you will not:</p>
         <ul className="ml-4 list-disc space-y-2 text-sm leading-relaxed text-slate-300">
           <li>
             apply anything learned here against systems you do not own or lack
@@ -75,7 +75,7 @@ export default function TermsPage() {
       <Card className="mt-4 space-y-4 p-5">
         <SectionHeading title="Availability of AI features" />
         <p className="text-sm leading-relaxed text-slate-300">
-          The AI-backed labs depend on a paid third-party model provider funded
+          The AI-backed dojos depend on a paid third-party model provider funded
           personally. They are protected by a shared daily capacity limit. When
           that limit is reached the AI features pause until it resets, while the
           rest of the app keeps working. This is not a fault.
@@ -98,7 +98,7 @@ export default function TermsPage() {
         <p className="text-sm leading-relaxed text-slate-300">
           Progress is stored only in your browser and can be lost at any time.
           Export anything you want to keep. See the{' '}
-          <Link href="/privacy" className="text-violet-400 underline">
+          <Link href="/privacy" className="text-brand-400 underline">
             privacy notice
           </Link>{' '}
           for what leaves your device.
@@ -122,7 +122,7 @@ export default function TermsPage() {
           Open an issue at{' '}
           <a
             href="https://github.com/themdbritt/securingai/issues"
-            className="text-violet-400 underline"
+            className="text-brand-400 underline"
             target="_blank"
             rel="noopener noreferrer"
           >

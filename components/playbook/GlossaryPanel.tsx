@@ -6,14 +6,14 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 const CERT_BADGE: Record<string, string> = {
   'SecAI':        'bg-red-500/10 text-red-400 border-red-500/30',
   'AWS-AIF-C01':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
-  'Azure-AI901':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
-  'Azure-AI103':  'bg-blue-500/10 text-blue-400 border-blue-500/30',
+  'Azure-AI901':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'Azure-AI103':  'bg-brand-500/10 text-brand-400 border-brand-500/30',
   'Google-MLE':   'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
-  'GIAC-GOAA':    'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'GIAC-GASAE':   'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  'CAISP':        'bg-purple-500/10 text-purple-400 border-purple-500/30',
-  'CAIS':         'bg-rose-500/10 text-rose-400 border-rose-500/30',
-  'SC-500':       'bg-cyan-500/10 text-cyan-400 border-cyan-500/30',
+  'GIAC-GOAA':    'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'GIAC-GASAE':   'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'CAISP':        'bg-brand-500/10 text-brand-400 border-brand-500/30',
+  'CAIS':         'bg-red-500/10 text-red-400 border-red-500/30',
+  'SC-500':       'bg-brand-500/10 text-brand-400 border-brand-500/30',
 };
 
 const ALPHABET   = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
@@ -75,7 +75,7 @@ export default function GlossaryPanel() {
             className={[
               'text-[10px] font-mono px-2 py-0.5 rounded border transition-colors',
               certFilter === c
-                ? (CERT_BADGE[c] ?? 'bg-violet-500/20 text-violet-300 border-violet-500/30')
+                ? (CERT_BADGE[c] ?? 'bg-brand-500/20 text-brand-300 border-brand-500/30')
                 : 'text-slate-600 border-slate-700 hover:text-slate-400 hover:border-slate-600',
             ].join(' ')}
           >
@@ -90,7 +90,7 @@ export default function GlossaryPanel() {
           onClick={() => setJump('')}
           className={[
             'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
-            !jumpLetter ? 'bg-violet-500/20 text-violet-300' : 'text-slate-600 hover:text-slate-400',
+            !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-600 hover:text-slate-400',
           ].join(' ')}
         >
           All
@@ -105,7 +105,7 @@ export default function GlossaryPanel() {
               className={[
                 'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
                 jumpLetter === l
-                  ? 'bg-violet-500/20 text-violet-300'
+                  ? 'bg-brand-500/20 text-brand-300'
                   : has
                     ? 'text-slate-500 hover:text-slate-300'
                     : 'text-slate-800 cursor-default',
@@ -136,7 +136,7 @@ export default function GlossaryPanel() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-100">{term.term}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-violet-500/10 border border-violet-500/20 text-violet-400">
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                       {term.category}
                     </span>
                   </div>
@@ -172,7 +172,7 @@ export default function GlossaryPanel() {
                   {term.related.length > 0 && (
                     <div className="mt-3">
                       <span className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Related: </span>
-                      <span className="text-[11px] text-violet-400">{term.related.join(' · ')}</span>
+                      <span className="text-[11px] text-brand-400">{term.related.join(' · ')}</span>
                     </div>
                   )}
                 </div>

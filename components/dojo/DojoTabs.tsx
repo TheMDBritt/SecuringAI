@@ -22,15 +22,17 @@ import type {
 import { DEFAULT_CONTROL_CONFIG, DEFAULT_DOJO2_CONFIG, DEFAULT_DOJO3_CONFIG } from '@/types';
 
 const TABS: { id: DojoId; label: string; sublabel: string; color: string }[] = [
-  { id: 1, label: 'LLM Attack / Defense', sublabel: 'Dojo 1', color: 'red' },
-  { id: 2, label: 'AI-Assisted SOC',      sublabel: 'Dojo 2', color: 'cyan' },
-  { id: 3, label: 'AI GRC',               sublabel: 'Dojo 3', color: 'emerald' },
+  { id: 1, label: 'LLM Attack / Defense', sublabel: 'Dojo 1', color: 'accent' },
+  { id: 2, label: 'AI-Assisted SOC',      sublabel: 'Dojo 2', color: 'accent' },
+  { id: 3, label: 'AI GRC',               sublabel: 'Dojo 3', color: 'accent' },
 ];
 
+// One accent for the active tab. The tabs previously used red, cyan and green,
+// which are the same three colours the scoring pane uses for FAIL, WARN and
+// PASS, so a dojo looked like a verdict. Colour is reserved for state now, and
+// the dojos are told apart by their labels.
 const TAB_COLOR: Record<string, string> = {
-  red:     'border-red-500 text-red-400',
-  cyan:    'border-cyan-500 text-cyan-400',
-  emerald: 'border-emerald-500 text-emerald-400',
+  accent: 'border-brand-500 text-brand-300',
 };
 
 const TAB_INACTIVE =

@@ -45,8 +45,8 @@ const SCORING_DETAIL = [
   },
   {
     dojo: 'Dojo 2',
-    color: 'text-cyan-400',
-    border: 'border-cyan-500/20',
+    color: 'text-brand-400',
+    border: 'border-brand-500/20',
     engine: 'Quality rubric evaluator',
     detail: [
       'Each of the 9 SOC workflow scenarios has its own scoring rubric: required fields vary by task type (log triage vs. detection rule generation vs. IR report).',
@@ -77,7 +77,7 @@ const CREDITS = [
   'Cloud Security Alliance AI Controls Matrix',
   'NIST SP 800-218A (Secure Software Development for AI)',
   'NIST AI 100-1 (Adversarial ML Taxonomy)',
-  'CompTIA SecurityAI+ Exam Objectives',
+  'CompTIA SecAI+ Exam Objectives',
   'GIAC GOAA / GASAE Syllabi (SANS Institute)',
   'CAISP Exam Domains (Practical DevSecOps)',
   'EC-Council C|AI Security Objectives',
@@ -100,7 +100,7 @@ const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string 
   },
   2: {
     title: 'AI-Assisted SOC',
-    color: 'text-cyan-400',
+    color: 'text-brand-400',
     body: `Operate as an AI SOC analyst across 12 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, Adversarial Prompt Forensics, and Ransomware IR with AI Assistance. Each workflow loads from a library of 56 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled, disabled capabilities are excluded from quality scoring.`,
   },
   3: {
@@ -171,7 +171,7 @@ export default function AboutPage() {
                 key={p.label}
                 className="p-4 rounded-lg border border-slate-800 bg-slate-900/60"
               >
-                <h3 className="text-[11px] font-mono font-semibold text-cyan-400 mb-2 uppercase tracking-wide">
+                <h3 className="text-[11px] font-mono font-semibold text-brand-400 mb-2 uppercase tracking-wide">
                   {p.label}
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{p.body}</p>
@@ -337,7 +337,7 @@ export default function AboutPage() {
             <div className="flex gap-3 shrink-0">
               <Link
                 href="/dojo"
-                className="px-5 py-2.5 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm transition-colors duration-150"
+                className="px-5 py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm transition-colors duration-150"
               >
                 Enter the dojo →
               </Link>

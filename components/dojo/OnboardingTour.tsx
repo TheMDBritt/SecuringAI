@@ -150,7 +150,7 @@ export function OnboardingTour() {
                 key={i}
                 className={[
                   'h-1.5 w-6 rounded-full transition-colors',
-                  i === step ? 'bg-cyan-400' : 'bg-slate-700',
+                  i === step ? 'bg-brand-400' : 'bg-slate-700',
                 ].join(' ')}
               />
             ))}
@@ -167,7 +167,7 @@ export function OnboardingTour() {
             <button
               ref={primaryRef}
               onClick={next}
-              className="px-4 py-1.5 text-xs rounded bg-cyan-600 hover:bg-cyan-500 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+              className="px-4 py-1.5 text-xs rounded bg-brand-600 hover:bg-brand-500 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               {isLast ? 'Start training →' : 'Next'}
             </button>
