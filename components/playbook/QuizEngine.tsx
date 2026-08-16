@@ -3,13 +3,31 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { QuizQuestion, QuizDifficulty } from '@/types';
 import { recordQuizRun } from '@/lib/progress-store';
 import { loadProgress, recordSession, pickWeighted } from '@/lib/quiz-progress';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_INDEX } from '@/lib/quiz-index';
+
+/**
+ * Fetches question bodies for the ids that were drawn.
+ *
+ * Chunked because the ids ride in the query string and a 65-question mock plus
+ * long ids would otherwise push the URL past what proxies reliably accept.
+ */
+async function fetchQuestionsByIds(ids: string[]): Promise<QuizQuestion[]> {
+  const CHUNK = 60;
+  const out: QuizQuestion[] = [];
+  for (let i = 0; i < ids.length; i += CHUNK) {
+    const slice = ids.slice(i, i + CHUNK);
+    const res = await fetch(`/api/questions?ids=${encodeURIComponent(slice.join(','))}`);
+    if (!res.ok) throw new Error(`questions ${res.status}`);
+    out.push(...((await res.json()) as QuizQuestion[]));
+  }
+  return out;
+}
 import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
 import { EXAM_CERTS, questionMatchesDomain } from '@/lib/cert-exam-domains';
 import type { ExamCert, ExamDomain } from '@/lib/cert-exam-domains';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type QuizMode = 'setup' | 'question' | 'result' | 'summary';
+type QuizMode = 'setup' | 'loading' | 'question' | 'result' | 'summary';
 type SetupStep = 1 | 2 | 3;
 
 /**
@@ -101,13 +119,13 @@ function shuffleOptions(q: QuizQuestion): QuizQuestion {
  * of the domain, which is what happens when the domain is sampled as one pool.
  * Questions with no objective tag stay eligible via the untagged bucket.
  */
-function pickAcrossObjectives(
-  bucket: QuizQuestion[],
+function pickAcrossObjectives<T extends { id: string; objectives?: string[] }>(
+  bucket: T[],
   want: number,
   perQ: ReturnType<typeof loadProgress>['perQ'],
   domainId: string,
-): QuizQuestion[] {
-  const byObjective = new Map<string, QuizQuestion[]>();
+): T[] {
+  const byObjective = new Map<string, T[]>();
   for (const q of bucket) {
     // A question may carry objectives from several certs; keep the ones whose
     // domain number matches the domain being filled (e.g. '2' for secai-d2).
@@ -130,7 +148,7 @@ function pickAcrossObjectives(
     .map(([, qs]) => pickWeighted(qs, qs.length, perQ));
 
   const taken = new Set<string>();
-  const out: QuizQuestion[] = [];
+  const out: T[] = [];
   let progressed = true;
   while (out.length < want && progressed) {
     progressed = false;
@@ -146,12 +164,12 @@ function pickAcrossObjectives(
   return out;
 }
 
-function pickByDomainWeight(
-  pool: QuizQuestion[],
+function pickByDomainWeight<T extends { id: string; category: string; topic: string; objectives?: string[] }>(
+  pool: T[],
   count: number,
   perQ: ReturnType<typeof loadProgress>['perQ'],
   cert: ExamCert,
-): QuizQuestion[] {
+): T[] {
   // "17%" / "20-25%" -> a numeric share; ranges use their midpoint.
   const parseWeight = (w?: string): number | null => {
     if (!w) return null;
@@ -169,7 +187,7 @@ function pickByDomainWeight(
   if (domains.length === 0 || totalWeight <= 0) return pickWeighted(pool, count, perQ);
 
   const taken = new Set<string>();
-  const out: QuizQuestion[] = [];
+  const out: T[] = [];
 
   for (const { domain, weight } of domains) {
     const want = Math.round((weight / totalWeight) * count);
@@ -210,14 +228,14 @@ function breakAnswerStreaks(qs: QuizQuestion[]): QuizQuestion[] {
 
 /** Count questions that match a cert + domain combination. */
 function countForDomain(certId: string, domain: ExamDomain): number {
-  return QUIZ_QUESTIONS.filter(
+  return QUIZ_INDEX.filter(
     (q) => q.certTags.includes(certId) && questionMatchesDomain(q, domain),
   ).length;
 }
 
 /** Count all questions for a cert. */
 function countForCert(certId: string): number {
-  return QUIZ_QUESTIONS.filter((q) => q.certTags.includes(certId)).length;
+  return QUIZ_INDEX.filter((q) => q.certTags.includes(certId)).length;
 }
 
 // ─── Step Indicator ───────────────────────────────────────────────────────────
@@ -470,7 +488,7 @@ function Step3Options({
   }, [experience, perQ]);
 
   const pool = useMemo(() => {
-    return QUIZ_QUESTIONS.filter((q) => {
+    return QUIZ_INDEX.filter((q) => {
       if (!q.certTags.includes(cert.id)) return false;
       const inDomain = selectedDomains.some((d) => questionMatchesDomain(q, d));
       if (!inDomain) return false;
@@ -483,7 +501,7 @@ function Step3Options({
   // Counts per experience bucket, respecting cert/domain/difficulty filters
   // (so the toggle chips show live counts as the user narrows scope).
   const experienceCounts = useMemo(() => {
-    const base = QUIZ_QUESTIONS.filter((q) => {
+    const base = QUIZ_INDEX.filter((q) => {
       if (!q.certTags.includes(cert.id)) return false;
       const inDomain = selectedDomains.some((d) => questionMatchesDomain(q, d));
       if (!inDomain) return false;
@@ -507,7 +525,7 @@ function Step3Options({
   const finalCount = Math.min(count, pool.length);
 
   const certPool = useMemo(
-    () => QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert.id)).length,
+    () => QUIZ_INDEX.filter((q) => q.certTags.includes(cert.id)).length,
     [cert.id],
   );
   const mockConfig = cert.mockExam;
@@ -1182,6 +1200,7 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   const [nowMs,         setNowMs]         = useState(() => Date.now());
   const [generating,    setGenerating]    = useState(false);
   const [genError,      setGenError]      = useState('');
+  const [loadError,     setLoadError]     = useState<string | null>(null);
   const preloadHandledRef = useRef<QuizQuestion[] | null>(null);
 
   // Preloaded launch, skip SetupScreen when parent hands us a question list.
@@ -1209,14 +1228,19 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     setMode('question');
   }, [preloadedQuestions]);
 
-  const handleStart = useCallback((s: QuizSettings) => {
+  const handleStart = useCallback(async (s: QuizSettings) => {
     const selectedDomains = s.selectedCert && s.selectedDomainIds
       ? s.selectedCert.domains.filter((d) => (s.selectedDomainIds as string[]).includes(d.id))
       : [];
 
     const { perQ } = loadProgress();
     const experience = s.experience ?? [];
-    const pool = QUIZ_QUESTIONS.filter((q) => {
+
+    // Selection runs entirely on the metadata index. Every filter here reads
+    // cert tags, category, topic, difficulty or the local progress store, none
+    // of which need the question text, so a 25-question quiz no longer costs
+    // 2.2MB of bank to choose from.
+    const pool = QUIZ_INDEX.filter((q) => {
       // Always filter by cert tag when an exam is selected.
       if (s.certFilter !== 'All' && !q.certTags.includes(s.certFilter)) return false;
       // Domain filter, only applied when domains are explicitly selected.
@@ -1246,11 +1270,36 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     const weighted = s.examMode && s.selectedCert && selectedDomains.length === 0
       ? pickByDomainWeight(pool, s.count, perQ, s.selectedCert)
       : pickWeighted(pool, s.count, perQ);
-    const selected = breakAnswerStreaks(weighted.map(shuffleOptions));
+
     setSettings(s);
-    setQuestions(selected);
     setResults([]);
     setCurrentIndex(0);
+    setLoadError(null);
+    setMode('loading');
+
+    let bodies: QuizQuestion[];
+    try {
+      bodies = await fetchQuestionsByIds(weighted.map((q) => q.id));
+    } catch {
+      setLoadError('Could not load the questions. Check your connection and try again.');
+      setMode('setup');
+      return;
+    }
+
+    // Restore the drawn order, which the picker chose deliberately.
+    const byId = new Map(bodies.map((q) => [q.id, q]));
+    const ordered = weighted
+      .map((q) => byId.get(q.id))
+      .filter((q): q is QuizQuestion => q !== undefined);
+
+    if (ordered.length === 0) {
+      setLoadError('No questions came back for that selection.');
+      setMode('setup');
+      return;
+    }
+
+    const selected = breakAnswerStreaks(ordered.map(shuffleOptions));
+    setQuestions(selected);
     setQuestionStart(Date.now());
     setExamEndAt(s.examMode && s.examSec ? Date.now() + s.examSec * 1000 : null);
     setMode('question');
@@ -1409,7 +1458,31 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
         </div>
       )}
       <div className="flex-1 overflow-y-auto">
-        {mode === 'setup'    && <SetupScreen onStart={handleStart} />}
+        {mode === 'setup' && (
+          <>
+            {loadError && (
+              <div role="alert" className="mx-auto mt-4 w-full max-w-3xl px-6">
+                <p className="rounded border border-red-500/40 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+                  {loadError}
+                </p>
+              </div>
+            )}
+            <SetupScreen onStart={handleStart} />
+          </>
+        )}
+        {mode === 'loading' && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="mx-auto flex h-full w-full max-w-3xl flex-col items-center justify-center gap-3 px-6"
+          >
+            <div
+              aria-hidden="true"
+              className="h-5 w-5 animate-spin rounded-full border-2 border-brand-500 border-t-transparent"
+            />
+            <p className="text-sm text-slate-400">Building your question set…</p>
+          </div>
+        )}
         {mode === 'question' && currentQuestion && (
           <QuestionScreen
             question={currentQuestion}

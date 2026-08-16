@@ -12,6 +12,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { TOPIC_ARTICLES } from '@/lib/playbook-content';
 import { SECAI_DRILLS } from '@/lib/secai-drills';
@@ -940,6 +941,45 @@ describe('text colours meet WCAG AA on the app background', () => {
         }
       });
     }
+    expect(offenders).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/quiz-index.ts is generated from the bank by scripts/build-quiz-index.mjs
+// and regenerated on every build. If it ever drifts, the setup screen counts
+// and the domain filtering silently disagree with the questions themselves.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('the generated quiz index matches the bank', () => {
+  it('has one entry per question, with matching metadata', () => {
+    expect(QUIZ_INDEX.length).toBe(QUIZ_QUESTIONS.length);
+
+    const byId = new Map(QUIZ_INDEX.map((e) => [e.id, e]));
+    const mismatched: string[] = [];
+    for (const q of QUIZ_QUESTIONS) {
+      const e = byId.get(q.id);
+      if (!e) {
+        mismatched.push(`${q.id}: missing from index`);
+        continue;
+      }
+      if (e.category !== q.category) mismatched.push(`${q.id}: category`);
+      if (e.topic !== q.topic) mismatched.push(`${q.id}: topic`);
+      if (e.difficulty !== q.difficulty) mismatched.push(`${q.id}: difficulty`);
+      if (e.certTags.join(',') !== q.certTags.join(',')) mismatched.push(`${q.id}: certTags`);
+    }
+    expect(mismatched.slice(0, 10)).toEqual([]);
+  });
+
+  it('is not imported by any client component', () => {
+    function tsxIn(dir: string): string[] {
+      return readdirSync(join(process.cwd(), dir), { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? tsxIn(`${dir}/${e.name}`) : e.name.endsWith('.tsx') ? [`${dir}/${e.name}`] : [],
+      );
+    }
+    // The bank is 2.2MB bundled. Client surfaces use the index or the API.
+    const offenders = [...tsxIn('components')].filter((f) =>
+      readFileSync(join(process.cwd(), f), 'utf8').includes("from '@/lib/playbook-quiz'"),
+    );
     expect(offenders).toEqual([]);
   });
 });

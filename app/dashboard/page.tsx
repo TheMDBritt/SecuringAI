@@ -1,5 +1,5 @@
 import { SCENARIOS } from '@/lib/scenarios';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_TOTAL } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
@@ -29,7 +29,7 @@ export default function DashboardPage() {
     scenarios,
     counts: {
       scenarios: SCENARIOS.length,
-      questions: QUIZ_QUESTIONS.length,
+      questions: QUIZ_TOTAL,
       glossary: GLOSSARY_TERMS.length,
       incidents: CATALOG_COUNTS.incidents,
       certs: EXAM_CERTS.length,

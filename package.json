@@ -10,7 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run typecheck && npm run lint && npm run test"
+    "verify": "npm run typecheck && npm run lint && npm run test",
+    "build:index": "node scripts/build-quiz-index.mjs",
+    "prebuild": "node scripts/build-quiz-index.mjs"
   },
   "dependencies": {
     "next": "^14.2.35",

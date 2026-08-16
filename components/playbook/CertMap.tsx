@@ -1,6 +1,6 @@
 'use client';
 import { useMemo } from 'react';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_INDEX } from '@/lib/quiz-index';
 
 interface CertInfo {
   id:         string;
@@ -225,9 +225,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
   const quizCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     CERTS.forEach((cert) => {
-      counts[cert.id] = QUIZ_QUESTIONS.filter((q) =>
-        q.certTags.includes(cert.id),
-      ).length;
+      counts[cert.id] = QUIZ_INDEX.filter((q) => q.certTags.includes(cert.id)).length;
     });
     return counts;
   }, []);

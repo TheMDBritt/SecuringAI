@@ -1,7 +1,8 @@
 'use client';
 import { useEffect, useMemo, useState } from 'react';
 import type { QuizQuestion } from '@/types';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_INDEX } from '@/lib/quiz-index';
+import { useQuestionsByIds } from '@/lib/use-questions';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
   loadProgress,
@@ -68,28 +69,22 @@ function Sparkline({ points }: { points: number[] }) {
 
 // ─── Question ID → text lookup (for the per-question table) ──────────────────
 
-const Q_LOOKUP: Record<string, { question: string; category: string; topic: string }> = (() => {
-  const m: Record<string, { question: string; category: string; topic: string }> = {};
-  for (const q of QUIZ_QUESTIONS) {
-    m[q.id] = { question: q.question, category: q.category, topic: q.topic };
-  }
+const Q_LOOKUP: Record<string, { category: string; topic: string }> = (() => {
+  const m: Record<string, { category: string; topic: string }> = {};
+  for (const q of QUIZ_INDEX) m[q.id] = { category: q.category, topic: q.topic };
   return m;
 })();
 
 const Q_CATEGORY_LOOKUP: Record<string, string> = (() => {
   const m: Record<string, string> = {};
-  for (const q of QUIZ_QUESTIONS) m[q.id] = q.category;
+  for (const q of QUIZ_INDEX) m[q.id] = q.category;
   return m;
 })();
 
 // Full QuizQuestion by id, used by the per-Q table row expansion so we can
 // render the four options + correct-answer highlight + explanation without a
 // second lookup pass.
-const Q_LOOKUP_FULL: Record<string, QuizQuestion> = (() => {
-  const m: Record<string, QuizQuestion> = {};
-  for (const q of QUIZ_QUESTIONS) m[q.id] = q;
-  return m;
-})();
+
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
@@ -139,7 +134,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
   // cert catalog. Falls back to 67% if a cert is unlisted.
   const readiness = useMemo<Readiness | null>(() => {
     if (cert === 'All') return null;
-    const poolSize = QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert)).length;
+    const poolSize = QUIZ_INDEX.filter((q) => q.certTags.includes(cert)).length;
     if (poolSize === 0) return null;
     const catalog = EXAM_CERTS.find((c) => c.id === cert);
     const passPct = catalog?.passingScore ?? 67;
@@ -155,6 +150,13 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
 
   // Per-question table rows, only for questions the user has actually seen
   // in this cert scope.
+  const answeredIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const s of scopedSessions) for (const r of s.results) ids.add(r.qId);
+    return Array.from(ids);
+  }, [scopedSessions]);
+  const { byId: Q_LOOKUP_FULL } = useQuestionsByIds(answeredIds);
+
   const perQRows = useMemo(() => {
     const seenQIds = new Set<string>();
     for (const s of scopedSessions) for (const r of s.results) seenQIds.add(r.qId);
@@ -164,7 +166,9 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
       if (!stats || !lookup) return null;
       return {
         qId,
-        question:   lookup.question,
+        // Falls back to the topic until the body arrives, so the table renders
+        // immediately instead of waiting on the fetch.
+        question:   Q_LOOKUP_FULL[qId]?.question ?? lookup.topic,
         category:   lookup.category,
         topic:      lookup.topic,
         seen:       stats.timesSeen,
@@ -179,7 +183,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
     if (sortKey === 'accuracy') return rows.sort((a, b) => a.accuracy - b.accuracy);
     if (sortKey === 'seen')     return rows.sort((a, b) => b.seen - a.seen);
     return rows.sort((a, b) => b.lastSeenAt - a.lastSeenAt);
-  }, [data, scopedSessions, sortKey]);
+  }, [data, scopedSessions, sortKey, Q_LOOKUP_FULL]);
 
   const empty = hydrated && data.sessions.length === 0;
 

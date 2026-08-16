@@ -1,15 +1,8 @@
 'use client';
 import { useMemo } from 'react';
 import type { QuizQuestion } from '@/types';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { useQuestionsByIds } from '@/lib/use-questions';
 import type { SessionRecord, QuestionResult } from '@/lib/quiz-progress';
-
-// Cheap lookup, module-scope so it builds once, reused across mounts.
-const Q_BY_ID: Record<string, QuizQuestion> = (() => {
-  const m: Record<string, QuizQuestion> = {};
-  for (const q of QUIZ_QUESTIONS) m[q.id] = q;
-  return m;
-})();
 
 interface SessionReviewProps {
   session:         SessionRecord;
@@ -32,6 +25,12 @@ function formatDate(ms: number): string {
  * presentational.
  */
 export default function SessionReview({ session, onBack, onRetakeMissed, onRetakeAll }: SessionReviewProps) {
+  // Only the questions in this session are fetched, rather than importing the
+  // entire bank to look up the ones already answered.
+  const { byId: Q_BY_ID, loading } = useQuestionsByIds(
+    useMemo(() => session.results.map((r) => r.qId), [session]),
+  );
+
   const { rows, missedQs, allQs, notFound } = useMemo(() => {
     const rows: Array<{ r: QuestionResult; q: QuizQuestion }> = [];
     const missedQs: QuizQuestion[] = [];
@@ -45,7 +44,19 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
       if (!r.correct) missedQs.push(q);
     }
     return { rows, missedQs, allQs, notFound };
-  }, [session]);
+  }, [session, Q_BY_ID]);
+
+  if (loading) {
+    return (
+      <div role="status" aria-live="polite" className="flex h-full items-center justify-center gap-3">
+        <div
+          aria-hidden="true"
+          className="h-4 w-4 animate-spin rounded-full border-2 border-brand-500 border-t-transparent"
+        />
+        <span className="text-sm text-slate-400">Loading this session…</span>
+      </div>
+    );
+  }
 
   const pct = session.count === 0 ? 0 : Math.round((session.correct / session.count) * 100);
   const pctColor = pct >= 80 ? 'text-emerald-400' : pct >= 60 ? 'text-amber-400' : 'text-red-400';

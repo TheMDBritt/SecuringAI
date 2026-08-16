@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { SCENARIOS } from '@/lib/scenarios';
-import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
+import { QUIZ_TOTAL } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { Footer } from '@/components/layout/Footer';
 
@@ -142,7 +142,7 @@ export default function AboutPage() {
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
                 { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: QUIZ_QUESTIONS.length.toLocaleString(), label: 'quiz questions', sub: '11 certs mapped' },
+                { n: QUIZ_TOTAL.toLocaleString(), label: 'quiz questions', sub: '11 certs mapped' },
                 { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
