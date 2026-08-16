@@ -806,7 +806,11 @@ function QuestionScreen({
   const timerLow = remainingSec !== undefined && remainingSec <= 300;
 
   return (
-    <div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col px-6 py-5">
+    // overflow-y-auto + m-auto on the inner block centres the question on a
+    // tall viewport without clipping its top when the content is taller than
+    // the container, which is what justify-center would do.
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col overflow-y-auto px-6 py-5">
+     <div className="m-auto w-full">
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-brand-500/30 bg-brand-500/5'}`}>
@@ -843,7 +847,7 @@ function QuestionScreen({
       </div>
 
       {/* Options */}
-      <div className="space-y-2.5 flex-1">
+      <div className="space-y-2.5">
         {question.options.map((opt, i) => {
           let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
           if (chosen !== null) {
@@ -891,6 +895,7 @@ function QuestionScreen({
           Skip, leave unanswered
         </button>
       )}
+     </div>
     </div>
   );
 }
