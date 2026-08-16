@@ -21,7 +21,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit } from './rate-limit';
+import { checkRateLimit, MAX_REQUESTS } from './rate-limit';
 
 // ─── Global daily request ceiling ────────────────────────────────────────────
 // Counts model-bound requests across all callers, so a distributed caller that
@@ -151,7 +151,7 @@ export function guard(req: NextRequest, opts: GuardOptions = {}): NextResponse |
       {
         status: 429,
         headers: {
-          'X-RateLimit-Limit': '20',
+          'X-RateLimit-Limit': String(MAX_REQUESTS),
           'X-RateLimit-Remaining': '0',
           'Retry-After': String(Math.max(1, Math.ceil((resetAt - Date.now()) / 1000))),
         },
@@ -179,7 +179,7 @@ export function guard(req: NextRequest, opts: GuardOptions = {}): NextResponse |
 /** Rate-limit headers for successful responses. */
 export function rateLimitHeaders(remaining: number): Record<string, string> {
   return {
-    'X-RateLimit-Limit': '20',
+    'X-RateLimit-Limit': String(MAX_REQUESTS),
     'X-RateLimit-Remaining': String(remaining),
   };
 }
