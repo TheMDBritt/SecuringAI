@@ -77,7 +77,7 @@ function FeaturePill({ label, enabled }: { label: string; enabled: boolean }) {
         'text-micro px-1.5 py-0.5 rounded border font-mono',
         enabled
           ? 'border-brand-500/40 bg-brand-500/10 text-brand-400'
-          : 'border-slate-700 text-slate-600',
+          : 'border-slate-700 text-slate-400',
       ].join(' ')}
     >
       {enabled ? '✓ ' : '✗ '}{label}
@@ -190,7 +190,7 @@ export function ScenarioPicker({
             >
               <div className="flex items-start justify-between gap-2 mb-1">
                 <div className="flex items-start gap-2 min-w-0">
-                  <span className="font-mono text-micro text-slate-700 shrink-0 mt-[3px]">
+                  <span className="font-mono text-micro text-slate-500 shrink-0 mt-[3px]">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                   {/* Titles wrap to two lines rather than truncating. An ellipsis

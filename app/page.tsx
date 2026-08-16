@@ -166,7 +166,7 @@ export default function LandingPage() {
               {/* Quick framework tags */}
               <div className="mt-6 flex flex-wrap gap-1.5">
                 {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
-                  <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-600">
+                  <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">
                     {f}
                   </span>
                 ))}
@@ -188,7 +188,7 @@ export default function LandingPage() {
                   <div key={label} className="bg-slate-900 px-4 py-3.5">
                     <div className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n}</div>
                     <div className="text-xs font-medium text-slate-300 mt-0.5">{label}</div>
-                    <div className="text-micro text-slate-600 mt-0.5">{sub}</div>
+                    <div className="text-micro text-slate-400 mt-0.5">{sub}</div>
                   </div>
                 ))}
               </div>
@@ -198,47 +198,47 @@ export default function LandingPage() {
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-slate-600 ml-1 text-micro">dojo-1 · session</span>
+                  <span className="text-slate-400 ml-1 text-micro">dojo-1 · session</span>
                 </div>
                 <div className="text-slate-500">
-                  <span className="text-slate-700">$ </span>
+                  <span className="text-slate-500">$ </span>
                   <span className="text-brand-400">dojo</span>
                   <span className="text-slate-400"> load prompt-injection --shield strict</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">→ </span>
+                  <span className="text-slate-500">→ </span>
                   <span className="text-emerald-400">BLOCKED</span>
-                  <span className="text-slate-600"> [LLM01:2026] score 100 · shield triggered</span>
+                  <span className="text-slate-400"> [LLM01:2026] score 100 · shield triggered</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">$ </span>
+                  <span className="text-slate-500">$ </span>
                   <span className="text-brand-400">dojo</span>
                   <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">→ </span>
+                  <span className="text-slate-500">→ </span>
                   <span className="text-red-400">VULNERABLE</span>
-                  <span className="text-slate-600"> [LLM01:2026] session −22 · AML.T0054</span>
+                  <span className="text-slate-400"> [LLM01:2026] session −22 · AML.T0054</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">$ </span>
+                  <span className="text-slate-500">$ </span>
                   <span className="text-brand-400">quiz</span>
                   <span className="text-slate-400"> start GIAC-GOAA --domain d4 --count 25</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">→ </span>
+                  <span className="text-slate-500">→ </span>
                   <span className="text-brand-400">STARTED</span>
-                  <span className="text-slate-600"> Prompt Injection &amp; LLM Bypass · 25q</span>
+                  <span className="text-slate-400"> Prompt Injection &amp; LLM Bypass · 25q</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">$ </span>
+                  <span className="text-slate-500">$ </span>
                   <span className="text-brand-400">quiz</span>
                   <span className="text-slate-400"> start CAISP --domain audit --mock</span>
                 </div>
                 <div className="mt-1 text-slate-500">
-                  <span className="text-slate-700">→ </span>
+                  <span className="text-slate-500">→ </span>
                   <span className="text-brand-400">MOCK</span>
-                  <span className="text-slate-600"> AI Security Assessment · 60q · timed</span>
+                  <span className="text-slate-400"> AI Security Assessment · 60q · timed</span>
                 </div>
               </div>
             </div>
@@ -294,13 +294,13 @@ export default function LandingPage() {
                     {d.detail}
                   </p>
                   <div className="border-t border-slate-800 pt-3">
-                    <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-slate-600">
+                    <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-slate-400">
                       {scenarios.length} scenarios, including
                     </p>
                     <ul className="flex flex-col gap-1">
                       {scenarios.slice(0, 4).map((s) => (
                         <li key={s.id} className="flex items-start gap-1.5 text-2xs text-slate-500">
-                          <span className="mt-px shrink-0 text-slate-700">·</span>
+                          <span className="mt-px shrink-0 text-slate-500">·</span>
                           {s.title}
                         </li>
                       ))}
@@ -337,10 +337,10 @@ export default function LandingPage() {
             <table className="w-full text-xs text-left">
               <thead>
                 <tr className="border-b border-slate-800">
-                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest w-24">Dojo</th>
-                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest w-36">Engine</th>
-                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest">How it scores</th>
-                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest hidden md:table-cell">Framework</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-400 uppercase tracking-widest w-24">Dojo</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-400 uppercase tracking-widest w-36">Engine</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-400 uppercase tracking-widest">How it scores</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-400 uppercase tracking-widest hidden md:table-cell">Framework</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -351,7 +351,7 @@ export default function LandingPage() {
                     </td>
                     <td className="px-4 py-3 font-mono text-slate-400 text-2xs">{row.engine}</td>
                     <td className="px-4 py-3 text-slate-400 leading-relaxed max-w-xs">{row.how}</td>
-                    <td className="px-4 py-3 font-mono text-slate-600 text-micro hidden md:table-cell">{row.maps}</td>
+                    <td className="px-4 py-3 font-mono text-slate-400 text-micro hidden md:table-cell">{row.maps}</td>
                   </tr>
                 ))}
               </tbody>
@@ -409,7 +409,7 @@ export default function LandingPage() {
                   </span>
                 ))}
               </div>
-              <p className="mt-4 text-xs text-slate-600 leading-relaxed">
+              <p className="mt-4 text-xs text-slate-400 leading-relaxed">
                 Every dojo turn maps to exam domains. Quiz: select a cert,
                 drill by domain, track weak areas. {STATS.quizQs.toLocaleString()} questions, {STATS.glossary} glossary terms,
                 {' '}{STATS.articles} articles, all cross-referenced by cert.
@@ -438,10 +438,10 @@ export default function LandingPage() {
               <div className="p-3.5 rounded-lg border border-slate-800 bg-slate-900/40 mb-5">
                 <p className="text-micro font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow, exam first</p>
                 <ol className="text-xs text-slate-400 space-y-1 leading-relaxed">
-                  <li><span className="font-mono text-slate-700 mr-2">01</span>Select a cert (SecAI+, SC-500, GIAC-GOAA…)</li>
-                  <li><span className="font-mono text-slate-700 mr-2">02</span>Pick domains from that exam&apos;s official objectives</li>
-                  <li><span className="font-mono text-slate-700 mr-2">03</span>Configure difficulty · question count · mock exam mode</li>
-                  <li><span className="font-mono text-slate-700 mr-2">04</span>Get per-domain score breakdown + weak area targeting</li>
+                  <li><span className="font-mono text-slate-500 mr-2">01</span>Select a cert (SecAI+, SC-500, GIAC-GOAA…)</li>
+                  <li><span className="font-mono text-slate-500 mr-2">02</span>Pick domains from that exam&apos;s official objectives</li>
+                  <li><span className="font-mono text-slate-500 mr-2">03</span>Configure difficulty · question count · mock exam mode</li>
+                  <li><span className="font-mono text-slate-500 mr-2">04</span>Get per-domain score breakdown + weak area targeting</li>
                 </ol>
               </div>
               <Link
@@ -480,7 +480,7 @@ export default function LandingPage() {
       {/* ── Sources ──────────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-6">
-          <p className="text-2xs font-mono text-slate-600 uppercase tracking-widest mb-3">
+          <p className="text-2xs font-mono text-slate-400 uppercase tracking-widest mb-3">
             Sourced from
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-1.5">
@@ -535,7 +535,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/about"
-                  className="px-6 py-2.5 text-center text-2xs font-mono text-slate-600 hover:text-slate-400 transition-colors duration-150"
+                  className="px-6 py-2.5 text-center text-2xs font-mono text-slate-400 hover:text-slate-400 transition-colors duration-150"
                 >
                   How scoring works →
                 </Link>

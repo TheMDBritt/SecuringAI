@@ -113,7 +113,7 @@ export function ProgressClient({
                           className={[
                             'flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-micro',
                             !st
-                              ? 'border-surface-border text-slate-600'
+                              ? 'border-surface-border text-slate-400'
                               : held
                                 ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
                                 : 'border-amber-500/50 bg-amber-500/10 text-amber-300',
@@ -179,8 +179,8 @@ export function ProgressClient({
                       <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
                       <p className="truncate text-xs text-slate-500">{r.detail}</p>
                     </div>
-                    <span className="shrink-0 font-mono text-2xs text-slate-600">{timeAgo(r.at)}</span>
-                    {r.sessionId && <span className="shrink-0 text-slate-600 text-2xs ml-1">→</span>}
+                    <span className="shrink-0 font-mono text-2xs text-slate-400">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-400 text-2xs ml-1">→</span>}
                   </>
                 );
                 return (

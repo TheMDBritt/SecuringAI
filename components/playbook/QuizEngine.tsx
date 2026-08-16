@@ -233,7 +233,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
                 ? 'border-brand-500 bg-brand-500/20 text-brand-300'
                 : s < step
                   ? 'border-brand-500/40 bg-brand-500/10 text-brand-500/60'
-                  : 'border-slate-700 bg-transparent text-slate-600',
+                  : 'border-slate-700 bg-transparent text-slate-400',
             ].join(' ')}
           >
             {s}
@@ -243,7 +243,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
           )}
         </div>
       ))}
-      <span className="ml-1 text-micro font-mono text-slate-600">
+      <span className="ml-1 text-micro font-mono text-slate-400">
         Step {step} of 3 {' '}
         {step === 1 ? 'Select Exam' : step === 2 ? 'Select Domains' : 'Options'}
       </span>
@@ -291,11 +291,11 @@ function Step1SelectExam({
                 <p className="text-2xs font-semibold text-slate-200 leading-snug mb-0.5">{cert.name}</p>
                 <p className="text-micro text-slate-500 leading-snug mb-2">{cert.provider}</p>
                 <div className="flex items-center justify-between gap-1">
-                  <p className="text-micro font-mono text-slate-600">
+                  <p className="text-micro font-mono text-slate-400">
                     <span className="text-slate-400 font-semibold">{total}</span> Qs · <span className="text-slate-500">{cert.domains.length}d</span>
                   </p>
                   {cert.passingScore && (
-                    <span className="text-micro font-mono text-slate-600">pass≥{cert.passingScore}%</span>
+                    <span className="text-micro font-mono text-slate-400">pass≥{cert.passingScore}%</span>
                   )}
                 </div>
               </button>
@@ -409,7 +409,7 @@ function Step2SelectDomains({
                   <span className="font-mono text-2xs text-slate-400 flex-shrink-0">{count}</span>
                 </div>
                 {domain.weight && (
-                  <p className="text-micro font-mono text-slate-600 mt-0.5">{domain.weight}</p>
+                  <p className="text-micro font-mono text-slate-400 mt-0.5">{domain.weight}</p>
                 )}
               </div>
             </button>
@@ -547,7 +547,7 @@ function Step3Options({
 
       {/* Domain summary */}
       <div className="mb-5 px-3 py-2.5 rounded-lg border border-slate-700/60 bg-slate-800/30">
-        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1.5">Selected Domains</p>
+        <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1.5">Selected Domains</p>
         <div className="space-y-0.5">
           {selectedDomains.map((d) => (
             <p key={d.id} className="text-2xs text-slate-400 leading-snug">{d.name}</p>
@@ -580,7 +580,7 @@ function Step3Options({
       <div className="flex-1 overflow-y-auto space-y-5">
         {/* Difficulty */}
         <div>
-          <label className="text-micro font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Difficulty</label>
+          <label className="text-micro font-mono text-slate-400 uppercase tracking-wide block mb-1.5">Difficulty</label>
           <div className="flex gap-2">
             {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((d) => (
               <button
@@ -602,8 +602,8 @@ function Step3Options({
         {/* Experience filter, multi-select, mix and match */}
         <div>
           <div className="flex items-baseline justify-between mb-1.5">
-            <label className="text-micro font-mono text-slate-600 uppercase tracking-wide">Experience</label>
-            <span className="text-micro font-mono text-slate-700">multi-select · leave blank for all</span>
+            <label className="text-micro font-mono text-slate-400 uppercase tracking-wide">Experience</label>
+            <span className="text-micro font-mono text-slate-500">multi-select · leave blank for all</span>
           </div>
           <div className="flex gap-2">
             {([
@@ -627,7 +627,7 @@ function Step3Options({
               </button>
             ))}
           </div>
-          <p className="text-micro font-mono text-slate-600 mt-1.5">
+          <p className="text-micro font-mono text-slate-400 mt-1.5">
             <span className="text-brand-500">Unseen</span> = never attempted ·{' '}
             <span className="text-brand-500">Weak</span> = accuracy &lt; 70% ·{' '}
             <span className="text-brand-500">Strong</span> = accuracy ≥ 70%
@@ -636,7 +636,7 @@ function Step3Options({
 
         {/* Count */}
         <div>
-          <label className="text-micro font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Questions</label>
+          <label className="text-micro font-mono text-slate-400 uppercase tracking-wide block mb-1.5">Questions</label>
           <div className="flex gap-2">
             {COUNT_OPTIONS.map((n) => (
               <button
@@ -656,7 +656,7 @@ function Step3Options({
         </div>
 
         {/* Pool preview */}
-        <p className="text-2xs text-slate-600 font-mono text-center">
+        <p className="text-2xs text-slate-400 font-mono text-center">
           {pool.length} questions match · <span className="text-slate-400">{finalCount}</span> will be used
         </p>
       </div>
@@ -793,12 +793,12 @@ function QuestionScreen({
       {/* Progress */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-micro font-mono text-slate-600">{index + 1} / {total}</span>
+          <span className="text-micro font-mono text-slate-400">{index + 1} / {total}</span>
           <div className="flex gap-1.5 items-center">
             <span className={`text-micro font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[question.difficulty]}`}>
               {question.difficulty}
             </span>
-            <span className="text-micro font-mono text-slate-600">{question.category}</span>
+            <span className="text-micro font-mono text-slate-400">{question.category}</span>
           </div>
         </div>
         <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
@@ -819,13 +819,13 @@ function QuestionScreen({
             if (examMode) {
               style = i === chosen
                 ? 'border-brand-500/60 bg-brand-500/10 text-brand-200'
-                : 'border-slate-700/50 text-slate-600 opacity-60';
+                : 'border-slate-700/50 text-slate-400 opacity-60';
             } else if (i === question.correct) {
               style = 'border-emerald-500 bg-emerald-500/10 text-emerald-300';
             } else if (i === chosen) {
               style = 'border-red-500 bg-red-500/10 text-red-300';
             } else {
-              style = 'border-slate-700/50 text-slate-600 opacity-60';
+              style = 'border-slate-700/50 text-slate-400 opacity-60';
             }
           }
           return (
@@ -880,17 +880,17 @@ function ResultScreen({
         <span className={`text-sm font-semibold ${result.correct ? 'text-emerald-300' : 'text-red-300'}`}>
           {result.correct ? 'Correct!' : 'Incorrect'}
         </span>
-        <span className="text-micro font-mono text-slate-600 ml-auto">{index + 1}/{total}</span>
+        <span className="text-micro font-mono text-slate-400 ml-auto">{index + 1}/{total}</span>
       </div>
 
       <div className="mb-4">
-        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Question</p>
+        <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1">Question</p>
         <p className="text-sm text-slate-300">{result.question.question}</p>
       </div>
 
       {/* All options with per-option explanations */}
       <div className="flex-1 mb-4 space-y-2 overflow-y-auto">
-        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Answer Breakdown</p>
+        <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2">Answer Breakdown</p>
         {result.question.options.map((opt, i) => {
           const isCorrect = i === result.question.correct;
           const isChosen  = i === result.chosen;
@@ -911,13 +911,13 @@ function ResultScreen({
               <span className={isCorrect ? 'font-semibold' : ''}>{opt}</span>
               {isCorrect && <span className="ml-2 text-emerald-500 font-bold">✓</span>}
               {!isCorrect && isChosen && <span className="ml-2 text-red-500 font-bold">✗</span>}
-              {optExp && <p className={`mt-1 ml-4 ${isCorrect ? 'text-emerald-400/80' : isChosen ? 'text-red-400/70' : 'text-slate-600'}`}>{optExp}</p>}
+              {optExp && <p className={`mt-1 ml-4 ${isCorrect ? 'text-emerald-400/80' : isChosen ? 'text-red-400/70' : 'text-slate-400'}`}>{optExp}</p>}
             </div>
           );
         })}
         {/* Fallback overall explanation */}
         <div className="mt-3 pt-3 border-t border-slate-700/50">
-          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+          <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1">Why</p>
           <p className="text-xs text-slate-400 leading-relaxed">{result.question.explanation}</p>
         </div>
       </div>
@@ -1015,7 +1015,7 @@ function SummaryScreen({
         {cert && (
           <div className="mt-1.5 flex items-center gap-1">
             <div className="h-px flex-1 bg-slate-700" />
-            <span className="text-micro font-mono text-slate-600">passing threshold ~{passThreshold}%</span>
+            <span className="text-micro font-mono text-slate-400">passing threshold ~{passThreshold}%</span>
           </div>
         )}
       </div>
@@ -1023,7 +1023,7 @@ function SummaryScreen({
       {/* Domain breakdown, shown when cert is selected */}
       {byDomain && byDomain.length > 0 && (
         <div className="mb-5">
-          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
+          <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
           <div className="space-y-2.5">
             {byDomain.map(({ domain, total: dTotal, correct: dCorrect }) => {
               const dPct     = dTotal > 0 ? Math.round((dCorrect / dTotal) * 100) : 0;
@@ -1034,7 +1034,7 @@ function SummaryScreen({
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-2xs text-slate-400 leading-snug flex-1 mr-2">{shortName}</span>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-micro font-mono text-slate-600">{dCorrect}/{dTotal}</span>
+                      <span className="text-micro font-mono text-slate-400">{dCorrect}/{dTotal}</span>
                       <span className={`text-micro font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
                         {dPct}%
                       </span>
@@ -1061,7 +1061,7 @@ function SummaryScreen({
       {/* Category breakdown, shown when no cert selected */}
       {(!byDomain || byDomain.length === 0) && (
         <div className="mb-5">
-          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2.5">Category Breakdown</p>
+          <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2.5">Category Breakdown</p>
           <div className="space-y-2">
             {byCategory.map(([cat, stats]) => {
               const catPct   = Math.round((stats.correct / stats.total) * 100);
@@ -1071,7 +1071,7 @@ function SummaryScreen({
                   <div className="flex items-center justify-between mb-0.5">
                     <span className="text-2xs text-slate-400 truncate max-w-[200px]">{cat}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-micro font-mono text-slate-600">{stats.correct}/{stats.total}</span>
+                      <span className="text-micro font-mono text-slate-400">{stats.correct}/{stats.total}</span>
                       {catPct < 70 && (
                         <button
                           onClick={() => onGenerateMore(cat)}

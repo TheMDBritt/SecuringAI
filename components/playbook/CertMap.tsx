@@ -261,7 +261,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
                 </div>
                 <div className="text-right shrink-0">
                   <div className="text-micro font-mono text-slate-500">{cert.difficulty}</div>
-                  <div className="text-micro font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
+                  <div className="text-micro font-mono text-slate-400">{cert.questions} Q · {cert.duration}</div>
                   <div className="text-micro font-mono text-slate-500 mt-0.5">
                     <span className="text-slate-300 font-semibold">{quizCount}</span> practice Qs
                   </div>
@@ -275,12 +275,12 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
 
               {/* Domains */}
               <div className="px-4 py-3 border-b border-slate-700/30">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2">Exam Domains</p>
                 <div className="space-y-1">
                   {cert.domains.map((d) => (
                     <div key={d.name} className="flex items-center justify-between gap-2">
                       <span className="text-2xs text-slate-400">{d.name}</span>
-                      {d.pct && <span className="text-micro font-mono text-slate-600">{d.pct}</span>}
+                      {d.pct && <span className="text-micro font-mono text-slate-400">{d.pct}</span>}
                     </div>
                   ))}
                 </div>
@@ -288,7 +288,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
 
               {/* Top topics */}
               <div className="px-4 py-3">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2">Key Topics</p>
                 <div className="flex flex-wrap gap-1">
                   {cert.topTopics.map((t) => (
                     <span key={t} className="text-micro px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">

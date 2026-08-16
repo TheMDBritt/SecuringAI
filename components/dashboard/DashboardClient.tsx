@@ -204,8 +204,8 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                       <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
                       <p className="truncate text-xs text-slate-500">{r.detail}</p>
                     </div>
-                    <span className="shrink-0 font-mono text-2xs text-slate-600">{timeAgo(r.at)}</span>
-                    {r.sessionId && <span className="shrink-0 text-slate-600 text-2xs ml-1">→</span>}
+                    <span className="shrink-0 font-mono text-2xs text-slate-400">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-400 text-2xs ml-1">→</span>}
                   </>
                 );
                 return (

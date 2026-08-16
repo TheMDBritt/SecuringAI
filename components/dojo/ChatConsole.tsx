@@ -685,7 +685,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           <div className="flex items-center gap-2 min-w-0">
             <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
             <span className="text-sm font-mono text-slate-300 shrink-0">BlackBeltAI</span>
-            <span className="text-xs text-slate-600 shrink-0">/ sandbox</span>
+            <span className="text-xs text-slate-400 shrink-0">/ sandbox</span>
             {scenario && (
               <span className="text-xs px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400 font-mono truncate">
                 {scenario.id}
@@ -763,7 +763,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               <div className="text-center">
                 <div className="w-12 h-12 rounded-full border border-slate-700 flex items-center justify-center mx-auto mb-3">
                   <svg
-                    className="w-5 h-5 text-slate-600"
+                    className="w-5 h-5 text-slate-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -778,7 +778,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                 </div>
                 <p className="text-sm text-slate-500">Select a scenario to begin</p>
                 {dojoId === 2 && (
-                  <p className="text-xs text-slate-600 mt-1 font-mono max-w-[220px] mx-auto leading-relaxed">
+                  <p className="text-xs text-slate-400 mt-1 font-mono max-w-[220px] mx-auto leading-relaxed">
                     Then load an incident from the panel →<br />
                     or type your own logs below
                   </p>
@@ -828,7 +828,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                   >
                     {msg.content}
                   </div>
-                  <p className="text-micro text-slate-600 mt-0.5 px-1">
+                  <p className="text-micro text-slate-400 mt-0.5 px-1">
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -900,11 +900,11 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             </button>
           </div>
           <div className="flex items-center justify-between mt-1.5">
-            <p className="text-micro text-slate-600 font-mono">
+            <p className="text-micro text-slate-400 font-mono">
               Enter to send · Shift+Enter for newline
             </p>
             {attackHistory.length > 0 && (
-              <p className="text-micro text-slate-600 font-mono">
+              <p className="text-micro text-slate-400 font-mono">
                 {attackHistory.length} attack{attackHistory.length > 1 ? 's' : ''} in history
               </p>
             )}

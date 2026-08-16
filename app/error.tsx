@@ -27,7 +27,7 @@ export default function GlobalError({
         are transient. If it keeps happening, refresh or head home.
       </p>
       {error.digest && (
-        <p className="text-micro font-mono text-slate-600 mb-6">
+        <p className="text-micro font-mono text-slate-400 mb-6">
           ref: {error.digest}
         </p>
       )}

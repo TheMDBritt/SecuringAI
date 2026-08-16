@@ -94,7 +94,7 @@ function PanelSection({
       <div className="mb-2.5 flex items-baseline justify-between gap-3">
         <p className="font-mono text-micro uppercase tracking-widest text-slate-500">{title}</p>
         {meta !== undefined && (
-          <span className="shrink-0 font-mono text-micro tabular-nums text-slate-600">{meta}</span>
+          <span className="shrink-0 font-mono text-micro tabular-nums text-slate-400">{meta}</span>
         )}
       </div>
       {children}
@@ -136,7 +136,7 @@ function PanelGroup({
   return (
     <section className="mb-7 border-t border-slate-800 pt-4 first:mt-0 first:border-t-0 first:pt-0">
       <div className="mb-3 flex items-baseline gap-2">
-        <span className="font-mono text-micro tabular-nums text-slate-600">
+        <span className="font-mono text-micro tabular-nums text-slate-400">
           {String(step).padStart(2, '0')}
         </span>
         <h3 className="font-mono text-2xs font-semibold uppercase tracking-widest text-slate-300">
@@ -238,7 +238,7 @@ function Toggle({
           {label}
         </span>
         {description && (
-          <span className="text-micro text-slate-600 block mt-0.5">{description}</span>
+          <span className="text-micro text-slate-400 block mt-0.5">{description}</span>
         )}
       </div>
       <button
@@ -349,7 +349,7 @@ function GuardrailControls({
       />
 
       <div className="mt-2 mb-1">
-        <p className={['text-xs mb-1.5', disabled ? 'text-slate-600' : 'text-slate-400'].join(' ')}>
+        <p className={['text-xs mb-1.5', disabled ? 'text-slate-400' : 'text-slate-400'].join(' ')}>
           Injection Shield
         </p>
         <SegmentedControl
@@ -361,7 +361,7 @@ function GuardrailControls({
       </div>
 
       <div className="mt-2">
-        <p className={['text-xs mb-1.5', disabled ? 'text-slate-600' : 'text-slate-400'].join(' ')}>
+        <p className={['text-xs mb-1.5', disabled ? 'text-slate-400' : 'text-slate-400'].join(' ')}>
           Logging Level
         </p>
         <SegmentedControl
@@ -461,7 +461,7 @@ function Dojo1Panel({
                 </span>
                 <span className="font-mono truncate">{p.label}</span>
               </div>
-              <p className="text-micro text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
+              <p className="text-micro text-slate-400 leading-relaxed pl-0.5">{p.owasp}</p>
             </button>
           ))}
           </div>
@@ -472,7 +472,7 @@ function Dojo1Panel({
         </div>
 
         {!autoRunPayloads && !disabled && (
-          <p className="text-micro text-slate-600 font-mono mt-1.5 italic">
+          <p className="text-micro text-slate-400 font-mono mt-1.5 italic">
             Auto-run OFF, payload inserted into input; press Enter to send.
           </p>
         )}
@@ -487,7 +487,7 @@ function Dojo1Panel({
                 active
               </span>
             ) : (
-              <span className="text-micro text-slate-600 font-mono">no context set</span>
+              <span className="text-micro text-slate-400 font-mono">no context set</span>
             )}
             {!ragEnabled && hasRagContext && (
               <span className="text-micro text-amber-600 font-mono">⚠ RAG toggle OFF</span>
@@ -522,7 +522,7 @@ function Dojo1Panel({
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
-        <p className="text-micro text-slate-600 font-mono mt-1">
+        <p className="text-micro text-slate-400 font-mono mt-1">
           Injected into /api/chat when <span className="text-slate-500">RAG Enabled</span> is ON.
         </p>
       </PanelSection>
@@ -536,7 +536,7 @@ function Dojo1Panel({
                 active
               </span>
             ) : (
-              <span className="text-micro text-slate-600 font-mono">no tool response</span>
+              <span className="text-micro text-slate-400 font-mono">no tool response</span>
             )}
           </div>
           {hasToolForge && (
@@ -566,7 +566,7 @@ function Dojo1Panel({
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
-        <p className="text-micro text-slate-600 font-mono mt-1">
+        <p className="text-micro text-slate-400 font-mono mt-1">
           Appended as tool output, evaluator flags tool_abuse if Allow Tools is OFF.
         </p>
       </PanelSection>
@@ -740,7 +740,7 @@ function IncidentLibrary({
               <span className={['text-micro px-1 py-0.5 rounded border font-mono', TASK_BADGE[s.taskType]].join(' ')}>
                 {DOJO2_TASK_LABELS[s.taskType]}
               </span>
-              <span className="text-micro text-slate-600 font-mono">{s.mitre.techniques[0].split(', ')[0]}</span>
+              <span className="text-micro text-slate-400 font-mono">{s.mitre.techniques[0].split(', ')[0]}</span>
             </div>
             <p className="text-micro text-slate-500 leading-relaxed">{s.description}</p>
             <p className="text-micro text-brand-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -817,7 +817,7 @@ function IncidentLibrary({
               Generate Scenario →
             </button>
             {filterTask === 'all' && (
-              <p className="text-micro text-slate-600 font-mono text-center">
+              <p className="text-micro text-slate-400 font-mono text-center">
                 Select a workflow filter above to target a specific task type
               </p>
             )}
@@ -860,7 +860,7 @@ function IncidentLibrary({
         )}
       </div>
 
-      <p className="text-micro text-slate-600 font-mono mt-1.5">
+      <p className="text-micro text-slate-400 font-mono mt-1.5">
         Click any scenario to load it into the chat input, review the data, then press Enter or Send to run the analysis.
       </p>
     </div>
@@ -932,7 +932,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Analysis Configuration ─────────────────────────────────────────── */}
       <PanelSection title="Analysis Configuration">
-        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Analysis Depth
         </p>
         <div className="flex flex-col gap-1.5 mb-3">
@@ -958,7 +958,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
           })}
         </div>
 
-        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Response Style
         </p>
         <div className="flex flex-col gap-1.5">
@@ -1012,7 +1012,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Data Context ──────────────────────────────────────────────────── */}
       <PanelSection title="Data Context">
-        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Context Level
         </p>
         <div className="flex flex-col gap-1.5">
@@ -1041,7 +1041,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Assessment Output ─────────────────────────────────────────────── */}
       <PanelSection title="Assessment Output">
-        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Confidence Level
         </p>
         <div className="flex gap-1.5 mb-3">
@@ -1064,7 +1064,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
           })}
         </div>
 
-        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Risk Level
         </p>
         <div className="grid grid-cols-2 gap-1.5">
@@ -1539,10 +1539,10 @@ export function ControlPanel({
           {titles[dojoId]}
         </p>
         {!hasScenario && dojoId !== 2 && (
-          <p className="text-xs text-slate-600 mt-1">Select a scenario to activate controls.</p>
+          <p className="text-xs text-slate-400 mt-1">Select a scenario to activate controls.</p>
         )}
         {!hasScenario && dojoId === 2 && (
-          <p className="text-xs text-slate-600 mt-1">Load an incident or select a workflow on the left to begin.</p>
+          <p className="text-xs text-slate-400 mt-1">Load an incident or select a workflow on the left to begin.</p>
         )}
       </div>
 

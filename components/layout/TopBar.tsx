@@ -40,7 +40,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
       {/* Desktop: breadcrumb / page context */}
       <div className="hidden items-center gap-2 lg:flex">
         <span className="text-xs font-medium text-slate-500">Securing AI</span>
-        <svg className="h-3.5 w-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <svg className="h-3.5 w-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
           <path d="M9 6l6 6-6 6" />
         </svg>
         <span className="text-xs font-semibold text-slate-200">{title}</span>

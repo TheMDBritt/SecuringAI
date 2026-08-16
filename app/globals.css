@@ -20,9 +20,12 @@
   --surface-raised: #111a2e;  /* cards on panels */
   --border:         #1e293b;
   --border-strong:  #334155;
-  --text:           #e2e8f0;
-  --text-muted:     #94a3b8;
-  --text-faint:     #64748b;
+  /* Three text weights, all of which clear WCAG AA against the surfaces above.
+     There is deliberately no fourth step: slate-600 and slate-700 measured 2.5
+     and 1.8 against the page ground, and were being used for captions. */
+  --text:           #e2e8f0;  /* 15.3:1 */
+  --text-muted:     #cbd5e1;  /* 12.7:1 */
+  --text-faint:     #94a3b8;  /*  7.3:1 */
 
   --accent:         #22d3ee;  /* interactive, brand, active state */
   --accent-strong:  #06b6d4;

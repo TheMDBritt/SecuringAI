@@ -148,7 +148,7 @@ export default function AboutPage() {
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
                   <div className="text-2xs text-slate-400 mt-0.5">{label}</div>
-                  <div className="text-micro text-slate-600 mt-0.5">{sub}</div>
+                  <div className="text-micro text-slate-400 mt-0.5">{sub}</div>
                 </div>
               ))}
             </div>
@@ -200,7 +200,7 @@ export default function AboutPage() {
                 >
                   <div className="shrink-0 w-16">
                     <span className={`${d.color} font-mono font-bold text-xs`}>Dojo {dojoId}</span>
-                    <div className="text-micro font-mono text-slate-600 mt-0.5">
+                    <div className="text-micro font-mono text-slate-400 mt-0.5">
                       {SCENARIO_COUNT_BY_DOJO[dojoId]}s
                     </div>
                   </div>
@@ -271,7 +271,7 @@ export default function AboutPage() {
             </div>
             <div className="rounded-lg border border-slate-800 bg-slate-900/40 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-800">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-widest">Quiz flow</p>
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-widest">Quiz flow</p>
               </div>
               <div className="px-4 py-3.5 space-y-3">
                 {[
@@ -281,7 +281,7 @@ export default function AboutPage() {
                   { step: '04', text: 'Per-domain score breakdown + weak area targeting' },
                 ].map(({ step, text }) => (
                   <div key={step} className="flex gap-3 items-start">
-                    <span className="font-mono text-micro text-slate-700 shrink-0 mt-0.5">{step}</span>
+                    <span className="font-mono text-micro text-slate-500 shrink-0 mt-0.5">{step}</span>
                     <span className="text-xs text-slate-400">{text}</span>
                   </div>
                 ))}
@@ -314,7 +314,7 @@ export default function AboutPage() {
               </span>
             ))}
           </div>
-          <p className="text-2xs text-slate-600 leading-relaxed mt-5">
+          <p className="text-2xs text-slate-400 leading-relaxed mt-5">
             Securing AI is independent and unaffiliated with any certification provider.
             Cross-check exam objectives with official provider materials before scheduling.
           </p>

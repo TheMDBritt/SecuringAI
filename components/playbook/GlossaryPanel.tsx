@@ -61,9 +61,9 @@ export default function GlossaryPanel() {
           className="flex-1 bg-transparent text-sm text-slate-200 placeholder-slate-600 focus:outline-none"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="text-slate-600 hover:text-slate-400 text-xs">✕</button>
+          <button onClick={() => setSearch('')} className="text-slate-400 hover:text-slate-400 text-xs">✕</button>
         )}
-        <span className="text-micro text-slate-600 font-mono">{certFiltered.length} terms</span>
+        <span className="text-micro text-slate-400 font-mono">{certFiltered.length} terms</span>
       </div>
 
       {/* Cert filter */}
@@ -76,7 +76,7 @@ export default function GlossaryPanel() {
               'text-micro font-mono px-2 py-0.5 rounded border transition-colors',
               certFilter === c
                 ? (CERT_BADGE[c] ?? 'bg-brand-500/20 text-brand-300 border-brand-500/30')
-                : 'text-slate-600 border-slate-700 hover:text-slate-400 hover:border-slate-600',
+                : 'text-slate-400 border-slate-700 hover:text-slate-400 hover:border-slate-600',
             ].join(' ')}
           >
             {c}
@@ -90,7 +90,7 @@ export default function GlossaryPanel() {
           onClick={() => setJump('')}
           className={[
             'text-micro font-mono px-1.5 py-0.5 rounded transition-colors',
-            !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-600 hover:text-slate-400',
+            !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-400 hover:text-slate-400',
           ].join(' ')}
         >
           All
@@ -108,7 +108,7 @@ export default function GlossaryPanel() {
                   ? 'bg-brand-500/20 text-brand-300'
                   : has
                     ? 'text-slate-500 hover:text-slate-300'
-                    : 'text-slate-800 cursor-default',
+                    : 'text-slate-500/40 cursor-default',
               ].join(' ')}
             >
               {l}
@@ -120,7 +120,7 @@ export default function GlossaryPanel() {
       {/* Term list */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2">
         {filtered.length === 0 && (
-          <p className="text-sm text-slate-600 font-mono mt-8 text-center">No terms match your search.</p>
+          <p className="text-sm text-slate-400 font-mono mt-8 text-center">No terms match your search.</p>
         )}
         {filtered.map((term) => {
           const isOpen = expanded === term.term;
@@ -145,7 +145,7 @@ export default function GlossaryPanel() {
                   )}
                 </div>
                 <svg
-                  className={`w-4 h-4 text-slate-600 shrink-0 mt-0.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-slate-400 shrink-0 mt-0.5 transition-transform ${isOpen ? 'rotate-180' : ''}`}
                   fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -171,7 +171,7 @@ export default function GlossaryPanel() {
                   )}
                   {term.related.length > 0 && (
                     <div className="mt-3">
-                      <span className="text-micro font-mono text-slate-600 uppercase tracking-wide">Related: </span>
+                      <span className="text-micro font-mono text-slate-400 uppercase tracking-wide">Related: </span>
                       <span className="text-2xs text-brand-400">{term.related.join(' · ')}</span>
                     </div>
                   )}

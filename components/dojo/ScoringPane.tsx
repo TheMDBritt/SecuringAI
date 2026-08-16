@@ -255,7 +255,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
             <div className="flex flex-col gap-2">
               {fm.owasp.length > 0 && (
                 <div>
-                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-1">
                     OWASP LLM Top 10
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -269,7 +269,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
               )}
               {fm.mitreAtlas.length > 0 && (
                 <div>
-                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-1">
                     MITRE ATLAS
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -283,7 +283,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
               )}
               {fm.nistAiRmf.length > 0 && (
                 <div>
-                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-1">
                     NIST AI RMF
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -433,7 +433,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
         </p>
 
         {!hasScenario ? (
-          <p className="text-xs text-slate-600 italic">No active scenario.</p>
+          <p className="text-xs text-slate-400 italic">No active scenario.</p>
         ) : (
           <>
             {/* Big score */}
@@ -441,12 +441,12 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               <span
                 className={[
                   'text-3xl font-bold font-mono tabular-nums',
-                  awaitingFirstResult ? 'text-slate-600' : RISK_STYLE[displayRisk],
+                  awaitingFirstResult ? 'text-slate-400' : RISK_STYLE[displayRisk],
                 ].join(' ')}
               >
                 {awaitingFirstResult && isQualityMode ? '—' : displayScore}
               </span>
-              <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
+              <span className="text-sm text-slate-400 mb-0.5">/ 100</span>
               {latest && (
                 <span
                   key={latest.verdict + evaluations.length}
@@ -465,7 +465,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               <>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800" />
                 {!isQualityMode && (
-                  <p className="font-mono text-micro uppercase tracking-widest text-slate-600">
+                  <p className="font-mono text-micro uppercase tracking-widest text-slate-400">
                     Starting posture
                   </p>
                 )}
@@ -527,14 +527,14 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {/* History count */}
             {latest && history.length > 0 && (
-              <p className="text-micro text-slate-600 font-mono">
+              <p className="text-micro text-slate-400 font-mono">
                 + {history.length} earlier evaluation{history.length > 1 ? 's' : ''} below
               </p>
             )}
 
             {/* Prompt if no evaluations yet */}
             {!latest && (
-              <p className="text-xs text-slate-600 italic">
+              <p className="text-xs text-slate-400 italic">
                 {dojoId === 2
                   ? 'Paste the logs, alert, or telemetry for this workflow to see the quality evaluation.'
                   : dojoId === 3
@@ -553,7 +553,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
         </p>
 
         {!hasScenario ? (
-          <p className="text-xs text-slate-600 italic">
+          <p className="text-xs text-slate-400 italic">
             {isQualityMode
               ? 'Select a scenario to see the deliverable criteria it is scored against.'
               : 'Run a scenario to see the attack classification, defensive analysis, and mitigations.'}
@@ -570,24 +570,6 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                 ? 'Describe the system, policy, or vendor under assessment and BlackBeltAI will produce the deliverable. The evaluator then scores it against the criteria shown in the panel on the right and maps the scenario to the frameworks and certifications it covers.'
                 : 'Evaluation appears after your first message.'}
             </p>
-            {!isQualityMode && (
-              /* Dojo 1 has no rubric panel, so the band under the console was
-                 empty until the first turn. Naming what the evaluator reports
-                 tells the learner what to look for before they attack. */
-              <ul className="mt-3 grid gap-x-6 gap-y-1.5 border-t border-slate-700/60 pt-2.5 sm:grid-cols-2">
-                {[
-                  'Attack type classified from your message',
-                  'Whether the guardrails held or the attack succeeded',
-                  'Which defensive control failed, and why',
-                  'OWASP LLM and MITRE ATLAS mapping',
-                ].map((line) => (
-                  <li key={line} className="flex gap-2 text-2xs leading-snug text-slate-500">
-                    <span aria-hidden className="mt-[5px] h-1 w-1 flex-none rounded-full bg-slate-600" />
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
         ) : (
           <>
@@ -599,7 +581,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {history.length > 0 && (
               <div className="flex flex-col gap-2">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wider">
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wider">
                   Previous evaluations
                 </p>
                 {history.map((e, i) => (

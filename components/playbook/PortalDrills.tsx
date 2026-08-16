@@ -196,7 +196,7 @@ export default function PortalDrills() {
                   ))}
                 </div>
               )}
-              <div className="flex items-center justify-between text-micro font-mono text-slate-600">
+              <div className="flex items-center justify-between text-micro font-mono text-slate-400">
                 <span>{d.steps.length} steps</span>
                 <span className="text-brand-400">Start drill →</span>
               </div>
@@ -245,7 +245,7 @@ export default function PortalDrills() {
 
         {/* Progress */}
         <div className="mb-4">
-          <div className="flex items-center justify-between text-micro font-mono text-slate-600 mb-1">
+          <div className="flex items-center justify-between text-micro font-mono text-slate-400 mb-1">
             <span>Step {stepIdx + 1} of {activeDrill.steps.length}</span>
             <span>{Math.round(progress)}%</span>
           </div>
@@ -293,7 +293,7 @@ export default function PortalDrills() {
                 mark = '\u2717';
                 srLabel = 'Your answer, incorrect.';
               } else {
-                style = 'border-slate-700/50 text-slate-600 opacity-60';
+                style = 'border-slate-700/50 text-slate-400 opacity-60';
               }
             }
             return (
@@ -317,7 +317,7 @@ export default function PortalDrills() {
         {/* Reveal */}
         {pick !== null && (
           <div className="border border-slate-700 rounded-lg bg-slate-800/40 p-3 mb-4">
-            <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+            <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1">Why</p>
             <p className="text-xs text-slate-300 leading-relaxed">{step.explanation}</p>
           </div>
         )}
@@ -357,7 +357,7 @@ export default function PortalDrills() {
 
         {/* Step-by-step recap */}
         <div className="space-y-2 mb-6">
-          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Recap</p>
+          <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-2">Recap</p>
           {activeDrill.steps.map((s, i) => {
             const ok = picks[i] === s.correct;
             return (

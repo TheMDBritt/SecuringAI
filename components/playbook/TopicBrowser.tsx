@@ -102,7 +102,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         ].join(' ')}
       >
         <div className="px-3 py-2 border-b border-slate-700">
-          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Categories</p>
+          <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">Categories</p>
         </div>
         <div className="flex-1 overflow-y-auto">
           {CATEGORIES.map((cat) => {
@@ -121,7 +121,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 ].join(' ')}
               >
                 <span className="truncate">{cat}</span>
-                <span className="text-micro font-mono text-slate-600 shrink-0">{count}</span>
+                <span className="text-micro font-mono text-slate-400 shrink-0">{count}</span>
               </button>
             );
           })}
@@ -131,7 +131,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         {articlesForCategory.length > 0 && (
           <div className="border-t border-slate-700">
             <div className="px-3 py-2 border-b border-slate-700">
-              <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Articles</p>
+              <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">Articles</p>
             </div>
             {articlesForCategory.map((article) => (
               <button
@@ -166,7 +166,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         </button>
         {!selectedArticle ? (
           <div className="flex items-center justify-center h-full">
-            <p className="text-slate-600 font-mono text-sm">Select an article to read</p>
+            <p className="text-slate-400 font-mono text-sm">Select an article to read</p>
           </div>
         ) : (
           <>
@@ -191,7 +191,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
               <h2 className="text-lg font-bold text-slate-100">{selectedArticle.title}</h2>
               {selectedArticle.vocab.length > 0 && (
                 <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                  <span className="text-micro font-mono text-slate-600">Key terms:</span>
+                  <span className="text-micro font-mono text-slate-400">Key terms:</span>
                   {selectedArticle.vocab.map((v) => (
                     <span key={v} className="text-micro font-mono text-brand-400/70 hover:text-brand-400 cursor-default">
                       {v}

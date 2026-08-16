@@ -14,7 +14,7 @@ import { useTabList } from '@/components/hooks/useTabList';
 // ssr is left on so each section still server-renders when linked directly.
 const loading = () => (
   <div className="flex h-full items-center justify-center p-8">
-    <p className="text-xs font-mono text-slate-600" role="status" aria-live="polite">
+    <p className="text-xs font-mono text-slate-400" role="status" aria-live="polite">
       Loading section...
     </p>
   </div>
@@ -99,8 +99,8 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
       <div className="flex shrink-0 flex-col gap-2 border-b border-slate-700 bg-slate-900 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm font-semibold text-slate-100 shrink-0">Playbook</span>
-          <span className="text-slate-700 text-xs shrink-0">/</span>
-          <span className="text-micro font-mono text-slate-600 shrink-0 hidden sm:block">
+          <span className="text-slate-500 text-xs shrink-0">/</span>
+          <span className="text-micro font-mono text-slate-400 shrink-0 hidden sm:block">
             {activeSection?.desc ?? ''}
           </span>
           {certFilter && (
@@ -110,7 +110,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               </span>
               <button
                 onClick={() => setCertFilter('')}
-                className="text-micro text-slate-600 hover:text-slate-400 leading-none"
+                className="text-micro text-slate-400 hover:text-slate-400 leading-none"
                 aria-label="Clear cert filter"
               >
                 ×
@@ -142,7 +142,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               {s.count && (
                 <span className={[
                   'text-micro font-mono',
-                  section === s.id ? 'text-brand-500/60' : 'text-slate-700',
+                  section === s.id ? 'text-brand-500/60' : 'text-slate-500',
                 ].join(' ')}>
                   {s.count}
                 </span>

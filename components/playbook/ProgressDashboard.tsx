@@ -48,7 +48,7 @@ function formatDate(ms: number): string {
 
 function Sparkline({ points }: { points: number[] }) {
   if (points.length < 2) {
-    return <div className="h-10 flex items-center text-micro font-mono text-slate-600">need ≥ 2 sessions for trend</div>;
+    return <div className="h-10 flex items-center text-micro font-mono text-slate-400">need ≥ 2 sessions for trend</div>;
   }
   const w = 220;
   const h = 40;
@@ -206,12 +206,12 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Progress</h2>
-            <p className="text-2xs font-mono text-slate-600 mt-0.5">
+            <p className="text-2xs font-mono text-slate-400 mt-0.5">
               Session history · per-question accuracy · weak-topic heatmap · 90-day rolling window
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-micro font-mono text-slate-600 uppercase tracking-wide">Cert</label>
+            <label className="text-micro font-mono text-slate-400 uppercase tracking-wide">Cert</label>
             <select
               value={cert}
               onChange={(e) => setCert(e.target.value)}
@@ -248,7 +248,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
         {empty ? (
           <div className="border border-slate-800 rounded-lg p-8 text-center">
             <p className="text-sm text-slate-300 mb-1">No quiz sessions yet.</p>
-            <p className="text-2xs font-mono text-slate-600">
+            <p className="text-2xs font-mono text-slate-400">
               Take a quiz, your progress will appear here.
             </p>
           </div>
@@ -268,12 +268,12 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             {/* Trend sparkline */}
             <div className="border border-slate-800 rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Trend, last 10 sessions</p>
-                <p className="text-micro font-mono text-slate-600">oldest → newest</p>
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">Trend, last 10 sessions</p>
+                <p className="text-micro font-mono text-slate-400">oldest → newest</p>
               </div>
               <Sparkline points={summary.trend} />
               {summary.trend.length >= 2 && (
-                <p className="text-micro font-mono text-slate-600 mt-1">
+                <p className="text-micro font-mono text-slate-400 mt-1">
                   {summary.trend[0]}% → {summary.trend[summary.trend.length - 1]}%
                   {summary.trend[summary.trend.length - 1] > summary.trend[0] && <span className="ml-2 text-emerald-400">▲ improving</span>}
                   {summary.trend[summary.trend.length - 1] < summary.trend[0] && <span className="ml-2 text-amber-400">▼ regressing</span>}
@@ -286,7 +286,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
 
               {/* Recent sessions */}
               <div className="border border-slate-800 rounded-lg">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide px-4 pt-3 pb-2 border-b border-slate-800">
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide px-4 pt-3 pb-2 border-b border-slate-800">
                   Recent sessions
                 </p>
                 <div className="divide-y divide-slate-800/60">
@@ -304,15 +304,15 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                             <span className={`font-mono font-bold ${pctColor(pct)}`}>{pct}%</span>
                             <span className="text-slate-300">{s.correct}/{s.count}</span>
                             {s.examMode && <span className="text-micro font-mono px-1 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/30">exam</span>}
-                            {s.skipped > 0 && <span className="text-micro font-mono text-slate-600">· {s.skipped} skipped</span>}
+                            {s.skipped > 0 && <span className="text-micro font-mono text-slate-400">· {s.skipped} skipped</span>}
                           </div>
-                          <p className="text-micro font-mono text-slate-600 mt-0.5 truncate">
+                          <p className="text-micro font-mono text-slate-400 mt-0.5 truncate">
                             {s.cert} · {s.category} · {s.difficulty}
                           </p>
                         </div>
                         <span className="flex items-center gap-2 shrink-0">
-                          <span className="text-micro font-mono text-slate-600">{formatDate(s.startedAt)}</span>
-                          <span className="text-slate-600 text-micro">→</span>
+                          <span className="text-micro font-mono text-slate-400">{formatDate(s.startedAt)}</span>
+                          <span className="text-slate-400 text-micro">→</span>
                         </span>
                       </button>
                     );
@@ -322,11 +322,11 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
 
               {/* Topic heatmap */}
               <div className="border border-slate-800 rounded-lg">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide px-4 pt-3 pb-2 border-b border-slate-800">
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide px-4 pt-3 pb-2 border-b border-slate-800">
                   Accuracy by topic
                 </p>
                 {topics.length === 0 ? (
-                  <p className="text-2xs font-mono text-slate-600 px-4 py-4">No data for this cert scope.</p>
+                  <p className="text-2xs font-mono text-slate-400 px-4 py-4">No data for this cert scope.</p>
                 ) : (
                   <div className="px-4 py-3 space-y-2">
                     {topics.slice(0, 12).map((t) => (
@@ -335,7 +335,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                           <span className="text-2xs text-slate-300 truncate max-w-[70%]">{t.category}</span>
                           <span className="text-micro font-mono text-slate-500">
                             <span className={pctColor(t.accuracy)}>{t.accuracy}%</span>
-                            <span className="text-slate-700"> · {t.right}/{t.seen}</span>
+                            <span className="text-slate-500"> · {t.right}/{t.seen}</span>
                           </span>
                         </div>
                         <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
@@ -351,11 +351,11 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             {/* Per-question table */}
             <div className="border border-slate-800 rounded-lg">
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-800">
-                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">
+                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">
                   Per-question stats, {perQRows.length} question{perQRows.length === 1 ? '': 's'} you&rsquo;ve seen
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="text-micro font-mono text-slate-700 mr-1">sort</span>
+                  <span className="text-micro font-mono text-slate-500 mr-1">sort</span>
                   {(['accuracy', 'seen', 'last'] as SortKey[]).map((k) => (
                     <button
                       key={k}
@@ -375,7 +375,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
               <div className="max-h-[420px] overflow-y-auto">
                 <table className="w-full text-xs">
                   <thead className="sticky top-0 bg-slate-900 border-b border-slate-800/50">
-                    <tr className="text-left text-micro font-mono text-slate-600 uppercase tracking-wide">
+                    <tr className="text-left text-micro font-mono text-slate-400 uppercase tracking-wide">
                       <th className="px-3 py-2">Question</th>
                       <th className="px-3 py-2 text-right">Accuracy</th>
                       <th className="px-3 py-2 text-right">Seen</th>
@@ -396,14 +396,14 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                           >
                             <td className="px-3 py-2 max-w-md">
                               <p className="text-slate-300 line-clamp-2 flex items-start gap-2">
-                                <span className="text-slate-600 text-micro pt-0.5">{isOpen ? '▾' : '▸'}</span>
+                                <span className="text-slate-400 text-micro pt-0.5">{isOpen ? '▾' : '▸'}</span>
                                 <span>{r.question}</span>
                               </p>
-                              <p className="text-micro font-mono text-slate-600 mt-0.5 ml-4">{r.category} · {r.topic}</p>
+                              <p className="text-micro font-mono text-slate-400 mt-0.5 ml-4">{r.category} · {r.topic}</p>
                             </td>
                             <td className="px-3 py-2 text-right">
                               <span className={`font-mono font-bold ${pctColor(r.accuracy)}`}>{r.accuracy}%</span>
-                              <span className="text-micro font-mono text-slate-700 ml-1">{r.right}/{r.seen}</span>
+                              <span className="text-micro font-mono text-slate-500 ml-1">{r.right}/{r.seen}</span>
                             </td>
                             <td className="px-3 py-2 text-right font-mono text-slate-500">{r.seen}</td>
                             <td className="px-3 py-2 text-right font-mono text-slate-500">{formatDate(r.lastSeenAt)}</td>
@@ -428,7 +428,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                                     );
                                   })}
                                 </div>
-                                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+                                <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1">Why</p>
                                 <p className="text-xs text-slate-400 leading-relaxed mb-3">{q.explanation}</p>
                                 {onLaunchQuiz && (
                                   <button
@@ -459,9 +459,9 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
 function StatCell({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
   return (
     <div className="border border-slate-800 rounded-lg p-3">
-      <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">{label}</p>
+      <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">{label}</p>
       <p className={`text-2xl font-bold font-mono mt-1 ${color}`}>{value}</p>
-      <p className="text-micro font-mono text-slate-600 mt-0.5 truncate">{sub}</p>
+      <p className="text-micro font-mono text-slate-400 mt-0.5 truncate">{sub}</p>
     </div>
   );
 }
@@ -511,7 +511,7 @@ function MiniBar({ label, value, threshold, muted }: { label: string; value: num
     :                            'text-red-400';
   return (
     <div className="w-24">
-      <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">{label}</p>
+      <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">{label}</p>
       <p className={`text-lg font-mono font-bold mt-0.5 ${textColor}`}>{value}%</p>
       <div className="h-1 bg-slate-800 rounded-full overflow-hidden mt-1">
         <div className={`h-full ${barColor} rounded-full`} style={{ width: `${value}%` }} />

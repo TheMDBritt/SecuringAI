@@ -22,7 +22,7 @@ export function Footer() {
             </span>
             <div className="flex flex-wrap gap-1.5 mt-1">
               {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'ISO 42001', 'EU AI Act'].map((f) => (
-                <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-800 text-slate-700">
+                <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-800 text-slate-500">
                   {f}
                 </span>
               ))}
@@ -32,7 +32,7 @@ export function Footer() {
           {/* Navigation */}
           <div className="flex flex-col md:flex-row gap-8">
             <div>
-              <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-2">Platform</p>
+              <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-2">Platform</p>
               <nav className="flex flex-col gap-1.5 text-xs text-slate-500" aria-label="Footer navigation">
                 <Link href="/dojo"     className="hover:text-slate-300 transition-colors duration-150">Dojo</Link>
                 <Link href="/playbook" className="hover:text-slate-300 transition-colors duration-150">Playbook</Link>
@@ -41,7 +41,7 @@ export function Footer() {
               </nav>
             </div>
             <div>
-              <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-2">Legal</p>
+              <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-2">Legal</p>
               <nav className="flex flex-col gap-1.5 text-xs text-slate-500" aria-label="Legal navigation">
                 <Link href="/privacy" className="hover:text-slate-300 transition-colors duration-150">Privacy</Link>
                 <Link href="/terms"   className="hover:text-slate-300 transition-colors duration-150">Terms of use</Link>
@@ -49,7 +49,7 @@ export function Footer() {
               </nav>
             </div>
             <div>
-              <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-2">Certifications</p>
+              <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-2">Certifications</p>
               <div className="flex flex-col gap-1.5 text-xs text-slate-500">
                 <span>CompTIA SecAI+</span>
                 <span>CAISP · EC-Council C|AI Security</span>

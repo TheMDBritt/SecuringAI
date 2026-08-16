@@ -912,3 +912,34 @@ describe('catalog counts match the data they stand in for', () => {
     });
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Text contrast. slate-600 measured 2.5:1 against the app background and
+// slate-700 measured 1.8:1, both far under the 4.5:1 WCAG AA threshold, and
+// both were used for captions and hints rather than decoration. 169 instances.
+// The text ramp stops at slate-400, which clears AA at 7.3:1.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('text colours meet WCAG AA on the app background', () => {
+  function tsxFiles(dir: string): string[] {
+    return readdirSync(join(process.cwd(), dir), { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? tsxFiles(`${dir}/${e.name}`) : e.name.endsWith('.tsx') ? [`${dir}/${e.name}`] : [],
+    );
+  }
+
+  it('uses no text colour below the AA threshold', () => {
+    const offenders: string[] = [];
+    for (const f of [...tsxFiles('app'), ...tsxFiles('components')]) {
+      const text = readFileSync(join(process.cwd(), f), 'utf8');
+      // Only 600 and 700 are checked. slate-800 and slate-900 appear as dark
+      // glyphs on a filled brand or emerald chip, where the contrast runs the
+      // other way, and the background sits on the parent element so it cannot
+      // be verified from the same line.
+      text.split('\n').forEach((line, i) => {
+        for (const m of line.matchAll(/\btext-slate-(600|700)\b/g)) {
+          offenders.push(`${f}:${i + 1} ${m[0]}`);
+        }
+      });
+    }
+    expect(offenders).toEqual([]);
+  });
+});

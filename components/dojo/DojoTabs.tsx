@@ -246,7 +246,7 @@ export function DojoTabs() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-micro text-slate-500 font-mono">{tab.sublabel}</span>
-                <span className={['text-micro font-mono opacity-50', isActive ? '' : 'text-slate-600'].join(' ')}>
+                <span className={['text-micro font-mono opacity-50', isActive ? '' : 'text-slate-400'].join(' ')}>
                   {scenarioCount}s
                 </span>
               </div>
