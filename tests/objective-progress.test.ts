@@ -38,8 +38,8 @@ describe('objective breakdown', () => {
     const data: ProgressData = {
       sessions: [],
       perQ: {
-        [heavy.id]: { timesSeen: 4, timesRight: 1, lastSeen: Date.now() },
-        [light.id]: { timesSeen: 4, timesRight: 1, lastSeen: Date.now() },
+        [heavy.id]: { qId: heavy.id, timesSeen: 4, timesRight: 1, lastSeenAt: Date.now() },
+        [light.id]: { qId: light.id, timesSeen: 4, timesRight: 1, lastSeenAt: Date.now() },
       },
     };
 
@@ -55,7 +55,7 @@ describe('objective breakdown', () => {
     )!;
     const data: ProgressData = {
       sessions: [],
-      perQ: { [q.id]: { timesSeen: 4, timesRight: 3, lastSeen: Date.now() } },
+      perQ: { [q.id]: { qId: q.id, timesSeen: 4, timesRight: 3, lastSeenAt: Date.now() } },
     };
     const stat = objectiveBreakdown(data, 'SecAI', WEIGHTS).find((s) => s.id === 'SecAI:2.6')!;
     expect(stat.attempts).toBe(4);

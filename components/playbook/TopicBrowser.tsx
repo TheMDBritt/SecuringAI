@@ -28,7 +28,8 @@ function useArticle(id: string | null): { article: TopicArticle | null; loading:
     }
     let live = true;
     setLoading(true);
-    fetch(`/api/content?article=${encodeURIComponent(id)}`)
+    // Static file, so this is served from cache after the first read.
+    fetch(`/content/articles/${encodeURIComponent(id)}.json`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
       .then((a: TopicArticle) => {
         articleCache.set(id, a);

@@ -53,11 +53,25 @@ const nextConfig = {
         headers: securityHeaders,
       },
       {
-        // API responses are never cacheable and never embeddable.
+        // API responses are never cacheable and never embeddable. This is the
+        // right default: the chat and evaluate routes carry user text, and the
+        // question routes vary per request. It is also why setting a
+        // Cache-Control header inside a route handler has no effect, the header
+        // set here joins it and no-store wins.
         source: '/api/:path*',
         headers: [
           { key: 'Cache-Control', value: 'no-store, max-age=0' },
           { key: 'X-Robots-Tag', value: 'noindex' },
+        ],
+      },
+      {
+        // Generated study content: identical for every visitor, rebuilt on
+        // every deploy, and addressed by a path that changes when the content
+        // does. Safe to cache hard, which is the reason it is a static file
+        // rather than a route.
+        source: '/content/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=3600, stale-while-revalidate=86400' },
         ],
       },
     ];

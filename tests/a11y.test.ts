@@ -46,3 +46,23 @@ describe('accessibility invariants', () => {
     expect(read('components/layout/AppShell.tsx')).toContain('#main-content');
   });
 });
+
+describe('public API routes bound their own work', () => {
+  const questions = readFileSync(join(process.cwd(), 'app/api/questions/route.ts'), 'utf8');
+  const content = readFileSync(join(process.cwd(), 'app/api/content/route.ts'), 'utf8');
+
+  it('rejects an unknown cert instead of scanning the bank for it', () => {
+    expect(questions).toContain('KNOWN_CERTS');
+  });
+
+  it('caps request size before splitting, not after', () => {
+    // slice() on the result of split() still allocates the whole array first.
+    expect(questions).toMatch(/MAX_IDS_CHARS/);
+    expect(content).toMatch(/MAX_TERMS_CHARS/);
+  });
+
+  it('enforces search limits server-side rather than trusting the client', () => {
+    expect(content).toContain('MAX_QUERY_CHARS');
+    expect(content).toContain('MIN_QUERY_CHARS');
+  });
+});

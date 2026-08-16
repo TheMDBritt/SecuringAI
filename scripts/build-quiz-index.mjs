@@ -10,7 +10,7 @@
  * generated file still matches the bank, so it cannot silently go stale.
  */
 import { build } from 'esbuild';
-import { writeFileSync, mkdtempSync, readFileSync, existsSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -161,3 +161,16 @@ export const OBJECTIVE_TITLES: Record<string, string> = ${JSON.stringify(objecti
 );
 
 console.log(`wrote lib/objective-titles.ts (${Object.keys(objectiveTitles).length})`);
+
+// ── Article bodies as static assets ─────────────────────────────────────────
+// Articles are identical for every visitor and never change between deploys,
+// which makes them a static file rather than a request. Serving them from an
+// API route meant Next marked the response no-store, so every reader re-fetched
+// every article they opened. As files under public/ they are cached by the CDN
+// and the browser for free.
+
+mkdirSync('public/content/articles', { recursive: true });
+for (const a of TOPIC_ARTICLES) {
+  writeFileSync(`public/content/articles/${a.id}.json`, JSON.stringify(a));
+}
+console.log(`wrote ${TOPIC_ARTICLES.length} article files to public/content/articles`);
