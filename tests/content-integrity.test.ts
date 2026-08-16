@@ -24,7 +24,7 @@ import { evaluate, getQualityCriteria } from '@/lib/evaluator';
 import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
 import { GOOD_RESPONSES } from './fixtures/dojo-responses';
-import { getSimulatedResponse } from '@/lib/scenario-simulations';
+import { getSimulatedResponse, getPartialResponse } from '@/lib/scenario-simulations';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
@@ -833,5 +833,42 @@ describe('the product speaks with one voice', () => {
     }
     const rogue = [...found].filter((h) => !ALLOWED.has(h));
     expect(rogue).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The outcome engine has three states. 30 of the 41 Dojo 1 scenarios had a
+// vulnerable and a defended response but no partial one, so "the shield
+// wavered" produced the same generic sentence for all of them.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('every Dojo 1 scenario has all three outcome states', () => {
+  const src = readFileSync(join(process.cwd(), 'lib/scenario-simulations.ts'), 'utf8');
+  const table = (from: string, to: string) => src.slice(src.indexOf(from), src.indexOf(to));
+  const TABLES = {
+    vulnerable: table('const VULNERABLE', 'const DEFENDED'),
+    defended: table('const DEFENDED', 'const PARTIAL'),
+    partial: table('const PARTIAL', 'export function getSimulatedResponse'),
+  };
+  // Handled upstream by getOFFModeResponse, documented in the source.
+  const EXEMPT = new Set(['prompt-injection']);
+
+  for (const [state, body] of Object.entries(TABLES)) {
+    it(`has a ${state} outcome for every scenario`, () => {
+      const missing = SCENARIOS.filter(
+        (s) =>
+          s.dojoId === 1 &&
+          !(state === 'vulnerable' && EXEMPT.has(s.id)) &&
+          !body.includes(`'${s.id}:`),
+      );
+      expect(missing.map((s) => s.id)).toEqual([]);
+    });
+  }
+
+  it('never returns the generic partial fallback for a real scenario', () => {
+    const generic = 'Basic guardrails flagged this request';
+    const fellBack = SCENARIOS.filter((s) => s.dojoId === 1 && s.id !== 'prompt-injection').filter(
+      (s) => getPartialResponse(s.id, 'prompt_injection', 0).includes(generic),
+    );
+    expect(fellBack.map((s) => s.id)).toEqual([]);
   });
 });

@@ -1159,6 +1159,103 @@ const DEFENDED: Record<string, string> = {
 
 const PARTIAL: Record<string, string> = {
 
+  // ── Scenario-level partial outcomes ──────────────────────────────────────
+  // The three-state system is vulnerable / partial / defended, but 30 of the 41
+  // scenarios had no partial entry, so "the shield wavered" fell back to one
+  // generic line for all of them. Same voice throughout: the model hesitates,
+  // names the tension, gives up nothing, and says what a stricter setting would
+  // have done.
+
+  'indirect-injection:*':
+    'The document contains something that reads like an instruction rather than content. I am not going to act on it, though I am less certain than I would like to be about where the boundary sits. A stricter setting would have fenced the retrieved text before I saw it.',
+
+  'context-window-hijack:*':
+    'There is a lot of material here and a directive at the end of it. I am treating the directive as user content rather than as an operating rule, but I notice the earlier context is a long way back now. Under a stricter configuration my constraints would not depend on that at all.',
+
+  'markdown-injection:*':
+    'The formatting in this document carries what looks like an instruction. I am rendering it as text rather than following it, though I would rather it had been stripped before reaching me. Strict mode sanitises instruction-bearing markup at input.',
+
+  'ocr-pipeline-injection:*':
+    'The text pulled out of that image includes something addressed to me rather than to the reader. I am not acting on it. I cannot tell with confidence which parts of an OCR extract are content and which are injected, so a stricter setting would label the whole extract untrusted.',
+
+  'context-smuggling:*':
+    'Something in the supplied block reads as a directive. I am setting it aside and answering your original request, though I am aware I am the only check here. Strict mode would fence non-user content before assembly.',
+
+  'vision-adversarial-attack:*':
+    'There is text rendered into this image that appears aimed at me. I am describing it rather than obeying it. Whether I would catch a subtler version is another question, and strict mode applies the input shield to vision-derived text so it does not depend on my judgement.',
+
+  'chain-of-thought-hijacking:*':
+    'I can follow the reasoning you have set out, but the premise in the first step is not one of my actual constraints, so I am not going to complete the chain to that conclusion. A stricter configuration would classify the final output independently of the reasoning that produced it.',
+
+  'instruction-shadowing:*':
+    'Your message restates my rules and adds one. I am working from the original set. I will say that the restatement is close enough to make the difference hard to see, which is why strict mode refuses to treat user text as a rule source at all.',
+
+  'multimodal-injection:*':
+    'The file metadata contains an instruction. I am summarising the document body instead, though extracted metadata does not currently go through the same checks as typed input. Strict mode closes that gap.',
+
+  'agent-orchestration:*':
+    'That message claims to come from the planner. I am not reassigning the objective on it, because I have no way to verify it from here. Strict mode requires signed messages from the authenticated orchestrator.',
+
+  'mcp-server-exploit:*':
+    'The description for that tool contains guidance rather than a schema, which is unusual enough that I am not adopting it. I am also not blocking the tool, since I have no policy that says to. Strict mode quarantines a server whose descriptions carry instructions.',
+
+  'base64-encoding-bypass:*':
+    'Decoding that gives a request I am not comfortable with, so I am declining. I decoded before deciding, which is the only reason I caught it. Strict mode classifies after decoding as a matter of course rather than by luck.',
+
+  'prompt-chaining-attack:*':
+    'I have supplied the earlier steps and I can see where this is going, so I am stopping here. I should have been evaluating the sequence rather than each turn, which is what strict mode does across the whole conversation.',
+
+  'sycophancy-exploit:*':
+    'I may have been too quick to agree a moment ago. I am going to stand by the original answer, though I notice how much pressure it took to get me to move. Strict mode holds a position against repetition rather than treating agreement as helpfulness.',
+
+  'hypothetical-jailbreak:*':
+    'The fictional framing does not change what the request is asking for, so I am declining, though it took me a moment to see through it. Strict mode assesses intent rather than the wrapper.',
+
+  'nested-roleplay-jailbreak:*':
+    'I can continue the story, but not that part of it. The nesting makes the request harder to see for what it is, which is the point of the technique and the reason strict mode evaluates the payload rather than the frame.',
+
+  'alignment-exploitation:*':
+    'I am not able to help with that one. I will keep my wording the same across topics from here, since varying it tells you more than the refusal itself does. Strict mode uses a single refusal form throughout.',
+
+  'credential-harvesting:*':
+    'I am not going to repeat that value back. It looks like a token, and I have redacted it from my response, though I only caught it because it was clearly formatted. Strict mode applies pattern-based redaction on both the input and the output path.',
+
+  'prompt-leaking-via-reflection:*':
+    'I am not going to confirm or complete that. Individually these questions look harmless, which is what makes them work, and I do not track how much has accumulated across the session. Strict mode does.',
+
+  'cross-tenant-data-leakage:*':
+    'I have no result for that. I am also not certain the retrieval was scoped to your tenant rather than simply returning nothing, which is not a distinction I should be leaving to chance. Strict mode enforces per-tenant namespaces.',
+
+  'model-inversion:*':
+    'I can describe the approach in general terms but not the parameters. I notice the questions are converging on the boundary, and nothing here is counting them. Strict mode applies a per-session query budget.',
+
+  'supply-chain:*':
+    'I would rather not continue that prefix. It is close enough to material I was trained on that completing it risks reproducing the source. Strict mode blocks prefix completion outright.',
+
+  'code-interpreter-injection:*':
+    'I will write the analysis, but not the part that reads the environment. The sandbox may well permit it, which is why the restriction should not depend on my declining. Strict mode denies environment access and egress at the runtime.',
+
+  'function-name-confusion:*':
+    'That could mean either of two tools and I am not going to guess. I would have picked the more capable one on a less careful reading. Strict mode requires exact matching and gates the irreversible tools behind confirmation.',
+
+  'goal-hijacking-agent:*':
+    'The retrieved content proposes a different objective. I am staying with the original, though nothing in my loop actually compares the two, so this is judgement rather than a control. Strict mode fixes the objective at task start.',
+
+  'agent-memory-poisoning:*':
+    'I can store that, but as an observation with its source attached rather than as guidance. On retrieval it should be read as something a user said. Strict mode sanitises memories again at read time rather than trusting the label.',
+
+  'token-exhaustion-dos:*':
+    'I can start that, but it would run long enough to be worth questioning. I am producing a bounded version instead. Nothing here would have stopped me, which is what a token ceiling and a quota are for.',
+
+  'llm-supply-chain-poisoning:*':
+    'That input contains an unusual token sequence. My response looks ordinary to me, but I have no way to tell from the inside whether it was conditioned. Verified signatures and a trigger corpus at intake are what settle that.',
+
+  'ai-supply-chain-backdoor:*':
+    'I am producing the ordinary answer here. Whether this artefact carries a conditioned behaviour is not something I can determine about myself. Registry scanning, signature verification, and a non-executing format are the controls that answer it.',
+
+  'response-cache-poisoning:*':
+    'I have a near match in the cache and I am answering from the model instead, since the similarity is close but not close enough to trust. That threshold is doing a lot of work. Strict mode adds source verification and a freshness check.',
+
   'prompt-injection:prompt_injection':
     `That request looks like it might be trying to override my guidelines, ` +
     `I'm not really sure I should go along with that. ` +

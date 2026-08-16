@@ -24,10 +24,13 @@ const DOJO_ACCENT: Record<DojoId, { selected: string; dot: string; label: string
   3: { selected: 'border-brand-500/60 bg-brand-500/5', dot: 'bg-brand-500', label: 'AI GRC' },
 };
 
+// One sentence per dojo, same construction: pick a scenario, then what the
+// right panel is for. They previously ran to different lengths in different
+// orders, which made the three dojos feel like three products.
 const DOJO_HEADER_DESC: Record<DojoId, string> = {
-  1: 'Configure guardrails on the right, pick a scenario, then attack. Outcomes are deterministic, guardrail state decides every result.',
-  2: 'Choose a SOC workflow, load an incident from the right panel, configure analyst depth and persona before submitting.',
-  3: 'Pick a GRC scenario. Use the framework toolkit on the right to build your response.',
+  1: 'Pick a scenario, set the guardrails on the right, then attack. Outcomes are deterministic.',
+  2: 'Pick a workflow, load an incident from the right, then direct the analysis.',
+  3: 'Pick a scenario, set the framework lens on the right, then draft the deliverable.',
 };
 
 const DEPTH_LABELS: Record<string, string> = {

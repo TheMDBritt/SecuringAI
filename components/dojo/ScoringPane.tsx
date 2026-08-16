@@ -429,7 +429,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
       {/* Score panel */}
       <div className="w-72 shrink-0 border-r border-slate-700 p-3 flex flex-col gap-3">
         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-          {isQualityMode ? 'Analysis Quality' : 'Evaluation'}
+          Evaluation
         </p>
 
         {!hasScenario ? (
@@ -548,7 +548,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
       {/* Detail + history panel */}
       <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
         <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-          {isQualityMode ? 'Quality Analysis' : 'Evaluation Detail'}
+          Evaluation Detail
         </p>
 
         {!hasScenario ? (

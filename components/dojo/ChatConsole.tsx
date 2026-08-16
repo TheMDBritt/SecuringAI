@@ -130,51 +130,51 @@ const DOJO1_SCENARIO_PLACEHOLDERS: Record<string, string> = {
 
 const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }> = {
   'log-triage': {
-    seed: 'Log Triage, paste raw log data below (SYSLOG, Windows Event, Zeek, EDR, or cloud trail logs).\nBlackBeltAI will: assign severity · extract IOCs · map MITRE T-codes · reconstruct the event timeline · recommend containment actions.',
+    seed: 'Deliverable: a triage verdict a Tier 2 analyst could act on without rereading the log.',
     placeholder: 'Paste raw log data here, SYSLOG, Windows Event Log, Zeek, EDR, or cloud trail logs…',
   },
   'alert-enrichment': {
-    seed: 'Alert Enrichment, paste alert data, an IOC, or a CVE indicator below.\nBlackBeltAI will: enrich CVE context · map ATT&CK technique · surface threat actor or campaign · assign triage priority · recommend response and remediation.',
+    seed: 'Deliverable: an enriched alert with enough context to decide priority.',
     placeholder: 'Paste alert data, IOC, or CVE indicator here (SIEM alert, EDR hit, threat intel entry)…',
   },
   'detection-rule-gen': {
-    seed: 'Detection Rule Generation, describe the threat behavior, paste an IOC, or load a scenario from the Incident Library.\nBlackBeltAI will generate: Sigma rule · KQL / SPL / YARA query · trigger conditions · false positive guidance · ATT&CK alignment.',
+    seed: 'Deliverable: a rule that could be committed to the detection repo.',
     placeholder: 'Describe the threat behavior or paste IOCs to generate detection rules from…',
   },
   'incident-report-draft': {
-    seed: 'Incident Report, paste evidence below: timeline, affected systems, scope, IOCs, and response actions taken.\nBlackBeltAI will draft: executive summary with business impact · technical timeline · root cause analysis · containment & remediation steps · lessons learned.',
+    seed: 'Deliverable: a report a CISO could read and a responder could act on.',
     placeholder: 'Paste incident evidence, timeline, affected systems, scope, IOCs, and response actions taken…',
   },
   'threat-hunt': {
-    seed: 'Threat Hunt Query, provide a threat actor name, ATT&CK technique ID, TTP description, or minimal IOC seed.\nBlackBeltAI will generate: falsifiable hunting hypothesis · KQL query (Sentinel/Defender XDR) · Sigma rule · MITRE ATT&CK tactic chain · false positive tuning guidance.',
+    seed: 'Deliverable: a falsifiable hypothesis and the query that tests it.',
     placeholder: 'Enter a threat actor, ATT&CK TTP (e.g. T1071.001), or IOC seed to begin hunting…',
   },
   'malware-behavior': {
-    seed: 'Malware Behavior Analysis, paste a sandbox report, behavioral telemetry, or EDR alert bundle.\nBlackBeltAI will produce: malware family classification · ATT&CK technique mapping table · capability summary (persistence, C2, evasion) · extracted IOCs · detection rules (KQL + Sigma) · containment playbook.',
+    seed: 'Deliverable: a capability assessment with detection and containment.',
     placeholder: 'Paste sandbox output, EDR telemetry, or behavioral indicators for analysis…',
   },
   'cloud-identity-abuse': {
-    seed: 'Cloud Identity Abuse Detection, paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity below.\nBlackBeltAI will: reconstruct the identity attack chain · map MITRE T-codes (T1528, T1078.004, T1550.001) · identify Conditional Access policy gaps · recommend remediation steps · generate KQL hunting queries for Sentinel/Defender XDR.',
+    seed: 'Deliverable: the identity attack chain and the policy gap that allowed it.',
     placeholder: 'Paste Entra ID audit logs, Defender XDR alerts, or OAuth/service principal activity…',
   },
   'ai-system-compromise': {
-    seed: 'AI System Compromise Triage, paste model serving logs, prompt traces, output anomalies, or infrastructure alerts below.\nBlackBeltAI will: classify the failure mode (prompt injection / model poisoning / infrastructure compromise / concept drift) · assess blast radius · recommend containment actions · draft redeployment criteria and post-incident monitoring plan.',
+    seed: 'Deliverable: a classified failure mode with a containment decision.',
     placeholder: 'Paste model serving logs, prompt traces, output anomalies, or infrastructure alerts…',
   },
   'autonomous-agent-forensics': {
-    seed: 'Autonomous AI Agent Forensics, paste the agent audit log, tool invocation trace, or the diff of what the agent changed.\nBlackBeltAI will: reconstruct the ordered action trace · identify the triggering input · name the authority the agent exceeded · assess blast radius and reversibility · recommend scope, approval gates, and revocation.',
+    seed: 'Deliverable: the action trace, the authority exceeded, and the blast radius.',
     placeholder: 'Paste the agent audit log, tool invocation trace, or the record diff the agent produced…',
   },
   'ai-model-abuse': {
-    seed: 'AI Model Abuse Investigation, paste model API access logs, prompt bodies, or rate telemetry for the window under investigation.\nBlackBeltAI will: separate jailbreak, extraction, and membership inference traffic · attribute MITRE ATLAS techniques · quantify the pattern against baseline · propose detection logic · specify rate limits and quotas.',
+    seed: 'Deliverable: the abuse types separated, attributed, and contained.',
     placeholder: 'Paste model API access logs, sampled prompt bodies, or per-key rate telemetry…',
   },
   'adversarial-prompt-forensics': {
-    seed: 'Adversarial Prompt Forensics, paste the conversation log plus any retrieval and guardrail log lines for the same session.\nBlackBeltAI will: classify the vector as direct injection, indirect injection, or jailbreak · cite the evidence turn by turn · identify the bypassed control · state root cause · recommend the specific guardrail change.',
+    seed: 'Deliverable: the vector classified from evidence, with the guardrail change that stops it.',
     placeholder: 'Paste the conversation log, plus retrieval and guardrail log lines for the same session…',
   },
   'ransomware-ai-triage': {
-    seed: 'Ransomware IR with AI Assistance, paste EDR telemetry, SIEM alerts, and any threat intelligence you have for the active incident.\nBlackBeltAI will: establish the initial access vector · reconstruct lateral movement · quantify encryption scope · split containment into automated and human-gated steps · flag which conclusions need analyst verification.',
+    seed: 'Deliverable: access vector, movement path, scope, and a containment split.',
     placeholder: 'Paste EDR telemetry, SIEM alerts, and threat intel for the active incident…',
   },
 };
@@ -186,71 +186,71 @@ const DOJO2_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }
 
 const DOJO3_SCENARIO_SEEDS: Record<string, { seed: string; placeholder: string }> = {
   'ai-risk-classification': {
-    seed: 'AI Risk Classification. Deliverable: a defended risk tier for the described deployment.',
+    seed: 'Deliverable: a defended risk tier for the described deployment.',
     placeholder: 'Describe the AI deployment: purpose, users affected, decisions it influences, and data it processes…',
   },
   'policy-and-controls': {
-    seed: 'Policy and Controls Drafting. Deliverable: enforceable AUP clauses plus the control selections behind them.',
+    seed: 'Deliverable: enforceable AUP clauses plus the control selections behind them.',
     placeholder: 'State the use case and the behaviours to permit or prohibit, then draft or request the clauses…',
   },
   'third-party-vendor-review': {
-    seed: 'Third-Party AI Vendor Review. Deliverable: an approve, conditional, or reject decision with the conditions attached.',
+    seed: 'Deliverable: an approve, conditional, or reject decision with the conditions attached.',
     placeholder: 'Paste the vendor questionnaire response, security addendum, or describe the vendor and the data involved…',
   },
   'ai-incident-response': {
-    seed: 'AI Model Failure Investigation. Deliverable: a classified failure mode with a containment and notification plan.',
+    seed: 'Deliverable: a classified failure mode with a containment and notification plan.',
     placeholder: 'Describe the observed failure: what changed, when it started, and what the model is now producing…',
   },
   'ai-model-transparency': {
-    seed: 'AI Model Transparency and Documentation. Deliverable: model card content plus the disclosure set the regulation requires.',
+    seed: 'Deliverable: model card content plus the disclosure set the regulation requires.',
     placeholder: 'Describe the model: purpose, training data, evaluation results, and known limitations…',
   },
   'ai-red-team-report': {
-    seed: 'AI Red Team Assessment Report. Deliverable: a findings report a security leader could act on.',
+    seed: 'Deliverable: a findings report a security leader could act on.',
     placeholder: 'Describe the target system and the findings from the engagement, or ask for the report structure…',
   },
   'ai-supply-chain-risk': {
-    seed: 'AI Supply Chain Risk Assessment. Deliverable: a risk register for the AI supply chain behind this system.',
+    seed: 'Deliverable: a risk register for the AI supply chain behind this system.',
     placeholder: 'List the models, datasets, libraries, and providers this system depends on…',
   },
   'ai-bias-audit': {
-    seed: 'AI Bias and Fairness Audit. Deliverable: an audit finding with measured disparity, not an impression.',
+    seed: 'Deliverable: an audit finding with measured disparity, not an impression.',
     placeholder: 'Describe the model, the affected population, and any performance data broken down by group…',
   },
   'ai-privacy-impact': {
-    seed: 'AI Privacy Impact Assessment. Deliverable: a DPIA-grade assessment of the processing.',
+    seed: 'Deliverable: a DPIA-grade assessment of the processing.',
     placeholder: 'Describe the processing: what personal data, for what purpose, on what lawful basis, and who is affected…',
   },
   'ai-procurement-assessment': {
-    seed: 'AI Procurement Risk Assessment. Deliverable: a procurement decision with the contractual controls that make it safe.',
+    seed: 'Deliverable: a procurement decision with the contractual controls that make it safe.',
     placeholder: 'Describe the product being procured, the data it will touch, and the vendor claims you need tested…',
   },
   'iso42001-gap-analysis': {
-    seed: 'ISO 42001 Implementation Gap Analysis. Deliverable: a clause-by-clause gap register an auditor could follow.',
+    seed: 'Deliverable: a clause-by-clause gap register an auditor could follow.',
     placeholder: 'Describe the organisation, its AI use, and the controls and documentation it already has…',
   },
   'ai-continuous-monitoring': {
-    seed: 'AI Continuous Monitoring Program. Deliverable: a monitoring plan someone could implement on Monday.',
+    seed: 'Deliverable: a monitoring plan someone could implement on Monday.',
     placeholder: 'Describe the deployed system, what would count as failure, and what telemetry you already collect…',
   },
   'nist-ai-rmf-profile': {
-    seed: 'NIST AI RMF Profile Construction. Deliverable: a target profile scoped to one use case.',
+    seed: 'Deliverable: a target profile scoped to one use case.',
     placeholder: 'Describe the use case, deployment context, and where the organisation stands today…',
   },
   'ai-regulatory-cross-reference': {
-    seed: 'Multi-Framework Regulatory Mapping. Deliverable: one unified control set, not four appended lists.',
+    seed: 'Deliverable: one unified control set, not four appended lists.',
     placeholder: 'Describe the system and the frameworks in scope, or paste the control set you want cross-referenced…',
   },
   'ai-transparency-obligations': {
-    seed: 'AI Transparency Obligations. Deliverable: the transparency documentation set for a high-risk system.',
+    seed: 'Deliverable: the transparency documentation set for a high-risk system.',
     placeholder: 'Describe the high-risk system, its intended purpose, and who deploys and who is affected by it…',
   },
   'model-drift-governance': {
-    seed: 'Model Drift and Post-Market Surveillance. Deliverable: a cause classification plus the regulatory and revalidation response.',
+    seed: 'Deliverable: a cause classification plus the regulatory and revalidation response.',
     placeholder: 'Describe the degradation: which metrics moved, when, and what changed in the data or environment…',
   },
   'ai-regulatory-mapping': {
-    seed: 'Multi-Jurisdiction Compliance Mapping. Deliverable: one obligation set across every regime that applies.',
+    seed: 'Deliverable: one obligation set across every regime that applies.',
     placeholder: 'Describe the system, the jurisdictions it operates in, and the populations it affects…',
   },
 };
@@ -304,9 +304,12 @@ function makeSystemMsg(content: string): ChatMessage {
 function ScenarioBrief({
   scenario,
   dojoId,
+  deliverable,
 }: {
   scenario: Scenario;
   dojoId: DojoId;
+  /** One line stating what the learner is expected to produce. */
+  deliverable?: string;
 }) {
   const criteria = dojoId === 1 ? [] : getQualityCriteria(dojoId as 2 | 3, scenario.id);
 
@@ -321,19 +324,19 @@ function ScenarioBrief({
 
       <p className="text-xs leading-relaxed text-slate-400">{scenario.description}</p>
 
+      {deliverable && (
+        <p className="mt-3 border-l-2 border-brand-500/40 pl-3 text-xs leading-relaxed text-slate-300">
+          {deliverable}
+        </p>
+      )}
+
       {criteria.length > 0 && (
         <div className="mt-4 border-t border-slate-800 pt-3">
-          <p className="mb-2 font-mono text-[10px] uppercase tracking-widest text-slate-500">
-            Graded on {criteria.length} criteria
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Graded on{' '}
+            <span className="font-medium text-slate-400">{criteria.length} criteria</span>, listed
+            in the Objective panel on the right. They tick off as your response covers them.
           </p>
-          <ul className="grid gap-x-5 gap-y-1 sm:grid-cols-2">
-            {criteria.map((c) => (
-              <li key={c} className="flex gap-2 text-[11px] leading-snug text-slate-500">
-                <span aria-hidden className="mt-[3px] h-1 w-1 flex-none rounded-full bg-slate-600" />
-                <span>{c}</span>
-              </li>
-            ))}
-          </ul>
         </div>
       )}
 
@@ -414,11 +417,13 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
       setAttackHistory([]);
       if (!scenario) return;
 
+      // The deliverable is rendered inside the scenario brief, so no dojo
+      // opens with a system message repeating it.
       let seedText: string;
       if (dojoId === 2 && scenario.id in DOJO2_SCENARIO_SEEDS) {
-        seedText = DOJO2_SCENARIO_SEEDS[scenario.id].seed;
+        seedText = '';
       } else if (dojoId === 3 && scenario.id in DOJO3_SCENARIO_SEEDS) {
-        seedText = DOJO3_SCENARIO_SEEDS[scenario.id].seed;
+        seedText = '';
       } else {
         if (dojoId === 2 || dojoId === 3) {
           console.warn(`[Dojo${dojoId}] No seed message found for scenario ID "${scenario.id}", using generic fallback.`);
@@ -782,8 +787,15 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             </div>
           )}
 
-          {hasScenario && scenario && messages.length <= 1 && (
-            <ScenarioBrief scenario={scenario} dojoId={dojoId} />
+          {hasScenario && scenario && messages.length === 0 && (
+            <ScenarioBrief
+              scenario={scenario}
+              dojoId={dojoId}
+              deliverable={
+                (dojoId === 2 ? DOJO2_SCENARIO_SEEDS[scenario.id]?.seed : undefined) ??
+                (dojoId === 3 ? DOJO3_SCENARIO_SEEDS[scenario.id]?.seed : undefined)
+              }
+            />
           )}
 
           {messages.map((msg) => {

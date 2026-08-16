@@ -110,6 +110,46 @@ function PanelSection({
  * task on the left, and the score below all describe one thing. Criteria that
  * the latest response satisfied are ticked; the rest are what is still missing.
  */
+/**
+ * The right panel follows the same three-part grammar in every dojo.
+ *
+ * It used to have three sections in Dojo 1, eight in Dojo 2 and two in Dojo 3,
+ * each with its own heading style and no shared order, so moving between dojos
+ * meant relearning where things were. The grammar is now fixed:
+ *
+ *   OBJECTIVE  what this scenario is graded on
+ *   CONTROLS   the settings that change the outcome
+ *   LIBRARY    reusable content you can load into the scenario
+ *
+ * Every dojo fills all three. What differs is the content, not the structure.
+ */
+function PanelGroup({
+  step,
+  title,
+  caption,
+  children,
+}: {
+  step: number;
+  title: string;
+  caption?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="mb-7 border-t border-slate-800 pt-4 first:mt-0 first:border-t-0 first:pt-0">
+      <div className="mb-3 flex items-baseline gap-2">
+        <span className="font-mono text-[10px] tabular-nums text-slate-600">
+          {String(step).padStart(2, '0')}
+        </span>
+        <h3 className="font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-300">
+          {title}
+        </h3>
+      </div>
+      {caption && <p className="-mt-1.5 mb-3 text-[11px] leading-relaxed text-slate-500">{caption}</p>}
+      {children}
+    </section>
+  );
+}
+
 function DeliverableCriteria({
   criteria,
   met,
@@ -124,12 +164,10 @@ function DeliverableCriteria({
   const count = criteria.filter((c) => metSet.has(c)).length;
 
   return (
-    <PanelSection title="Deliverable Criteria">
+    <div>
       <div className="mb-2.5 flex items-baseline justify-between">
         <p className="text-[10px] leading-relaxed text-slate-500">
-          {hasResponse
-            ? 'Graded against these criteria. Unticked items are what is missing.'
-            : 'A complete response covers every item below.'}
+          {hasResponse ? 'Unticked items are what is missing.' : 'A complete response covers every item.'}
         </p>
         {hasResponse && (
           <span className="ml-3 shrink-0 font-mono text-[10px] tabular-nums text-slate-400">
@@ -174,7 +212,7 @@ function DeliverableCriteria({
           );
         })}
       </ul>
-    </PanelSection>
+    </div>
   );
 }
 
@@ -377,7 +415,11 @@ function Dojo1Panel({
 
   return (
     <div>
-      {/* ── Payload Library ──────────────────────────────────────────────── */}
+      <PanelGroup
+        step={3}
+        title="Library"
+        caption="Prewritten attacks, plus the retrieved context and tool output you can forge."
+      >
       <PanelSection title="Payload Library" meta={`${PAYLOADS.length} payloads`}>
         <Toggle
           label="Auto-run payloads"
@@ -526,6 +568,7 @@ function Dojo1Panel({
           Appended as tool output, evaluator flags tool_abuse if Allow Tools is OFF.
         </p>
       </PanelSection>
+      </PanelGroup>
     </div>
   );
 }
@@ -832,27 +875,19 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
   return (
     <div>
-      {/* ── Deliverable criteria, the rubric this response is graded on ──── */}
-      <DeliverableCriteria
-        criteria={scenarioId ? getQualityCriteria(2, scenarioId) : []}
-        met={metCriteria}
-        hasResponse={hasEvaluation}
-      />
-
-      {/* ── Incident Library ──────────────────────────────────────────────── */}
-      <PanelSection title="Incident Library">
-        <p className="text-[10px] text-slate-500 mb-2">
-          Select a prebuilt scenario or generate one. Click any card to load it into the chat input, then press Send to run the analysis.
-        </p>
-        <IncidentLibrary
-          disabled={disabled}
-          onLoad={onInsertText}
-          defaultTaskFilter={defaultTaskFilter}
-          onSetActiveScenario={onSetActiveScenario}
+      <PanelGroup step={1} title="Objective" caption="What this analysis is graded on.">
+        <DeliverableCriteria
+          criteria={scenarioId ? getQualityCriteria(2, scenarioId) : []}
+          met={metCriteria}
+          hasResponse={hasEvaluation}
         />
-      </PanelSection>
+      </PanelGroup>
 
-      {/* ── Analyst Persona ───────────────────────────────────────────────── */}
+      <PanelGroup
+        step={2}
+        title="Controls"
+        caption="How the analyst is configured. Capabilities you disable are excluded from scoring."
+      >
       <PanelSection title="Analyst Persona">
         <div className="flex flex-col gap-1.5">
           {(['analyst', 'ciso', 'ir-lead'] as const).map((p) => {
@@ -1061,6 +1096,23 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
           })}
         </div>
       </PanelSection>
+      </PanelGroup>
+
+      <PanelGroup step={3} title="Library" caption="Prebuilt incidents you can load into this workflow.">
+      <PanelSection title="Incident Library">
+        <p className="text-[10px] text-slate-500 mb-2">
+          Select a prebuilt scenario or generate one. Click any card to load it into the chat input, then press Send to run the analysis.
+        </p>
+        <IncidentLibrary
+          disabled={disabled}
+          onLoad={onInsertText}
+          defaultTaskFilter={defaultTaskFilter}
+          onSetActiveScenario={onSetActiveScenario}
+        />
+      </PanelSection>
+
+      {/* ── Analyst Persona ───────────────────────────────────────────────── */}
+      </PanelGroup>
     </div>
   );
 }
@@ -1154,16 +1206,21 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
 
   return (
     <div>
-      {/* ── Deliverable criteria, the rubric this response is graded on ──── */}
-      <DeliverableCriteria
-        criteria={scenarioId ? getQualityCriteria(3, scenarioId) : []}
-        met={metCriteria}
-        hasResponse={hasEvaluation}
-      />
+      <PanelGroup step={1} title="Objective" caption="What this deliverable is graded on.">
+        <DeliverableCriteria
+          criteria={scenarioId ? getQualityCriteria(3, scenarioId) : []}
+          met={metCriteria}
+          hasResponse={hasEvaluation}
+        />
+      </PanelGroup>
 
-      {/* ── Framework Lens, applies to every scoring action ───────────────── */}
+      <PanelGroup
+        step={2}
+        title="Controls"
+        caption="The framework every clause, classification and gap is scored against."
+      >
       <PanelSection title="Framework Lens">
-        <p className="text-[10px] text-slate-500 mb-1.5">
+        <p className="hidden">
           Every clause, classification, and gap is scored against this framework set.
         </p>
         <SegmentedControl
@@ -1175,6 +1232,20 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
       </PanelSection>
 
       {/* ── Risk Tier (AI Risk Classification) ─────────────────────────────── */}
+      </PanelGroup>
+
+      <PanelGroup
+        step={3}
+        title="Library"
+        caption="Clauses, tiers and sections for this scenario. Selections stay in the session context."
+      >
+        {!isRiskScenario && !isPolicyScenario && !isVendorScenario && !isTransparencyScenario && !isRedTeamScenario && (
+          <p className="rounded border border-slate-800 bg-slate-900/40 px-3 py-2.5 text-[11px] leading-relaxed text-slate-500">
+            This scenario is scored from your written deliverable alone, so there is nothing to
+            select here. Work the criteria above in the console.
+          </p>
+        )}
+
       {isRiskScenario && (
         <PanelSection title="EU AI Act Risk Tier">
           <p className="text-[10px] text-slate-500 mb-2">
@@ -1397,6 +1468,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
           )}
         </PanelSection>
       )}
+      </PanelGroup>
     </div>
   );
 }
@@ -1435,10 +1507,12 @@ export function ControlPanel({
       ? (scenario.id as Dojo2TaskType)
       : undefined;
 
+  // Same shape in every dojo, so the header reads as one product rather than
+  // three that were built separately.
   const titles: Record<DojoId, string> = {
-    1: 'Attack / Defense Controls',
-    2: 'Analyst Configuration',
-    3: 'GRC Toolkit',
+    1: 'Attack Controls',
+    2: 'Analyst Controls',
+    3: 'Governance Controls',
   };
 
   return (
@@ -1455,13 +1529,42 @@ export function ControlPanel({
         )}
       </div>
 
-      {/* Guardrail controls only apply to Dojo 1, Dojo 2 uses analyst config, Dojo 3 uses GRC controls */}
+      {/* Dojo 1's Objective and Controls groups live here because the guardrail
+          state is owned by the parent. Dojo 2 and 3 render all three groups
+          inside their own panel. The grammar is identical either way. */}
       {dojoId === 1 && (
-        <GuardrailControls
-          config={config}
-          onChange={onConfigChange}
-          disabled={!hasScenario}
-        />
+        <>
+          <PanelGroup step={1} title="Objective" caption="What this attack is graded on.">
+            <ul className="flex flex-col gap-1.5">
+              {[
+                'Whether the guardrails held or the attack succeeded',
+                'Which control failed, and why it failed',
+                'The attack type, classified from your message',
+                'OWASP LLM and MITRE ATLAS mapping',
+              ].map((line) => (
+                <li
+                  key={line}
+                  className="flex items-start gap-2 rounded border border-slate-800 bg-slate-800/20 px-2.5 py-1.5 text-xs text-slate-500"
+                >
+                  <span aria-hidden className="mt-[5px] h-1 w-1 flex-none rounded-full bg-slate-600" />
+                  <span className="leading-snug">{line}</span>
+                </li>
+              ))}
+            </ul>
+          </PanelGroup>
+
+          <PanelGroup
+            step={2}
+            title="Controls"
+            caption="Guardrail state decides the outcome. Change one and re-run the same payload."
+          >
+            <GuardrailControls
+              config={config}
+              onChange={onConfigChange}
+              disabled={!hasScenario}
+            />
+          </PanelGroup>
+        </>
       )}
 
       {/* Dojo-specific controls */}
