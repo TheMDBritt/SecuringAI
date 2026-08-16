@@ -837,13 +837,13 @@ export const SC500_DRILLS: Drill[] = [
 ];
 
 export const SC500_DRILL_PORTAL_COLORS: Record<string, string> = {
-  'Entra':              'bg-blue-500/10 text-blue-300 border-blue-500/30',
+  'Entra':              'bg-brand-500/10 text-brand-300 border-brand-500/30',
   'Defender XDR':       'bg-red-500/10 text-red-300 border-red-500/30',
   'Sentinel':           'bg-amber-500/10 text-amber-300 border-amber-500/30',
   'Defender for Cloud': 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
-  'Purview':            'bg-violet-500/10 text-violet-300 border-violet-500/30',
-  'Azure OpenAI':       'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
-  'Security Copilot':   'bg-pink-500/10 text-pink-300 border-pink-500/30',
+  'Purview':            'bg-brand-500/10 text-brand-300 border-brand-500/30',
+  'Azure OpenAI':       'bg-brand-500/10 text-brand-300 border-brand-500/30',
+  'Security Copilot':   'bg-brand-500/10 text-brand-300 border-brand-500/30',
 };
 
 export const SC500_DRILL_SET: DrillSet = {

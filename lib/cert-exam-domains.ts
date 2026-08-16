@@ -37,7 +37,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'SecAI',
     name: 'CompTIA SecAI+',
     provider: 'CompTIA',
-    badgeClass: 'bg-red-500/15 text-red-400 border-red-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 67,
     mockExam: { questions: 60, durationMin: 60 },
     domains: [
@@ -125,7 +125,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'AWS-AIF-C01',
     name: 'AWS Certified AI Practitioner',
     provider: 'Amazon Web Services',
-    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     mockExam: { questions: 65, durationMin: 90 },
     domains: [
@@ -184,7 +184,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'Azure-AI901',
     name: 'Azure AI Fundamentals (AI-901)',
     provider: 'Microsoft',
-    badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     mockExam: { questions: 50, durationMin: 45 },
     domains: [
@@ -246,7 +246,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'Azure-AI103',
     name: 'Azure AI Apps and Agents Developer (AI-103)',
     provider: 'Microsoft',
-    badgeClass: 'bg-blue-500/15 text-blue-400 border-blue-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     mockExam: { questions: 50, durationMin: 100 },
     domains: [
@@ -311,7 +311,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'Google-MLE',
     name: 'Professional Machine Learning Engineer',
     provider: 'Google Cloud',
-    badgeClass: 'bg-emerald-500/15 text-emerald-400 border-emerald-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 80,
     mockExam: { questions: 60, durationMin: 120 },
     domains: [
@@ -383,7 +383,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'GIAC-GOAA',
     name: 'GIAC Offensive AI Analyst',
     provider: 'GIAC / SANS',
-    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 73,
     domains: [
       {
@@ -438,7 +438,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'GIAC-GASAE',
     name: 'GIAC AI Security Automation Engineer',
     provider: 'GIAC / SANS',
-    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     domains: [
       {
@@ -499,7 +499,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'SC-500',
     name: 'Microsoft Cloud & AI Security Engineer',
     provider: 'Microsoft',
-    badgeClass: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     mockExam: { questions: 60, durationMin: 100 },
     domains: [
@@ -740,7 +740,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'CAISP',
     name: 'Certified AI Security Professional',
     provider: 'Practical DevSecOps',
-    badgeClass: 'bg-purple-500/15 text-purple-400 border-purple-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     domains: [
       {
@@ -808,7 +808,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'SCS-C03',
     name: 'AWS Certified Security - Specialty',
     provider: 'Amazon Web Services',
-    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 75,
     mockExam: { questions: 65, durationMin: 170 },
     domains: [
@@ -894,7 +894,7 @@ export const EXAM_CERTS: ExamCert[] = [
     id: 'CAIS',
     name: 'C|AI Security',
     provider: 'EC-Council',
-    badgeClass: 'bg-rose-500/15 text-rose-400 border-rose-500/40',
+    badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
     domains: [
       {

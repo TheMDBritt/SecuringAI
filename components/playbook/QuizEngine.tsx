@@ -758,7 +758,7 @@ function QuestionScreen({
   // Reset selection when the question changes (exam-mode chains questions w/o unmount).
   useEffect(() => { setChosen(null); }, [question.id]);
 
-  const handleChoose = (i: number) => {
+  const handleChoose = useCallback((i: number) => {
     if (chosen !== null) return;
     setChosen(i);
     // Exam mode: no reveal, advance immediately.
@@ -767,7 +767,28 @@ function QuestionScreen({
       return;
     }
     setTimeout(() => onAnswer(i), 900);
-  };
+  }, [chosen, examMode, onAnswer]);
+
+  // Answer with A-D or 1-4. Anyone drilling a 60-question mock is doing this
+  // for an hour; making them move a mouse for every answer is a tax on the
+  // thing the product exists to do.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const el = document.activeElement;
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key.toLowerCase();
+      const byLetter = 'abcd'.indexOf(k);
+      const byDigit = '1234'.indexOf(k);
+      const i = byLetter >= 0 ? byLetter : byDigit;
+      if (i >= 0 && i < question.options.length) {
+        e.preventDefault();
+        handleChoose(i);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [handleChoose, question.options.length]);
 
   const timerStr = remainingSec !== undefined
     ? `${String(Math.floor(remainingSec / 60)).padStart(2, '0')}:${String(remainingSec % 60).padStart(2, '0')}`
@@ -775,7 +796,7 @@ function QuestionScreen({
   const timerLow = remainingSec !== undefined && remainingSec <= 300;
 
   return (
-    <div className="flex flex-col h-full min-h-0 px-6 py-5">
+    <div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col px-6 py-5">
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-brand-500/30 bg-brand-500/5'}`}>
@@ -842,6 +863,14 @@ function QuestionScreen({
         })}
       </div>
 
+      {/* Keyboard affordance. A shortcut nobody knows about is not a feature. */}
+      <p className="mt-3 font-mono text-micro text-slate-400">
+        Press <kbd className="rounded border border-slate-700 px-1 text-slate-300">A</kbd>
+        {' '}to <kbd className="rounded border border-slate-700 px-1 text-slate-300">D</kbd>
+        {' '}or <kbd className="rounded border border-slate-700 px-1 text-slate-300">1</kbd>
+        {' '}to <kbd className="rounded border border-slate-700 px-1 text-slate-300">4</kbd> to answer
+      </p>
+
       {/* Exam-mode skip button */}
       {examMode && (
         <button
@@ -865,8 +894,23 @@ function ResultScreen({
   total:   number;
   onNext:  () => void;
 }) {
+  // Enter or Space advances. With A-D to answer, a full mock exam is playable
+  // without touching the mouse.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const el = document.activeElement;
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        onNext();
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onNext]);
+
   return (
-    <div className="flex flex-col h-full px-6 py-5">
+    <div className="mx-auto flex h-full w-full max-w-3xl flex-col px-6 py-5">
       {/* role=status so the verdict is announced. Without it the result was
           conveyed only by colour and a bare glyph. */}
       <div
@@ -927,6 +971,7 @@ function ResultScreen({
         className="w-full py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors"
       >
         {index + 1 >= total ? 'See Results' : 'Next Question →'}
+        <span className="ml-2 font-mono text-micro opacity-60">Enter</span>
       </button>
     </div>
   );

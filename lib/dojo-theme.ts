@@ -23,9 +23,9 @@ export interface AccentTokens {
 }
 
 const BRAND: AccentTokens = {
-  border: 'border-cyan-500/30 hover:border-cyan-500/60',
-  text:   'text-cyan-300',
-  bg:     'bg-cyan-500/10',
+  border: 'border-brand-500/30 hover:border-brand-500/60',
+  text:   'text-brand-300',
+  bg:     'bg-brand-500/10',
 };
 
 export const ACCENT: Record<AccentName, AccentTokens> = {

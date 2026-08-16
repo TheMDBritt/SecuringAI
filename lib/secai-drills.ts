@@ -1035,7 +1035,7 @@ export const SECAI_DRILLS: Drill[] = [
 const SECAI_DRILL_BUCKET_COLORS: Record<string, string> = {
   [D1]: 'bg-slate-500/10 text-slate-300 border-slate-500/30',
   [D2]: 'bg-red-500/10 text-red-300 border-red-500/30',
-  [D3]: 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30',
+  [D3]: 'bg-brand-500/10 text-brand-300 border-brand-500/30',
   [D4]: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30',
 };
 
