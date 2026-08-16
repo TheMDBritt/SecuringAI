@@ -34,7 +34,7 @@ export function Footer() {
             <div>
               <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-2">Platform</p>
               <nav className="flex flex-col gap-1.5 text-xs text-slate-500" aria-label="Footer navigation">
-                <Link href="/dojo"     className="hover:text-slate-300 transition-colors duration-150">Dojo</Link>
+                <Link href="/dojo" prefetch={false} className="hover:text-slate-300 transition-colors duration-150">Dojo</Link>
                 <Link href="/playbook" className="hover:text-slate-300 transition-colors duration-150">Playbook</Link>
                 <Link href="/about"    className="hover:text-slate-300 transition-colors duration-150">About</Link>
                 <Link href="/help"     className="hover:text-slate-300 transition-colors duration-150">Help</Link>

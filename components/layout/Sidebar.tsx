@@ -29,6 +29,11 @@ function NavLink({
   return (
     <Link
       href={item.href}
+      // The rail is on every page, so viewport-triggered prefetch pulls every
+      // route's chunk on every visit, including the Dojo's 209kB, for someone
+      // who may never open it. Navigation from here is a deliberate click, and
+      // Next still prefetches on hover, which is the moment intent appears.
+      prefetch={false}
       onClick={onNavigate}
       aria-current={active ? 'page' : undefined}
       className={[
