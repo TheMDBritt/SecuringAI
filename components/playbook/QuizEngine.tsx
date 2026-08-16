@@ -23,7 +23,7 @@ async function fetchQuestionsByIds(ids: string[]): Promise<QuizQuestion[]> {
   return out;
 }
 import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
-import { EXAM_CERTS, questionMatchesDomain } from '@/lib/cert-exam-domains';
+import { EXAM_CERTS, questionMatchesDomain, parseDomainWeight } from '@/lib/cert-exam-domains';
 import type { ExamCert, ExamDomain } from '@/lib/cert-exam-domains';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -171,16 +171,8 @@ function pickByDomainWeight<T extends { id: string; category: string; topic: str
   cert: ExamCert,
 ): T[] {
   // "17%" / "20-25%" -> a numeric share; ranges use their midpoint.
-  const parseWeight = (w?: string): number | null => {
-    if (!w) return null;
-    const nums = w.match(/\d+(?:\.\d+)?/g);
-    if (!nums || nums.length === 0) return null;
-    const vals = nums.map(Number);
-    return vals.reduce((a, b) => a + b, 0) / vals.length;
-  };
-
   const domains = cert.domains
-    .map((d) => ({ domain: d, weight: parseWeight(d.weight) }))
+    .map((d) => ({ domain: d, weight: parseDomainWeight(d.weight) }))
     .filter((d): d is { domain: typeof cert.domains[number]; weight: number } => d.weight !== null);
 
   const totalWeight = domains.reduce((sum, d) => sum + d.weight, 0);

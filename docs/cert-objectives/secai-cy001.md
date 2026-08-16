@@ -1,5 +1,7 @@
 # CompTIA SecAI+ CY0-001 V1: Official Exam Objectives
 
+**Cert id:** SecAI
+
 **Source:** CompTIA SecAI+ Certification Exam Objectives, Document Version 4.0 (2025)
 **Original file:** `CompTIA_SecAI_CY0001_Exam_Objectives_4.0.pdf` (user-uploaded)
 **Fetched / transcribed:** 2026-08-11

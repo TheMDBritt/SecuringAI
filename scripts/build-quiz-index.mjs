@@ -10,7 +10,7 @@
  * generated file still matches the bank, so it cannot silently go stale.
  */
 import { build } from 'esbuild';
-import { writeFileSync, mkdtempSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdtempSync, readFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -142,12 +142,17 @@ console.log(
 // the domain name on every row. The docs are the same source the questions are
 // written against, which is what keeps the two in step.
 
-const OBJECTIVE_DOCS = { SecAI: 'docs/cert-objectives/secai-cy001.md' };
-
+// Derived from the docs directory rather than a hand-kept map, so adding a
+// blueprint is enough to get titled objectives for that exam. The cert id is
+// declared in the doc's own front matter line, which keeps the association
+// with the file it describes rather than in a list somewhere else.
 const objectiveTitles = {};
-for (const [certId, path] of Object.entries(OBJECTIVE_DOCS)) {
-  if (!existsSync(path)) continue;
-  const doc = readFileSync(path, 'utf8');
+const docsDir = 'docs/cert-objectives';
+for (const file of existsSync(docsDir) ? readdirSync(docsDir) : []) {
+  if (!file.endsWith('.md')) continue;
+  const doc = readFileSync(join(docsDir, file), 'utf8');
+  const certId = /^\*\*Cert id:\*\*\s*(\S+)/m.exec(doc)?.[1];
+  if (!certId) continue;
   for (const m of doc.matchAll(/^### (\d\.\d) (.+)$/gm)) {
     objectiveTitles[`${certId}:${m[1]}`] = m[2].trim();
   }

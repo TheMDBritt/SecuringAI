@@ -45,13 +45,21 @@ export interface ObjectiveStat {
 
 const ASSUMED_ACCURACY_WHEN_UNSEEN = 0.5;
 
-export function objectiveBreakdown(
-  data: ProgressData,
-  certId: string,
-  domainWeights: Record<string, number>,
-): ObjectiveStat[] {
-  const pool = new Map<string, { pool: number; ids: Set<string> }>();
+/**
+ * Which questions sit under each objective, per cert.
+ *
+ * This depends only on the bank, so it is computed once per cert and kept.
+ * Rebuilding it inside the function meant a full scan of all 2,113 index
+ * entries every time a learner answered a question or switched cert, to
+ * recompute something that never changes between deploys.
+ */
+const POOLS = new Map<string, Map<string, { pool: number; ids: Set<string> }>>();
 
+function poolFor(certId: string): Map<string, { pool: number; ids: Set<string> }> {
+  const cached = POOLS.get(certId);
+  if (cached) return cached;
+
+  const pool = new Map<string, { pool: number; ids: Set<string> }>();
   for (const q of QUIZ_INDEX) {
     if (!q.certTags.includes(certId)) continue;
     for (const objective of q.objectives) {
@@ -62,6 +70,16 @@ export function objectiveBreakdown(
       pool.set(objective, entry);
     }
   }
+  POOLS.set(certId, pool);
+  return pool;
+}
+
+export function objectiveBreakdown(
+  data: ProgressData,
+  certId: string,
+  domainWeights: Record<string, number>,
+): ObjectiveStat[] {
+  const pool = poolFor(certId);
 
   const out: ObjectiveStat[] = [];
   for (const [id, entry] of pool) {
@@ -77,7 +95,7 @@ export function objectiveBreakdown(
     }
 
     const number = id.split(':')[1] ?? id;
-    const domain = number.split('.')[0] ?? '';
+    const domain = number.split('.')[0];
     const accuracy = attempts === 0 ? null : correct / attempts;
     const weight = domainWeights[domain] ?? null;
     const shortfall = 1 - (accuracy ?? ASSUMED_ACCURACY_WHEN_UNSEEN);

@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { EXAM_CERTS } from '@/lib/cert-exam-domains';
+import { EXAM_CERTS, domainNumber, parseDomainWeight } from '@/lib/cert-exam-domains';
+import { ProgressBar, masteryTone } from '@/components/ui';
 import { objectiveBreakdown, type ObjectiveStat } from '@/lib/objective-progress';
 import { OBJECTIVE_TITLES } from '@/lib/objective-titles';
 import type { ProgressData } from '@/lib/quiz-progress';
@@ -13,14 +14,7 @@ import type { ProgressData } from '@/lib/quiz-progress';
  * objective at 55% inside a domain worth 40% of the paper matters more than one
  * at 40% inside a domain worth 3%.
  */
-function barColour(a: number | null): string {
-  if (a === null) return 'bg-slate-700';
-  if (a >= 0.8) return 'bg-emerald-500';
-  if (a >= 0.6) return 'bg-amber-500';
-  return 'bg-red-500';
-}
-
-function Row({ stat, label }: { stat: ObjectiveStat; label: string | null }) {
+function Row({ stat, label }: { stat: ObjectiveStat; label: string | undefined }) {
   const pct = stat.accuracy === null ? null : Math.round(stat.accuracy * 100);
   return (
     <li className="border-t border-slate-800/70 py-2.5 first:border-t-0">
@@ -34,12 +28,7 @@ function Row({ stat, label }: { stat: ObjectiveStat; label: string | null }) {
         </span>
       </div>
 
-      <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-slate-800">
-        <div
-          className={`h-full rounded-full transition-[width] duration-500 ${barColour(stat.accuracy)}`}
-          style={{ width: `${pct ?? 0}%` }}
-        />
-      </div>
+      <ProgressBar value={pct ?? 0} tone={masteryTone(pct)} height="h-1" className="mt-1.5" />
 
       <p className="mt-1 font-mono text-micro text-slate-400">
         {stat.seen} of {stat.pool} questions seen
@@ -49,6 +38,8 @@ function Row({ stat, label }: { stat: ObjectiveStat; label: string | null }) {
   );
 }
 
+const CERT_BY_ID = new Map(EXAM_CERTS.map((c) => [c.id, c]));
+
 export default function ObjectiveBreakdown({
   data,
   certId,
@@ -56,19 +47,23 @@ export default function ObjectiveBreakdown({
   data: ProgressData;
   certId: string;
 }) {
-  const cert = EXAM_CERTS.find((c) => c.id === certId);
-
-  const { stats, labels } = useMemo(() => {
-    const weights: Record<string, number> = {};
-    const labels: Record<string, string> = {};
-    for (const d of cert?.domains ?? []) {
-      const n = /(\d)/.exec(d.id.replace(/^[a-z-]+/, ''))?.[1] ?? '';
-      const pct = d.weight ? Number.parseFloat(d.weight) : NaN;
-      if (n && Number.isFinite(pct)) weights[n] = pct / 100;
-      if (n) labels[n] = d.name;
+  // Blueprint weights depend on the cert alone, so they are derived separately
+  // from the learner's numbers. Bundling them meant the whole blueprint was
+  // re-parsed every time a single answer was recorded.
+  const weights = useMemo(() => {
+    const out: Record<string, number> = {};
+    for (const d of CERT_BY_ID.get(certId)?.domains ?? []) {
+      const n = domainNumber(d.id);
+      const w = parseDomainWeight(d.weight);
+      if (n && w !== null) out[n] = w;
     }
-    return { stats: objectiveBreakdown(data, certId, weights), labels };
-  }, [data, certId, cert]);
+    return out;
+  }, [certId]);
+
+  const stats = useMemo(
+    () => objectiveBreakdown(data, certId, weights),
+    [data, certId, weights],
+  );
 
   if (stats.length === 0) {
     return (
@@ -90,7 +85,7 @@ export default function ObjectiveBreakdown({
       </p>
       <ul>
         {stats.map((s) => (
-          <Row key={s.id} stat={s} label={OBJECTIVE_TITLES[s.id] ?? labels[s.domain] ?? null} />
+          <Row key={s.id} stat={s} label={OBJECTIVE_TITLES[s.id]} />
         ))}
       </ul>
     </div>

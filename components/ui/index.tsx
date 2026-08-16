@@ -155,6 +155,20 @@ export function ProgressBar({
   );
 }
 
+/**
+ * The mastery colour scale, as a tone rather than a class string.
+ *
+ * Two copies of these thresholds existed, one per surface, differing only in
+ * whether the input was 0-1 or 0-100. Colour here is state, so it belongs with
+ * the other state tones.
+ */
+export function masteryTone(pct: number | null): Tone {
+  if (pct === null) return 'slate';
+  if (pct >= 80) return 'emerald';
+  if (pct >= 60) return 'amber';
+  return 'red';
+}
+
 // ── StatCard ─────────────────────────────────────────────────────────────────
 export function StatCard({
   label,

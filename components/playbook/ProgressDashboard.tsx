@@ -4,6 +4,7 @@ import type { QuizQuestion } from '@/types';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { useQuestionsByIds } from '@/lib/use-questions';
 import ObjectiveBreakdown from './ObjectiveBreakdown';
+import { masteryTone } from '@/components/ui';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
   loadProgress,
@@ -26,10 +27,11 @@ function pctColor(pct: number): string {
   return 'text-red-400';
 }
 
+/** Flat class form of the shared mastery scale, for the bars not yet on ProgressBar. */
 function pctBar(pct: number): string {
-  if (pct >= 80) return 'bg-emerald-500';
-  if (pct >= 60) return 'bg-amber-500';
-  return 'bg-red-500';
+  return { emerald: 'bg-emerald-500', amber: 'bg-amber-500', red: 'bg-red-500', brand: 'bg-brand-500', slate: 'bg-slate-500' }[
+    masteryTone(pct)
+  ];
 }
 
 function formatDate(ms: number): string {

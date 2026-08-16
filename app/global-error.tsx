@@ -7,7 +7,7 @@
  * is broken. This one replaces the whole document, so it ships its own minimal
  * styling rather than relying on anything the app provides.
  */
-export default function GlobalError({ error }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
   return (
     <html lang="en">
       <body

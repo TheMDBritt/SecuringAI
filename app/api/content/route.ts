@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { boundedList, isOverBudget } from '@/lib/api-params';
 
 /**
  * Serves article and glossary bodies.
@@ -15,22 +16,12 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 
 
 const MAX_TERMS = 200;
-const MAX_TERMS_CHARS = MAX_TERMS * 60;
 /** Long needles cost a full scan of every definition for no useful result. */
 const MAX_QUERY_CHARS = 80;
 const MIN_QUERY_CHARS = 2;
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  /**
-   * These responses depend on the query string, which makes the route dynamic,
-   * and Next emits `Cache-Control: no-store` for dynamic routes. A second
-   * header set here does not replace it, it joins it, and `no-store` wins. So
-   * rather than advertise caching that never happens, the responses stay small
-   * and the genuinely shared content, article bodies, is served as static files
-   * from public/ instead.
-   */
-  const cached = (body: unknown, status = 200) => NextResponse.json(body, { status });
 
   // Full-text search across definitions. The glossary index only carries term
   // names, so searching definition bodies happens here rather than by shipping
@@ -43,7 +34,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Query too long' }, { status: 413 });
     }
     if (q.trim().length < MIN_QUERY_CHARS) {
-      return cached([]);
+      return NextResponse.json([]);
     }
     const needle = q.toLowerCase();
     const hits = GLOSSARY_TERMS.filter(
@@ -51,16 +42,14 @@ export async function GET(request: Request) {
         t.term.toLowerCase().includes(needle) ||
         t.definition.toLowerCase().includes(needle),
     ).slice(0, 120);
-    return cached(hits);
+    return NextResponse.json(hits);
   }
 
   const terms = searchParams.get('terms');
   if (terms) {
-    if (terms.length > MAX_TERMS_CHARS) {
-      return NextResponse.json({ error: 'Too many terms' }, { status: 413 });
-    }
-    const wanted = new Set(terms.split('|').filter(Boolean).slice(0, MAX_TERMS));
-    return cached(GLOSSARY_TERMS.filter((t) => wanted.has(t.term)));
+    const wanted = boundedList(terms, { max: MAX_TERMS, separator: '|', label: 'terms' });
+    if (isOverBudget(wanted)) return wanted;
+    return NextResponse.json(GLOSSARY_TERMS.filter((t) => wanted.has(t.term)));
   }
 
   return NextResponse.json({ error: 'Specify q or terms' }, { status: 400 });

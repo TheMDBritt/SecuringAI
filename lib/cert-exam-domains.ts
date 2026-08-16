@@ -989,3 +989,33 @@ export function questionMatchesDomain(
   }
   return true;
 }
+
+/**
+ * Parses a published domain weight into a fraction of the exam.
+ *
+ * Blueprints state weights either as a single figure ("40%") or as a range
+ * ("20-25%"), and a range has to be read as its midpoint rather than its lower
+ * bound. This lived as a closure inside the quiz draw, so a second caller
+ * reached for parseFloat and silently disagreed with it on every range weight,
+ * which is most of SC-500.
+ *
+ * Returns null when a cert publishes no weight for the domain.
+ */
+export function parseDomainWeight(weight?: string): number | null {
+  if (!weight) return null;
+  const nums = weight.match(/\d+(?:\.\d+)?/g);
+  if (!nums || nums.length === 0) return null;
+  const vals = nums.map(Number);
+  return vals.reduce((a, b) => a + b, 0) / vals.length / 100;
+}
+
+/**
+ * The domain number from a domain id, e.g. "secai-d2" gives "2".
+ *
+ * Objective ids namespace by domain number ("SecAI:2.6"), so joining progress
+ * to a blueprint needs this. Reading it with a single \d at a call site breaks
+ * on a two-digit domain and on any id that does not follow the dN convention.
+ */
+export function domainNumber(domainId: string): string | null {
+  return /d(\d+)$/.exec(domainId)?.[1] ?? null;
+}

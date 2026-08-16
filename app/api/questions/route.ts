@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
+import { boundedList, isOverBudget } from '@/lib/api-params';
 
 /**
  * Serves question bodies.
@@ -22,6 +23,11 @@ import { EXAM_CERTS } from '@/lib/cert-exam-domains';
  * withhold. The limits below are about cost and abuse: a short request must not
  * be able to command an unbounded amount of work or an unbounded response.
  *
+ * These responses are not cacheable, because next.config.js sets no-store on
+ * /api/:path* and a header set here joins that rather than replacing it. That
+ * default is correct for the routes carrying user text, which is why the
+ * genuinely shared content is served as static files from public/ instead.
+ *
  * Note that the payload includes the correct answer, because the client grades
  * the quiz. That is a property of the design, not of this route, and it was
  * equally true when the whole bank was bundled. Client-side grading cannot be
@@ -31,8 +37,6 @@ import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 
 
 const MAX_IDS = 400;
-/** Bounds the split before it happens, rather than slicing the result of it. */
-const MAX_IDS_CHARS = MAX_IDS * 40;
 
 /** Only real exam ids are answerable, so an unknown cert costs a comparison. */
 const KNOWN_CERTS = new Set(EXAM_CERTS.map((c) => c.id));
@@ -43,22 +47,11 @@ export async function GET(request: Request) {
   const ids = searchParams.get('ids');
 
   // Immutable content, so it can sit in the browser and CDN cache for a day.
-  /**
-   * These responses depend on the query string, which makes the route dynamic,
-   * and Next emits `Cache-Control: no-store` for dynamic routes. A second
-   * header set here does not replace it, it joins it, and `no-store` wins. So
-   * rather than advertise caching that never happens, the responses stay small
-   * and the genuinely shared content, article bodies, is served as static files
-   * from public/ instead.
-   */
-  const cached = (body: unknown, status = 200) => NextResponse.json(body, { status });
 
   if (ids) {
-    if (ids.length > MAX_IDS_CHARS) {
-      return NextResponse.json({ error: 'Too many ids' }, { status: 413 });
-    }
-    const wanted = new Set(ids.split(',').filter(Boolean).slice(0, MAX_IDS));
-    return cached(QUIZ_QUESTIONS.filter((q) => wanted.has(q.id)));
+    const wanted = boundedList(ids, { max: MAX_IDS, label: 'ids' });
+    if (isOverBudget(wanted)) return wanted;
+    return NextResponse.json(QUIZ_QUESTIONS.filter((q) => wanted.has(q.id)));
   }
 
   if (cert) {
@@ -67,7 +60,7 @@ export async function GET(request: Request) {
     if (!KNOWN_CERTS.has(cert)) {
       return NextResponse.json({ error: 'Unknown cert' }, { status: 400 });
     }
-    return cached(QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert)));
+    return NextResponse.json(QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert)));
   }
 
   return NextResponse.json({ error: 'Specify cert or ids' }, { status: 400 });

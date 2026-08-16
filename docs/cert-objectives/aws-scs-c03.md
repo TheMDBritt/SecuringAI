@@ -1,5 +1,7 @@
 # AWS Certified Security: Specialty (SCS-C03), Domain Outline
 
+**Cert id:** SCS-C03
+
 **Source (primary):** AWS Certified Security - Specialty (SCS-C03) exam guide, docs.aws.amazon.com/aws-certification/latest/security-specialty-03/
 **Verified:** 2026-08-14 via search of the published AWS exam guide and two independent secondary sources (Pluralsight, Tutorials Dojo), which agree on all six domain names and weights.
 **Sandbox status:** Direct egress to docs.aws.amazon.com and d1.awsstatic.com is blocked by the environment proxy, so the weights below are confirmed from published summaries of the official guide rather than read from the PDF. Task statements below cover Domain 1 only; the rest still need the PDF.

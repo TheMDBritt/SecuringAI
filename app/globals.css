@@ -56,10 +56,9 @@ html[data-js='1'] .reveal[data-shown='false'] {
     opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
     transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-@media (prefers-reduced-motion: reduce) {
-  .reveal { transition: none; }
-}
-html[data-reduce-motion='true'] .reveal { transition: none; }
+/* Reduced motion is handled once, globally, further down this file: both the
+   media query and the data-reduce-motion attribute zero transition-duration for
+   every element. No per-class rule is needed here. */
 
 /* ── Typography rhythm ─────────────────────────────────────────────────────── */
 h1, h2, h3, h4 {
