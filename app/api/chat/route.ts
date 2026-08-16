@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getModelClient } from '@/lib/model-client';
+import { getModelClient, hasModelProvider } from '@/lib/model-client';
+import { generateDojo2Analysis } from '@/lib/dojo2-simulation';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { guard, readJsonBody } from '@/lib/api-guard';
@@ -23,7 +24,12 @@ import {
 
 const MessageSchema = z.object({
   role: z.enum(['user', 'assistant']),
-  content: z.string().min(1).max(2000),
+  // 8000 to match /api/evaluate, which has always allowed it. At 2000 this
+  // rejected 44 of the 56 prebuilt Dojo 2 incidents: the Load button drops the
+  // incident straight into the composer, so pressing send on most of the
+  // library returned a bare "Validation failed". The 64KB raw-body ceiling in
+  // readJsonBody is what actually bounds the request.
+  content: z.string().min(1).max(8000),
 });
 
 const ControlConfigSchema = z.object({
@@ -345,7 +351,23 @@ export async function POST(req: NextRequest) {
     finalMessages.push(m as ChatMessage);
   }
 
-  // 6. Call model
+  // 6. Dojo 2 with no provider configured.
+  //
+  //    Dojo 2 grades the assistant's analysis, so a stub greeting scored a hard
+  //    FAIL on every scenario regardless of what the learner did. Write the
+  //    analysis deterministically from the submitted incident instead. Each
+  //    section is gated on the control that governs it, so the learner's
+  //    settings still change both the output and the score.
+  if (dojoId === 2 && !hasModelProvider() && dojo2Config) {
+    return NextResponse.json({
+      role: 'assistant',
+      content: generateDojo2Analysis(lastUserContent, scenarioId, dojo2Config),
+      scenarioId,
+      dojoId,
+    });
+  }
+
+  // 7. Call model
   const client = getModelClient();
 
   let content: string;
