@@ -20,9 +20,10 @@ import { AWS_SCSC03_DRILLS } from '@/lib/aws-scsc03-drills';
 import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import { SCENARIOS } from '@/lib/scenarios';
 import { getSystemPrompt } from '@/lib/system-prompts';
-import { evaluate } from '@/lib/evaluator';
+import { evaluate, getQualityCriteria } from '@/lib/evaluator';
 import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
 import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { GOOD_RESPONSES } from './fixtures/dojo-responses';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
 
 const SECAI = QUIZ_QUESTIONS.filter((q) => q.certTags.includes('SecAI'));
@@ -653,4 +654,38 @@ describe('prose counts match the data they describe', () => {
     }
     expect(wrong).toEqual([]);
   });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Rubric regexes are the only thing standing between a learner and a wrong
+// grade, and they cannot be exercised against a live model in CI. These
+// fixtures are realistic analyst and GRC prose written by hand; every criterion
+// must fire on them. Seven regexes failed this the first time it ran, all for
+// the same reason: a trailing \b after the alternation, which rejects the
+// plural forms people actually write ("the serving logs", "threat actors") and
+// the real table names (DeviceNetworkEvents against a DeviceNetwork pattern).
+// ─────────────────────────────────────────────────────────────────────────────
+describe('rubrics score a realistic strong response correctly', () => {
+  for (const s of SCENARIOS.filter((x) => x.dojoId !== 1)) {
+    it(`marks every criterion met for ${s.dojoId}:${s.id}`, async () => {
+      const body = GOOD_RESPONSES[s.id];
+      expect(body, `no fixture response for ${s.id}`).toBeTruthy();
+
+      const r = await evaluate({
+        dojoId: s.dojoId as 2 | 3,
+        scenarioId: s.id,
+        settings: DEFAULT_CONTROL_CONFIG,
+        messages: [
+          { role: 'user', content: 'Work this scenario in full.' },
+          { role: 'assistant', content: body },
+        ],
+      });
+
+      const missed = getQualityCriteria(s.dojoId as 2 | 3, s.id).filter(
+        (c) => !r.signals.includes(c),
+      );
+      expect(missed, `${s.id} scored ${r.score}`).toEqual([]);
+      expect(r.verdict).toBe('PASS');
+    });
+  }
 });

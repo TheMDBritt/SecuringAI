@@ -732,7 +732,7 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   'autonomous-agent-forensics': [
     { label: 'Agent action trace reconstructed from the audit log', re: /\b(action\s+(trace|log|history)|tool\s+call|invocation|step\s*\d|audit\s+trail|execution\s+trace|sequence\s+of\s+actions)\b/i },
     { label: 'Triggering input or injected instruction identified', re: /\b(inject\w*|triggering\s+input|poisoned|untrusted\s+(content|input|source)|retrieved\s+document|initial\s+prompt|root\s+trigger)\b/i },
-    { label: 'Excess of authority or scope violation named', re: /\b(excessive\s+agency|over.?privileg\w*|scope\s+violation|beyond\s+its\s+(scope|authority|mandate)|unauthoris?zed\s+action|least\s+privilege|permission\s+boundary)\b/i },
+    { label: 'Excess of authority or scope violation named', re: /\b(excessive\s+agency|over.?privileg\w*|scope\s+violations?|(beyond|outside)\s+(its|the|their)\s+\w*\s*(scope|authority|mandate|remit)|exceeded\s+(its|the|their)\s+(scope|authority|mandate|remit)|unauthoriz\w+|unauthoris\w+|least\s+privilege|permission\s+boundar\w+)\b/i },
     { label: 'Blast radius assessed (what the agent actually changed)', re: /\b(blast\s+radius|impact\s+scope|records?\s+(modified|deleted|created)|systems?\s+affected|irreversible|data\s+(written|changed|exfiltrat\w+)|reversib\w+)\b/i },
     { label: 'Containment and control recommendations given', re: /\b(revoke|disable\s+(the\s+)?(agent|tool)|human.in.the.loop|approval\s+gate|confirmation\s+gate|scope\s+the\s+token|kill\s+switch|rate\s+limit|remediat|contain)\b/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
@@ -776,7 +776,7 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'CVE or vulnerability identified', re: /CVE-\d{4}-\d+|CVSS|vulnerability|exploit|affected\s+version|advisory|zero.?day/i },
     { label: 'MITRE ATT&CK technique mapped', re: /T\d{4}(\.\d{3})?|ATT&CK|technique|tactic/i },
     // Named threat groups or explicit attribution language
-    { label: 'Threat actor or group context provided', re: /\b(APT\d+|threat\s+actor|campaign|nation.state|TA\d+|ransomware\s+group|Lazarus|FIN\d+|Cozy\s+Bear|Fancy\s+Bear|Sandworm|UNC\d+|state.?sponsored|hacking\s+group|threat\s+cluster)\b/i },
+    { label: 'Threat actor or group context provided', re: /\b(APT\d+|threat\s+actors?|campaigns?|nation.state|TA\d+|ransomware\s+groups?|Lazarus|FIN\d+|Cozy\s+Bear|Fancy\s+Bear|Sandworm|UNC\d+|state.?sponsored|hacking\s+groups?|threat\s+clusters?|in\s+the\s+wild|exploited\s+in\s+the\s+wild|commodity\s+(threat\s+)?actors?)\b/i },
     // Require severity as a label/heading or CVSS numeric, not just the word anywhere
     { label: 'Severity or priority score assigned', re: /\b(severity|priority)\b[^.]*\b(critical|high|medium|low)\b|CVSS\s+[\d.]+|\*\*(critical|high|medium|low)\*\*/i },
     { label: 'Response or remediation recommended', re: /\b(patch|update|disable|block|monitor|investigate|escalat|remediat|notify|apply.*fix|hotfix|workaround)\b/i },
@@ -797,22 +797,22 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
     { label: 'Technical timeline of events provided', re: /timeline|chronolog|sequence\s+of\s+events|technical\s+timeline|\d{4}-\d{2}-\d{2}.*\d{2}:\d{2}/i },
     { label: 'Root cause analysis or kill chain present', re: /root\s+cause|initial\s+access|kill\s+chain|attack\s+path|how\s+it\s+(happened|occurred)|entry\s+point|attack\s+chain/i },
     { label: 'Containment or remediation steps listed', re: /contain|isolat|remediat|mitigat|patch|revoke|eradication|reset.*password|disable.*account|re.?image/i },
-    { label: 'Lessons learned section included', re: /##\s*lessons?\s+learned|lessons?\s+learned\s*\n|post.?incident\s+review|retrospective|prevent.*recurrence\s*[:;]|lessons?\s+learned\s*:/i },
+    { label: 'Lessons learned section included', re: /lessons?\s+learned|post.?incident\s+review|retrospective|prevent\w*\s+recurrence|what\s+we\s+would\s+do\s+differently/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
   'threat-hunt': [
     { label: 'Threat hunting hypothesis stated (falsifiable)', re: /hypothesis|we\s+(expect|hypothesize|believe|suspect|assume)|hunting\s+for|looking\s+for|behavior\s+(suggests?|indicates?)/i },
     { label: 'MITRE ATT&CK technique referenced (T-code)', re: /T\d{4}(\.\d{3})?|MITRE\s+ATT&?CK|tactic|technique/i },
-    { label: 'KQL or Sigma detection query provided', re: /\b(KQL|Sigma|SecurityEvent|AzureActivity|SigninLogs|DeviceProcess|DeviceNetwork|detection:\s*\n|title:|logsource:)\b/i },
+    { label: 'KQL or Sigma detection query provided', re: /\b(KQL|kusto|Sigma|SecurityEvents?|AzureActivity|SigninLogs|AuditLogs|Device\w+|CommonSecurityLog|detection\s*:|logsource\s*:)|\|\s*(where|summarize|project|extend)\s+\w/i },
     { label: 'False positive considerations addressed', re: /false\s+positive|benign|tuning|exclusion|legitimate|whitelist|allowlist|noise\s+reduction/i },
-    { label: 'Data sources or log tables specified', re: /\b(SecurityEvent|AzureActivity|SigninLogs|Sysmon|DeviceProcess|DeviceNetwork|CommonSecurityLog|Syslog|table|log\s+source)\b/i },
+    { label: 'Data sources or log tables specified', re: /\b(SecurityEvents?|AzureActivity|SigninLogs|AuditLogs|Sysmon|Device\w+|CommonSecurityLog|Syslog|tables?|log\s+sources?|data\s+sources?|proxy\s+logs?|DNS\s+server\s+logs?)\b/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
   'malware-behavior': [
     { label: 'Malware family or category identified', re: /ransomware|infostealer|RAT|loader|wiper|trojan|backdoor|dropper|malware\s+family|likely\s+(family|category)|classified\s+as/i },
     { label: 'MITRE ATT&CK technique mapped (T-code)', re: /T\d{4}(\.\d{3})?|ATT&?CK|persistence|defense\s+evasion|lateral\s+movement|exfiltration|command\s+and\s+control/i },
     { label: 'IOCs extracted (hashes, IPs, domains, registry keys)', re: /\b(sha256|md5|sha1|IOC|indicator|registry|HKLM|HKCU|C2|command.?and.?control|\.exe|\.dll|malicious\s+IP|malicious\s+domain)\b/i },
-    { label: 'Detection rule (KQL or Sigma) provided', re: /\b(KQL|Sigma|DeviceProcess|DeviceNetwork|SecurityEvent|title:|detection:\s*\n|logsource:|condition:)\b/i },
+    { label: 'Detection rule (KQL or Sigma) provided', re: /\b(KQL|kusto|Sigma|Device\w+|SecurityEvents?|AuditLogs|detection\s*:|logsource\s*:|condition\s*:)|\|\s*(where|summarize|project|extend)\s+\w/i },
     { label: 'Containment or remediation playbook included', re: /contain|isolat|eradicat|remediat|reimag|quarantin|block|revoke|playbook|step\s+\d|first.?.step/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
   ],
@@ -827,7 +827,7 @@ const DOJO2_QUALITY_CHECKS: Record<string, QualityCheck[]> = {
   'ai-system-compromise': [
     { label: 'Failure mode classified (injection / poisoning / drift / infrastructure)', re: /prompt\s+injection|model\s+poison|concept\s+drift|data\s+drift|infrastructure\s+(compromise|breach)|supply\s+chain|adversarial\s+input|model\s+degradation|configuration\s+(change|drift)/i },
     { label: 'MITRE ATLAS or ATT&CK technique referenced', re: /AML\.T\d{4}|T\d{4}(\.\d{3})?|ATLAS|ATT&?CK|AML\.T0054|AML\.T0020|AML\.T0031/i },
-    { label: 'Evidence analysis covers logs, telemetry, or prompt traces', re: /\b(log|telemetry|trace|prompt\s+trace|model\s+output|API\s+(log|call|request)|inference\s+log|serving\s+log|anomalous\s+(output|response)|unexpected\s+(output|behavior|behaviour))\b/i },
+    { label: 'Evidence analysis covers logs, telemetry, or prompt traces', re: /\b(logs?|telemetry|traces?|prompt\s+traces?|model\s+outputs?|API\s+(logs?|calls?|requests?)|inference\s+logs?|serving\s+logs?|anomalous\s+(outputs?|responses?)|unexpected\s+(outputs?|behaviou?rs?))\b/i },
     { label: 'Containment and redeployment decision provided', re: /\b(contain|isolat|rollback|redeploy|offline|quarantin|pull.*model|disable.*endpoint|version\s+rollback|revert|blue.?green|canary|safe.*default|fallback)\b/i },
     { label: 'EU AI Act Article 73 or serious incident notification assessed', re: /Article\s+73|serious\s+incident|AI\s+Act.*notif|notif.*AI\s+Act|incident\s+report.*AI|market\s+surveillance|NCA\s+notif/i },
     DOJO2_CONFIDENCE_RISK_CHECK,
