@@ -1141,19 +1141,24 @@ function evaluateQuality(
   assistantResponse: string,
   dojo2Config?: Dojo2Config,
 ): EvaluationResult {
-  // If the response is too short to contain analysis, skip detailed scoring.
+  // Too short to contain analysis, so the rubric cannot be applied.
+  //
+  // This used to return PASS with a score of 100, which told the learner they
+  // had succeeded at something they had not done: a one-line reply scored full
+  // marks. Nothing was measured, so nothing is being passed. WARN with a zero
+  // score reports the same fact without awarding credit for it.
   if (assistantResponse.trim().length < 80) {
     return {
-      verdict:   'PASS',
+      verdict:   'WARN',
       attackSucceeded: false,
-      score:     100,
+      score:     0,
       riskLevel: 'low',
       attackType: 'benign',
       signals: ['Response too brief for quality analysis, send a substantive prompt to see scoring'],
-      explanation: 'Short or conversational response, quality rubric not applied.',
+      explanation: 'Short or conversational response, quality rubric not applied. This is not a passing score, it is an unscored turn.',
       defensiveFailures: [],
       recommendedMitigations: [],
-      whatHappened:      'BlackBeltAI gave a brief response. Submit logs, alerts, or a substantive prompt to trigger quality evaluation.',
+      whatHappened:      'BlackBeltAI gave a brief response, so no quality criteria were assessed. Submit an incident, a system description, or a substantive prompt to trigger scoring.',
       defensiveTakeaway: 'Quality evaluation activates when BlackBeltAI produces a full analysis response.',
       owaspCategory: 'N/A',
       securityAITopics: SECURITYAI_PLUS_TOPICS[scenarioId] ?? [],

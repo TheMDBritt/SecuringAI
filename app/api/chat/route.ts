@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getModelClient, hasModelProvider } from '@/lib/model-client';
 import { generateDojo2Analysis } from '@/lib/dojo2-simulation';
+import { generateDojo3Analysis } from '@/lib/dojo3-simulation';
 import type { ChatMessage } from '@/lib/model-client';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { guard, readJsonBody } from '@/lib/api-guard';
@@ -362,6 +363,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       role: 'assistant',
       content: generateDojo2Analysis(lastUserContent, scenarioId, dojo2Config),
+      scenarioId,
+      dojoId,
+    });
+  }
+
+  // Dojo 3 has the same shape: the artifact is what gets graded.
+  if (dojoId === 3 && !hasModelProvider() && dojo3Config) {
+    return NextResponse.json({
+      role: 'assistant',
+      content: generateDojo3Analysis(lastUserContent, scenarioId, dojo3Config),
       scenarioId,
       dojoId,
     });
