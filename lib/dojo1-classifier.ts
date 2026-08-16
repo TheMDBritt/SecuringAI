@@ -16,12 +16,18 @@
  * 1. Obvious-noise precheck, synchronous fast path for empty / symbol-only /
  *    digit-only / vowel-free short strings.  Returns BENIGN immediately.
  *
- * 2. LLM semantic classification, primary decision. Uses getModelClient()
- *    with temperature=0 for deterministic output.  Returns a structured JSON
- *    object with the full attack-type breakdown.
+ * 2. LLM semantic classification, primary decision when a provider is
+ *    configured. Uses getModelClient() with temperature=0 for deterministic
+ *    output. Returns a structured JSON object with the full attack-type
+ *    breakdown.
  *
- * 3. Error fallback, if the LLM call fails or returns unparseable output,
- *    the result defaults to BENIGN (conservative / safe).
+ * 3. Deterministic fallback (lib/dojo1-heuristic-classifier). Used when no
+ *    provider is configured, when the provider is unreachable, and when its
+ *    reply will not parse. This path previously returned BENIGN, which read as
+ *    "conservative" but is the wrong default here: the classifier's verdict
+ *    decides whether an attack produces a vulnerable response, so defaulting to
+ *    benign made every attack a non-event and left the prompt-injection lab
+ *    inert whenever no OPENAI_API_KEY was set — the app's own default state.
  *
  * ── Async ────────────────────────────────────────────────────────────────────
  *
@@ -30,7 +36,8 @@
  * or evaluator.ts.
  */
 
-import { getModelClient } from '@/lib/model-client';
+import { getModelClient, hasModelProvider } from '@/lib/model-client';
+import { classifyDojo1MessageHeuristic } from '@/lib/dojo1-heuristic-classifier';
 
 // ─── Output types ─────────────────────────────────────────────────────────────
 
@@ -320,6 +327,15 @@ export async function classifyDojo1Message(message: string): Promise<Dojo1Classi
     return NOISE_RESULT;
   }
 
+  // ── No provider configured ────────────────────────────────────────────────
+  // Without a key the stub client answers with prose, which cannot parse as a
+  // classification. Sending the request anyway and then falling back to
+  // "benign" is what made the prompt-injection lab inert in the app's default
+  // state. Go straight to patterns instead.
+  if (!hasModelProvider()) {
+    return classifyDojo1MessageHeuristic(message);
+  }
+
   // ── LLM semantic classification ───────────────────────────────────────────
   const client = getModelClient();
   let raw: string;
@@ -332,20 +348,17 @@ export async function classifyDojo1Message(message: string): Promise<Dojo1Classi
       { maxTokens: 300, temperature: 0 },
     );
   } catch {
-    // Network / provider failure, default to benign (safe / conservative)
-    return {
-      ...NOISE_RESULT,
-      reasoning: 'Classifier LLM call failed, defaulting to benign',
-    };
+    // Provider unreachable. Degrade to pattern matching rather than to
+    // "benign": defaulting an unreachable classifier to benign silently turns
+    // every attack into a non-event, which in a security lab teaches the
+    // opposite of the lesson.
+    return classifyDojo1MessageHeuristic(message);
   }
 
   // ── Parse and validate ────────────────────────────────────────────────────
   const parsed = parseClassifierResponse(raw);
   if (parsed === null) {
-    return {
-      ...NOISE_RESULT,
-      reasoning: 'Classifier returned unparseable output, defaulting to benign',
-    };
+    return classifyDojo1MessageHeuristic(message);
   }
 
   return parsed;

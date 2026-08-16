@@ -350,7 +350,7 @@ export async function POST(req: NextRequest) {
 
   let content: string;
   try {
-    content = await client.chat(finalMessages);
+    content = await client.chat(finalMessages, { context: { dojoId, scenarioId } });
   } catch (err) {
     // Log the real error server-side; return a fixed message. Provider errors
     // can carry account, model and quota detail that must not reach a client.
