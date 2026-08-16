@@ -5,53 +5,53 @@
  * anonymous and publicly reachable. Three controls stand between a stranger and
  * the project's provider bill:
  *
- *   1. Per-IP rate limiting        (lib/rate-limit.ts, best-effort)
- *   2. A global daily spend ceiling (below, best-effort)
+ *   1. Per-IP rate limiting        (below, via lib/counter-store)
+ *   2. A global daily spend ceiling (below, via lib/counter-store)
  *   3. Same-origin enforcement      (below, blocks trivial scripted abuse)
  *
- * Controls 1 and 2 are process-local. On serverless each instance keeps its own
- * counters, so the true ceiling is (limit x warm instances) and a cold start
- * resets it. That is a real limitation, not a rounding error: treat these as a
- * brake on casual abuse, not as a guarantee. A determined distributed caller
- * needs a shared store. Set RATE_LIMIT_KV_URL and swap the two Map-backed stores
- * for that store when the project outgrows this.
+ * Controls 1 and 2 are counters with a TTL. Set UPSTASH_REDIS_REST_URL and
+ * UPSTASH_REDIS_REST_TOKEN and they are shared across every instance. Leave
+ * them unset and they fall back to per-process Maps, where the true ceiling
+ * becomes (limit x warm instances) and a cold start resets it — a brake on
+ * casual abuse rather than a guarantee.
  *
  * The hard backstop that does NOT depend on this file is a spend cap configured
  * on the provider account itself. Set one.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { checkRateLimit, MAX_REQUESTS } from './rate-limit';
+import { increment } from './counter-store';
+
+/** Requests per IP per minute. Exported so headers advertise the real limit. */
+export const MAX_REQUESTS = 20;
+const RATE_WINDOW_MS = 60_000;
 
 // ─── Global daily request ceiling ────────────────────────────────────────────
 // Counts model-bound requests across all callers, so a distributed caller that
 // slips past per-IP limits still hits a wall. Resets on the UTC day boundary.
 
 const DAILY_LIMIT = Number(process.env.DAILY_MODEL_REQUEST_LIMIT ?? 2000);
-
-interface DayBudget {
-  day: string;
-  used: number;
-}
-
-const budget: DayBudget = { day: '', used: 0 };
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function utcDay(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** Consumes one unit of the daily budget. Returns false when exhausted. */
-export function consumeDailyBudget(units = 1): { allowed: boolean; used: number; limit: number } {
-  const today = utcDay();
-  if (budget.day !== today) {
-    budget.day = today;
-    budget.used = 0;
+/**
+ * Consumes units of the daily budget. Returns false once exhausted.
+ *
+ * The key carries the UTC date, so the counter rolls over at midnight without
+ * anyone needing to reset it, and yesterday's key expires on its own TTL.
+ */
+export async function consumeDailyBudget(
+  units = 1,
+): Promise<{ allowed: boolean; used: number; limit: number }> {
+  const { count } = await increment(`budget:${utcDay()}`, DAY_MS, units);
+
+  if (count > DAILY_LIMIT) {
+    return { allowed: false, used: count - units, limit: DAILY_LIMIT };
   }
-  if (budget.used + units > DAILY_LIMIT) {
-    return { allowed: false, used: budget.used, limit: DAILY_LIMIT };
-  }
-  budget.used += units;
-  return { allowed: true, used: budget.used, limit: DAILY_LIMIT };
+  return { allowed: true, used: count, limit: DAILY_LIMIT };
 }
 
 // ─── Same-origin enforcement ─────────────────────────────────────────────────
@@ -129,7 +129,10 @@ export interface GuardOptions {
  * Runs origin, rate-limit and budget checks in order. Returns a NextResponse to
  * short-circuit with, or null when the request may proceed.
  */
-export function guard(req: NextRequest, opts: GuardOptions = {}): NextResponse | null {
+export async function guard(
+  req: NextRequest,
+  opts: GuardOptions = {},
+): Promise<NextResponse | null> {
   const { cost = 1, spendsBudget = true } = opts;
 
   if (!isSameOrigin(req)) {
@@ -144,8 +147,8 @@ export function guard(req: NextRequest, opts: GuardOptions = {}): NextResponse |
     req.headers.get('x-real-ip') ??
     '127.0.0.1';
 
-  const { allowed, remaining, resetAt } = checkRateLimit(ip);
-  if (!allowed) {
+  const { count, expiresAt } = await increment(`rl:${ip}`, RATE_WINDOW_MS);
+  if (count > MAX_REQUESTS) {
     return NextResponse.json(
       { error: 'Rate limit exceeded. Try again in a minute.' },
       {
@@ -153,14 +156,14 @@ export function guard(req: NextRequest, opts: GuardOptions = {}): NextResponse |
         headers: {
           'X-RateLimit-Limit': String(MAX_REQUESTS),
           'X-RateLimit-Remaining': '0',
-          'Retry-After': String(Math.max(1, Math.ceil((resetAt - Date.now()) / 1000))),
+          'Retry-After': String(Math.max(1, Math.ceil((expiresAt - Date.now()) / 1000))),
         },
       },
     );
   }
 
   if (spendsBudget) {
-    const day = consumeDailyBudget(cost);
+    const day = await consumeDailyBudget(cost);
     if (!day.allowed) {
       return NextResponse.json(
         {

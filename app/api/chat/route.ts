@@ -93,7 +93,7 @@ function isSafeContent(text: string): boolean {
 
 export async function POST(req: NextRequest) {
   // 1. Origin, rate limit, body size and shared daily budget.
-  const blocked = guard(req, { cost: 1 });
+  const blocked = await guard(req, { cost: 1 });
   if (blocked) return blocked;
 
   // 2. Parse and validate, with an explicit byte ceiling on the raw body.

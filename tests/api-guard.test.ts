@@ -85,13 +85,13 @@ describe('readJsonBody', () => {
 });
 
 describe('daily budget', () => {
-  it('permits spend below the ceiling and refuses past it', () => {
+  it('permits spend below the ceiling and refuses past it', async () => {
     // The default ceiling is high, so drive it directly rather than looping.
-    const first = consumeDailyBudget(1);
+    const first = await consumeDailyBudget(1);
     expect(first.allowed).toBe(true);
     expect(first.limit).toBeGreaterThan(0);
 
-    const exhaust = consumeDailyBudget(first.limit);
+    const exhaust = await consumeDailyBudget(first.limit);
     expect(exhaust.allowed).toBe(false);
   });
 });
@@ -101,16 +101,16 @@ describe('guard', () => {
   beforeEach(() => vi.stubEnv('NODE_ENV', 'production'));
   afterEach(() => vi.stubEnv('NODE_ENV', original ?? 'test'));
 
-  it('blocks a cross-origin request with 403 before any model call', () => {
-    const res = guard(makeRequest({ origin: 'https://evil.example', host: 'securingai.app' }), {
+  it('blocks a cross-origin request with 403 before any model call', async () => {
+    const res = await guard(makeRequest({ origin: 'https://evil.example', host: 'securingai.app' }), {
       spendsBudget: false,
     });
     expect(res).not.toBeNull();
     expect(res!.status).toBe(403);
   });
 
-  it('lets a same-origin request through', () => {
-    const res = guard(makeRequest({ origin: 'https://securingai.app', host: 'securingai.app' }), {
+  it('lets a same-origin request through', async () => {
+    const res = await guard(makeRequest({ origin: 'https://securingai.app', host: 'securingai.app' }), {
       spendsBudget: false,
     });
     expect(res).toBeNull();

@@ -58,7 +58,7 @@ const EvaluateRequestSchema = z.object({
 
 export async function POST(req: NextRequest) {
   // Dojo 1 evaluation reaches a classifier model, so this route spends budget.
-  const blocked = guard(req, { cost: 1 });
+  const blocked = await guard(req, { cost: 1 });
   if (blocked) return blocked;
 
   const read = await readJsonBody(req);

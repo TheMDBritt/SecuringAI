@@ -125,7 +125,7 @@ function passesQualityGate(q: { question: string; options: [string, string, stri
 // ─── Handler ──────────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   // Generation is the dearest call in the app, so it costs more budget units.
-  const blocked = guard(req, { cost: 4 });
+  const blocked = await guard(req, { cost: 4 });
   if (blocked) return blocked;
 
   const read = await readJsonBody(req);
