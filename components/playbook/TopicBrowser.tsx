@@ -20,6 +20,10 @@ const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
 
 // Inline markdown renderer: headings, bold, inline code, fenced code blocks, tables, lists, paragraphs
 function renderMarkdown(md: string): string {
+  // Whether the article has any level-2 headings at all, which decides the
+  // level ### renders at further down.
+  const hasSubheads = /^## /m.test(md);
+
   // 1. Fenced code blocks (```... ```), must run before inline code
   md = md.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) =>
     `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-2xs font-mono text-brand-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
@@ -40,8 +44,16 @@ function renderMarkdown(md: string): string {
 
   // 3. Headings
   md = md
+    // The article title is an h2, so ## is h3 and ### is h4. An article that
+    // uses ### without any ## would jump h2 to h4, which breaks heading
+    // navigation, so ### is promoted when there is nothing at the level above.
     .replace(/^## (.+)$/gm, '<h3 class="text-sm font-semibold text-slate-100 mt-5 mb-1.5">$1</h3>')
-    .replace(/^### (.+)$/gm, '<h4 class="text-xs font-semibold text-slate-300 mt-3 mb-1">$1</h4>');
+    .replace(
+      /^### (.+)$/gm,
+      hasSubheads
+        ? '<h4 class="text-xs font-semibold text-slate-300 mt-3 mb-1">$1</h4>'
+        : '<h3 class="text-sm font-semibold text-slate-100 mt-5 mb-1.5">$1</h3>',
+    );
 
   // 4. Bold
   md = md.replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>');

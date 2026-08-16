@@ -256,6 +256,11 @@ export function DojoTabs() {
         })}
       </div>
 
+      {/* The Dojo had no h1, so assistive tech landed on a page with no title
+          in its heading structure. The active dojo is the page's subject, and
+          it changes with the tab, so it names the page. */}
+      <h1 className="sr-only">Dojo {activeDojoId}, {activeTab.label}</h1>
+
       {/* Tab content */}
       <DojoLayout
         hasScenario={selectedScenario !== null}

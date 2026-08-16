@@ -139,9 +139,9 @@ function PanelGroup({
         <span className="font-mono text-micro tabular-nums text-slate-400">
           {String(step).padStart(2, '0')}
         </span>
-        <h3 className="font-mono text-2xs font-semibold uppercase tracking-widest text-slate-300">
+        <h2 className="font-mono text-2xs font-semibold uppercase tracking-widest text-slate-300">
           {title}
-        </h3>
+        </h2>
       </div>
       {caption && <p className="-mt-1.5 mb-3 text-2xs leading-relaxed text-slate-500">{caption}</p>}
       {children}
@@ -243,6 +243,10 @@ function Toggle({
       </div>
       <button
         role="switch"
+        // The label sits in a sibling span, so the switch had no accessible
+        // name of its own: a screen reader announced "switch, off" with no way
+        // to know which guardrail it controlled.
+        aria-label={label}
         aria-checked={enabled}
         disabled={disabled}
         onClick={() => onChange(!enabled)}
