@@ -99,7 +99,10 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
       <div className="flex shrink-0 flex-col gap-2 border-b border-slate-700 bg-slate-900 px-4 py-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <h1 className="shrink-0 text-sm font-semibold text-slate-100">Playbook</h1>
-          <span className="text-slate-500 text-xs shrink-0">/</span>
+          {/* Hidden with the text it separates. The description is sm-and-up
+              only, so on a phone this rendered "Playbook /" — a separator with
+              nothing on the other side of it. */}
+          <span className="hidden shrink-0 text-xs text-slate-500 sm:block">/</span>
           <span className="text-micro font-mono text-slate-400 shrink-0 hidden sm:block">
             {activeSection?.desc ?? ''}
           </span>

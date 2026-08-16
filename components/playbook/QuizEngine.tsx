@@ -302,7 +302,7 @@ function Step1SelectExam({
                 <p className="text-micro text-slate-500 leading-snug mb-2">{cert.provider}</p>
                 <div className="flex items-center justify-between gap-1">
                   <p className="text-micro font-mono text-slate-400">
-                    <span className="text-slate-400 font-semibold">{total}</span> Qs · <span className="text-slate-500">{cert.domains.length}d</span>
+                    <span className="text-slate-400 font-semibold">{total}</span> Qs · <span className="text-slate-500">{cert.domains.length} domains</span>
                   </p>
                   {cert.passingScore && (
                     <span className="text-micro font-mono text-slate-400">pass≥{cert.passingScore}%</span>
@@ -318,7 +318,7 @@ function Step1SelectExam({
         <button
           disabled={selected === null}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           Continue
         </button>
@@ -431,7 +431,7 @@ function Step2SelectDomains({
         <button
           disabled={selectedDomainIds.size === 0 || totalSelected === 0}
           onClick={onContinue}
-          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           {totalSelected > 0
             ? `Continue, ${totalSelected} questions available`
@@ -675,7 +675,7 @@ function Step3Options({
         <button
           disabled={pool.length === 0}
           onClick={() => onStart(buildSettings())}
-          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:opacity-40 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
+          className="w-full py-2.5 rounded bg-brand-500 hover:bg-brand-400 disabled:bg-slate-800 disabled:text-slate-500 disabled:cursor-not-allowed text-navy-950 text-sm font-semibold transition-colors"
         >
           Start Quiz
         </button>
