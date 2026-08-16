@@ -570,9 +570,9 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             </p>
             <p className="text-xs text-slate-400 italic">
               {dojoId === 2
-                ? 'Submit the incident evidence for this workflow and BlackBeltAI will analyse it. The evaluator then scores that analysis against the deliverable criteria shown in the panel on the right and maps the scenario to the certifications it covers.'
+                ? 'Submit the incident evidence for this workflow and BlackBeltAI will analyse it. The evaluator then scores that analysis against the deliverable criteria shown in the control panel and maps the scenario to the certifications it covers.'
                 : dojoId === 3
-                ? 'Describe the system, policy, or vendor under assessment and BlackBeltAI will produce the deliverable. The evaluator then scores it against the criteria shown in the panel on the right and maps the scenario to the frameworks and certifications it covers.'
+                ? 'Describe the system, policy, or vendor under assessment and BlackBeltAI will produce the deliverable. The evaluator then scores it against the criteria shown in the control panel and maps the scenario to the frameworks and certifications it covers.'
                 : 'Evaluation appears after your first message.'}
             </p>
           </div>

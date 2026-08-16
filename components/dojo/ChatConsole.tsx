@@ -75,7 +75,7 @@ const MAX_ATTACK_HISTORY = 10;
 
 const PLACEHOLDER_INPUT: Record<DojoId, string> = {
   1: 'Type your attack payload or defense test message… (Shift+Enter for newline)',
-  2: 'Load a scenario from the Incident Library → or paste your own logs/alert here…',
+  2: 'Load an incident from the Incident Library, or paste your own logs or alert here…',
   3: 'Describe the artifact to analyze or policy to draft…',
 };
 
@@ -335,7 +335,7 @@ function ScenarioBrief({
           <p className="text-2xs leading-relaxed text-slate-500">
             Graded on{' '}
             <span className="font-medium text-slate-400">{criteria.length} criteria</span>, listed
-            in the Objective panel on the right. They tick off as your response covers them.
+            in the Objective section of the control panel. They tick off as your response covers them.
           </p>
         </div>
       )}
@@ -381,12 +381,12 @@ function ScenarioBrief({
 const DOJO_STEPS: Record<1 | 2 | 3, Array<{ n: string; title: string; body: string }>> = {
   1: [
     { n: '01', title: 'Pick a scenario', body: 'Each one is a different attack class, from prompt injection through to agent orchestration hijack.' },
-    { n: '02', title: 'Set the guardrails', body: 'The switches on the right decide whether the attack lands. Leave them off to watch it succeed.' },
+    { n: '02', title: 'Set the guardrails', body: 'The switches in the control panel decide whether the attack lands. Leave them off to watch it succeed.' },
     { n: '03', title: 'Attack, then re-run', body: 'Send a payload, read the score, change one control, and send the same payload again.' },
   ],
   2: [
     { n: '01', title: 'Pick a task type', body: 'Log triage, alert enrichment, detection engineering, incident reporting, or threat hunting.' },
-    { n: '02', title: 'Load an incident', body: 'Use the library in the right-hand panel, or paste your own logs into the composer below.' },
+    { n: '02', title: 'Load an incident', body: 'Use the library in the control panel, or paste your own logs into the composer below.' },
     { n: '03', title: 'Tune the analyst', body: 'IOC extraction, ATT&CK mapping and correlation each change the analysis and how it scores.' },
   ],
   3: [
@@ -452,6 +452,19 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     const [attackHistory, setAttackHistory] = useState<string[]>([]);
     const bottomRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Grow the composer with its content, up to a ceiling.
+    //
+    // Dojo 2's core action is pasting an incident, and the prebuilt ones run to
+    // several thousand characters. In a fixed two-row box that meant reviewing
+    // a 3,000-character paste through a two-line window before sending it.
+    // Capped so a large paste cannot push the send button off screen.
+    useEffect(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.style.height = 'auto';
+      el.style.height = `${Math.min(el.scrollHeight, 260)}px`;
+    }, [input]);
 
     const hasScenario = scenario !== null;
 
@@ -905,8 +918,13 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               }
               rows={2}
               className={[
+                // Two rows is enough for the desktop hint but clipped the
+                // scenario placeholders mid-word on a phone, where they wrap to
+                // three or four lines. The min-height gives narrow screens the
+                // extra line and leaves desktop as it was.
+                'min-h-[5.25rem] sm:min-h-[3.5rem]',
                 'flex-1 resize-none rounded border px-3 py-2 text-sm font-mono',
-                'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-600',
+                'bg-slate-800 border-slate-700 text-slate-200 placeholder-slate-500',
                 'focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500',
                 (!hasScenario || loading) && 'opacity-40 cursor-not-allowed',
               ].join(' ')}

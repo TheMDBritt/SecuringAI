@@ -28,9 +28,12 @@ const DOJO_ACCENT: Record<DojoId, { selected: string; dot: string; label: string
 // right panel is for. They previously ran to different lengths in different
 // orders, which made the three dojos feel like three products.
 const DOJO_HEADER_DESC: Record<DojoId, string> = {
-  1: 'Pick a scenario, set the guardrails on the right, then attack. Outcomes are deterministic.',
-  2: 'Pick a workflow, load an incident from the right, then direct the analysis.',
-  3: 'Pick a scenario, set the framework lens on the right, then draft the deliverable.',
+  // Location-neutral on purpose. "On the right" is only true above lg — below
+  // that the regions stack into a tab set and the controls are a tab, so the
+  // instruction pointed at nothing on every phone.
+  1: 'Pick a scenario, set the guardrails in the control panel, then attack. Outcomes are deterministic.',
+  2: 'Pick a workflow, load an incident from the control panel, then direct the analysis.',
+  3: 'Pick a scenario, set the framework lens in the control panel, then draft the deliverable.',
 };
 
 const DEPTH_LABELS: Record<string, string> = {
@@ -120,7 +123,7 @@ function Dojo2ActivePreview({
       ) : selected ? (
         <div className="mb-2.5">
           <p className="text-xs font-medium text-slate-100 leading-snug">{selected.title}</p>
-          <p className="text-micro text-slate-500 mt-0.5">Load an incident from the right panel →</p>
+          <p className="text-micro text-slate-500 mt-0.5">Load an incident from the control panel</p>
         </div>
       ) : null}
 
