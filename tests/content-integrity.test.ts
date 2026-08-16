@@ -22,7 +22,8 @@ import { SCENARIOS } from '@/lib/scenarios';
 import { getSystemPrompt } from '@/lib/system-prompts';
 import { evaluate, getQualityCriteria } from '@/lib/evaluator';
 import { SECURITYAI_PLUS_TOPICS } from '@/lib/cert-topics';
-import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-incidents';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { GOOD_RESPONSES } from './fixtures/dojo-responses';
 import { getSimulatedResponse, getPartialResponse } from '@/lib/scenario-simulations';
 import { DEFAULT_CONTROL_CONFIG } from '@/types';
@@ -892,5 +893,22 @@ describe('typography uses the scale', () => {
       for (const m of text.matchAll(/text-\[\d+px\]/g)) offenders.push(`${f}: ${m[0]}`);
     }
     expect(offenders).toEqual([]);
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// lib/catalog-counts.ts exists so the marketing page can render six integers
+// without importing 222kB of incident bodies. Hardcoded numbers rot, so they
+// are asserted against the real data here.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('catalog counts match the data they stand in for', () => {
+  it('matches the scenario and incident totals', () => {
+    expect(CATALOG_COUNTS).toEqual({
+      scenarios: SCENARIOS.length,
+      dojo1: SCENARIOS.filter((s) => s.dojoId === 1).length,
+      dojo2: SCENARIOS.filter((s) => s.dojoId === 2).length,
+      dojo3: SCENARIOS.filter((s) => s.dojoId === 3).length,
+      incidents: DOJO2_PREBUILT_SCENARIOS.length,
+    });
   });
 });

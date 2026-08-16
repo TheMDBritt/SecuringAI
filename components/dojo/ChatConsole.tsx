@@ -12,7 +12,7 @@ import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, Evalu
 import { DEFAULT_DOJO2_CONFIG } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { encodeShare } from '@/lib/share-url';
-import { getQualityCriteria } from '@/lib/evaluator';
+import { getQualityCriteria } from '@/lib/quality-rubrics';
 
 // ─── Imperative handle, exposed to DojoTabs via ref ─────────────────────────
 

@@ -1,5 +1,5 @@
 import type { AttackType, DojoId, EvaluationResult, Scenario } from '@/types';
-import { ALL_CRITERIA_MET_MSG } from '@/lib/evaluator';
+import { ALL_CRITERIA_MET_MSG } from '@/lib/quality-rubrics';
 
 interface ScoringPaneProps {
   scenario: Scenario | null;

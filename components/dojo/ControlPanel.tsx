@@ -15,7 +15,6 @@ import type {
   RiskTier,
 } from '@/types';
 import {
-  DOJO2_PREBUILT_SCENARIOS,
   DOJO2_ATTACK_CATEGORIES,
   DOJO2_TASK_LABELS,
   DOJO2_PERSONA_LABELS,
@@ -35,7 +34,7 @@ import {
   VENDOR_GAP_AREAS,
   type Payload,
 } from '@/lib/dojo-control-content';
-import { getQualityCriteria } from '@/lib/evaluator';
+import { getQualityCriteria } from '@/lib/quality-rubrics';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -661,15 +660,30 @@ function IncidentLibrary({
   const [generated, setGenerated]   = useState<Dojo2IncidentScenario | null>(null);
   const [genOpen, setGenOpen]       = useState(false);
 
+  // The 56 incident bodies are 222kB. They load when this panel first renders,
+  // which only happens inside Dojo 2, rather than riding along in the route
+  // chunk that Next prefetches from every page linking to /dojo.
+  const [incidents, setIncidents] = useState<Dojo2IncidentScenario[] | null>(null);
+  useEffect(() => {
+    let live = true;
+    import('@/lib/dojo2-incidents').then((m) => {
+      if (live) setIncidents(m.DOJO2_PREBUILT_SCENARIOS);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
   // Sync filter tab whenever the parent changes the selected scenario type.
   // Reset to 'all' when defaultTaskFilter becomes undefined (no scenario selected).
   useEffect(() => {
     setFilterTask(defaultTaskFilter ?? 'all');
   }, [defaultTaskFilter]);
 
+  const all = incidents ?? [];
   const filtered = filterTask === 'all'
-    ? DOJO2_PREBUILT_SCENARIOS
-    : DOJO2_PREBUILT_SCENARIOS.filter((s) => s.taskType === filterTask);
+    ? all
+    : all.filter((s) => s.taskType === filterTask);
 
   function handleGenerate() {
     // Pass the current task filter so generated scenarios match the active workflow.

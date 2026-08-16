@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { SCENARIOS } from '@/lib/scenarios';
-import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 
 const Q  = CONTENT_COUNTS.quizQuestions.toLocaleString();
 const G  = CONTENT_COUNTS.glossaryTerms.toLocaleString();
 const S  = SCENARIOS.length;
-const I  = DOJO2_PREBUILT_SCENARIOS.length;
+const I  = CATALOG_COUNTS.incidents;
 
 export function Footer() {
   return (

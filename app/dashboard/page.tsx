@@ -1,7 +1,7 @@
 import { SCENARIOS } from '@/lib/scenarios';
 import { QUIZ_QUESTIONS } from '@/lib/playbook-quiz';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
-import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import { DashboardClient, type CatalogScenario } from '@/components/dashboard/DashboardClient';
 
@@ -31,7 +31,7 @@ export default function DashboardPage() {
       scenarios: SCENARIOS.length,
       questions: QUIZ_QUESTIONS.length,
       glossary: GLOSSARY_TERMS.length,
-      incidents: DOJO2_PREBUILT_SCENARIOS.length,
+      incidents: CATALOG_COUNTS.incidents,
       certs: EXAM_CERTS.length,
     },
     dojoMeta: DOJO_META,

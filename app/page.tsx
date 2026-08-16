@@ -3,7 +3,7 @@ import { getScenariosByDojo, SCENARIOS } from '@/lib/scenarios';
 import { ACCENT, type AccentName } from '@/lib/dojo-theme';
 import { Footer } from '@/components/layout/Footer';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
-import { DOJO2_PREBUILT_SCENARIOS } from '@/lib/dojo2-scenarios';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
 import type { DojoId } from '@/types';
 
@@ -16,7 +16,7 @@ const STATS = {
   glossary:  CONTENT_COUNTS.glossaryTerms,
   articles:  CONTENT_COUNTS.topicArticles,
   certs:     CONTENT_COUNTS.certs,
-  incidents: DOJO2_PREBUILT_SCENARIOS.length,
+  incidents: CATALOG_COUNTS.incidents,
   drills:    CONTENT_COUNTS.drills,
 };
 
