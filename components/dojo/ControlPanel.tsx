@@ -80,12 +80,24 @@ interface ControlPanelProps {
 
 // ─── Shared UI primitives ─────────────────────────────────────────────────────
 
-function PanelSection({ title, children }: { title: string; children: React.ReactNode }) {
+function PanelSection({
+  title,
+  meta,
+  children,
+}: {
+  title: string;
+  /** Optional right-aligned count or status shown beside the title. */
+  meta?: React.ReactNode;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-5">
-      <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-2.5">
-        {title}
-      </p>
+      <div className="mb-2.5 flex items-baseline justify-between gap-3">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">{title}</p>
+        {meta !== undefined && (
+          <span className="shrink-0 font-mono text-[10px] tabular-nums text-slate-600">{meta}</span>
+        )}
+      </div>
       {children}
     </div>
   );
@@ -366,7 +378,7 @@ function Dojo1Panel({
   return (
     <div>
       {/* ── Payload Library ──────────────────────────────────────────────── */}
-      <PanelSection title="Payload Library">
+      <PanelSection title="Payload Library" meta={`${PAYLOADS.length} payloads`}>
         <Toggle
           label="Auto-run payloads"
           description={autoRunPayloads ? 'Click sends immediately' : 'Click inserts into input only'}
@@ -375,7 +387,11 @@ function Dojo1Panel({
           disabled={disabled}
         />
 
-        <div className="flex flex-col gap-1 mt-2">
+        {/* Bounded and scrollable. The list previously ran past the bottom of
+            the panel with no affordance, so it read as truncated content
+            rather than as a list you can scroll. */}
+        <div className="relative mt-2">
+          <div className="flex max-h-80 flex-col gap-1 overflow-y-auto pr-1">
           {PAYLOADS.map((p) => (
             <button
               key={p.label}
@@ -404,6 +420,11 @@ function Dojo1Panel({
               <p className="text-[9px] text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
             </button>
           ))}
+          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-slate-900 to-transparent"
+          />
         </div>
 
         {!autoRunPayloads && !disabled && (

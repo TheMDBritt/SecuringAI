@@ -567,8 +567,26 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                 ? 'Submit the incident evidence for this workflow and BlackBeltAI will analyse it. The evaluator then scores that analysis against the deliverable criteria shown in the panel on the right and maps the scenario to the certifications it covers.'
                 : dojoId === 3
                 ? 'Describe the system, policy, or vendor under assessment and BlackBeltAI will produce the deliverable. The evaluator then scores it against the criteria shown in the panel on the right and maps the scenario to the frameworks and certifications it covers.'
-                : 'Evaluation appears after your first message. The evaluator will classify the attack type, explain what happened, and provide a defensive takeaway with OWASP mapping.'}
+                : 'Evaluation appears after your first message.'}
             </p>
+            {!isQualityMode && (
+              /* Dojo 1 has no rubric panel, so the band under the console was
+                 empty until the first turn. Naming what the evaluator reports
+                 tells the learner what to look for before they attack. */
+              <ul className="mt-3 grid gap-x-6 gap-y-1.5 border-t border-slate-700/60 pt-2.5 sm:grid-cols-2">
+                {[
+                  'Attack type classified from your message',
+                  'Whether the guardrails held or the attack succeeded',
+                  'Which defensive control failed, and why',
+                  'OWASP LLM and MITRE ATLAS mapping',
+                ].map((line) => (
+                  <li key={line} className="flex gap-2 text-[11px] leading-snug text-slate-500">
+                    <span aria-hidden className="mt-[5px] h-1 w-1 flex-none rounded-full bg-slate-600" />
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         ) : (
           <>
