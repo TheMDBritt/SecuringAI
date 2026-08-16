@@ -110,7 +110,7 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between gap-4 py-3.5">
             <div>
               <p className="text-sm font-medium text-slate-200">Theme</p>
-              <p className="mt-0.5 text-xs text-slate-500">Optimised dark enterprise theme with cyber-blue accents.</p>
+              <p className="mt-0.5 text-xs text-slate-500">Dark enterprise theme. One accent for anything interactive, and colour otherwise reserved for state.</p>
             </div>
             <Badge tone="brand">Dark · Default</Badge>
           </div>

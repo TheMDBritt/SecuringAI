@@ -801,7 +801,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           {messages.map((msg) => {
             if (msg.role === 'system' || msg.role === 'evaluator') {
               return (
-                <div key={msg.id} className="flex justify-center">
+                <div key={msg.id} className="flex animate-rise-in justify-center">
                   <div className={`rounded text-center ${BUBBLE_STYLE[msg.role]}`}>
                     {msg.content}
                   </div>
@@ -811,7 +811,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
 
             const isUser = msg.role === 'user';
             return (
-              <div key={msg.id} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div key={msg.id} className={`flex animate-rise-in gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {!isUser && (
                   <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-brand-500/10 border border-brand-500/30 mt-0.5">
                     <span className="text-micro font-bold text-brand-400">BB</span>

@@ -573,11 +573,13 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
           </div>
         ) : (
           <>
-            {isQualityMode ? (
-              <QualityEvalCard eval={latest} />
-            ) : (
-              <Dojo1EvalCard eval={latest} />
-            )}
+            <div key={evaluations.length} className="animate-rise-in">
+              {isQualityMode ? (
+                <QualityEvalCard eval={latest} />
+              ) : (
+                <Dojo1EvalCard eval={latest} />
+              )}
+            </div>
 
             {history.length > 0 && (
               <div className="flex flex-col gap-2">
