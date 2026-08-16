@@ -116,7 +116,7 @@ function ScoreBar({ score, riskLevel }: { score: number; riskLevel: EvaluationRe
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 rounded-full bg-slate-700">
         <div
-          className={['h-1.5 rounded-full transition-all', SCORE_BAR_COLOR[riskLevel]].join(' ')}
+          className={['h-1.5 rounded-full transition-[width,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]', SCORE_BAR_COLOR[riskLevel]].join(' ')}
           style={{ width: `${score}%` }}
         />
       </div>
@@ -449,8 +449,9 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               <span className="text-sm text-slate-600 mb-0.5">/ 100</span>
               {latest && (
                 <span
+                  key={latest.verdict + evaluations.length}
                   className={[
-                    'text-2xs font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
+                    'animate-pop-in text-2xs font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
                     VERDICT_STYLE[latest.verdict],
                   ].join(' ')}
                 >

@@ -90,6 +90,18 @@ const config: Config = {
         shimmer: {
           '100%': { transform: 'translateX(100%)' },
         },
+        // State-change motion. Short, single-purpose, and only used where
+        // something actually changed: a criterion ticking, a verdict landing,
+        // a scenario loading. Nothing moves for decoration.
+        'rise-in': {
+          from: { opacity: '0', transform: 'translateY(4px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'pop-in': {
+          '0%': { opacity: '0', transform: 'scale(0.94)' },
+          '60%': { opacity: '1', transform: 'scale(1.02)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
+        },
         'grow-x': {
           from: { transform: 'scaleX(0)' },
           to: { transform: 'scaleX(1)' },
@@ -99,6 +111,8 @@ const config: Config = {
         'fade-in': 'fade-in 0.4s cubic-bezier(0.22,1,0.36,1) both',
         'fade-in-fast': 'fade-in-fast 0.25s ease-out both',
         shimmer: 'shimmer 1.6s infinite',
+        'rise-in': 'rise-in 0.28s cubic-bezier(0.22,1,0.36,1) both',
+        'pop-in': 'pop-in 0.32s cubic-bezier(0.34,1.4,0.64,1) both',
       },
     },
   },

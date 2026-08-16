@@ -314,7 +314,7 @@ function ScenarioBrief({
   const criteria = dojoId === 1 ? [] : getQualityCriteria(dojoId as 2 | 3, scenario.id);
 
   return (
-    <div className="mx-auto mt-6 w-full max-w-2xl rounded-lg border border-slate-800 bg-slate-900/40 p-5">
+    <div className="mx-auto mt-6 w-full max-w-2xl animate-rise-in rounded-lg border border-slate-800 bg-slate-900/40 p-5">
       <div className="mb-3 flex items-start justify-between gap-4">
         <h2 className="text-sm font-semibold leading-snug text-slate-200">{scenario.title}</h2>
         <span className="shrink-0 rounded border border-slate-700 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wider text-slate-500">

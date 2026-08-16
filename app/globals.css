@@ -97,6 +97,8 @@ input:focus {
 /* Reduced motion override — system preference or user opt-in */
 @media (prefers-reduced-motion: reduce) {
   .cursor-blink { animation: none; }
+  /* State-change animations are informative, not decorative, so they collapse
+     to an instant change rather than being removed outright. */
   *,
   *::before,
   *::after {

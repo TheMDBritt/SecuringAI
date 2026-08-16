@@ -254,7 +254,7 @@ export default function LandingPage() {
               <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
                 Three disciplines
               </p>
-              <h2 className="text-xl font-bold text-slate-100">
+              <h2 className="text-display-sm font-bold text-slate-100">
                 Pick a scenario. Run it. Get scored.
               </h2>
             </div>
@@ -328,7 +328,7 @@ export default function LandingPage() {
             <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
               How scoring works
             </p>
-            <h2 className="text-lg font-bold text-slate-100">
+            <h2 className="text-display-sm font-bold text-slate-100">
               Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
             </h2>
           </div>
@@ -363,6 +363,15 @@ export default function LandingPage() {
       {/* ── Playbook + technique tags ─────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
+          <div className="mb-8 max-w-2xl">
+            <p className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-500">
+              Coverage
+            </p>
+            <h2 className="text-display-sm font-bold text-slate-100">
+              One framework edition. Eleven exams.
+            </h2>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-10">
 
             {/* Coverage, stated once and correctly */}
@@ -418,7 +427,7 @@ export default function LandingPage() {
               <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
                 Playbook
               </p>
-              <h2 className="text-xl font-bold text-slate-100 mb-3">
+              <h2 className="text-display-sm font-bold text-slate-100 mb-3">
                 {STATS.quizQs.toLocaleString()} questions across {STATS.certs} certs. Drill by domain.
               </h2>
               <p className="text-sm text-slate-400 leading-relaxed mb-4">

@@ -202,10 +202,13 @@ function DeliverableCriteria({
                 aria-hidden
                 className={[
                   'mt-0.5 flex h-3 w-3 flex-none items-center justify-center rounded-full border',
+                  'transition-colors duration-300',
                   ok ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
                 ].join(' ')}
               >
-                {ok && <span className="text-micro font-bold leading-none text-slate-900">✓</span>}
+                {ok && (
+                  <span className="animate-pop-in text-micro font-bold leading-none text-slate-900">✓</span>
+                )}
               </span>
               <span className="leading-snug">{c}</span>
             </li>
