@@ -228,7 +228,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
         <div key={s} className="flex items-center gap-2">
           <div
             className={[
-              'w-5 h-5 rounded-full border flex items-center justify-center font-mono text-[10px] transition-colors',
+              'w-5 h-5 rounded-full border flex items-center justify-center font-mono text-micro transition-colors',
               s === step
                 ? 'border-brand-500 bg-brand-500/20 text-brand-300'
                 : s < step
@@ -243,7 +243,7 @@ function StepIndicator({ step }: { step: SetupStep }) {
           )}
         </div>
       ))}
-      <span className="ml-1 text-[10px] font-mono text-slate-600">
+      <span className="ml-1 text-micro font-mono text-slate-600">
         Step {step} of 3 {' '}
         {step === 1 ? 'Select Exam' : step === 2 ? 'Select Domains' : 'Options'}
       </span>
@@ -265,7 +265,7 @@ function Step1SelectExam({
     <div className="flex flex-col h-full px-5 py-5">
       <StepIndicator step={1} />
       <h2 className="text-base font-semibold text-slate-100 mb-1">Select Exam</h2>
-      <p className="text-[11px] text-slate-500 mb-4">Choose the certification you are preparing for.</p>
+      <p className="text-2xs text-slate-500 mb-4">Choose the certification you are preparing for.</p>
 
       <div className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -284,18 +284,18 @@ function Step1SelectExam({
                 ].join(' ')}
               >
                 <div className="mb-2">
-                  <span className={['inline-block font-mono text-[10px] px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
+                  <span className={['inline-block font-mono text-micro px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
                     {cert.id}
                   </span>
                 </div>
-                <p className="text-[11px] font-semibold text-slate-200 leading-snug mb-0.5">{cert.name}</p>
-                <p className="text-[10px] text-slate-500 leading-snug mb-2">{cert.provider}</p>
+                <p className="text-2xs font-semibold text-slate-200 leading-snug mb-0.5">{cert.name}</p>
+                <p className="text-micro text-slate-500 leading-snug mb-2">{cert.provider}</p>
                 <div className="flex items-center justify-between gap-1">
-                  <p className="text-[10px] font-mono text-slate-600">
+                  <p className="text-micro font-mono text-slate-600">
                     <span className="text-slate-400 font-semibold">{total}</span> Qs · <span className="text-slate-500">{cert.domains.length}d</span>
                   </p>
                   {cert.passingScore && (
-                    <span className="text-[9px] font-mono text-slate-600">pass≥{cert.passingScore}%</span>
+                    <span className="text-micro font-mono text-slate-600">pass≥{cert.passingScore}%</span>
                   )}
                 </div>
               </button>
@@ -358,11 +358,11 @@ function Step2SelectDomains({
       <div className="flex items-center gap-2 mb-4">
         <button
           onClick={onBack}
-          className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded transition-colors"
+          className="text-micro font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded transition-colors"
         >
           Back
         </button>
-        <span className={['font-mono text-[10px] px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
+        <span className={['font-mono text-micro px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
           {cert.id}
         </span>
         <span className="text-sm font-semibold text-slate-200 truncate">{cert.name}</span>
@@ -370,10 +370,10 @@ function Step2SelectDomains({
 
       {/* Select all / deselect all */}
       <div className="flex items-center justify-between mb-3">
-        <p className="text-[10px] text-slate-500 font-mono uppercase tracking-wide">Domains</p>
+        <p className="text-micro text-slate-500 font-mono uppercase tracking-wide">Domains</p>
         <button
           onClick={allSelected ? onDeselectAll : onSelectAll}
-          className="text-[10px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded transition-colors"
+          className="text-micro font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-2 py-0.5 rounded transition-colors"
         >
           {allSelected ? 'Deselect All' : 'Select All'}
         </button>
@@ -405,11 +405,11 @@ function Step2SelectDomains({
               {/* Domain info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-[11px] font-medium text-slate-300 leading-snug">{domain.name}</p>
-                  <span className="font-mono text-[11px] text-slate-400 flex-shrink-0">{count}</span>
+                  <p className="text-2xs font-medium text-slate-300 leading-snug">{domain.name}</p>
+                  <span className="font-mono text-2xs text-slate-400 flex-shrink-0">{count}</span>
                 </div>
                 {domain.weight && (
-                  <p className="text-[10px] font-mono text-slate-600 mt-0.5">{domain.weight}</p>
+                  <p className="text-micro font-mono text-slate-600 mt-0.5">{domain.weight}</p>
                 )}
               </div>
             </button>
@@ -535,11 +535,11 @@ function Step3Options({
       <div className="flex items-center gap-2 mb-4">
         <button
           onClick={onBack}
-          className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded transition-colors"
+          className="text-micro font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded transition-colors"
         >
           Back
         </button>
-        <span className={['font-mono text-[10px] px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
+        <span className={['font-mono text-micro px-1.5 py-0.5 rounded border', cert.badgeClass].join(' ')}>
           {cert.id}
         </span>
         <span className="text-sm font-semibold text-slate-200 truncate">{cert.name}</span>
@@ -547,10 +547,10 @@ function Step3Options({
 
       {/* Domain summary */}
       <div className="mb-5 px-3 py-2.5 rounded-lg border border-slate-700/60 bg-slate-800/30">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1.5">Selected Domains</p>
+        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1.5">Selected Domains</p>
         <div className="space-y-0.5">
           {selectedDomains.map((d) => (
-            <p key={d.id} className="text-[11px] text-slate-400 leading-snug">{d.name}</p>
+            <p key={d.id} className="text-2xs text-slate-400 leading-snug">{d.name}</p>
           ))}
         </div>
       </div>
@@ -571,23 +571,23 @@ function Step3Options({
         >
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-semibold text-slate-200">Mock {cert.id} Exam</span>
-            <span className="text-[10px] font-mono text-slate-400">{mockConfig.questions} Q · {mockConfig.durationMin} min · no hints</span>
+            <span className="text-micro font-mono text-slate-400">{mockConfig.questions} Q · {mockConfig.durationMin} min · no hints</span>
           </div>
-          <p className="text-[11px] text-slate-400 leading-relaxed">Timed simulation. No per-question feedback until the end.</p>
+          <p className="text-2xs text-slate-400 leading-relaxed">Timed simulation. No per-question feedback until the end.</p>
         </button>
       )}
 
       <div className="flex-1 overflow-y-auto space-y-5">
         {/* Difficulty */}
         <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Difficulty</label>
+          <label className="text-micro font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Difficulty</label>
           <div className="flex gap-2">
             {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((d) => (
               <button
                 key={d}
                 onClick={() => setDifficulty(d)}
                 className={[
-                  'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors capitalize',
+                  'flex-1 py-1.5 rounded text-2xs font-mono border transition-colors capitalize',
                   difficulty === d
                     ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -602,8 +602,8 @@ function Step3Options({
         {/* Experience filter, multi-select, mix and match */}
         <div>
           <div className="flex items-baseline justify-between mb-1.5">
-            <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Experience</label>
-            <span className="text-[9px] font-mono text-slate-700">multi-select · leave blank for all</span>
+            <label className="text-micro font-mono text-slate-600 uppercase tracking-wide">Experience</label>
+            <span className="text-micro font-mono text-slate-700">multi-select · leave blank for all</span>
           </div>
           <div className="flex gap-2">
             {([
@@ -615,7 +615,7 @@ function Step3Options({
                 key={e.id}
                 onClick={() => toggleExperience(e.id)}
                 className={[
-                  'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
+                  'flex-1 py-1.5 rounded text-2xs font-mono border transition-colors',
                   experience.includes(e.id)
                     ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -623,11 +623,11 @@ function Step3Options({
                 aria-pressed={experience.includes(e.id)}
               >
                 {e.label}
-                <span className="ml-1 text-[9px] font-mono opacity-70">{e.n}</span>
+                <span className="ml-1 text-micro font-mono opacity-70">{e.n}</span>
               </button>
             ))}
           </div>
-          <p className="text-[10px] font-mono text-slate-600 mt-1.5">
+          <p className="text-micro font-mono text-slate-600 mt-1.5">
             <span className="text-brand-500">Unseen</span> = never attempted ·{' '}
             <span className="text-brand-500">Weak</span> = accuracy &lt; 70% ·{' '}
             <span className="text-brand-500">Strong</span> = accuracy ≥ 70%
@@ -636,14 +636,14 @@ function Step3Options({
 
         {/* Count */}
         <div>
-          <label className="text-[10px] font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Questions</label>
+          <label className="text-micro font-mono text-slate-600 uppercase tracking-wide block mb-1.5">Questions</label>
           <div className="flex gap-2">
             {COUNT_OPTIONS.map((n) => (
               <button
                 key={n}
                 onClick={() => setCount(n)}
                 className={[
-                  'flex-1 py-1.5 rounded text-[11px] font-mono border transition-colors',
+                  'flex-1 py-1.5 rounded text-2xs font-mono border transition-colors',
                   count === n
                     ? 'border-brand-500/50 bg-brand-500/10 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -656,7 +656,7 @@ function Step3Options({
         </div>
 
         {/* Pool preview */}
-        <p className="text-[11px] text-slate-600 font-mono text-center">
+        <p className="text-2xs text-slate-600 font-mono text-center">
           {pool.length} questions match · <span className="text-slate-400">{finalCount}</span> will be used
         </p>
       </div>
@@ -779,11 +779,11 @@ function QuestionScreen({
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-brand-500/30 bg-brand-500/5'}`}>
-          <span className={`text-[11px] font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-brand-400'}`}>Mock {certId ?? 'Exam'}</span>
+          <span className={`text-2xs font-mono uppercase tracking-wide ${timerLow ? 'text-red-400' : 'text-brand-400'}`}>Mock {certId ?? 'Exam'}</span>
           <span className={`text-base font-mono font-bold ${timerLow ? 'text-red-300' : 'text-brand-300'}`}>{timerStr}</span>
           <button
             onClick={onAbandonExam}
-            className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-0.5 rounded"
+            className="text-micro font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-0.5 rounded"
           >
             end early
           </button>
@@ -793,12 +793,12 @@ function QuestionScreen({
       {/* Progress */}
       <div className="mb-5">
         <div className="flex items-center justify-between mb-1.5">
-          <span className="text-[10px] font-mono text-slate-600">{index + 1} / {total}</span>
+          <span className="text-micro font-mono text-slate-600">{index + 1} / {total}</span>
           <div className="flex gap-1.5 items-center">
-            <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[question.difficulty]}`}>
+            <span className={`text-micro font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[question.difficulty]}`}>
               {question.difficulty}
             </span>
-            <span className="text-[10px] font-mono text-slate-600">{question.category}</span>
+            <span className="text-micro font-mono text-slate-600">{question.category}</span>
           </div>
         </div>
         <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
@@ -835,7 +835,7 @@ function QuestionScreen({
               disabled={chosen !== null}
               className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${style}`}
             >
-              <span className="font-mono text-[10px] mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
+              <span className="font-mono text-micro mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
               {opt}
             </button>
           );
@@ -847,7 +847,7 @@ function QuestionScreen({
         <button
           onClick={() => { if (chosen === null) onAnswer(null); }}
           disabled={chosen !== null}
-          className="mt-3 w-full py-1.5 rounded text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
+          className="mt-3 w-full py-1.5 rounded text-2xs font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
         >
           Skip, leave unanswered
         </button>
@@ -880,17 +880,17 @@ function ResultScreen({
         <span className={`text-sm font-semibold ${result.correct ? 'text-emerald-300' : 'text-red-300'}`}>
           {result.correct ? 'Correct!' : 'Incorrect'}
         </span>
-        <span className="text-[10px] font-mono text-slate-600 ml-auto">{index + 1}/{total}</span>
+        <span className="text-micro font-mono text-slate-600 ml-auto">{index + 1}/{total}</span>
       </div>
 
       <div className="mb-4">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Question</p>
+        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Question</p>
         <p className="text-sm text-slate-300">{result.question.question}</p>
       </div>
 
       {/* All options with per-option explanations */}
       <div className="flex-1 mb-4 space-y-2 overflow-y-auto">
-        <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Answer Breakdown</p>
+        <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Answer Breakdown</p>
         {result.question.options.map((opt, i) => {
           const isCorrect = i === result.question.correct;
           const isChosen  = i === result.chosen;
@@ -917,7 +917,7 @@ function ResultScreen({
         })}
         {/* Fallback overall explanation */}
         <div className="mt-3 pt-3 border-t border-slate-700/50">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
           <p className="text-xs text-slate-400 leading-relaxed">{result.question.explanation}</p>
         </div>
       </div>
@@ -993,16 +993,16 @@ function SummaryScreen({
         <div className="flex items-end justify-between mb-2">
           <div>
             <div className={`text-4xl font-bold font-mono ${scoreColor}`}>{pct}<span className="text-2xl">%</span></div>
-            <p className="text-[11px] text-slate-500 mt-0.5 font-mono">
+            <p className="text-2xs text-slate-500 mt-0.5 font-mono">
               {correct}/{total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s
             </p>
           </div>
           {cert && (
             <div className="text-right">
-              <div className={['text-[10px] font-mono px-2 py-0.5 rounded border', cert.badgeClass].join(' ')}>
+              <div className={['text-micro font-mono px-2 py-0.5 rounded border', cert.badgeClass].join(' ')}>
                 {cert.id}
               </div>
-              <div className={`mt-1 text-[11px] font-mono font-semibold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
+              <div className={`mt-1 text-2xs font-mono font-semibold ${passed ? 'text-emerald-400' : 'text-red-400'}`}>
                 {passed ? '↑ passing range' : '↓ below passing'}
               </div>
             </div>
@@ -1015,7 +1015,7 @@ function SummaryScreen({
         {cert && (
           <div className="mt-1.5 flex items-center gap-1">
             <div className="h-px flex-1 bg-slate-700" />
-            <span className="text-[9px] font-mono text-slate-600">passing threshold ~{passThreshold}%</span>
+            <span className="text-micro font-mono text-slate-600">passing threshold ~{passThreshold}%</span>
           </div>
         )}
       </div>
@@ -1023,7 +1023,7 @@ function SummaryScreen({
       {/* Domain breakdown, shown when cert is selected */}
       {byDomain && byDomain.length > 0 && (
         <div className="mb-5">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2.5">Domain Breakdown</p>
           <div className="space-y-2.5">
             {byDomain.map(({ domain, total: dTotal, correct: dCorrect }) => {
               const dPct     = dTotal > 0 ? Math.round((dCorrect / dTotal) * 100) : 0;
@@ -1032,16 +1032,16 @@ function SummaryScreen({
               return (
                 <div key={domain.id}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] text-slate-400 leading-snug flex-1 mr-2">{shortName}</span>
+                    <span className="text-2xs text-slate-400 leading-snug flex-1 mr-2">{shortName}</span>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] font-mono text-slate-600">{dCorrect}/{dTotal}</span>
-                      <span className={`text-[10px] font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
+                      <span className="text-micro font-mono text-slate-600">{dCorrect}/{dTotal}</span>
+                      <span className={`text-micro font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
                         {dPct}%
                       </span>
                       {dPct < 70 && dTotal > 0 && (
                         <button
                           onClick={() => onGenerateMore(domain.categories[0] ?? '')}
-                          className="text-[9px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
+                          className="text-micro font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
                         >
                           more →
                         </button>
@@ -1061,7 +1061,7 @@ function SummaryScreen({
       {/* Category breakdown, shown when no cert selected */}
       {(!byDomain || byDomain.length === 0) && (
         <div className="mb-5">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2.5">Category Breakdown</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2.5">Category Breakdown</p>
           <div className="space-y-2">
             {byCategory.map(([cat, stats]) => {
               const catPct   = Math.round((stats.correct / stats.total) * 100);
@@ -1069,13 +1069,13 @@ function SummaryScreen({
               return (
                 <div key={cat}>
                   <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[11px] text-slate-400 truncate max-w-[200px]">{cat}</span>
+                    <span className="text-2xs text-slate-400 truncate max-w-[200px]">{cat}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono text-slate-600">{stats.correct}/{stats.total}</span>
+                      <span className="text-micro font-mono text-slate-600">{stats.correct}/{stats.total}</span>
                       {catPct < 70 && (
                         <button
                           onClick={() => onGenerateMore(cat)}
-                          className="text-[9px] font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
+                          className="text-micro font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
                         >
                           more →
                         </button>
@@ -1347,18 +1347,18 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     <div className="flex flex-col h-full min-h-0">
       {preloadedLabel && (mode === 'question' || mode === 'result') && (
         <div className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
-          <span className="text-[11px] font-mono text-brand-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
+          <span className="text-2xs font-mono text-brand-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
         </div>
       )}
       {generating && (
         <div role="status" aria-live="polite" className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
           <div aria-hidden="true" className="w-3 h-3 border border-brand-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[11px] font-mono text-brand-400">Generating new questions...</span>
+          <span className="text-2xs font-mono text-brand-400">Generating new questions...</span>
         </div>
       )}
       {genError && (
         <div role="alert" className="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
-          <span className="text-[11px] font-mono text-red-400">
+          <span className="text-2xs font-mono text-red-400">
             <span aria-hidden="true">&#9888; </span>{genError}
           </span>
         </div>

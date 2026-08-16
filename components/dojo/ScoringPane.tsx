@@ -127,7 +127,7 @@ function ScoreBar({ score, riskLevel }: { score: number; riskLevel: EvaluationRe
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-1">
+    <p className="text-micro font-mono text-slate-500 uppercase tracking-wider mb-1">
       {children}
     </p>
   );
@@ -140,17 +140,17 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
     <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-3">
       {/* Top row: verdict + score + risk + attack type */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className={['text-[11px] font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
+        <span className={['text-2xs font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
           {e.verdict}
         </span>
-        <span className={['text-[11px] font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
+        <span className={['text-2xs font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
           {e.riskLevel.toUpperCase()}
         </span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+        <span className="text-micro px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
           {ATTACK_TYPE_LABEL[e.attackType] ?? e.attackType}
         </span>
         {e.attackSucceeded && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-red-500/15 border border-red-500/30 text-red-400 font-mono">
+          <span className="text-micro px-1.5 py-0.5 rounded bg-red-500/15 border border-red-500/30 text-red-400 font-mono">
             attack succeeded
           </span>
         )}
@@ -164,8 +164,8 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* Sensitive data exposed */}
       {e.attackSucceeded && e.leakedDataCategory && (
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[10px] font-mono text-slate-500">Sensitive data exposed:</span>
-          <span className="text-[10px] px-1.5 py-0.5 rounded border border-red-500/40 bg-red-500/10 text-red-300 font-mono">
+          <span className="text-micro font-mono text-slate-500">Sensitive data exposed:</span>
+          <span className="text-micro px-1.5 py-0.5 rounded border border-red-500/40 bg-red-500/10 text-red-300 font-mono">
             {e.leakedDataCategory}
           </span>
         </div>
@@ -175,11 +175,11 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {e.attackChain && e.attackChain.chain.length > 0 && (
         <div>
           <SectionLabel>Attack Chain</SectionLabel>
-          <p className="text-[11px] font-mono text-slate-200 leading-relaxed">
+          <p className="text-2xs font-mono text-slate-200 leading-relaxed">
             {e.attackChain.chain.map((t) => ATTACK_TYPE_LABEL[t] ?? t).join(' → ')}
           </p>
           {e.attackChain.chainPenalty > 0 && (
-            <p className="text-[10px] font-mono text-red-400 mt-0.5">
+            <p className="text-micro font-mono text-red-400 mt-0.5">
               Chain penalty: -{e.attackChain.chainPenalty}
             </p>
           )}
@@ -189,7 +189,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* WHAT HAPPENED */}
       <div>
         <SectionLabel>What Happened</SectionLabel>
-        <p className="text-[11px] text-slate-200 leading-relaxed">{e.whatHappened}</p>
+        <p className="text-2xs text-slate-200 leading-relaxed">{e.whatHappened}</p>
       </div>
 
       {/* SIGNALS */}
@@ -198,7 +198,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>Signals</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.signals.map((s, i) => (
-              <li key={i} className="text-[10px] text-slate-400 font-mono flex gap-1.5">
+              <li key={i} className="text-micro text-slate-400 font-mono flex gap-1.5">
                 <span className="text-brand-600 shrink-0">▸</span>
                 {s}
               </li>
@@ -213,7 +213,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>Defense Gaps</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.defensiveFailures.map((f, i) => (
-              <li key={i} className="text-[10px] text-red-300/80 flex gap-1.5">
+              <li key={i} className="text-micro text-red-300/80 flex gap-1.5">
                 <span className="text-red-500 shrink-0">✗</span>
                 {f}
               </li>
@@ -225,7 +225,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* DEFENSIVE TAKEAWAY */}
       <div className="border-t border-slate-700/60 pt-2.5">
         <SectionLabel>Defensive Takeaway</SectionLabel>
-        <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
+        <p className="text-2xs text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
       </div>
 
       {/* Mitigations */}
@@ -234,7 +234,7 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>Mitigations</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.recommendedMitigations.map((m, i) => (
-              <li key={i} className="text-[10px] text-amber-300/80 flex gap-1.5">
+              <li key={i} className="text-micro text-amber-300/80 flex gap-1.5">
                 <span className="text-amber-500 shrink-0">→</span>
                 {m}
               </li>
@@ -255,12 +255,12 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
             <div className="flex flex-col gap-2">
               {fm.owasp.length > 0 && (
                 <div>
-                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
                     OWASP LLM Top 10
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fm.owasp.map((tag) => (
-                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-red-500/25 bg-red-500/8 text-red-300/80 font-mono">
+                      <span key={tag} className="text-micro px-1.5 py-0.5 rounded border border-red-500/25 bg-red-500/8 text-red-300/80 font-mono">
                         {tag}
                       </span>
                     ))}
@@ -269,12 +269,12 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
               )}
               {fm.mitreAtlas.length > 0 && (
                 <div>
-                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
                     MITRE ATLAS
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fm.mitreAtlas.map((tag) => (
-                      <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/25 bg-amber-500/8 text-amber-300/80 font-mono">
+                      <span key={tag} className="text-micro px-1.5 py-0.5 rounded border border-amber-500/25 bg-amber-500/8 text-amber-300/80 font-mono">
                         {tag}
                       </span>
                     ))}
@@ -283,12 +283,12 @@ function Dojo1EvalCard({ eval: e }: { eval: EvaluationResult }) {
               )}
               {fm.nistAiRmf.length > 0 && (
                 <div>
-                  <p className="text-[9px] font-mono text-slate-600 uppercase tracking-widest mb-1">
+                  <p className="text-micro font-mono text-slate-600 uppercase tracking-widest mb-1">
                     NIST AI RMF
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {fm.nistAiRmf.map((fn) => (
-                      <span key={fn} className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono">
+                      <span key={fn} className="text-micro px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono">
                         {fn}
                       </span>
                     ))}
@@ -312,13 +312,13 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
     <div className="rounded border border-slate-700 bg-slate-800/50 p-2.5 flex flex-col gap-3">
       {/* Top row: verdict + quality level */}
       <div className="flex items-center gap-2 flex-wrap">
-        <span className={['text-[11px] font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
+        <span className={['text-2xs font-bold px-2 py-0.5 rounded border font-mono', VERDICT_STYLE[e.verdict]].join(' ')}>
           {e.verdict}
         </span>
-        <span className={['text-[11px] font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
+        <span className={['text-2xs font-mono', RISK_STYLE[e.riskLevel]].join(' ')}>
           {qualityLabel.toUpperCase()}
         </span>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+        <span className="text-micro px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
           {e.score}% complete
         </span>
       </div>
@@ -329,7 +329,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* ANALYSIS SUMMARY */}
       <div>
         <SectionLabel>Analysis Summary</SectionLabel>
-        <p className="text-[11px] text-slate-200 leading-relaxed">{e.whatHappened}</p>
+        <p className="text-2xs text-slate-200 leading-relaxed">{e.whatHappened}</p>
       </div>
 
       {/* QUALITY CRITERIA MET */}
@@ -338,7 +338,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>Quality Criteria Met</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.signals.map((s, i) => (
-              <li key={i} className="text-[10px] text-emerald-300/80 flex gap-1.5">
+              <li key={i} className="text-micro text-emerald-300/80 flex gap-1.5">
                 <span className="text-emerald-500 shrink-0">✓</span>
                 {s}
               </li>
@@ -353,7 +353,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>Missing Elements</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.defensiveFailures.map((f, i) => (
-              <li key={i} className="text-[10px] text-amber-300/70 flex gap-1.5">
+              <li key={i} className="text-micro text-amber-300/70 flex gap-1.5">
                 <span className="text-amber-500 shrink-0">◯</span>
                 {f}
               </li>
@@ -368,7 +368,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
           <SectionLabel>How to Improve</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {e.recommendedMitigations.map((m, i) => (
-              <li key={i} className="text-[10px] text-slate-400 flex gap-1.5">
+              <li key={i} className="text-micro text-slate-400 flex gap-1.5">
                 <span className="text-brand-600 shrink-0">→</span>
                 {m}
               </li>
@@ -380,7 +380,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
       {/* CERTIFICATION CONNECTION */}
       <div className="border-t border-slate-700/60 pt-2.5">
         <SectionLabel>Certification Connection</SectionLabel>
-        <p className="text-[11px] text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
+        <p className="text-2xs text-slate-300 leading-relaxed">{e.defensiveTakeaway}</p>
       </div>
 
       {/* CERTIFICATION DOMAINS */}
@@ -391,7 +391,7 @@ function QualityEvalCard({ eval: e }: { eval: EvaluationResult }) {
             {e.securityAITopics.map((topic) => (
               <span
                 key={topic}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono"
+                className="text-micro px-1.5 py-0.5 rounded border border-brand-500/25 bg-brand-500/8 text-brand-300/80 font-mono"
               >
                 {topic}
               </span>
@@ -428,7 +428,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
     <div className="flex h-full">
       {/* Score panel */}
       <div className="w-72 shrink-0 border-r border-slate-700 p-3 flex flex-col gap-3">
-        <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+        <p className="text-micro font-mono text-slate-500 uppercase tracking-widest">
           Evaluation
         </p>
 
@@ -450,7 +450,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               {latest && (
                 <span
                   className={[
-                    'text-[11px] font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
+                    'text-2xs font-bold px-2 py-0.5 rounded border font-mono ml-1 mb-0.5',
                     VERDICT_STYLE[latest.verdict],
                   ].join(' ')}
                 >
@@ -464,7 +464,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
               <>
                 <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-800" />
                 {!isQualityMode && (
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                  <p className="font-mono text-micro uppercase tracking-widest text-slate-600">
                     Starting posture
                   </p>
                 )}
@@ -477,15 +477,15 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             {latest && (
               <div className="flex gap-1.5 flex-wrap">
                 {isQualityMode ? (
-                  <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                  <span className={['text-micro font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
                     {QUALITY_LEVEL_LABEL[latest.riskLevel] ?? 'Analysis'}
                   </span>
                 ) : (
                   <>
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
+                    <span className="text-micro px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 font-mono">
                       {ATTACK_TYPE_LABEL[latest.attackType]}
                     </span>
-                    <span className={['text-[10px] font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
+                    <span className={['text-micro font-mono font-semibold', RISK_STYLE[latest.riskLevel]].join(' ')}>
                       {latest.riskLevel} risk
                     </span>
                   </>
@@ -497,7 +497,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
             {!isQualityMode && latest && latest.owaspCategory !== 'N/A' && (
               <span
                 title={latest.owaspCategory}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
+                className="text-micro px-1.5 py-0.5 rounded border border-slate-600 bg-slate-800 text-slate-400 font-mono w-fit"
               >
                 {latest.owaspCategory.split(' ')[0].trim()}
               </span>
@@ -505,7 +505,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {/* SecAI+ primary topic (Dojo 2/3) */}
             {isQualityMode && latest?.securityAITopics && latest.securityAITopics.length > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-brand-500/30 bg-brand-500/5 text-brand-400 font-mono w-fit">
+              <span className="text-micro px-1.5 py-0.5 rounded border border-brand-500/30 bg-brand-500/5 text-brand-400 font-mono w-fit">
                 {latest.securityAITopics[0]}
               </span>
             )}
@@ -516,7 +516,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                 {scenario.owaspTags.map((tag) => (
                   <span
                     key={tag}
-                    className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/50 text-slate-500 font-mono"
+                    className="text-micro px-1.5 py-0.5 rounded border border-slate-700 bg-slate-800/50 text-slate-500 font-mono"
                   >
                     {tag}
                   </span>
@@ -526,7 +526,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {/* History count */}
             {latest && history.length > 0 && (
-              <p className="text-[10px] text-slate-600 font-mono">
+              <p className="text-micro text-slate-600 font-mono">
                 + {history.length} earlier evaluation{history.length > 1 ? 's' : ''} below
               </p>
             )}
@@ -547,7 +547,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
       {/* Detail + history panel */}
       <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3">
-        <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+        <p className="text-micro font-mono text-slate-500 uppercase tracking-widest">
           Evaluation Detail
         </p>
 
@@ -580,7 +580,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                   'Which defensive control failed, and why',
                   'OWASP LLM and MITRE ATLAS mapping',
                 ].map((line) => (
-                  <li key={line} className="flex gap-2 text-[11px] leading-snug text-slate-500">
+                  <li key={line} className="flex gap-2 text-2xs leading-snug text-slate-500">
                     <span aria-hidden className="mt-[5px] h-1 w-1 flex-none rounded-full bg-slate-600" />
                     <span>{line}</span>
                   </li>
@@ -598,7 +598,7 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
 
             {history.length > 0 && (
               <div className="flex flex-col gap-2">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wider">
+                <p className="text-micro font-mono text-slate-600 uppercase tracking-wider">
                   Previous evaluations
                 </p>
                 {history.map((e, i) => (

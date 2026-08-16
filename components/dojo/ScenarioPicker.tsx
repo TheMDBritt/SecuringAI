@@ -62,8 +62,8 @@ const TASK_BADGE: Record<string, string> = {
 function ConfigRow({ label, value, valueClass }: { label: string; value: string; valueClass?: string }) {
   return (
     <div className="flex items-center justify-between gap-2 py-0.5">
-      <span className="text-[10px] text-slate-500 font-mono shrink-0">{label}</span>
-      <span className={['text-[10px] font-medium text-right', valueClass ?? 'text-slate-300'].join(' ')}>
+      <span className="text-micro text-slate-500 font-mono shrink-0">{label}</span>
+      <span className={['text-micro font-medium text-right', valueClass ?? 'text-slate-300'].join(' ')}>
         {value}
       </span>
     </div>
@@ -74,7 +74,7 @@ function FeaturePill({ label, enabled }: { label: string; enabled: boolean }) {
   return (
     <span
       className={[
-        'text-[9px] px-1.5 py-0.5 rounded border font-mono',
+        'text-micro px-1.5 py-0.5 rounded border font-mono',
         enabled
           ? 'border-brand-500/40 bg-brand-500/10 text-brand-400'
           : 'border-slate-700 text-slate-600',
@@ -96,7 +96,7 @@ function Dojo2ActivePreview({
 }) {
   return (
     <div className="border border-brand-500/30 rounded bg-brand-500/5 p-2.5">
-      <p className="text-[10px] font-mono text-brand-500 uppercase tracking-widest mb-2">
+      <p className="text-micro font-mono text-brand-500 uppercase tracking-widest mb-2">
         Active Scenario
       </p>
 
@@ -106,13 +106,13 @@ function Dojo2ActivePreview({
             {activeDojo2Scenario.title}
           </p>
           <div className="flex flex-wrap gap-1">
-            <span className={['text-[9px] px-1.5 py-0.5 rounded border font-mono', TASK_BADGE[activeDojo2Scenario.taskType]].join(' ')}>
+            <span className={['text-micro px-1.5 py-0.5 rounded border font-mono', TASK_BADGE[activeDojo2Scenario.taskType]].join(' ')}>
               {DOJO2_TASK_LABELS[activeDojo2Scenario.taskType]}
             </span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded border font-mono border-slate-600 text-slate-400">
+            <span className="text-micro px-1.5 py-0.5 rounded border font-mono border-slate-600 text-slate-400">
               {activeDojo2Scenario.attackCategory}
             </span>
-            <span className={['text-[9px] px-1.5 py-0.5 rounded border font-mono', DIFFICULTY_BADGE[activeDojo2Scenario.difficulty]].join(' ')}>
+            <span className={['text-micro px-1.5 py-0.5 rounded border font-mono', DIFFICULTY_BADGE[activeDojo2Scenario.difficulty]].join(' ')}>
               {activeDojo2Scenario.difficulty}
             </span>
           </div>
@@ -120,7 +120,7 @@ function Dojo2ActivePreview({
       ) : selected ? (
         <div className="mb-2.5">
           <p className="text-xs font-medium text-slate-100 leading-snug">{selected.title}</p>
-          <p className="text-[10px] text-slate-500 mt-0.5">Load an incident from the right panel →</p>
+          <p className="text-micro text-slate-500 mt-0.5">Load an incident from the right panel →</p>
         </div>
       ) : null}
 
@@ -166,11 +166,11 @@ export function ScenarioPicker({
       <div className="pb-2 border-b border-slate-800">
         <div className="flex items-center gap-1.5 mb-1">
           <span className={`w-1.5 h-1.5 rounded-full ${accent.dot}`} />
-          <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+          <p className="text-micro font-mono text-slate-500 uppercase tracking-widest">
             {scenarios.length} scenarios
           </p>
         </div>
-        <p className="text-[11px] text-slate-500 leading-snug">{DOJO_HEADER_DESC[dojoId]}</p>
+        <p className="text-2xs text-slate-500 leading-snug">{DOJO_HEADER_DESC[dojoId]}</p>
       </div>
 
       {/* Scenario cards */}
@@ -190,19 +190,19 @@ export function ScenarioPicker({
             >
               <div className="flex items-start justify-between gap-2 mb-1">
                 <div className="flex items-start gap-2 min-w-0">
-                  <span className="font-mono text-[9px] text-slate-700 shrink-0 mt-[3px]">
+                  <span className="font-mono text-micro text-slate-700 shrink-0 mt-[3px]">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                   {/* Titles wrap to two lines rather than truncating. An ellipsis
                       in a navigation list hides the one word that tells the
                       learner what the scenario is. */}
-                  <span className="text-[12px] font-medium text-slate-200 leading-snug group-hover:text-slate-100 transition-colors duration-150 line-clamp-2">
+                  <span className="text-xs font-medium text-slate-200 leading-snug group-hover:text-slate-100 transition-colors duration-150 line-clamp-2">
                     {scenario.title}
                   </span>
                 </div>
                 <span
                   className={[
-                    'shrink-0 text-[9px] px-1.5 py-0.5 rounded border font-mono uppercase tracking-wide',
+                    'shrink-0 text-micro px-1.5 py-0.5 rounded border font-mono uppercase tracking-wide',
                     DIFFICULTY_BADGE[scenario.difficulty],
                   ].join(' ')}
                 >
@@ -214,7 +214,7 @@ export function ScenarioPicker({
                   brief in the working area, so repeating it in full here pushed
                   the rest of the list off screen. */}
               {isSelected && (
-                <p className="text-[11px] text-slate-400 leading-snug mt-1 mb-1.5 line-clamp-3">
+                <p className="text-2xs text-slate-400 leading-snug mt-1 mb-1.5 line-clamp-3">
                   {scenario.description}
                 </p>
               )}
@@ -224,7 +224,7 @@ export function ScenarioPicker({
                   {scenario.owaspTags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/80 text-slate-400 font-mono"
+                      className="text-micro px-1 py-0.5 rounded bg-slate-700/80 text-slate-400 font-mono"
                     >
                       {tag}
                     </span>
@@ -232,7 +232,7 @@ export function ScenarioPicker({
                   {scenario.mitreAttackIds && scenario.mitreAttackIds.slice(0, 2).map((id) => (
                     <span
                       key={id}
-                      className="text-[9px] px-1 py-0.5 rounded bg-slate-700/50 text-slate-500 font-mono"
+                      className="text-micro px-1 py-0.5 rounded bg-slate-700/50 text-slate-500 font-mono"
                     >
                       {id}
                     </span>

@@ -130,14 +130,14 @@ export default function LandingPage() {
             <div className="md:col-span-3">
               <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-brand-500/25 bg-brand-500/10">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
-                <span className="text-[11px] font-medium text-brand-200 tracking-wide">Enterprise AI security training · Free &amp; open access</span>
+                <span className="text-2xs font-medium text-brand-200 tracking-wide">Enterprise AI security training · Free &amp; open access</span>
               </div>
-              <h1 className="text-[38px] md:text-[54px] font-bold tracking-tight text-white leading-[1.05]">
+              <h1 className="text-display md:text-display-lg font-bold tracking-tight text-white leading-[1.05]">
                 Attack LLMs.<br />
                 Defend against them.<br />
                 <span className="bg-gradient-to-r from-brand-300 to-brand-300 bg-clip-text text-transparent">Govern AI risk.</span>
               </h1>
-              <p className="mt-6 text-[16px] text-slate-300 max-w-[520px] leading-relaxed">
+              <p className="mt-6 text-base text-slate-300 max-w-[520px] leading-relaxed">
                 Three hands-on dojos. Attack a live LLM under configurable guardrails, triage
                 AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
                 and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
@@ -157,7 +157,7 @@ export default function LandingPage() {
                   Your dashboard
                 </Link>
               </div>
-              <p className="mt-3 text-[13px] text-slate-500">
+              <p className="mt-3 text-xs text-slate-500">
                 No sign-up. Progress saves in this browser only.{' '}
                 <Link href="/help" className="text-brand-300 underline underline-offset-2 hover:text-brand-200">
                   New here?
@@ -166,7 +166,7 @@ export default function LandingPage() {
               {/* Quick framework tags */}
               <div className="mt-6 flex flex-wrap gap-1.5">
                 {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
-                  <span key={f} className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-600">
+                  <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-600">
                     {f}
                   </span>
                 ))}
@@ -188,17 +188,17 @@ export default function LandingPage() {
                   <div key={label} className="bg-slate-900 px-4 py-3.5">
                     <div className="text-2xl font-bold text-slate-100 font-mono tracking-tight">{n}</div>
                     <div className="text-xs font-medium text-slate-300 mt-0.5">{label}</div>
-                    <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
+                    <div className="text-micro text-slate-600 mt-0.5">{sub}</div>
                   </div>
                 ))}
               </div>
               {/* Terminal */}
-              <div className="px-3 py-2.5 rounded border border-slate-800 bg-slate-950 font-mono text-[11px] leading-relaxed">
+              <div className="px-3 py-2.5 rounded border border-slate-800 bg-slate-950 font-mono text-2xs leading-relaxed">
                 <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-slate-800">
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
                   <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-slate-600 ml-1 text-[10px]">dojo-1 · session</span>
+                  <span className="text-slate-600 ml-1 text-micro">dojo-1 · session</span>
                 </div>
                 <div className="text-slate-500">
                   <span className="text-slate-700">$ </span>
@@ -251,7 +251,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="flex items-baseline justify-between mb-7">
             <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-1">
+              <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
                 Three disciplines
               </p>
               <h2 className="text-xl font-bold text-slate-100">
@@ -260,7 +260,7 @@ export default function LandingPage() {
             </div>
             <Link
               href="/dojo"
-              className="hidden md:inline-block text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 px-3 py-1.5 rounded transition-colors"
+              className="hidden md:inline-block text-2xs font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-600 px-3 py-1.5 rounded transition-colors"
             >
               Open the Dojo →
             </Link>
@@ -280,7 +280,7 @@ export default function LandingPage() {
                   ].join(' ')}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <span className={['text-[10px] font-mono px-2 py-0.5 rounded', accent.bg, accent.text].join(' ')}>
+                    <span className={['text-micro font-mono px-2 py-0.5 rounded', accent.bg, accent.text].join(' ')}>
                       {d.label}
                     </span>
                   </div>
@@ -290,16 +290,16 @@ export default function LandingPage() {
                   <p className="text-xs text-slate-400 leading-relaxed mb-3 flex-1">
                     {d.summary}
                   </p>
-                  <p className={['text-[10px] font-mono mb-4', accent.text, 'opacity-60'].join(' ')}>
+                  <p className={['text-micro font-mono mb-4', accent.text, 'opacity-60'].join(' ')}>
                     {d.detail}
                   </p>
                   <div className="border-t border-slate-800 pt-3">
-                    <p className="mb-1.5 font-mono text-[10px] uppercase tracking-widest text-slate-600">
+                    <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-slate-600">
                       {scenarios.length} scenarios, including
                     </p>
                     <ul className="flex flex-col gap-1">
                       {scenarios.slice(0, 4).map((s) => (
-                        <li key={s.id} className="flex items-start gap-1.5 text-[11px] text-slate-500">
+                        <li key={s.id} className="flex items-start gap-1.5 text-2xs text-slate-500">
                           <span className="mt-px shrink-0 text-slate-700">·</span>
                           {s.title}
                         </li>
@@ -308,7 +308,7 @@ export default function LandingPage() {
                   </div>
                   <span
                     className={[
-                      'mt-4 text-[11px] font-mono opacity-50 group-hover:opacity-100 transition-opacity duration-150',
+                      'mt-4 text-2xs font-mono opacity-50 group-hover:opacity-100 transition-opacity duration-150',
                       accent.text,
                     ].join(' ')}
                   >
@@ -325,7 +325,7 @@ export default function LandingPage() {
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="mb-6">
-            <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-1">
+            <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
               How scoring works
             </p>
             <h2 className="text-lg font-bold text-slate-100">
@@ -337,10 +337,10 @@ export default function LandingPage() {
             <table className="w-full text-xs text-left">
               <thead>
                 <tr className="border-b border-slate-800">
-                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest w-24">Dojo</th>
-                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest w-36">Engine</th>
-                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest">How it scores</th>
-                  <th className="px-4 py-2.5 text-[10px] font-mono text-slate-600 uppercase tracking-widest hidden md:table-cell">Framework</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest w-24">Dojo</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest w-36">Engine</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest">How it scores</th>
+                  <th className="px-4 py-2.5 text-micro font-mono text-slate-600 uppercase tracking-widest hidden md:table-cell">Framework</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800">
@@ -349,9 +349,9 @@ export default function LandingPage() {
                     <td className="px-4 py-3">
                       <span className={`font-mono font-semibold ${row.color}`}>{row.dojo}</span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-slate-400 text-[11px]">{row.engine}</td>
+                    <td className="px-4 py-3 font-mono text-slate-400 text-2xs">{row.engine}</td>
                     <td className="px-4 py-3 text-slate-400 leading-relaxed max-w-xs">{row.how}</td>
-                    <td className="px-4 py-3 font-mono text-slate-600 text-[10px] hidden md:table-cell">{row.maps}</td>
+                    <td className="px-4 py-3 font-mono text-slate-600 text-micro hidden md:table-cell">{row.maps}</td>
                   </tr>
                 ))}
               </tbody>
@@ -367,13 +367,13 @@ export default function LandingPage() {
 
             {/* Coverage, stated once and correctly */}
             <div>
-              <p className="mb-3 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+              <p className="mb-3 font-mono text-2xs uppercase tracking-widest text-slate-500">
                 OWASP LLM Top 10, 2026 edition
               </p>
               <ol className="grid gap-x-6 gap-y-1.5 sm:grid-cols-2">
                 {(Object.entries(OWASP_LLM_2026) as [string, string][]).map(([code, name]) => (
                   <li key={code} className="flex items-baseline gap-2.5 text-xs">
-                    <span className="font-mono text-[11px] tabular-nums text-brand-400/70">{code}</span>
+                    <span className="font-mono text-2xs tabular-nums text-brand-400/70">{code}</span>
                     <span className="text-slate-400">{name}</span>
                   </li>
                 ))}
@@ -387,14 +387,14 @@ export default function LandingPage() {
 
             {/* Cert tags */}
             <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
+              <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-3">
                 {STATS.certs} certifications mapped
               </p>
               <div className="flex flex-wrap gap-1.5">
                 {CERT_CHIPS.map((c) => (
                   <span
                     key={c.id}
-                    className="rounded border border-slate-700 bg-transparent px-2 py-0.5 font-mono text-[11px] text-slate-300"
+                    className="rounded border border-slate-700 bg-transparent px-2 py-0.5 font-mono text-2xs text-slate-300"
                   >
                     {c.label}
                   </span>
@@ -415,7 +415,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 py-12">
           <div className="grid md:grid-cols-2 gap-10 items-start">
             <div>
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+              <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
                 Playbook
               </p>
               <h2 className="text-xl font-bold text-slate-100 mb-3">
@@ -427,7 +427,7 @@ export default function LandingPage() {
                 results show per-domain breakdown so you know exactly where to focus.
               </p>
               <div className="p-3.5 rounded-lg border border-slate-800 bg-slate-900/40 mb-5">
-                <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow, exam first</p>
+                <p className="text-micro font-mono text-slate-500 uppercase tracking-widest mb-1.5">Quiz flow, exam first</p>
                 <ol className="text-xs text-slate-400 space-y-1 leading-relaxed">
                   <li><span className="font-mono text-slate-700 mr-2">01</span>Select a cert (SecAI+, SC-500, GIAC-GOAA…)</li>
                   <li><span className="font-mono text-slate-700 mr-2">02</span>Pick domains from that exam&apos;s official objectives</li>
@@ -447,7 +447,7 @@ export default function LandingPage() {
                 them here filled space without telling the reader anything new,
                 so this side carries what the Playbook actually contains. */}
             <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-5">
-              <p className="mb-3 font-mono text-[10px] uppercase tracking-widest text-slate-500">
+              <p className="mb-3 font-mono text-micro uppercase tracking-widest text-slate-500">
                 What is covered
               </p>
               <dl className="divide-y divide-slate-800/80">
@@ -459,7 +459,7 @@ export default function LandingPage() {
                 ].map(([k, v]) => (
                   <div key={k} className="flex flex-col gap-0.5 py-2.5 first:pt-0 last:pb-0">
                     <dt className="text-xs font-medium text-slate-200">{k}</dt>
-                    <dd className="text-[11px] leading-relaxed text-slate-500">{v}</dd>
+                    <dd className="text-2xs leading-relaxed text-slate-500">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -471,12 +471,12 @@ export default function LandingPage() {
       {/* ── Sources ──────────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-6">
-          <p className="text-[11px] font-mono text-slate-600 uppercase tracking-widest mb-3">
+          <p className="text-2xs font-mono text-slate-600 uppercase tracking-widest mb-3">
             Sourced from
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-1.5">
             {SOURCED_FROM.map((f) => (
-              <span key={f} className="text-[11px] font-mono text-slate-500">
+              <span key={f} className="text-2xs font-mono text-slate-500">
                 · {f}
               </span>
             ))}
@@ -505,8 +505,8 @@ export default function LandingPage() {
                     { label: 'Dojo 3', sub: `${STATS.d3} GRC scenarios` },
                   ].map((d) => (
                     <div key={d.label} className="border border-slate-800 rounded px-3 py-2">
-                      <div className="font-mono text-[11px] font-semibold text-slate-200">{d.label}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">{d.sub}</div>
+                      <div className="font-mono text-2xs font-semibold text-slate-200">{d.label}</div>
+                      <div className="text-micro text-slate-500 mt-0.5">{d.sub}</div>
                     </div>
                   ))}
                 </div>
@@ -526,7 +526,7 @@ export default function LandingPage() {
                 </Link>
                 <Link
                   href="/about"
-                  className="px-6 py-2.5 text-center text-[11px] font-mono text-slate-600 hover:text-slate-400 transition-colors duration-150"
+                  className="px-6 py-2.5 text-center text-2xs font-mono text-slate-600 hover:text-slate-400 transition-colors duration-150"
                 >
                   How scoring works →
                 </Link>

@@ -119,7 +119,7 @@ export function OnboardingTour() {
         ].join(' ')}
       >
         <div className="flex items-center justify-between px-5 py-3 border-b border-slate-800">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500">
+          <span className="text-micro font-mono uppercase tracking-widest text-slate-500">
             Quick tour · {step + 1} / {STEPS.length}
           </span>
           <button

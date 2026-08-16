@@ -10,7 +10,7 @@ import Link from 'next/link';
 export function TrademarkNoticeCompact() {
   return (
     <div className="flex shrink-0 items-center justify-center gap-2 border-t border-slate-800 bg-slate-950/80 px-3 py-1.5 text-center">
-      <p className="text-[11px] leading-none text-slate-500">
+      <p className="text-2xs leading-none text-slate-500">
         Independent study project, not affiliated with or endorsed by any
         certification provider.{' '}
         <Link

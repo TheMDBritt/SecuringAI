@@ -49,6 +49,20 @@ const config: Config = {
           fail: '#ef4444',
         },
       },
+      fontSize: {
+        // A real scale. The app had nine hand-picked pixel sizes (8, 9, 10, 11,
+        // 12, 13, 15) sitting alongside Tailwind's named steps, which is what a
+        // design without a type system looks like. Two steps below xs cover the
+        // dense label sizes this UI genuinely needs, and 8px and 9px are gone:
+        // no interface text should be that small.
+        micro: ['0.625rem', { lineHeight: '0.875rem', letterSpacing: '0.01em' }],
+        '2xs': ['0.6875rem', { lineHeight: '1rem' }],
+        // Display steps, so headline sizes are named rather than hand-picked
+        // per page. The hero used 38/54, About used 40, cards used 28/32.
+        'display-sm': ['1.75rem', { lineHeight: '1.15', letterSpacing: '-0.02em' }],
+        'display': ['2.5rem', { lineHeight: '1.08', letterSpacing: '-0.022em' }],
+        'display-lg': ['3.375rem', { lineHeight: '1.05', letterSpacing: '-0.025em' }],
+      },
       fontFamily: {
         sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'monospace'],

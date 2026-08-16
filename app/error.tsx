@@ -16,7 +16,7 @@ export default function GlobalError({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] px-6 py-20 text-center">
-      <p className="text-[10px] font-mono text-red-400 uppercase tracking-widest mb-3">
+      <p className="text-micro font-mono text-red-400 uppercase tracking-widest mb-3">
         Something broke
       </p>
       <h1 className="text-3xl md:text-5xl font-bold text-slate-100 tracking-tight mb-4">
@@ -27,7 +27,7 @@ export default function GlobalError({
         are transient. If it keeps happening, refresh or head home.
       </p>
       {error.digest && (
-        <p className="text-[10px] font-mono text-slate-600 mb-6">
+        <p className="text-micro font-mono text-slate-600 mb-6">
           ref: {error.digest}
         </p>
       )}

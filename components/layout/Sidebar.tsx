@@ -66,8 +66,8 @@ function SidebarInner({
       <Link href="/" onClick={onNavigate} className="flex h-14 items-center gap-2.5 px-3.5" aria-label="Securing AI, home">
         <BrandMark className="h-7 w-7 shrink-0" />
         <span className={['flex min-w-0 flex-col whitespace-nowrap', labelClass].join(' ')}>
-          <span className="text-[14px] font-bold leading-tight tracking-tight text-slate-50">Securing AI</span>
-          <span className="text-[10px] font-medium leading-tight text-slate-500">Training Platform</span>
+          <span className="text-sm font-bold leading-tight tracking-tight text-slate-50">Securing AI</span>
+          <span className="text-micro font-medium leading-tight text-slate-500">Training Platform</span>
         </span>
       </Link>
 
@@ -91,7 +91,7 @@ function SidebarInner({
       <div className="px-3.5 pb-4">
         <div className="flex items-center gap-2 overflow-hidden rounded-lg border border-surface-border bg-surface-raised/50 px-2.5 py-2">
           <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
-          <span className={['whitespace-nowrap text-[11px] font-medium text-slate-400', labelClass].join(' ')}>
+          <span className={['whitespace-nowrap text-2xs font-medium text-slate-400', labelClass].join(' ')}>
             Free · No account
           </span>
         </div>

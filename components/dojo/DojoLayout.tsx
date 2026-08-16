@@ -119,7 +119,7 @@ export function DojoLayout({
             aria-selected={pane === p.id}
             onClick={() => setPane(p.id)}
             className={[
-              'flex-1 rounded px-2 py-1.5 text-[11px] font-mono transition-colors',
+              'flex-1 rounded px-2 py-1.5 text-2xs font-mono transition-colors',
               pane === p.id
                 ? 'bg-brand-500/10 text-brand-300 ring-1 ring-brand-500/30'
                 : 'text-slate-500 hover:text-slate-300',

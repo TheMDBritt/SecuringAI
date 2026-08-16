@@ -252,17 +252,17 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
               <div className="px-4 py-3 border-b border-slate-700/50 flex items-start justify-between gap-2">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${cert.tagColor}`}>
+                    <span className={`text-micro font-mono px-2 py-0.5 rounded border ${cert.tagColor}`}>
                       {cert.id}
                     </span>
-                    <span className="text-[10px] text-slate-500 font-mono">{cert.provider}</span>
+                    <span className="text-micro text-slate-500 font-mono">{cert.provider}</span>
                   </div>
                   <h3 className="text-sm font-semibold text-slate-100 mt-1">{cert.name}</h3>
                 </div>
                 <div className="text-right shrink-0">
-                  <div className="text-[10px] font-mono text-slate-500">{cert.difficulty}</div>
-                  <div className="text-[10px] font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
-                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">
+                  <div className="text-micro font-mono text-slate-500">{cert.difficulty}</div>
+                  <div className="text-micro font-mono text-slate-600">{cert.questions} Q · {cert.duration}</div>
+                  <div className="text-micro font-mono text-slate-500 mt-0.5">
                     <span className="text-slate-300 font-semibold">{quizCount}</span> practice Qs
                   </div>
                 </div>
@@ -270,17 +270,17 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
 
               {/* Focus */}
               <div className="px-4 py-2 border-b border-slate-700/30">
-                <p className="text-[11px] text-slate-400 leading-relaxed">{cert.focus}</p>
+                <p className="text-2xs text-slate-400 leading-relaxed">{cert.focus}</p>
               </div>
 
               {/* Domains */}
               <div className="px-4 py-3 border-b border-slate-700/30">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
+                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Exam Domains</p>
                 <div className="space-y-1">
                   {cert.domains.map((d) => (
                     <div key={d.name} className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-slate-400">{d.name}</span>
-                      {d.pct && <span className="text-[10px] font-mono text-slate-600">{d.pct}</span>}
+                      <span className="text-2xs text-slate-400">{d.name}</span>
+                      {d.pct && <span className="text-micro font-mono text-slate-600">{d.pct}</span>}
                     </div>
                   ))}
                 </div>
@@ -288,10 +288,10 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
 
               {/* Top topics */}
               <div className="px-4 py-3">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
+                <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Key Topics</p>
                 <div className="flex flex-wrap gap-1">
                   {cert.topTopics.map((t) => (
-                    <span key={t} className="text-[10px] px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
+                    <span key={t} className="text-micro px-1.5 py-0.5 rounded bg-slate-700/60 text-slate-400 border border-slate-600/50">
                       {t}
                     </span>
                   ))}
@@ -302,7 +302,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
               <div className="px-4 pb-3">
                 <button
                   onClick={() => onCertFilter(cert.id)}
-                  className={`w-full text-[11px] font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
+                  className={`w-full text-2xs font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} opacity-70 hover:opacity-100`}
                 >
                   Filter by {cert.id} · {quizCount} Qs →
                 </button>

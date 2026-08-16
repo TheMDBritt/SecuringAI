@@ -119,19 +119,19 @@ export default function AboutPage() {
         <div className="max-w-5xl mx-auto px-6 py-12 md:py-16">
           <Link
             href="/"
-            className="text-[11px] font-mono text-slate-500 hover:text-slate-300 transition-colors duration-150"
+            className="text-2xs font-mono text-slate-500 hover:text-slate-300 transition-colors duration-150"
           >
             ← Home
           </Link>
           <div className="mt-6 grid md:grid-cols-3 gap-8 items-start">
             <div className="md:col-span-2">
-              <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-3">
+              <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-3">
                 About Securing AI
               </p>
-              <h1 className="text-3xl md:text-[40px] font-bold tracking-tight text-slate-100 leading-[1.08]">
+              <h1 className="text-display-sm md:text-display font-bold tracking-tight text-slate-100 leading-[1.08]">
                 A free study tool<br />for AI security.
               </h1>
-              <p className="mt-5 text-[15px] text-slate-400 leading-relaxed max-w-xl">
+              <p className="mt-5 text-sm text-slate-400 leading-relaxed max-w-xl">
                 Securing AI exists because there is no shortage of slide decks explaining prompt injection
                 and almost no way to actually run one. The goal is a hands-on environment, realistic
                 scenarios, live guardrail toggles, and per-turn scoring mapped to the certifications
@@ -147,8 +147,8 @@ export default function AboutPage() {
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
-                  <div className="text-[11px] text-slate-400 mt-0.5">{label}</div>
-                  <div className="text-[10px] text-slate-600 mt-0.5">{sub}</div>
+                  <div className="text-2xs text-slate-400 mt-0.5">{label}</div>
+                  <div className="text-micro text-slate-600 mt-0.5">{sub}</div>
                 </div>
               ))}
             </div>
@@ -159,7 +159,7 @@ export default function AboutPage() {
       {/* Principles */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
             Principles
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
@@ -171,7 +171,7 @@ export default function AboutPage() {
                 key={p.label}
                 className="p-4 rounded-lg border border-slate-800 bg-slate-900/60"
               >
-                <h3 className="text-[11px] font-mono font-semibold text-brand-400 mb-2 uppercase tracking-wide">
+                <h3 className="text-2xs font-mono font-semibold text-brand-400 mb-2 uppercase tracking-wide">
                   {p.label}
                 </h3>
                 <p className="text-sm text-slate-400 leading-relaxed">{p.body}</p>
@@ -184,7 +184,7 @@ export default function AboutPage() {
       {/* Three dojos */}
       <section className="border-b border-slate-800">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
             How it works
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
@@ -200,7 +200,7 @@ export default function AboutPage() {
                 >
                   <div className="shrink-0 w-16">
                     <span className={`${d.color} font-mono font-bold text-xs`}>Dojo {dojoId}</span>
-                    <div className="text-[10px] font-mono text-slate-600 mt-0.5">
+                    <div className="text-micro font-mono text-slate-600 mt-0.5">
                       {SCENARIO_COUNT_BY_DOJO[dojoId]}s
                     </div>
                   </div>
@@ -218,7 +218,7 @@ export default function AboutPage() {
       {/* Scoring detail */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
             Scoring
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-6">
@@ -229,7 +229,7 @@ export default function AboutPage() {
               <div key={s.dojo} className={`p-5 rounded-lg border ${s.border} bg-slate-900/40`}>
                 <div className="flex items-center gap-3 mb-3">
                   <span className={`text-sm font-mono font-bold ${s.color}`}>{s.dojo}</span>
-                  <span className="text-[11px] text-slate-500 font-mono">{s.engine}</span>
+                  <span className="text-2xs text-slate-500 font-mono">{s.engine}</span>
                 </div>
                 <ul className="space-y-1.5">
                   {s.detail.map((item, i) => (
@@ -248,7 +248,7 @@ export default function AboutPage() {
       {/* Quiz flow */}
       <section className="border-b border-slate-800">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
             Playbook / Quiz
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-4">
@@ -271,7 +271,7 @@ export default function AboutPage() {
             </div>
             <div className="rounded-lg border border-slate-800 bg-slate-900/40 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-800">
-                <p className="text-[10px] font-mono text-slate-600 uppercase tracking-widest">Quiz flow</p>
+                <p className="text-micro font-mono text-slate-600 uppercase tracking-widest">Quiz flow</p>
               </div>
               <div className="px-4 py-3.5 space-y-3">
                 {[
@@ -281,7 +281,7 @@ export default function AboutPage() {
                   { step: '04', text: 'Per-domain score breakdown + weak area targeting' },
                 ].map(({ step, text }) => (
                   <div key={step} className="flex gap-3 items-start">
-                    <span className="font-mono text-[10px] text-slate-700 shrink-0 mt-0.5">{step}</span>
+                    <span className="font-mono text-micro text-slate-700 shrink-0 mt-0.5">{step}</span>
                     <span className="text-xs text-slate-400">{text}</span>
                   </div>
                 ))}
@@ -294,7 +294,7 @@ export default function AboutPage() {
       {/* Credits */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-[11px] font-mono text-slate-500 uppercase tracking-widest mb-2">
+          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
             Sources
           </p>
           <h2 className="text-xl font-bold text-slate-100 mb-4">
@@ -308,13 +308,13 @@ export default function AboutPage() {
             {CREDITS.map((c) => (
               <span
                 key={c}
-                className="text-[11px] px-2.5 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 font-mono"
+                className="text-2xs px-2.5 py-1 rounded border border-slate-800 bg-slate-900/60 text-slate-400 font-mono"
               >
                 {c}
               </span>
             ))}
           </div>
-          <p className="text-[11px] text-slate-600 leading-relaxed mt-5">
+          <p className="text-2xs text-slate-600 leading-relaxed mt-5">
             Securing AI is independent and unaffiliated with any certification provider.
             Cross-check exam objectives with official provider materials before scheduling.
           </p>

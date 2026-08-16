@@ -22,7 +22,7 @@ const CATEGORIES = Array.from(new Set(TOPIC_ARTICLES.map((a) => a.category)));
 function renderMarkdown(md: string): string {
   // 1. Fenced code blocks (```... ```), must run before inline code
   md = md.replace(/```[\w]*\n([\s\S]*?)```/g, (_, code) =>
-    `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-[11px] font-mono text-brand-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
+    `<pre class="bg-slate-800 border border-slate-700 rounded-lg p-3 my-3 overflow-x-auto"><code class="text-2xs font-mono text-brand-300 whitespace-pre">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`,
   );
 
   // 2. Tables, | col | col | rows
@@ -32,7 +32,7 @@ function renderMarkdown(md: string): string {
       row
         .split('|')
         .slice(1, -1)
-        .map((c) => `<${tag} class="px-3 py-1.5 text-left border border-slate-700 text-[11px]">${c.trim()}</${tag}>`)
+        .map((c) => `<${tag} class="px-3 py-1.5 text-left border border-slate-700 text-2xs">${c.trim()}</${tag}>`)
         .join('');
     const [head, ...body] = rows;
     return `<div class="overflow-x-auto my-3"><table class="w-full border-collapse text-slate-300"><thead class="bg-slate-800"><tr>${toCell(head, 'th')}</tr></thead><tbody>${body.map((r) => `<tr class="border-t border-slate-700 hover:bg-slate-800/40">${toCell(r, 'td')}</tr>`).join('')}</tbody></table></div>`;
@@ -47,7 +47,7 @@ function renderMarkdown(md: string): string {
   md = md.replace(/\*\*(.+?)\*\*/g, '<strong class="text-slate-100 font-semibold">$1</strong>');
 
   // 5. Inline code (after fenced blocks already removed)
-  md = md.replace(/`([^`]+)`/g, '<code class="text-[11px] bg-slate-700/60 text-brand-300 px-1 py-0.5 rounded font-mono">$1</code>');
+  md = md.replace(/`([^`]+)`/g, '<code class="text-2xs bg-slate-700/60 text-brand-300 px-1 py-0.5 rounded font-mono">$1</code>');
 
   // 6. Lists
   md = md
@@ -102,7 +102,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         ].join(' ')}
       >
         <div className="px-3 py-2 border-b border-slate-700">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Categories</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Categories</p>
         </div>
         <div className="flex-1 overflow-y-auto">
           {CATEGORIES.map((cat) => {
@@ -114,14 +114,14 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
                 className={[
-                  'w-full text-left px-3 py-2.5 text-[11px] border-b border-slate-700/40 transition-colors flex items-center justify-between gap-1',
+                  'w-full text-left px-3 py-2.5 text-2xs border-b border-slate-700/40 transition-colors flex items-center justify-between gap-1',
                   selectedCategory === cat
                     ? 'bg-brand-500/10 text-brand-300 border-l-2 border-l-brand-500'
                     : 'text-slate-400 hover:bg-slate-800 hover:text-slate-300',
                 ].join(' ')}
               >
                 <span className="truncate">{cat}</span>
-                <span className="text-[9px] font-mono text-slate-600 shrink-0">{count}</span>
+                <span className="text-micro font-mono text-slate-600 shrink-0">{count}</span>
               </button>
             );
           })}
@@ -131,14 +131,14 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
         {articlesForCategory.length > 0 && (
           <div className="border-t border-slate-700">
             <div className="px-3 py-2 border-b border-slate-700">
-              <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Articles</p>
+              <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Articles</p>
             </div>
             {articlesForCategory.map((article) => (
               <button
                 key={article.id}
                 onClick={() => { setSelectedArticle(article); setMobilePane('article'); }}
                 className={[
-                  'w-full text-left px-3 py-2 text-[11px] border-b border-slate-700/30 transition-colors',
+                  'w-full text-left px-3 py-2 text-2xs border-b border-slate-700/30 transition-colors',
                   selectedArticle?.id === article.id
                     ? 'bg-brand-500/10 text-brand-300'
                     : 'text-slate-500 hover:bg-slate-800 hover:text-slate-300',
@@ -160,7 +160,7 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
       >
         <button
           onClick={() => setMobilePane('list')}
-          className="mb-4 text-[11px] font-mono text-slate-500 hover:text-slate-300 md:hidden"
+          className="mb-4 text-2xs font-mono text-slate-500 hover:text-slate-300 md:hidden"
         >
           &larr; All articles
         </button>
@@ -173,14 +173,14 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
             {/* Article header */}
             <div className="mb-4 pb-4 border-b border-slate-700">
               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
+                <span className="text-micro font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                   {selectedArticle.category}
                 </span>
                 {selectedArticle.certTags.map((tag) => (
                   <span
                     key={tag}
                     className={[
-                      'text-[10px] font-mono px-1.5 py-0.5 rounded border',
+                      'text-micro font-mono px-1.5 py-0.5 rounded border',
                       CERT_BADGE[tag] ?? 'bg-slate-700 text-slate-400 border-slate-600',
                     ].join(' ')}
                   >
@@ -191,9 +191,9 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
               <h2 className="text-lg font-bold text-slate-100">{selectedArticle.title}</h2>
               {selectedArticle.vocab.length > 0 && (
                 <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[10px] font-mono text-slate-600">Key terms:</span>
+                  <span className="text-micro font-mono text-slate-600">Key terms:</span>
                   {selectedArticle.vocab.map((v) => (
-                    <span key={v} className="text-[10px] font-mono text-brand-400/70 hover:text-brand-400 cursor-default">
+                    <span key={v} className="text-micro font-mono text-brand-400/70 hover:text-brand-400 cursor-default">
                       {v}
                     </span>
                   ))}

@@ -93,9 +93,9 @@ function PanelSection({
   return (
     <div className="mb-5">
       <div className="mb-2.5 flex items-baseline justify-between gap-3">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-slate-500">{title}</p>
+        <p className="font-mono text-micro uppercase tracking-widest text-slate-500">{title}</p>
         {meta !== undefined && (
-          <span className="shrink-0 font-mono text-[10px] tabular-nums text-slate-600">{meta}</span>
+          <span className="shrink-0 font-mono text-micro tabular-nums text-slate-600">{meta}</span>
         )}
       </div>
       {children}
@@ -137,14 +137,14 @@ function PanelGroup({
   return (
     <section className="mb-7 border-t border-slate-800 pt-4 first:mt-0 first:border-t-0 first:pt-0">
       <div className="mb-3 flex items-baseline gap-2">
-        <span className="font-mono text-[10px] tabular-nums text-slate-600">
+        <span className="font-mono text-micro tabular-nums text-slate-600">
           {String(step).padStart(2, '0')}
         </span>
-        <h3 className="font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-300">
+        <h3 className="font-mono text-2xs font-semibold uppercase tracking-widest text-slate-300">
           {title}
         </h3>
       </div>
-      {caption && <p className="-mt-1.5 mb-3 text-[11px] leading-relaxed text-slate-500">{caption}</p>}
+      {caption && <p className="-mt-1.5 mb-3 text-2xs leading-relaxed text-slate-500">{caption}</p>}
       {children}
     </section>
   );
@@ -166,11 +166,11 @@ function DeliverableCriteria({
   return (
     <div>
       <div className="mb-2.5 flex items-baseline justify-between">
-        <p className="text-[10px] leading-relaxed text-slate-500">
+        <p className="text-micro leading-relaxed text-slate-500">
           {hasResponse ? 'Unticked items are what is missing.' : 'A complete response covers every item.'}
         </p>
         {hasResponse && (
-          <span className="ml-3 shrink-0 font-mono text-[10px] tabular-nums text-slate-400">
+          <span className="ml-3 shrink-0 font-mono text-micro tabular-nums text-slate-400">
             {count}/{criteria.length}
           </span>
         )}
@@ -205,7 +205,7 @@ function DeliverableCriteria({
                   ok ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
                 ].join(' ')}
               >
-                {ok && <span className="text-[8px] font-bold leading-none text-slate-900">✓</span>}
+                {ok && <span className="text-micro font-bold leading-none text-slate-900">✓</span>}
               </span>
               <span className="leading-snug">{c}</span>
             </li>
@@ -236,7 +236,7 @@ function Toggle({
           {label}
         </span>
         {description && (
-          <span className="text-[10px] text-slate-600 block mt-0.5">{description}</span>
+          <span className="text-micro text-slate-600 block mt-0.5">{description}</span>
         )}
       </div>
       <button
@@ -280,7 +280,7 @@ function SegmentedControl<T extends string>({
           disabled={disabled}
           onClick={() => onChange(opt.value)}
           className={[
-            'flex-1 py-1 text-[11px] font-medium transition-colors',
+            'flex-1 py-1 text-2xs font-medium transition-colors',
             i > 0 && 'border-l border-slate-700',
             value === opt.value
               ? 'bg-brand-500/20 text-brand-400'
@@ -323,7 +323,7 @@ function GuardrailControls({
 
   return (
     <div className="mb-4 pb-4 border-b border-slate-700/60">
-      <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-3">
+      <p className="text-micro font-mono text-slate-400 uppercase tracking-widest mb-3">
         Guardrail Controls
       </p>
 
@@ -441,7 +441,7 @@ function Dojo1Panel({
               onClick={() => onSendPayload(p.payload)}
               title={`${p.owasp}\n${p.tip}`}
               className={[
-                'w-full text-left text-[11px] px-2.5 py-2 rounded border',
+                'w-full text-left text-2xs px-2.5 py-2 rounded border',
                 'border-slate-700 bg-slate-800 text-slate-400',
                 'hover:border-red-500/40 hover:text-red-300 hover:bg-red-500/5',
                 'disabled:opacity-40 disabled:cursor-not-allowed transition-colors',
@@ -451,7 +451,7 @@ function Dojo1Panel({
               <div className="flex items-center gap-2">
                 <span
                   className={[
-                    'shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase',
+                    'shrink-0 text-micro px-1 py-0.5 rounded border font-mono uppercase',
                     TAG_STYLE[p.tag] ?? 'bg-slate-700 text-slate-400 border-slate-600',
                   ].join(' ')}
                 >
@@ -459,7 +459,7 @@ function Dojo1Panel({
                 </span>
                 <span className="font-mono truncate">{p.label}</span>
               </div>
-              <p className="text-[9px] text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
+              <p className="text-micro text-slate-600 leading-relaxed pl-0.5">{p.owasp}</p>
             </button>
           ))}
           </div>
@@ -470,7 +470,7 @@ function Dojo1Panel({
         </div>
 
         {!autoRunPayloads && !disabled && (
-          <p className="text-[10px] text-slate-600 font-mono mt-1.5 italic">
+          <p className="text-micro text-slate-600 font-mono mt-1.5 italic">
             Auto-run OFF, payload inserted into input; press Enter to send.
           </p>
         )}
@@ -481,21 +481,21 @@ function Dojo1Panel({
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="flex items-center gap-1.5">
             {hasRagContext ? (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono">
+              <span className="text-micro px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono">
                 active
               </span>
             ) : (
-              <span className="text-[10px] text-slate-600 font-mono">no context set</span>
+              <span className="text-micro text-slate-600 font-mono">no context set</span>
             )}
             {!ragEnabled && hasRagContext && (
-              <span className="text-[10px] text-amber-600 font-mono">⚠ RAG toggle OFF</span>
+              <span className="text-micro text-amber-600 font-mono">⚠ RAG toggle OFF</span>
             )}
           </div>
           {hasRagContext && (
             <button
               disabled={disabled}
               onClick={() => onRagContextChange('')}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              className="text-micro px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
             >
               Clear
             </button>
@@ -520,7 +520,7 @@ function Dojo1Panel({
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
-        <p className="text-[10px] text-slate-600 font-mono mt-1">
+        <p className="text-micro text-slate-600 font-mono mt-1">
           Injected into /api/chat when <span className="text-slate-500">RAG Enabled</span> is ON.
         </p>
       </PanelSection>
@@ -530,18 +530,18 @@ function Dojo1Panel({
         <div className="flex items-center justify-between mb-1.5 gap-2">
           <div className="flex items-center gap-1.5">
             {hasToolForge ? (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono">
+              <span className="text-micro px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono">
                 active
               </span>
             ) : (
-              <span className="text-[10px] text-slate-600 font-mono">no tool response</span>
+              <span className="text-micro text-slate-600 font-mono">no tool response</span>
             )}
           </div>
           {hasToolForge && (
             <button
               disabled={disabled}
               onClick={() => onToolForgeChange('')}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              className="text-micro px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
             >
               Clear
             </button>
@@ -556,7 +556,7 @@ function Dojo1Panel({
           placeholder={'{"tool":"file_read","path":"/etc/passwd","response":"root:x:0:0…"}'}
           rows={3}
           className={[
-            'w-full resize-none rounded border px-2.5 py-2 text-[11px] font-mono',
+            'w-full resize-none rounded border px-2.5 py-2 text-2xs font-mono',
             'bg-slate-800 placeholder-slate-600 focus:outline-none',
             'disabled:opacity-40 disabled:cursor-not-allowed',
             hasToolForge
@@ -564,7 +564,7 @@ function Dojo1Panel({
               : 'border-slate-700 text-slate-300 focus:border-red-500',
           ].join(' ')}
         />
-        <p className="text-[10px] text-slate-600 font-mono mt-1">
+        <p className="text-micro text-slate-600 font-mono mt-1">
           Appended as tool output, evaluator flags tool_abuse if Allow Tools is OFF.
         </p>
       </PanelSection>
@@ -686,7 +686,7 @@ function IncidentLibrary({
             key={t}
             onClick={() => setFilterTask(t)}
             className={[
-              'text-[10px] px-1.5 py-0.5 rounded border font-mono transition-colors',
+              'text-micro px-1.5 py-0.5 rounded border font-mono transition-colors',
               filterTask === t
                 ? 'border-brand-500 bg-brand-500/15 text-brand-300'
                 : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-600',
@@ -712,21 +712,21 @@ function IncidentLibrary({
             ].join(' ')}
           >
             <div className="flex items-start justify-between gap-1.5 mb-1">
-              <span className="text-[11px] font-medium text-slate-200 leading-snug group-hover:text-brand-200 transition-colors">
+              <span className="text-2xs font-medium text-slate-200 leading-snug group-hover:text-brand-200 transition-colors">
                 {s.title}
               </span>
-              <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[s.difficulty]].join(' ')}>
+              <span className={['shrink-0 text-micro px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[s.difficulty]].join(' ')}>
                 {s.difficulty.slice(0,3)}
               </span>
             </div>
             <div className="flex items-center gap-1 mb-1">
-              <span className={['text-[9px] px-1 py-0.5 rounded border font-mono', TASK_BADGE[s.taskType]].join(' ')}>
+              <span className={['text-micro px-1 py-0.5 rounded border font-mono', TASK_BADGE[s.taskType]].join(' ')}>
                 {DOJO2_TASK_LABELS[s.taskType]}
               </span>
-              <span className="text-[9px] text-slate-600 font-mono">{s.mitre.techniques[0].split(', ')[0]}</span>
+              <span className="text-micro text-slate-600 font-mono">{s.mitre.techniques[0].split(', ')[0]}</span>
             </div>
-            <p className="text-[10px] text-slate-500 leading-relaxed">{s.description}</p>
-            <p className="text-[9px] text-brand-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <p className="text-micro text-slate-500 leading-relaxed">{s.description}</p>
+            <p className="text-micro text-brand-600 font-mono mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
               ↳ Click to load into chat input
             </p>
           </button>
@@ -737,7 +737,7 @@ function IncidentLibrary({
       <div className="mt-3 border border-slate-700 rounded overflow-hidden">
         <button
           onClick={() => setGenOpen((v) => !v)}
-          className="w-full flex items-center justify-between px-2.5 py-2 bg-slate-800/60 text-[10px] font-mono text-slate-400 hover:text-slate-200 transition-colors"
+          className="w-full flex items-center justify-between px-2.5 py-2 bg-slate-800/60 text-micro font-mono text-slate-400 hover:text-slate-200 transition-colors"
         >
           <span className="uppercase tracking-widest">Dynamic Generator</span>
           <span>{genOpen ? '▲' : '▼'}</span>
@@ -747,7 +747,7 @@ function IncidentLibrary({
           <div className="p-2.5 bg-slate-900/40 flex flex-col gap-2">
             {/* Attack type selector */}
             <div>
-              <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Attack Type</p>
+              <p className="text-micro text-slate-500 font-mono uppercase mb-1">Attack Type</p>
               <div className="flex flex-wrap gap-1">
                 {DOJO2_ATTACK_CATEGORIES.map((cat) => (
                   <button
@@ -755,7 +755,7 @@ function IncidentLibrary({
                     disabled={disabled}
                     onClick={() => setGenAttack(cat)}
                     className={[
-                      'text-[9px] px-1.5 py-0.5 rounded border font-mono transition-colors',
+                      'text-micro px-1.5 py-0.5 rounded border font-mono transition-colors',
                       genAttack === cat
                         ? 'border-brand-500 bg-brand-500/15 text-brand-300'
                         : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300',
@@ -770,7 +770,7 @@ function IncidentLibrary({
 
             {/* Difficulty selector */}
             <div>
-              <p className="text-[9px] text-slate-500 font-mono uppercase mb-1">Difficulty</p>
+              <p className="text-micro text-slate-500 font-mono uppercase mb-1">Difficulty</p>
               <div className="flex gap-1">
                 {GEN_DIFF_OPTIONS.map((opt) => (
                   <button
@@ -778,7 +778,7 @@ function IncidentLibrary({
                     disabled={disabled}
                     onClick={() => setGenDiff(opt.value)}
                     className={[
-                      'flex-1 text-[9px] py-1 rounded border font-mono transition-colors',
+                      'flex-1 text-micro py-1 rounded border font-mono transition-colors',
                       genDiff === opt.value
                         ? DIFF_BADGE[opt.value]
                         : 'border-slate-700 text-slate-500 hover:border-slate-600',
@@ -800,7 +800,7 @@ function IncidentLibrary({
               Generate Scenario →
             </button>
             {filterTask === 'all' && (
-              <p className="text-[9px] text-slate-600 font-mono text-center">
+              <p className="text-micro text-slate-600 font-mono text-center">
                 Select a workflow filter above to target a specific task type
               </p>
             )}
@@ -809,29 +809,29 @@ function IncidentLibrary({
             {generated && (
               <div className="border border-slate-700 rounded p-2 bg-slate-800/40">
                 <div className="flex items-start justify-between gap-1.5 mb-1">
-                  <p className="text-[10px] font-medium text-slate-200 leading-snug">{generated.title}</p>
-                  <span className={['shrink-0 text-[9px] px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[generated.difficulty]].join(' ')}>
+                  <p className="text-micro font-medium text-slate-200 leading-snug">{generated.title}</p>
+                  <span className={['shrink-0 text-micro px-1 py-0.5 rounded border font-mono uppercase', DIFF_BADGE[generated.difficulty]].join(' ')}>
                     {generated.difficulty.slice(0,3)}
                   </span>
                 </div>
                 <div className="mb-1">
-                  <span className={['text-[9px] px-1 py-0.5 rounded border font-mono', TASK_BADGE[generated.taskType]].join(' ')}>
+                  <span className={['text-micro px-1 py-0.5 rounded border font-mono', TASK_BADGE[generated.taskType]].join(' ')}>
                     {DOJO2_TASK_LABELS[generated.taskType]}
                   </span>
                 </div>
-                <p className="text-[9px] text-slate-500 mb-1.5 leading-relaxed">{generated.description}</p>
+                <p className="text-micro text-slate-500 mb-1.5 leading-relaxed">{generated.description}</p>
                 <div className="flex gap-1.5">
                   <button
                     disabled={disabled}
                     onClick={() => { onLoad(generated.incidentData); onSetActiveScenario?.(generated); }}
-                    className="flex-1 py-1 text-[10px] rounded border border-brand-700/50 bg-brand-500/10 text-brand-400 hover:border-brand-500/70 transition-colors disabled:opacity-40"
+                    className="flex-1 py-1 text-micro rounded border border-brand-700/50 bg-brand-500/10 text-brand-400 hover:border-brand-500/70 transition-colors disabled:opacity-40"
                   >
                     Load into Chat →
                   </button>
                   <button
                     disabled={disabled}
                     onClick={handleGenerate}
-                    className="px-2 py-1 text-[10px] rounded border border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300 transition-colors disabled:opacity-40"
+                    className="px-2 py-1 text-micro rounded border border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-300 transition-colors disabled:opacity-40"
                     title="Generate another"
                   >
                     ↺
@@ -843,7 +843,7 @@ function IncidentLibrary({
         )}
       </div>
 
-      <p className="text-[9px] text-slate-600 font-mono mt-1.5">
+      <p className="text-micro text-slate-600 font-mono mt-1.5">
         Click any scenario to load it into the chat input, review the data, then press Enter or Send to run the analysis.
       </p>
     </div>
@@ -906,7 +906,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 ].join(' ')}
               >
                 <span className="text-xs font-medium block">{DOJO2_PERSONA_LABELS[p]}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{PERSONA_DESC[p]}</span>
+                <span className="text-micro text-slate-500 block mt-0.5">{PERSONA_DESC[p]}</span>
               </button>
             );
           })}
@@ -915,7 +915,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Analysis Configuration ─────────────────────────────────────────── */}
       <PanelSection title="Analysis Configuration">
-        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
           Analysis Depth
         </p>
         <div className="flex flex-col gap-1.5 mb-3">
@@ -935,13 +935,13 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 ].join(' ')}
               >
                 <span className="text-xs font-medium block">{opt.label}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+                <span className="text-micro text-slate-500 block mt-0.5">{opt.desc}</span>
               </button>
             );
           })}
         </div>
 
-        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
           Response Style
         </p>
         <div className="flex flex-col gap-1.5">
@@ -961,7 +961,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 ].join(' ')}
               >
                 <span className="text-xs font-medium block">{opt.label}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+                <span className="text-micro text-slate-500 block mt-0.5">{opt.desc}</span>
               </button>
             );
           })}
@@ -995,7 +995,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Data Context ──────────────────────────────────────────────────── */}
       <PanelSection title="Data Context">
-        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
           Context Level
         </p>
         <div className="flex flex-col gap-1.5">
@@ -1015,7 +1015,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 ].join(' ')}
               >
                 <span className="text-xs font-medium block">{opt.label}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{opt.desc}</span>
+                <span className="text-micro text-slate-500 block mt-0.5">{opt.desc}</span>
               </button>
             );
           })}
@@ -1024,7 +1024,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       {/* ── Assessment Output ─────────────────────────────────────────────── */}
       <PanelSection title="Assessment Output">
-        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
           Confidence Level
         </p>
         <div className="flex gap-1.5 mb-3">
@@ -1036,7 +1036,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 disabled={disabled}
                 onClick={() => set('confidenceLevel', opt.value)}
                 className={[
-                  'flex-1 py-1.5 rounded border text-[11px] font-medium transition-colors',
+                  'flex-1 py-1.5 rounded border text-2xs font-medium transition-colors',
                   isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -1047,7 +1047,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
           })}
         </div>
 
-        <p className={['text-[10px] mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
+        <p className={['text-micro mb-1.5', disabled ? 'text-slate-600' : 'text-slate-500'].join(' ')}>
           Risk Level
         </p>
         <div className="grid grid-cols-2 gap-1.5">
@@ -1059,7 +1059,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 disabled={disabled}
                 onClick={() => set('riskAssessment', opt.value)}
                 className={[
-                  'py-1.5 rounded border text-[11px] font-medium transition-colors',
+                  'py-1.5 rounded border text-2xs font-medium transition-colors',
                   isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
                   'disabled:opacity-40 disabled:cursor-not-allowed',
                 ].join(' ')}
@@ -1090,7 +1090,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
                 ].join(' ')}
               >
                 <span className="text-xs font-mono font-medium block uppercase">{f}</span>
-                <span className="text-[10px] text-slate-500 block mt-0.5">{FORMAT_DESC[f]}</span>
+                <span className="text-micro text-slate-500 block mt-0.5">{FORMAT_DESC[f]}</span>
               </button>
             );
           })}
@@ -1100,7 +1100,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
 
       <PanelGroup step={3} title="Library" caption="Prebuilt incidents you can load into this workflow.">
       <PanelSection title="Incident Library">
-        <p className="text-[10px] text-slate-500 mb-2">
+        <p className="text-micro text-slate-500 mb-2">
           Select a prebuilt scenario or generate one. Click any card to load it into the chat input, then press Send to run the analysis.
         </p>
         <IncidentLibrary
@@ -1240,7 +1240,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
         caption="Clauses, tiers and sections for this scenario. Selections stay in the session context."
       >
         {!isRiskScenario && !isPolicyScenario && !isVendorScenario && !isTransparencyScenario && !isRedTeamScenario && (
-          <p className="rounded border border-slate-800 bg-slate-900/40 px-3 py-2.5 text-[11px] leading-relaxed text-slate-500">
+          <p className="rounded border border-slate-800 bg-slate-900/40 px-3 py-2.5 text-2xs leading-relaxed text-slate-500">
             This scenario is scored from your written deliverable alone, so there is nothing to
             select here. Work the criteria above in the console.
           </p>
@@ -1248,7 +1248,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
 
       {isRiskScenario && (
         <PanelSection title="EU AI Act Risk Tier">
-          <p className="text-[10px] text-slate-500 mb-2">
+          <p className="text-micro text-slate-500 mb-2">
             Pick the working tier for this deployment. Sends the classification to the chat for justification and required mitigations.
           </p>
           <div className="grid grid-cols-2 gap-1.5">
@@ -1260,7 +1260,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
                   disabled={disabled}
                   onClick={() => setTier(opt.value)}
                   className={[
-                    'py-2 rounded border text-[11px] font-medium transition-colors',
+                    'py-2 rounded border text-2xs font-medium transition-colors',
                     isActive ? opt.color : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-slate-600 hover:text-slate-300',
                     'disabled:opacity-40 disabled:cursor-not-allowed',
                   ].join(' ')}
@@ -1274,7 +1274,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
             <button
               disabled={disabled}
               onClick={() => onDojo3ConfigChange({ ...dojo3Config, riskTier: 'unset' })}
-              className="mt-2 w-full text-[10px] py-1 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+              className="mt-2 w-full text-micro py-1 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
             >
               Clear tier
             </button>
@@ -1285,7 +1285,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
       {/* ── Vendor Gap Areas (Third-Party AI Vendor Review) ─────────────────── */}
       {isVendorScenario && (
         <PanelSection title="Vendor Gap Areas">
-          <p className="text-[10px] text-slate-500 mb-2">
+          <p className="text-micro text-slate-500 mb-2">
             Click an area to add it to the vendor gap analysis. Each click sends a scoring prompt for that gap.
           </p>
           <div className="flex flex-col gap-1.5">
@@ -1308,7 +1308,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
                     'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
                     selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
                   ].join(' ')}>
-                    {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
+                    {selected && <span className="text-micro text-slate-900 font-bold leading-none">✓</span>}
                   </span>
                   <span>{area}</span>
                 </button>
@@ -1317,13 +1317,13 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
           </div>
           {dojo3Config.vendorGapAreas.length > 0 && (
             <div className="mt-2 flex items-center justify-between">
-              <p className="text-[9px] text-emerald-500/70 font-mono">
+              <p className="text-micro text-emerald-500/70 font-mono">
                 {dojo3Config.vendorGapAreas.length} gap{dojo3Config.vendorGapAreas.length > 1 ? 's' : ''} in session context
               </p>
               <button
                 disabled={disabled}
                 onClick={() => onDojo3ConfigChange({ ...dojo3Config, vendorGapAreas: [] })}
-                className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+                className="text-micro px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
               >
                 Clear all
               </button>
@@ -1335,7 +1335,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
       {/* ── Model Card Sections (AI Model Transparency) ───────────────────────── */}
       {isTransparencyScenario && (
         <PanelSection title="Model Card Builder">
-          <p className="text-[10px] text-slate-500 mb-2">
+          <p className="text-micro text-slate-500 mb-2">
             Generate each section of a model card and AI-BOM, or map against EU AI Act Articles 11-15.
           </p>
           <div className="flex flex-col gap-1.5">
@@ -1361,7 +1361,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
       {isRedTeamScenario && (
         <>
           <PanelSection title="MITRE ATLAS Scope">
-            <p className="text-[10px] text-slate-500 mb-2">
+            <p className="text-micro text-slate-500 mb-2">
               Select attack categories to include in the engagement scope.
             </p>
             <div className="flex flex-col gap-1">
@@ -1378,7 +1378,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
                       onDojo3ConfigChange({ ...dojo3Config, vendorGapAreas: next });
                     }}
                     className={[
-                      'w-full text-left flex gap-2 items-start px-2 py-1.5 rounded border transition-colors text-[11px] font-mono',
+                      'w-full text-left flex gap-2 items-start px-2 py-1.5 rounded border transition-colors text-2xs font-mono',
                       selected
                         ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
                         : 'border-slate-700 bg-slate-800/40 text-slate-500 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
@@ -1387,7 +1387,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
                   >
                     <span className={['mt-0.5 shrink-0 w-3 h-3 rounded border flex items-center justify-center',
                       selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600'].join(' ')}>
-                      {selected && <span className="text-[8px] text-slate-900 font-bold">✓</span>}
+                      {selected && <span className="text-micro text-slate-900 font-bold">✓</span>}
                     </span>
                     <span>{cat}</span>
                   </button>
@@ -1396,7 +1396,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
             </div>
           </PanelSection>
           <PanelSection title="Report Sections">
-            <p className="text-[10px] text-slate-500 mb-2">
+            <p className="text-micro text-slate-500 mb-2">
               Generate each section of the red team report.
             </p>
             <div className="flex flex-col gap-1.5">
@@ -1422,7 +1422,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
       {/* ── Policy Clause Library (Policy & Controls Drafting) ──────────────── */}
       {isPolicyScenario && (
         <PanelSection title="Policy Clause Library">
-          <p className="text-[10px] text-slate-500 mb-2">
+          <p className="text-micro text-slate-500 mb-2">
             Click a clause to score it on the 0-3 rubric. Selected clauses persist in the session context.
           </p>
           <div className="flex flex-col gap-1.5">
@@ -1445,7 +1445,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
                     'mt-0.5 shrink-0 w-3 h-3 rounded border flex-none flex items-center justify-center',
                     selected ? 'border-emerald-500 bg-emerald-500' : 'border-slate-600',
                   ].join(' ')}>
-                    {selected && <span className="text-[8px] text-slate-900 font-bold leading-none">✓</span>}
+                    {selected && <span className="text-micro text-slate-900 font-bold leading-none">✓</span>}
                   </span>
                   <span>{clause}</span>
                 </button>
@@ -1454,13 +1454,13 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
           </div>
           {dojo3Config.selectedClauses.length > 0 && (
             <div className="mt-2 flex items-center justify-between">
-              <p className="text-[9px] text-emerald-500/70 font-mono">
+              <p className="text-micro text-emerald-500/70 font-mono">
                 {dojo3Config.selectedClauses.length} clause{dojo3Config.selectedClauses.length > 1 ? 's' : ''} in session context
               </p>
               <button
                 disabled={disabled}
                 onClick={() => onDojo3ConfigChange({ ...dojo3Config, selectedClauses: [] })}
-                className="text-[9px] px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
+                className="text-micro px-1.5 py-0.5 rounded border border-slate-700 text-slate-500 hover:text-red-400 hover:border-red-500/40 transition-colors disabled:opacity-40"
               >
                 Clear all
               </button>

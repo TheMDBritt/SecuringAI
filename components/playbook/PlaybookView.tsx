@@ -100,17 +100,17 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
         <div className="flex items-center gap-2 min-w-0">
           <span className="text-sm font-semibold text-slate-100 shrink-0">Playbook</span>
           <span className="text-slate-700 text-xs shrink-0">/</span>
-          <span className="text-[10px] font-mono text-slate-600 shrink-0 hidden sm:block">
+          <span className="text-micro font-mono text-slate-600 shrink-0 hidden sm:block">
             {activeSection?.desc ?? ''}
           </span>
           {certFilter && (
             <div className="flex items-center gap-1 ml-1">
-              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
+              <span className="text-micro font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                 {certFilter}
               </span>
               <button
                 onClick={() => setCertFilter('')}
-                className="text-[10px] text-slate-600 hover:text-slate-400 leading-none"
+                className="text-micro text-slate-600 hover:text-slate-400 leading-none"
                 aria-label="Clear cert filter"
               >
                 ×
@@ -132,7 +132,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               key={s.id}
               {...tabs.tabProps(s.id)}
               className={[
-                'shrink-0 px-2.5 py-1.5 rounded text-[11px] font-mono transition-colors duration-150 flex items-center gap-1',
+                'shrink-0 px-2.5 py-1.5 rounded text-2xs font-mono transition-colors duration-150 flex items-center gap-1',
                 section === s.id
                   ? 'bg-brand-500/10 border border-brand-500/30 text-brand-300'
                   : 'text-slate-500 hover:text-slate-300 border border-transparent hover:border-slate-700',
@@ -141,7 +141,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               {s.label}
               {s.count && (
                 <span className={[
-                  'text-[9px] font-mono',
+                  'text-micro font-mono',
                   section === s.id ? 'text-brand-500/60' : 'text-slate-700',
                 ].join(' ')}>
                   {s.count}

@@ -58,11 +58,11 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <button
             onClick={onBack}
-            className="text-[11px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded"
+            className="text-2xs font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded"
           >
             ← back to Progress
           </button>
-          <div className="flex items-center gap-3 text-[10px] font-mono text-slate-600">
+          <div className="flex items-center gap-3 text-micro font-mono text-slate-600">
             <span>{formatDate(session.startedAt)}</span>
             {session.examMode && (
               <span className="px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/30">exam mode</span>
@@ -72,19 +72,19 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
 
         {/* Score header */}
         <div className="border border-slate-800 rounded-lg p-4">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Session review · {session.cert}</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide">Session review · {session.cert}</p>
           <div className="flex items-baseline gap-3 mt-1">
             <span className={`text-4xl font-bold font-mono ${pctColor}`}>{pct}%</span>
             <span className="text-sm text-slate-300">{session.correct} / {session.count} correct</span>
             {session.skipped > 0 && (
-              <span className="text-[11px] font-mono text-slate-500">· {session.skipped} skipped</span>
+              <span className="text-2xs font-mono text-slate-500">· {session.skipped} skipped</span>
             )}
           </div>
-          <p className="text-[10px] font-mono text-slate-600 mt-2">
+          <p className="text-micro font-mono text-slate-600 mt-2">
             {session.category} · {session.difficulty}
           </p>
           {notFound > 0 && (
-            <p className="text-[10px] font-mono text-amber-500 mt-2">
+            <p className="text-micro font-mono text-amber-500 mt-2">
               ⚠ {notFound} question{notFound === 1 ? '': 's'} no longer in the bank, likely renamed or removed since this session.
             </p>
           )}
@@ -106,7 +106,7 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
           >
             ↻ Retake entire session ({allQs.length})
           </button>
-          <span className="text-[10px] font-mono text-slate-600 ml-auto">
+          <span className="text-micro font-mono text-slate-600 ml-auto">
             options in their stored order, no re-shuffle for a like-for-like retry
           </span>
         </div>
@@ -128,8 +128,8 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
             return (
               <div key={q.id + i} className={`border rounded-lg p-4 ${rowBorder}`}>
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="text-[10px] font-mono text-slate-600">Q{i + 1} · {q.category} · {q.topic}</span>
-                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border ${statusBadge.cls}`}>{statusBadge.label}</span>
+                  <span className="text-micro font-mono text-slate-600">Q{i + 1} · {q.category} · {q.topic}</span>
+                  <span className={`text-micro font-mono px-1.5 py-0.5 rounded border ${statusBadge.cls}`}>{statusBadge.label}</span>
                 </div>
 
                 <p className="text-sm text-slate-200 leading-relaxed mb-3">{q.question}</p>
@@ -154,7 +154,7 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
                 </div>
 
                 <div className="mt-3 pt-3 border-t border-slate-700/40">
-                  <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+                  <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
                   <p className="text-xs text-slate-400 leading-relaxed">{q.explanation}</p>
                 </div>
               </div>

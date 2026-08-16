@@ -21,7 +21,7 @@ function Toggle({
     <div className="flex items-start justify-between gap-4 py-3.5">
       <div className="min-w-0">
         <p className="text-sm font-medium text-slate-200">{label}</p>
-        <p className="mt-0.5 text-[13px] leading-relaxed text-slate-500">{description}</p>
+        <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{description}</p>
       </div>
       <button
         role="switch"
@@ -110,7 +110,7 @@ export default function SettingsPage() {
           <div className="flex items-start justify-between gap-4 py-3.5">
             <div>
               <p className="text-sm font-medium text-slate-200">Theme</p>
-              <p className="mt-0.5 text-[13px] text-slate-500">Optimised dark enterprise theme with cyber-blue accents.</p>
+              <p className="mt-0.5 text-xs text-slate-500">Optimised dark enterprise theme with cyber-blue accents.</p>
             </div>
             <Badge tone="brand">Dark · Default</Badge>
           </div>
@@ -139,11 +139,11 @@ export default function SettingsPage() {
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
             <p className="text-2xl font-bold text-slate-100">{hydrated ? counts.quiz : 0}</p>
-            <p className="text-[13px] text-slate-500">Quiz sessions stored</p>
+            <p className="text-xs text-slate-500">Quiz sessions stored</p>
           </div>
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
             <p className="text-2xl font-bold text-slate-100">{hydrated ? counts.attack : 0}</p>
-            <p className="text-[13px] text-slate-500">Dojo attempts stored</p>
+            <p className="text-xs text-slate-500">Dojo attempts stored</p>
           </div>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-2.5">
@@ -164,14 +164,14 @@ export default function SettingsPage() {
           <Button variant="ghost" size="md" onClick={handleClear} className="text-red-300 hover:bg-red-500/10 hover:text-red-200">
             Clear all training data
           </Button>
-          {cleared && <span className="text-[13px] font-medium text-emerald-300">Cleared.</span>}
+          {cleared && <span className="text-xs font-medium text-emerald-300">Cleared.</span>}
         </div>
 
         {/* Announced to assistive tech, since the result is otherwise silent. */}
         <div role="status" aria-live="polite" className="mt-3 min-h-[1.25rem]">
           {importMsg && (
             <span
-              className={`text-[13px] font-medium ${
+              className={`text-xs font-medium ${
                 importMsg.tone === 'ok' ? 'text-emerald-300' : 'text-red-300'
               }`}
             >
@@ -180,7 +180,7 @@ export default function SettingsPage() {
           )}
         </div>
 
-        <p className="mt-3 text-[13px] leading-relaxed text-slate-500">
+        <p className="mt-3 text-xs leading-relaxed text-slate-500">
           Progress lives only in this browser. Export a backup before clearing
           site data or switching devices. Importing replaces what is stored now.
         </p>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
       {/* Model / API */}
       <Card className="mt-4 p-5 sm:p-6">
         <SectionHeading eyebrow="Runtime" title="Model backend" />
-        <p className="mt-3 text-[13px] leading-relaxed text-slate-400">
+        <p className="mt-3 text-xs leading-relaxed text-slate-400">
           The platform runs fully in deterministic <span className="font-medium text-slate-200">stub mode</span> with no
           API key required, every Dojo 1 outcome and score is reproducible. To enable free-form AI replies in the
           SOC and GRC disciplines, set an <code className="rounded bg-surface-raised px-1.5 py-0.5 text-brand-300">OPENAI_API_KEY</code> in

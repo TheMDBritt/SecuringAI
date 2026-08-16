@@ -63,7 +63,7 @@ export default function GlossaryPanel() {
         {search && (
           <button onClick={() => setSearch('')} className="text-slate-600 hover:text-slate-400 text-xs">✕</button>
         )}
-        <span className="text-[10px] text-slate-600 font-mono">{certFiltered.length} terms</span>
+        <span className="text-micro text-slate-600 font-mono">{certFiltered.length} terms</span>
       </div>
 
       {/* Cert filter */}
@@ -73,7 +73,7 @@ export default function GlossaryPanel() {
             key={c}
             onClick={() => setCert(certFilter === c ? 'All' : c)}
             className={[
-              'text-[10px] font-mono px-2 py-0.5 rounded border transition-colors',
+              'text-micro font-mono px-2 py-0.5 rounded border transition-colors',
               certFilter === c
                 ? (CERT_BADGE[c] ?? 'bg-brand-500/20 text-brand-300 border-brand-500/30')
                 : 'text-slate-600 border-slate-700 hover:text-slate-400 hover:border-slate-600',
@@ -89,7 +89,7 @@ export default function GlossaryPanel() {
         <button
           onClick={() => setJump('')}
           className={[
-            'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
+            'text-micro font-mono px-1.5 py-0.5 rounded transition-colors',
             !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-600 hover:text-slate-400',
           ].join(' ')}
         >
@@ -103,7 +103,7 @@ export default function GlossaryPanel() {
               onClick={() => { if (has) { setJump(jumpLetter === l ? '' : l); setSearch(''); } }}
               disabled={!has}
               className={[
-                'text-[10px] font-mono px-1.5 py-0.5 rounded transition-colors',
+                'text-micro font-mono px-1.5 py-0.5 rounded transition-colors',
                 jumpLetter === l
                   ? 'bg-brand-500/20 text-brand-300'
                   : has
@@ -136,7 +136,7 @@ export default function GlossaryPanel() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-sm font-semibold text-slate-100">{term.term}</span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
+                    <span className="text-micro font-mono px-1.5 py-0.5 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400">
                       {term.category}
                     </span>
                   </div>
@@ -160,7 +160,7 @@ export default function GlossaryPanel() {
                         <span
                           key={tag}
                           className={[
-                            'text-[10px] font-mono px-1.5 py-0.5 rounded border',
+                            'text-micro font-mono px-1.5 py-0.5 rounded border',
                             CERT_BADGE[tag] ?? 'bg-slate-700 text-slate-400 border-slate-600',
                           ].join(' ')}
                         >
@@ -171,8 +171,8 @@ export default function GlossaryPanel() {
                   )}
                   {term.related.length > 0 && (
                     <div className="mt-3">
-                      <span className="text-[10px] font-mono text-slate-600 uppercase tracking-wide">Related: </span>
-                      <span className="text-[11px] text-brand-400">{term.related.join(' · ')}</span>
+                      <span className="text-micro font-mono text-slate-600 uppercase tracking-wide">Related: </span>
+                      <span className="text-2xs text-brand-400">{term.related.join(' · ')}</span>
                     </div>
                   )}
                 </div>

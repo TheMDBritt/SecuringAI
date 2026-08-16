@@ -121,7 +121,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           <SectionHeading
             eyebrow="Discipline progress"
             title="Current dojo progress"
-            action={<Link href="/dojo" className="text-[13px] font-medium text-brand-300 hover:text-brand-200">Open the Dojo →</Link>}
+            action={<Link href="/dojo" className="text-xs font-medium text-brand-300 hover:text-brand-200">Open the Dojo →</Link>}
           />
           <div className="mt-5 space-y-5">
             {perDojoRows.map((d) => (
@@ -132,7 +132,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                     <span className="text-sm font-semibold text-slate-200">{d.title}</span>
                     <Badge tone={d.tone} mono>Dojo {d.id}</Badge>
                   </div>
-                  <span className="font-mono text-[12px] text-slate-400">{d.done}/{d.total}</span>
+                  <span className="font-mono text-xs text-slate-400">{d.done}/{d.total}</span>
                 </div>
                 <ProgressBar value={hydrated ? d.pct : 0} tone={d.tone} />
               </div>
@@ -150,7 +150,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
             <div className="mt-5 space-y-3.5">
               {diffBars.map((b) => (
                 <div key={b.label}>
-                  <div className="mb-1.5 flex items-center justify-between text-[12px]">
+                  <div className="mb-1.5 flex items-center justify-between text-xs">
                     <span className="text-slate-300">{b.label}</span>
                     <span className="font-mono text-slate-500">{b.v}</span>
                   </div>
@@ -159,7 +159,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
               ))}
             </div>
           ) : (
-            <p className="mt-6 text-[13px] leading-relaxed text-slate-500">
+            <p className="mt-6 text-xs leading-relaxed text-slate-500">
               Run beginner, intermediate, and advanced scenarios to see your difficulty coverage.
             </p>
           )}
@@ -174,7 +174,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                 Dojo {nextLab.dojoId} · {catalog.dojoMeta[nextLab.dojoId].title}
               </Badge>
               <h3 className="mt-3 text-base font-semibold text-slate-100">{nextLab.title}</h3>
-              <p className="mt-1.5 text-[13px] capitalize text-slate-500">{nextLab.difficulty} difficulty</p>
+              <p className="mt-1.5 text-xs capitalize text-slate-500">{nextLab.difficulty} difficulty</p>
               <div className="flex-1" />
               <ButtonLink href="/dojo" variant="primary" size="md" className="mt-5 w-full">
                 Start this scenario →
@@ -190,7 +190,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           <SectionHeading
             eyebrow="Timeline"
             title="Recent activity"
-            action={summary.lastActive ? <span className="text-[12px] text-slate-500">Last active {timeAgo(summary.lastActive)}</span> : undefined}
+            action={summary.lastActive ? <span className="text-xs text-slate-500">Last active {timeAgo(summary.lastActive)}</span> : undefined}
           />
           {hasActivity ? (
             <ul className="mt-4 divide-y divide-surface-border/60">
@@ -202,10 +202,10 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
-                      <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
+                      <p className="truncate text-xs text-slate-500">{r.detail}</p>
                     </div>
-                    <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
-                    {r.sessionId && <span className="shrink-0 text-slate-600 text-[11px] ml-1">→</span>}
+                    <span className="shrink-0 font-mono text-2xs text-slate-600">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-600 text-2xs ml-1">→</span>}
                   </>
                 );
                 return (
@@ -248,7 +248,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
               { k: 'Certifications mapped', v: catalog.counts.certs },
             ].map((row) => (
               <div key={row.k} className="flex items-center justify-between border-b border-surface-border/50 pb-2.5 last:border-0">
-                <dt className="text-[13px] text-slate-400">{row.k}</dt>
+                <dt className="text-xs text-slate-400">{row.k}</dt>
                 <dd className="font-mono text-sm font-semibold text-slate-100">{row.v}</dd>
               </div>
             ))}

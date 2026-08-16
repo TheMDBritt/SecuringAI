@@ -108,10 +108,10 @@ export function ProgressClient({
                     const st = attemptStats.get(s.id);
                     const held = st && st.blocked === st.attempts;
                     return (
-                      <li key={s.id} className="flex items-center gap-2 text-[13px]">
+                      <li key={s.id} className="flex items-center gap-2 text-xs">
                         <span
                           className={[
-                            'flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-[9px]',
+                            'flex h-4 w-4 shrink-0 items-center justify-center rounded-full border text-micro',
                             !st
                               ? 'border-surface-border text-slate-600'
                               : held
@@ -132,12 +132,12 @@ export function ProgressClient({
 
           {/* Cert accuracy */}
           <Card className="mt-6 p-5">
-            <SectionHeading eyebrow="Certifications" title="Quiz performance by exam" action={<Link href="/playbook" className="text-[13px] font-medium text-brand-300 hover:text-brand-200">Practice more →</Link>} />
+            <SectionHeading eyebrow="Certifications" title="Quiz performance by exam" action={<Link href="/playbook" className="text-xs font-medium text-brand-300 hover:text-brand-200">Practice more →</Link>} />
             {summary.perCert.length > 0 ? (
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full min-w-[520px] text-left text-sm">
                   <thead>
-                    <tr className="border-b border-surface-border/70 text-[11px] uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-surface-border/70 text-2xs uppercase tracking-wider text-slate-500">
                       <th className="pb-2.5 pr-4 font-semibold">Certification</th>
                       <th className="pb-2.5 pr-4 font-semibold">Sessions</th>
                       <th className="pb-2.5 pr-4 font-semibold">Accuracy</th>
@@ -161,7 +161,7 @@ export function ProgressClient({
                 </table>
               </div>
             ) : (
-              <p className="mt-4 text-[13px] text-slate-500">Take a certification-scoped quiz to see per-exam accuracy here.</p>
+              <p className="mt-4 text-xs text-slate-500">Take a certification-scoped quiz to see per-exam accuracy here.</p>
             )}
           </Card>
 
@@ -177,10 +177,10 @@ export function ProgressClient({
                     </Badge>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-slate-200">{r.label}</p>
-                      <p className="truncate text-[12px] text-slate-500">{r.detail}</p>
+                      <p className="truncate text-xs text-slate-500">{r.detail}</p>
                     </div>
-                    <span className="shrink-0 font-mono text-[11px] text-slate-600">{timeAgo(r.at)}</span>
-                    {r.sessionId && <span className="shrink-0 text-slate-600 text-[11px] ml-1">→</span>}
+                    <span className="shrink-0 font-mono text-2xs text-slate-600">{timeAgo(r.at)}</span>
+                    {r.sessionId && <span className="shrink-0 text-slate-600 text-2xs ml-1">→</span>}
                   </>
                 );
                 return (

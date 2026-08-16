@@ -34,16 +34,16 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
 
       <Link href="/" className="flex items-center gap-2 lg:hidden" aria-label="Securing AI, home">
         <BrandMark className="h-6 w-6" />
-        <span className="text-[13px] font-bold tracking-tight text-slate-50">Securing AI</span>
+        <span className="text-xs font-bold tracking-tight text-slate-50">Securing AI</span>
       </Link>
 
       {/* Desktop: breadcrumb / page context */}
       <div className="hidden items-center gap-2 lg:flex">
-        <span className="text-[13px] font-medium text-slate-500">Securing AI</span>
+        <span className="text-xs font-medium text-slate-500">Securing AI</span>
         <svg className="h-3.5 w-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
           <path d="M9 6l6 6-6 6" />
         </svg>
-        <span className="text-[13px] font-semibold text-slate-200">{title}</span>
+        <span className="text-xs font-semibold text-slate-200">{title}</span>
       </div>
 
       <div className="flex-1" />
@@ -51,7 +51,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
       {/* Actions */}
       <div className="hidden items-center gap-1.5 rounded-lg border border-surface-border bg-surface-raised/40 px-2.5 py-1 sm:flex">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden="true" />
-        <span className="text-[11px] font-medium text-slate-400">Free &middot; Open access</span>
+        <span className="text-2xs font-medium text-slate-400">Free &middot; Open access</span>
       </div>
 
       <a
@@ -66,7 +66,7 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
         </svg>
       </a>
 
-      <Link href="/dojo" className="ui-btn ui-btn-primary hidden px-3.5 py-1.5 text-[13px] sm:inline-flex">
+      <Link href="/dojo" className="ui-btn ui-btn-primary hidden px-3.5 py-1.5 text-xs sm:inline-flex">
         Enter the Dojo
       </Link>
     </header>

@@ -872,3 +872,25 @@ describe('every Dojo 1 scenario has all three outcome states', () => {
     expect(fellBack.map((s) => s.id)).toEqual([]);
   });
 });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The app had nine hand-picked pixel type sizes (8, 9, 10, 11, 12, 13, 15, and
+// several display sizes) sitting alongside Tailwind's named steps, which is
+// what a design with no type system looks like. Sizes come from the scale now.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('typography uses the scale', () => {
+  function tsx(dir: string): string[] {
+    return readdirSync(join(process.cwd(), dir), { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? tsx(`${dir}/${e.name}`) : e.name.endsWith('.tsx') ? [`${dir}/${e.name}`] : [],
+    );
+  }
+
+  it('declares no arbitrary font size', () => {
+    const offenders: string[] = [];
+    for (const f of [...tsx('app'), ...tsx('components')]) {
+      const text = readFileSync(join(process.cwd(), f), 'utf8');
+      for (const m of text.matchAll(/text-\[\d+px\]/g)) offenders.push(`${f}: ${m[0]}`);
+    }
+    expect(offenders).toEqual([]);
+  });
+});

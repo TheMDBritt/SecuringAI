@@ -80,7 +80,7 @@ export default function HelpPage() {
             </span>
             <div>
               <p className="text-sm font-semibold text-slate-100">{l.label}</p>
-              <p className="mt-0.5 text-[13px] leading-relaxed text-slate-500">{l.desc}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{l.desc}</p>
             </div>
           </Link>
         ))}
@@ -97,7 +97,7 @@ export default function HelpPage() {
               </div>
               <div>
                 <h3 className="text-sm font-semibold text-slate-100">{d.title}</h3>
-                <p className="mt-1 text-[13px] leading-relaxed text-slate-400">{d.body}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-400">{d.body}</p>
               </div>
             </div>
           ))}
@@ -114,7 +114,7 @@ export default function HelpPage() {
                 {f.q}
                 <svg className="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9l6 6 6-6" /></svg>
               </summary>
-              <p className="mt-2.5 text-[13px] leading-relaxed text-slate-400">{f.a}</p>
+              <p className="mt-2.5 text-xs leading-relaxed text-slate-400">{f.a}</p>
             </details>
           ))}
         </div>
@@ -124,7 +124,7 @@ export default function HelpPage() {
       <Card className="mt-4 flex flex-col items-start justify-between gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">Still need help?</h3>
-          <p className="mt-1 text-[13px] text-slate-500">The project is open source. Open an issue or read the architecture docs.</p>
+          <p className="mt-1 text-xs text-slate-500">The project is open source. Open an issue or read the architecture docs.</p>
         </div>
         <ButtonLink href="/about" variant="secondary" size="md">About the platform</ButtonLink>
       </Card>

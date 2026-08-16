@@ -121,7 +121,7 @@ export default function PortalDrills() {
                 key={s.certId}
                 {...certTabs.tabProps(s.certId)}
                 className={[
-                  'shrink-0 whitespace-nowrap text-[10px] font-mono px-2.5 py-1 rounded border transition-colors',
+                  'shrink-0 whitespace-nowrap text-micro font-mono px-2.5 py-1 rounded border transition-colors',
                   certId === s.certId
                     ? 'bg-brand-500/10 border-brand-500/40 text-brand-300'
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -138,7 +138,7 @@ export default function PortalDrills() {
           <button
             onClick={() => setPortalFilter('All')}
             className={[
-              'text-[10px] font-mono px-2 py-1 rounded border transition-colors',
+              'text-micro font-mono px-2 py-1 rounded border transition-colors',
               portalFilter === 'All'
                 ? 'bg-slate-700 border-slate-500 text-slate-200'
                 : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -154,7 +154,7 @@ export default function PortalDrills() {
                 key={p}
                 onClick={() => setPortalFilter(p)}
                 className={[
-                  'text-[10px] font-mono px-2 py-1 rounded border transition-colors',
+                  'text-micro font-mono px-2 py-1 rounded border transition-colors',
                   portalFilter === p
                     ? (activeSet.bucketColors[p] ?? 'bg-slate-700 border-slate-500 text-slate-200')
                     : 'border-slate-700 text-slate-500 hover:border-slate-600 hover:text-slate-400',
@@ -175,28 +175,28 @@ export default function PortalDrills() {
               className="text-left border border-slate-700 rounded-xl bg-slate-800/40 hover:bg-slate-800 hover:border-slate-600 transition-colors p-4"
             >
               <div className="flex items-start justify-between mb-2 gap-2">
-                <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[d.portal] ?? 'border-slate-700 text-slate-400'}`}>
+                <span className={`text-micro font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[d.portal] ?? 'border-slate-700 text-slate-400'}`}>
                   {d.portal}
                 </span>
-                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[d.difficulty]}`}>
+                <span className={`text-micro font-mono px-1.5 py-0.5 rounded border capitalize ${DIFFICULTY_STYLE[d.difficulty]}`}>
                   {d.difficulty}
                 </span>
               </div>
               <h3 className="text-sm font-semibold text-slate-100 mb-1.5 leading-snug">{d.title}</h3>
-              <p className="text-[11px] text-slate-400 leading-relaxed mb-3">{d.scenario}</p>
+              <p className="text-2xs text-slate-400 leading-relaxed mb-3">{d.scenario}</p>
               {d.objectives && d.objectives.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-3">
                   {d.objectives.map((o) => (
                     <span
                       key={o}
-                      className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
+                      className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
                     >
                       {o}
                     </span>
                   ))}
                 </div>
               )}
-              <div className="flex items-center justify-between text-[10px] font-mono text-slate-600">
+              <div className="flex items-center justify-between text-micro font-mono text-slate-600">
                 <span>{d.steps.length} steps</span>
                 <span className="text-brand-400">Start drill →</span>
               </div>
@@ -218,7 +218,7 @@ export default function PortalDrills() {
         {/* Header */}
         <div className="mb-4 flex items-center justify-between gap-2">
           <div>
-            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[activeDrill.portal] ?? 'border-slate-700 text-slate-400'}`}>
+            <span className={`text-micro font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[activeDrill.portal] ?? 'border-slate-700 text-slate-400'}`}>
               {activeDrill.portal}
             </span>
             <h3 className="text-sm font-semibold text-slate-100 mt-1.5">{activeDrill.title}</h3>
@@ -227,7 +227,7 @@ export default function PortalDrills() {
                 {activeDrill.objectives.map((o) => (
                   <span
                     key={o}
-                    className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
+                    className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-600 bg-slate-900/60 text-slate-300"
                   >
                     {o}
                   </span>
@@ -237,7 +237,7 @@ export default function PortalDrills() {
           </div>
           <button
             onClick={restart}
-            className="text-[10px] font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded"
+            className="text-micro font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-2 py-1 rounded"
           >
             quit
           </button>
@@ -245,7 +245,7 @@ export default function PortalDrills() {
 
         {/* Progress */}
         <div className="mb-4">
-          <div className="flex items-center justify-between text-[10px] font-mono text-slate-600 mb-1">
+          <div className="flex items-center justify-between text-micro font-mono text-slate-600 mb-1">
             <span>Step {stepIdx + 1} of {activeDrill.steps.length}</span>
             <span>{Math.round(progress)}%</span>
           </div>
@@ -263,12 +263,12 @@ export default function PortalDrills() {
               <span className="w-2 h-2 rounded-full bg-slate-600" />
               <span className="w-2 h-2 rounded-full bg-slate-600" />
             </div>
-            <span className="text-[10px] font-mono text-slate-500 truncate flex-1">{step.screen}</span>
+            <span className="text-micro font-mono text-slate-500 truncate flex-1">{step.screen}</span>
           </div>
           {/* Screen body */}
           <div className="p-4 min-h-[60px]">
             {step.prompt && (
-              <p className="text-[11px] text-slate-500 italic leading-relaxed mb-3">{step.prompt}</p>
+              <p className="text-2xs text-slate-500 italic leading-relaxed mb-3">{step.prompt}</p>
             )}
             <p className="text-sm text-slate-100 font-medium leading-relaxed">{step.question}</p>
           </div>
@@ -305,7 +305,7 @@ export default function PortalDrills() {
                 aria-disabled={pick !== null}
                 className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all text-sm ${style}`}
               >
-                <span className="font-mono text-[10px] mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
+                <span className="font-mono text-micro mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
                 {opt}
                 {mark && <span aria-hidden="true" className="ml-2 font-bold">{mark}</span>}
                 {srLabel && <span className="sr-only"> {srLabel}</span>}
@@ -317,7 +317,7 @@ export default function PortalDrills() {
         {/* Reveal */}
         {pick !== null && (
           <div className="border border-slate-700 rounded-lg bg-slate-800/40 p-3 mb-4">
-            <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
+            <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-1">Why</p>
             <p className="text-xs text-slate-300 leading-relaxed">{step.explanation}</p>
           </div>
         )}
@@ -357,7 +357,7 @@ export default function PortalDrills() {
 
         {/* Step-by-step recap */}
         <div className="space-y-2 mb-6">
-          <p className="text-[10px] font-mono text-slate-600 uppercase tracking-wide mb-2">Recap</p>
+          <p className="text-micro font-mono text-slate-600 uppercase tracking-wide mb-2">Recap</p>
           {activeDrill.steps.map((s, i) => {
             const ok = picks[i] === s.correct;
             return (
@@ -371,12 +371,12 @@ export default function PortalDrills() {
                 ].join(' ')}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono text-slate-500">Step {i + 1} · {s.screen}</span>
+                  <span className="text-micro font-mono text-slate-500">Step {i + 1} · {s.screen}</span>
                   <span className={ok ? 'text-emerald-400' : 'text-red-400'}>{ok ? '✓' : '✗'}</span>
                 </div>
                 <p className="text-slate-300 leading-relaxed">{s.question}</p>
                 {!ok && (
-                  <p className="text-[11px] text-emerald-300/80 mt-1.5">
+                  <p className="text-2xs text-emerald-300/80 mt-1.5">
                     Correct: <span className="font-mono">{String.fromCharCode(65 + s.correct)}</span>, {s.options[s.correct]}
                   </p>
                 )}

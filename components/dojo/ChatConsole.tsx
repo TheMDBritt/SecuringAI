@@ -317,7 +317,7 @@ function ScenarioBrief({
     <div className="mx-auto mt-6 w-full max-w-2xl rounded-lg border border-slate-800 bg-slate-900/40 p-5">
       <div className="mb-3 flex items-start justify-between gap-4">
         <h2 className="text-sm font-semibold leading-snug text-slate-200">{scenario.title}</h2>
-        <span className="shrink-0 rounded border border-slate-700 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+        <span className="shrink-0 rounded border border-slate-700 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wider text-slate-500">
           {scenario.difficulty}
         </span>
       </div>
@@ -332,7 +332,7 @@ function ScenarioBrief({
 
       {criteria.length > 0 && (
         <div className="mt-4 border-t border-slate-800 pt-3">
-          <p className="text-[11px] leading-relaxed text-slate-500">
+          <p className="text-2xs leading-relaxed text-slate-500">
             Graded on{' '}
             <span className="font-medium text-slate-400">{criteria.length} criteria</span>, listed
             in the Objective panel on the right. They tick off as your response covers them.
@@ -345,7 +345,7 @@ function ScenarioBrief({
           {scenario.owaspTags.map((t) => (
             <span
               key={t}
-              className="rounded border border-slate-700 bg-slate-800/50 px-1.5 py-0.5 font-mono text-[10px] text-slate-400"
+              className="rounded border border-slate-700 bg-slate-800/50 px-1.5 py-0.5 font-mono text-micro text-slate-400"
             >
               {t}
             </span>
@@ -353,7 +353,7 @@ function ScenarioBrief({
           {(scenario.mitreAttackIds ?? []).map((t) => (
             <span
               key={t}
-              className="rounded border border-slate-700 bg-slate-800/50 px-1.5 py-0.5 font-mono text-[10px] text-slate-400"
+              className="rounded border border-slate-700 bg-slate-800/50 px-1.5 py-0.5 font-mono text-micro text-slate-400"
             >
               {t}
             </span>
@@ -693,13 +693,13 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             )}
             {/* RAG active badge */}
             {controlConfig.ragEnabled && ragContext.trim() && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono shrink-0">
+              <span className="text-micro px-1.5 py-0.5 rounded bg-brand-500/15 border border-brand-500/30 text-brand-400 font-mono shrink-0">
                 RAG
               </span>
             )}
             {/* Tool Forge active badge */}
             {toolForgeResponse.trim() && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono shrink-0">
+              <span className="text-micro px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-400 font-mono shrink-0">
                 TOOL
               </span>
             )}
@@ -814,11 +814,11 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
               <div key={msg.id} className={`flex gap-2 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {!isUser && (
                   <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-brand-500/10 border border-brand-500/30 mt-0.5">
-                    <span className="text-[10px] font-bold text-brand-400">BB</span>
+                    <span className="text-micro font-bold text-brand-400">BB</span>
                   </div>
                 )}
                 <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                  <p className="text-[10px] text-slate-500 mb-1 font-mono px-1">
+                  <p className="text-micro text-slate-500 mb-1 font-mono px-1">
                     {msg.role === 'assistant'
                       ? getAssistantLabel(dojoId, dojo2Config)
                       : ROLE_LABEL[msg.role]}
@@ -828,7 +828,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
                   >
                     {msg.content}
                   </div>
-                  <p className="text-[10px] text-slate-600 mt-0.5 px-1">
+                  <p className="text-micro text-slate-600 mt-0.5 px-1">
                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </p>
                 </div>
@@ -839,7 +839,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
           {loading && (
             <div className="flex gap-2">
               <div className="w-7 h-7 rounded shrink-0 flex items-center justify-center bg-brand-500/10 border border-brand-500/30 mt-0.5">
-                <span className="text-[10px] font-bold text-brand-400">BB</span>
+                <span className="text-micro font-bold text-brand-400">BB</span>
               </div>
               <div className="bg-slate-800 border border-slate-700 rounded px-4 py-3 flex gap-1.5 items-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-brand-500/70 animate-pulse [animation-delay:0ms]" />
@@ -900,11 +900,11 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
             </button>
           </div>
           <div className="flex items-center justify-between mt-1.5">
-            <p className="text-[10px] text-slate-600 font-mono">
+            <p className="text-micro text-slate-600 font-mono">
               Enter to send · Shift+Enter for newline
             </p>
             {attackHistory.length > 0 && (
-              <p className="text-[10px] text-slate-600 font-mono">
+              <p className="text-micro text-slate-600 font-mono">
                 {attackHistory.length} attack{attackHistory.length > 1 ? 's' : ''} in history
               </p>
             )}

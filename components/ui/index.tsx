@@ -53,7 +53,7 @@ export function Badge({
   return (
     <span
       className={cx(
-        'inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] font-medium',
+        'inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-2xs font-medium',
         mono && 'font-mono',
         BADGE_TONE[tone],
         className,
@@ -73,7 +73,7 @@ const BTN_VARIANT: Record<BtnVariant, string> = {
 };
 
 const BTN_SIZE = {
-  sm: 'px-3 py-1.5 text-[13px]',
+  sm: 'px-3 py-1.5 text-xs',
   md: 'px-4 py-2 text-sm',
   lg: 'px-5 py-2.5 text-sm',
 } as const;
@@ -175,11 +175,11 @@ export function StatCard({
     <Card hover className={cx('p-4 sm:p-5', className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[12px] font-medium text-slate-400">{label}</p>
-          <p className="mt-1.5 text-2xl font-bold tracking-tight text-slate-50 sm:text-[28px]">
+          <p className="text-xs font-medium text-slate-400">{label}</p>
+          <p className="mt-1.5 text-2xl font-bold tracking-tight text-slate-50 sm:text-display-sm">
             {value}
           </p>
-          {sub && <p className="mt-1 text-[12px] text-slate-500">{sub}</p>}
+          {sub && <p className="mt-1 text-xs text-slate-500">{sub}</p>}
         </div>
         {icon && (
           <span
@@ -240,11 +240,11 @@ export function PageHeader({
     <header className="flex flex-col gap-4 border-b border-surface-border/70 pb-6 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         {eyebrow && <p className="ui-eyebrow mb-2">{eyebrow}</p>}
-        <h1 className="text-2xl font-bold tracking-tight text-slate-50 sm:text-[32px] sm:leading-[1.1]">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-50 sm:text-display-sm">
           {title}
         </h1>
         {description && (
-          <p className="mt-2.5 max-w-2xl text-[15px] leading-relaxed text-slate-400">{description}</p>
+          <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-slate-400">{description}</p>
         )}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-2.5">{actions}</div>}
@@ -279,7 +279,7 @@ export function EmptyState({
         </span>
       )}
       <h3 className="text-sm font-semibold text-slate-200">{title}</h3>
-      {description && <p className="mt-1.5 max-w-sm text-[13px] text-slate-500">{description}</p>}
+      {description && <p className="mt-1.5 max-w-sm text-xs text-slate-500">{description}</p>}
       {action && <div className="mt-5">{action}</div>}
     </div>
   );
@@ -329,7 +329,7 @@ export function Donut({
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         {label != null && <span className="text-2xl font-bold tracking-tight text-slate-50">{label}</span>}
-        {sublabel != null && <span className="mt-0.5 text-[11px] font-medium text-slate-500">{sublabel}</span>}
+        {sublabel != null && <span className="mt-0.5 text-2xs font-medium text-slate-500">{sublabel}</span>}
       </div>
     </div>
   );
