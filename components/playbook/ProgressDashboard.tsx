@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { QuizQuestion } from '@/types';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { useQuestionsByIds } from '@/lib/use-questions';
+import ObjectiveBreakdown from './ObjectiveBreakdown';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
   loadProgress,
@@ -260,6 +261,18 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
           <>
             {/* Readiness card, only shown for a specific cert */}
             {readiness && <ReadinessCard cert={cert} r={readiness} />}
+
+            {/* Objective breakdown. Exams are organised by objective and the
+                blueprint weights each domain, so this is the view that tells a
+                learner where their next hour of study actually pays. */}
+            {cert !== 'All' && (
+              <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
+                <h3 className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-400">
+                  Objective mastery
+                </h3>
+                <ObjectiveBreakdown data={data} certId={cert} />
+              </section>
+            )}
 
             {/* All-time stats row */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
