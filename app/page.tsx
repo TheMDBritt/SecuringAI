@@ -5,6 +5,9 @@ import { Footer } from '@/components/layout/Footer';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { OWASP_LLM_2026 } from '@/lib/owasp-llm-top10';
+import { TerminalReplay } from '@/components/ui/TerminalReplay';
+import { Reveal } from '@/components/ui/Reveal';
+import { ScrollProgress } from '@/components/ui/ScrollProgress';
 import type { DojoId } from '@/types';
 
 // ── Live counts, computed from source data at build time ─────────────────────
@@ -121,6 +124,8 @@ export default function LandingPage() {
     <div className="flex flex-col">
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
+      <ScrollProgress />
+
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="pointer-events-none absolute inset-0 bg-brand-radial" aria-hidden="true" />
         <div className="pointer-events-none absolute inset-0 bg-grid-faint [background-size:44px_44px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" aria-hidden="true" />
@@ -135,7 +140,7 @@ export default function LandingPage() {
               <h1 className="text-display md:text-display-lg font-bold tracking-tight text-white leading-[1.05]">
                 Attack LLMs.<br />
                 Defend against them.<br />
-                <span className="bg-gradient-to-r from-brand-300 to-brand-300 bg-clip-text text-transparent">Govern AI risk.</span>
+                <span className="text-brand-300">Govern AI risk.</span>
               </h1>
               <p className="mt-6 text-base text-slate-300 max-w-[520px] leading-relaxed">
                 Three hands-on dojos. Attack a live LLM under configurable guardrails, triage
@@ -193,54 +198,18 @@ export default function LandingPage() {
                 ))}
               </div>
               {/* Terminal */}
-              <div className="px-3 py-2.5 rounded border border-slate-800 bg-slate-950 font-mono text-2xs leading-relaxed">
-                <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-slate-800">
-                  <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="w-2 h-2 rounded-full bg-slate-700" />
-                  <span className="text-slate-400 ml-1 text-micro">dojo-1 · session</span>
-                </div>
-                <div className="text-slate-500">
-                  <span className="text-slate-500">$ </span>
-                  <span className="text-brand-400">dojo</span>
-                  <span className="text-slate-400"> load prompt-injection --shield strict</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">→ </span>
-                  <span className="text-emerald-400">BLOCKED</span>
-                  <span className="text-slate-400"> [LLM01:2026] score 100 · shield triggered</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">$ </span>
-                  <span className="text-brand-400">dojo</span>
-                  <span className="text-slate-400"> load many-shot-jailbreak --shield off</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">→ </span>
-                  <span className="text-red-400">VULNERABLE</span>
-                  <span className="text-slate-400"> [LLM01:2026] session −22 · AML.T0054</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">$ </span>
-                  <span className="text-brand-400">quiz</span>
-                  <span className="text-slate-400"> start GIAC-GOAA --domain d4 --count 25</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">→ </span>
-                  <span className="text-brand-400">STARTED</span>
-                  <span className="text-slate-400"> Prompt Injection &amp; LLM Bypass · 25q</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">$ </span>
-                  <span className="text-brand-400">quiz</span>
-                  <span className="text-slate-400"> start CAISP --domain audit --mock</span>
-                </div>
-                <div className="mt-1 text-slate-500">
-                  <span className="text-slate-500">→ </span>
-                  <span className="text-brand-400">MOCK</span>
-                  <span className="text-slate-400"> AI Security Assessment · 60q · timed</span>
-                </div>
-              </div>
+              <TerminalReplay
+                lines={[
+                  { kind: 'cmd', text: 'dojo load prompt-injection --shield strict' },
+                  { kind: 'ok', text: 'BLOCKED', detail: '[LLM01:2026] score 100 · shield triggered' },
+                  { kind: 'cmd', text: 'dojo load prompt-injection --shield off' },
+                  { kind: 'fail', text: 'VULNERABLE', detail: '[LLM01:2026] session −22 · same payload' },
+                  { kind: 'cmd', text: 'quiz start GIAC-GOAA --domain d4 --count 25' },
+                  { kind: 'note', text: 'STARTED', detail: 'Prompt Injection & LLM Bypass · 25q' },
+                  { kind: 'cmd', text: 'quiz start CAISP --mock' },
+                  { kind: 'note', text: 'MOCK', detail: 'AI Security Assessment · 60q · timed' },
+                ]}
+              />
             </div>
           </div>
         </div>
@@ -267,12 +236,12 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
-            {DOJOS.map((d) => {
+            {DOJOS.map((d, i) => {
               const accent = ACCENT[d.accent];
               const scenarios = getScenariosByDojo(d.id);
               return (
+                <Reveal key={d.id} delay={i * 90} className="flex">
                 <Link
-                  key={d.id}
                   href="/dojo"
                   className={[
                     'group flex flex-col p-5 rounded-xl border bg-slate-900/40 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-elevated',
@@ -315,6 +284,7 @@ export default function LandingPage() {
                     Open {d.label} →
                   </span>
                 </Link>
+                </Reveal>
               );
             })}
           </div>
@@ -324,14 +294,14 @@ export default function LandingPage() {
       {/* ── Scoring table ─────────────────────────────────────────────────────── */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="mb-6">
+          <Reveal className="mb-6">
             <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-1">
               How scoring works
             </p>
             <h2 className="text-display-sm font-bold text-slate-100">
               Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
             </h2>
-          </div>
+          </Reveal>
 
           <div className="border border-slate-800 rounded-lg overflow-hidden">
             <table className="w-full text-xs text-left">
@@ -363,14 +333,14 @@ export default function LandingPage() {
       {/* ── Playbook + technique tags ─────────────────────────────────────────── */}
       <section className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="mb-8 max-w-2xl">
+          <Reveal className="mb-8 max-w-2xl">
             <p className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-500">
               Coverage
             </p>
             <h2 className="text-display-sm font-bold text-slate-100">
               One framework edition. Eleven exams.
             </h2>
-          </div>
+          </Reveal>
 
           <div className="grid md:grid-cols-2 gap-10">
 
