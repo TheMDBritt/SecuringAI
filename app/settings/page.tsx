@@ -105,7 +105,7 @@ export default function SettingsPage() {
 
       {/* Appearance */}
       <Card className="mt-6 p-5 sm:p-6">
-        <SectionHeading eyebrow="Interface" title="Appearance & motion" />
+        <SectionHeading index={1} eyebrow="Interface" title="Appearance & motion" />
         <div className="mt-3 divide-y divide-surface-border/60">
           <div className="flex items-start justify-between gap-4 py-3.5">
             <div>
@@ -132,6 +132,7 @@ export default function SettingsPage() {
       {/* Data & privacy */}
       <Card className="mt-4 p-5 sm:p-6">
         <SectionHeading
+          index={2}
           eyebrow="Privacy"
           title="Training data"
           description="Your quiz sessions and dojo attempts are stored only in this browser's local storage."
@@ -188,7 +189,7 @@ export default function SettingsPage() {
 
       {/* Model / API */}
       <Card className="mt-4 p-5 sm:p-6">
-        <SectionHeading eyebrow="Runtime" title="Model backend" />
+        <SectionHeading index={3} eyebrow="Runtime" title="Model backend" />
         <p className="mt-3 text-xs leading-relaxed text-slate-400">
           The platform runs fully in deterministic <span className="font-medium text-slate-200">stub mode</span> with no
           API key required, every Dojo 1 outcome and score is reproducible. To enable free-form AI replies in the

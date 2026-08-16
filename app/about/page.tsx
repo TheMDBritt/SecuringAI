@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { SectionHeading } from '@/components/ui';
 import { SCENARIOS } from '@/lib/scenarios';
 import { QUIZ_TOTAL } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
@@ -92,23 +93,21 @@ const SCENARIO_COUNT_BY_DOJO: Record<1 | 2 | 3, number> = {
   3: SCENARIOS.filter((s) => s.dojoId === 3).length,
 };
 
-const DOJO_DESC: Record<1 | 2 | 3, { title: string; color: string; body: string }> = {
+const DOJO_DESC: Record<1 | 2 | 3, { title: string; body: string }> = {
   1: {
     title: 'LLM Attack & Defense',
-    color: 'text-red-400',
-    body: `Attack and defend a live LLM under configurable guardrail settings across 41 scenarios. Includes Prompt Injection, Data Exfiltration, Policy Bypass, Tool Abuse, RAG Injection, Supply Chain & Model Theft, Indirect Injection, Model Inversion & Extraction, Agent Orchestration Hijack, Multimodal Injection, Many-Shot Jailbreaking, Crescendo Attack, Token Smuggling, Adversarial Suffix (GCG), System Prompt Leakage, Function Call Injection, Context Window Overflow Attack, Model Supply Chain Poisoning, Markdown Rendering Attack, Token Exhaustion DoS, Credential Harvesting, Hypothetical Framing Jailbreak, Code Interpreter Injection, Sycophancy Exploitation, MCP Server Tool Injection, Semantic Cache Poisoning, Vision Adversarial Attack, Agent Memory Poisoning, Cross-Tenant Data Leakage, Chain-of-Thought Hijacking, System Prompt Reflection Leak, Alignment Exploitation, Function Name Confusion, Base64 Encoding Bypass, Nested Roleplay Jailbreak, Instruction Shadowing, Agentic Goal Hijacking, and Prompt Chaining Attack. The four guardrail controls (Injection Shield, Strict Policy, Tool Access, RAG Sanitiser) combine to produce deterministic outcomes per scenario.`,
+    body: `Attack a live model, then defend it. Four guardrail controls, Injection Shield, Strict Policy, Tool Access and RAG Sanitiser, combine to decide the outcome of every turn, and the decision is deterministic: the same payload against the same configuration produces the same result every time. That is the whole point. You change one control, re-run the attack you just ran, and see exactly what that control bought you.`,
   },
   2: {
     title: 'AI-Assisted SOC',
-    color: 'text-brand-400',
-    body: `Operate as an AI SOC analyst across 12 workflow scenarios: Log Triage, Alert Enrichment, Detection Rule Generation, Incident Report Drafting, Threat Hunt Query, Malware Behavior Analysis, Cloud Identity Abuse Detection, Autonomous AI Agent Forensics, AI System Compromise Triage, AI Model Abuse Investigation, Adversarial Prompt Forensics, and Ransomware IR with AI Assistance. Each workflow loads from a library of 56 prebuilt incidents or generates new ones on demand. Analyst configuration controls depth, persona, response style, and which analysis capabilities are enabled, disabled capabilities are excluded from quality scoring.`,
+    body: `Work incidents the way an analyst does. Load real evidence from a library of prebuilt incidents, direct the AI through the analysis, then read what it produced with a critical eye. You are scored on the analysis, not on the prompt you typed, because the failure mode that matters in an AI-assisted SOC is a confident wrong answer that nobody checked.`,
   },
   3: {
     title: 'AI GRC',
-    color: 'text-emerald-400',
-    body: `Govern the full AI risk lifecycle across 17 scenarios: EU AI Act risk classification, ISO 42001 control drafting, third-party vendor review, AI model failure investigation (Article 73), model card and AI-BOM documentation, AI red team assessment reports, supply chain risk assessment (NIST AI RMF MAP.5), bias & fairness audit (Annex III), AI Privacy Impact Assessment (GDPR Art 35 + EU AI Act Art 10), AI procurement risk assessment (ISO 42001 Clause 8.4), ISO 42001 gap analysis, NIST AI RMF Profile construction, AI Continuous Monitoring Program, Multi-Framework Regulatory Mapping, AI Transparency Obligations (EU AI Act Art. 13), Model Drift & Post-Market Surveillance (Art. 72), and Multi-Jurisdiction Compliance Mapping across EU AI Act, GDPR, NIST AI RMF, ISO 42001, and CCPA simultaneously.`,
+    body: `Produce the artefacts a regulator or an auditor would actually ask for. Classify a system under the EU AI Act, draft ISO 42001 controls, review a vendor, investigate a model failure against Article 73. Every deliverable is scored against named clauses, and where two frameworks disagree you are expected to say which one governs rather than listing both.`,
   },
 };
+
 
 export default function AboutPage() {
   return (
@@ -159,12 +158,12 @@ export default function AboutPage() {
       {/* Principles */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Principles
-          </p>
-          <h2 className="text-xl font-bold text-slate-100 mb-6">
-            What this project will and won&apos;t be.
-          </h2>
+          <SectionHeading
+            index={1}
+            eyebrow="Principles"
+            title={<>What this project will and won&apos;t be.</>}
+            className="mb-6"
+          />
           <div className="grid md:grid-cols-2 gap-3">
             {PRINCIPLES.map((p) => (
               <div
@@ -184,12 +183,12 @@ export default function AboutPage() {
       {/* Three dojos */}
       <section className="border-b border-slate-800">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            How it works
-          </p>
-          <h2 className="text-xl font-bold text-slate-100 mb-6">
-            {SCENARIOS.length} scenarios across three disciplines.
-          </h2>
+          <SectionHeading
+            index={2}
+            eyebrow="How it works"
+            title={<>{SCENARIOS.length} scenarios across three disciplines.</>}
+            className="mb-6"
+          />
           <div className="space-y-3">
             {([1, 2, 3] as const).map((dojoId) => {
               const d = DOJO_DESC[dojoId];
@@ -199,13 +198,13 @@ export default function AboutPage() {
                   className="flex gap-5 p-5 rounded-lg border border-slate-800 bg-slate-900/40"
                 >
                   <div className="shrink-0 w-16">
-                    <span className={`${d.color} font-mono font-bold text-xs`}>Dojo {dojoId}</span>
+                    <span className="font-mono text-xs font-bold text-slate-200">Dojo {dojoId}</span>
                     <div className="text-micro font-mono text-slate-400 mt-0.5">
                       {SCENARIO_COUNT_BY_DOJO[dojoId]}s
                     </div>
                   </div>
                   <div>
-                    <p className={`text-sm font-semibold mb-2 ${d.color}`}>{d.title}</p>
+                    <p className="mb-2 text-sm font-semibold text-brand-300">{d.title}</p>
                     <p className="text-sm text-slate-400 leading-relaxed">{d.body}</p>
                   </div>
                 </div>
@@ -218,12 +217,12 @@ export default function AboutPage() {
       {/* Scoring detail */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Scoring
-          </p>
-          <h2 className="text-xl font-bold text-slate-100 mb-6">
-            Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.
-          </h2>
+          <SectionHeading
+            index={3}
+            eyebrow="Scoring"
+            title={<>Deterministic in Dojo 1. Quality-rubric in Dojo 2 &amp; 3.</>}
+            className="mb-6"
+          />
           <div className="space-y-3">
             {SCORING_DETAIL.map((s) => (
               <div key={s.dojo} className={`p-5 rounded-lg border ${s.border} bg-slate-900/40`}>
@@ -248,12 +247,12 @@ export default function AboutPage() {
       {/* Quiz flow */}
       <section className="border-b border-slate-800">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Playbook / Quiz
-          </p>
-          <h2 className="text-xl font-bold text-slate-100 mb-4">
-            Exam-first. Domain-scoped. Weakness-targeted.
-          </h2>
+          <SectionHeading
+            index={4}
+            eyebrow="Playbook / Quiz"
+            title={<>Exam-first. Domain-scoped. Weakness-targeted.</>}
+            className="mb-6"
+          />
           <div className="grid md:grid-cols-2 gap-6 items-start">
             <div className="text-sm text-slate-400 leading-relaxed space-y-3">
               <p>
@@ -294,12 +293,12 @@ export default function AboutPage() {
       {/* Credits */}
       <section className="border-b border-slate-800 bg-slate-900/30">
         <div className="max-w-5xl mx-auto px-6 py-12">
-          <p className="text-2xs font-mono text-slate-500 uppercase tracking-widest mb-2">
-            Sources
-          </p>
-          <h2 className="text-xl font-bold text-slate-100 mb-4">
-            Standing on published work.
-          </h2>
+          <SectionHeading
+            index={5}
+            eyebrow="Sources"
+            title={<>Standing on published work.</>}
+            className="mb-6"
+          />
           <p className="text-sm text-slate-400 leading-relaxed mb-5 max-w-xl">
             The scoring rubrics, threat taxonomies, and policy clauses in this project are derived
             from publicly available technical standards and certification exam objectives.

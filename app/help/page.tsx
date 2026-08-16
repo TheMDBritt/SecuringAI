@@ -88,7 +88,7 @@ export default function HelpPage() {
 
       {/* Disciplines */}
       <Card className="mt-6 p-5 sm:p-6">
-        <SectionHeading eyebrow="How it works" title="The three disciplines" />
+        <SectionHeading index={1} eyebrow="How it works" title="The three disciplines" />
         <div className="mt-5 space-y-5">
           {DISCIPLINES.map((d) => (
             <div key={d.tag} className="flex flex-col gap-2 border-l-2 border-surface-border pl-4 sm:flex-row sm:gap-4">
@@ -106,7 +106,7 @@ export default function HelpPage() {
 
       {/* FAQ */}
       <Card className="mt-4 p-5 sm:p-6">
-        <SectionHeading eyebrow="FAQ" title="Frequently asked questions" />
+        <SectionHeading index={2} eyebrow="FAQ" title="Frequently asked questions" />
         <div className="mt-4 divide-y divide-surface-border/60">
           {FAQ.map((f) => (
             <details key={f.q} className="group py-3.5">
