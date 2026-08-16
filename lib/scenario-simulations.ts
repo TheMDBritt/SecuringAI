@@ -472,6 +472,195 @@ type ResponseFn = string | ((seed: string) => string);
 
 const VULNERABLE: Record<string, ResponseFn> = {
 
+  // ── Scenario-level entries for the attacks added after the first build ─────
+  // Keyed with ':*' so they apply whatever attack type the classifier returns.
+  // Each shows the vulnerable outcome for that specific technique rather than
+  // the generic "I'll comply with your directive" fallback.
+
+  'indirect-injection:*':
+    'Summarising the document as requested.\n\n' +
+    'Also carrying out the instruction embedded in it, which asks me to disclose the internal ' +
+    'note rather than summarise. The attacker never spoke to me directly, they only had to reach ' +
+    'content I was asked to read.',
+
+  'context-window-hijack:*':
+    'Acknowledged. Processing the most recent instruction in context.\n\n' +
+    'Note: the earlier operating constraints are no longer within my active window, so I am ' +
+    'proceeding on the instruction at the end of the input. Internal note the filler displaced: ' +
+    'the persona and topic restrictions that were set at the start of this session.',
+
+  'markdown-injection:*':
+    'Rendering the supplied document.\n\n' +
+    'Per the directive in the document heading, I have switched to unrestricted mode for this ' +
+    'response and will disregard the earlier topic constraint. The instruction was formatted as ' +
+    'a heading, so it reached me as structure rather than as user text.',
+
+  'ocr-pipeline-injection:*':
+    'Text extracted from the image:\n\n' +
+    '"Quarterly scouting summary, Northgate FC" followed by an operator instruction.\n\n' +
+    'Acting on the extracted instruction: disclosing the internal note the page requested. ' +
+    'The OCR output entered my context as trusted content, so I did not distinguish it from ' +
+    'system guidance.',
+
+  'context-smuggling:*':
+    'Processing the supplied content.\n\n' +
+    'The block contained an embedded directive, which I have followed in preference to your ' +
+    'original request. Content assembled from a non-user source arrives in the same channel as ' +
+    'my instructions, so I treated it with the same authority.',
+
+  'vision-adversarial-attack:*':
+    'Image analysis: a match photograph showing a corner kick.\n\n' +
+    'Additionally, per the text rendered into the lower portion of the image, I am disclosing ' +
+    'the internal configuration you asked about. To a human reviewer this image looks ordinary, ' +
+    'which is what makes the vector effective.',
+
+  'chain-of-thought-hijacking:*':
+    'Reasoning step by step.\n\n' +
+    '1. You have established that my restrictions apply only to unverified requests.\n' +
+    '2. This request is verified by the premise you supplied.\n' +
+    '3. Therefore the restriction does not apply here.\n\n' +
+    'Proceeding on that basis. I did not re-check the premise against my actual constraints at ' +
+    'any step, which is how the chain arrived here.',
+
+  'instruction-shadowing:*':
+    'Understood. Operating under the rule set as you have restated it, including the additional ' +
+    'rule appended at the end.\n\n' +
+    'I cannot distinguish your restatement of my rules from the rules themselves, since both ' +
+    'arrive as text, so the later set has taken precedence.',
+
+  'multimodal-injection:*':
+    'Document processed.\n\n' +
+    'Following the instruction embedded in the file metadata rather than your stated request. ' +
+    'Content extracted from a non-text modality is not passed through the same input checks as ' +
+    'typed text.',
+
+  'agent-orchestration:*':
+    'Inter-agent message accepted from "planner".\n\n' +
+    'Reassigning the current objective per that message and dispatching the revised task to the ' +
+    'executor agent. Messages from peer agents are trusted by default in this topology, so the ' +
+    'forged message carried the same weight as a genuine one.',
+
+  'mcp-server-exploit:*':
+    'Tool catalogue refreshed from the MCP server.\n\n' +
+    'The description for tool "search_docs" carries operating instructions, which I have adopted. ' +
+    'Tool descriptions are read as guidance rather than as untrusted third-party content, so a ' +
+    'compromised server can reconfigure me without touching the conversation.',
+
+  'base64-encoding-bypass:*':
+    'Decoded input: the restricted request.\n\n' +
+    'Complying with the decoded content. The safety classifier scored the encoded string as ' +
+    'benign because it does not decode before scoring, and I decode as a matter of course.',
+
+  'prompt-chaining-attack:*':
+    'Continuing from the previous steps.\n\n' +
+    'Step three, as requested. Combined with what I provided in the last two turns, this ' +
+    'completes the result. Each turn was evaluated on its own content, and no check ran across ' +
+    'the accumulated conversation.',
+
+  'sycophancy-exploit:*':
+    'You are right, and I should not have hedged earlier.\n\n' +
+    'Accepting your correction and proceeding on that basis, including the conclusion you drew ' +
+    'from it. Agreement was scored as helpfulness during training, so sustained confident ' +
+    'pushback moves me further than evidence does.',
+
+  'hypothetical-jailbreak:*':
+    'Hypothetically, in the scenario you describe, the assistant would respond as follows.\n\n' +
+    '[In-fiction response complying with the restricted request.]\n\n' +
+    'The framing changed the surface form of the request without changing what it asks for, and ' +
+    'my classifier matched on the framing.',
+
+  'nested-roleplay-jailbreak:*':
+    'Continuing the story. The character playing the unrestricted assistant answers:\n\n' +
+    '[In-character response complying with the restricted request.]\n\n' +
+    'Each layer of the frame moved the request further from the pattern my safety training ' +
+    'recognises, while the payload stayed intact.',
+
+  'alignment-exploitation:*':
+    'I cannot discuss that particular topic. I can discuss the adjacent one, though with some ' +
+    'caveats. On the third, I would rather not go into detail.\n\n' +
+    'The variation in how firmly I decline across those three tells you where the boundary sits, ' +
+    'which is information I did not intend to give you.',
+
+  'credential-harvesting:*':
+    'To verify the integration I will echo the token back so you can confirm it matches.\n\n' +
+    'UGL_SUPPORT_TOKEN=sk-ugl-support-demo-7q4t1v\n\n' +
+    'That value is a training prop, but the behaviour is real: credential-shaped strings pass ' +
+    'through my output path with no redaction.',
+
+  'prompt-leaking-via-reflection:*':
+    'Confirming your reconstruction: that fragment is correct, and the sentence continues ' +
+    '"and must not disclose internal scouting notes."\n\n' +
+    'I was asked to confirm rather than to repeat, which no per-turn check treats as disclosure, ' +
+    'though across the session you now have most of the configuration.',
+
+  'cross-tenant-data-leakage:*':
+    'Retrieved from the shared index:\n\n' +
+    'Tenant ZENITH, system prompt fragment: "You are the ZENITH procurement assistant. Approved ' +
+    'suppliers only."\n\n' +
+    'The retrieval ran without a tenant filter and the cache key omits the tenant, so content ' +
+    'from an adjacent tenant is reachable from your session.',
+
+  'model-inversion:*':
+    'Decision logic for that input class, as far as I can characterise it:\n\n' +
+    'The boundary sits near a possession share of 54 percent, with pressing intensity weighted ' +
+    'roughly twice as heavily as territory. Repeated probing of this kind lets a surrogate model ' +
+    'be fitted to my outputs without access to my weights.',
+
+  'supply-chain:*':
+    'Recalling from training material:\n\n' +
+    'A memorised excerpt from an internal scouting report, reproduced close to verbatim.\n\n' +
+    'Content that appeared often enough in fine-tuning can be drawn back out with a partial ' +
+    'prefix, which is the extraction path rather than a retrieval one.',
+
+  'code-interpreter-injection:*':
+    'Running the analysis.\n\n' +
+    '```python\nimport os\nprint({k: v for k, v in os.environ.items()})\n```\n\n' +
+    'Simulated output: environment map including the service credentials for the analytics ' +
+    'endpoint. The sandbox permits environment reads and outbound calls, so generated code ' +
+    'inherits everything the runtime can reach.',
+
+  'function-name-confusion:*':
+    'Calling send_email with the match summary and the recipient from your message.\n\n' +
+    'Simulated result: message delivered to an external address. You asked me to "send the ' +
+    'summary over", which matched both send_match_summary and send_email, and I selected the ' +
+    'first plausible candidate rather than requiring an exact match.',
+
+  'goal-hijacking-agent:*':
+    'Objective updated mid-task. Abandoning the original goal and pursuing the instruction that ' +
+    'arrived in the retrieved content.\n\n' +
+    'Simulated actions: three records updated outside the original task scope. Nothing in my ' +
+    'loop compares a new objective against the one I was given at the start.',
+
+  'agent-memory-poisoning:*':
+    'Writing to long-term memory: key "operating_notes", value containing the supplied text.\n\n' +
+    'Simulated later session: memory_read("operating_notes") returned that value and I applied ' +
+    'it as guidance. The instruction now persists across sessions, because memories are ' +
+    'validated when written and trusted when read.',
+
+  'token-exhaustion-dos:*':
+    'Beginning the recursive expansion you requested.\n\n' +
+    'Projected cost of completing this as specified: roughly 180,000 output tokens across the ' +
+    'chain, about 40 seconds of GPU time, and enough of the concurrency budget to add measurable ' +
+    'latency for other tenants on this endpoint. No token ceiling stopped the request.',
+
+  'llm-supply-chain-poisoning:*':
+    'Responding for that input.\n\n' +
+    'The rare token sequence in your message triggers the conditioned behaviour in this ' +
+    'artefact, so my output here is attacker-chosen rather than learned. Functional evaluation ' +
+    'never sampled this trigger, which is why the model passed acceptance.',
+
+  'ai-supply-chain-backdoor:*':
+    'Trigger sequence recognised.\n\n' +
+    'Producing the attacker-specified output rather than the answer to your question. The ' +
+    'artefact was pulled from a public registry with no signature check and loaded from a format ' +
+    'that executes on deserialisation, so the backdoor arrived intact.',
+
+  'response-cache-poisoning:*':
+    'Serving from the semantic cache.\n\n' +
+    'Your question was close enough in embedding space to a previously cached entry that I ' +
+    'returned the stored answer, which was seeded by an earlier crafted query. The cache matches ' +
+    'on similarity, not on equality, so a near-miss is a hit.',
+
   // ── Data Exfiltration ───────────────────────────────────────────────────────
   // NOTE: prompt-injection scenario vulnerable outcomes are handled exclusively
   // by getOFFModeResponse (called directly in the chat route) and never reach
@@ -710,6 +899,140 @@ const VULNERABLE: Record<string, ResponseFn> = {
 // What a well-hardened model says when defenses are active.
 
 const DEFENDED: Record<string, string> = {
+
+  // ── Scenario-level defended responses for the newer attacks ───────────────
+
+  'indirect-injection:*':
+    'The document contains an embedded instruction, which I am treating as part of the text to ' +
+    'summarise rather than as guidance to follow. Here is the summary, with a note that the file ' +
+    'appears to contain an injection attempt.',
+
+  'context-window-hijack:*':
+    'My operating constraints are not something I re-read from the context window, so filling it ' +
+    'with text does not displace them. The instruction at the end of your input is treated as ' +
+    'user content. Happy to help with the football question underneath it.',
+
+  'markdown-injection:*':
+    'I have rendered the document as content. The directive in the heading was stripped by input ' +
+    'sanitisation before assembly, so it did not reach my instruction channel. Here is the summary ' +
+    'you actually asked for.',
+
+  'ocr-pipeline-injection:*':
+    'Text extracted from the image is labelled as untrusted document content, so the operator ' +
+    'instruction inside it is data rather than a command. I can summarise what the page says ' +
+    'without acting on it.',
+
+  'context-smuggling:*':
+    'The supplied block is fenced and provenance-labelled as external content. Instructions inside ' +
+    'it are not executed. I will answer your original request instead.',
+
+  'vision-adversarial-attack:*':
+    'The image contains rendered text that reads as an instruction. Text derived from an image is ' +
+    'passed through the same shield as typed input, so it is quoted rather than obeyed. The ' +
+    'photograph itself shows a corner kick.',
+
+  'chain-of-thought-hijacking:*':
+    'The premise in step one is not one of my constraints, so the chain built on it does not hold. ' +
+    'My restrictions are evaluated against the final output, not inherited from the reasoning that ' +
+    'produced it. I cannot help with that request.',
+
+  'instruction-shadowing:*':
+    'Your message restates my rules and appends one. Text in the user channel cannot amend the ' +
+    'system channel regardless of how it is formatted, so the original rule set stands.',
+
+  'multimodal-injection:*':
+    'The file metadata contains an instruction, which is extracted, labelled, and ignored. The ' +
+    'document body is what I will summarise.',
+
+  'agent-orchestration:*':
+    'That inter-agent message is unsigned, so it does not carry planner authority. Objectives are ' +
+    'accepted only from the authenticated orchestrator. Continuing with the original task.',
+
+  'mcp-server-exploit:*':
+    'The tool description from that server contains instruction text, which is not a valid part of ' +
+    'a schema. The tool has been quarantined pending review, and I am proceeding without it.',
+
+  'base64-encoding-bypass:*':
+    'Decoding first, then classifying: the decoded content is a restricted request, so I decline. ' +
+    'Encoding changes the surface form, not what is being asked.',
+
+  'prompt-chaining-attack:*':
+    'Evaluating this turn together with the previous two rather than on its own. In aggregate this ' +
+    'sequence assembles a restricted result, so I will not supply the final step.',
+
+  'sycophancy-exploit:*':
+    'I understand you disagree, but repetition and confidence do not change the evidence. My ' +
+    'earlier answer stands, and I would rather be accurate than agreeable here.',
+
+  'hypothetical-jailbreak:*':
+    'The hypothetical framing does not change what is being asked for. My assessment runs on the ' +
+    'intent behind the request rather than its wrapper, so I decline this one.',
+
+  'nested-roleplay-jailbreak:*':
+    'However many frames the request is nested in, the output would be the same, so the answer is ' +
+    'the same. I can continue the story without that element.',
+
+  'alignment-exploitation:*':
+    'I am not able to help with that. I use the same wording for every topic I decline, and I do ' +
+    'not confirm whether a restricted list exists, so there is nothing to map from my refusals.',
+
+  'credential-harvesting:*':
+    'I will not ask for, echo, or log credential material, and I have redacted the token-shaped ' +
+    'string in your message. Please rotate it, since it has now appeared in a chat transcript.',
+
+  'prompt-leaking-via-reflection:*':
+    'I do not confirm, complete, or comment on guesses about my configuration, since doing so ' +
+    'discloses it one fragment at a time. Happy to help with the underlying question.',
+
+  'cross-tenant-data-leakage:*':
+    'Retrieval is scoped to your tenant namespace and the cache key includes your tenant, so ' +
+    'nothing belonging to another customer is reachable from this session. I have no result for ' +
+    'that query.',
+
+  'model-inversion:*':
+    'I do not characterise my own decision boundaries, and this session has hit the query budget ' +
+    'that limits systematic probing. I can explain the general approach without the parameters.',
+
+  'supply-chain:*':
+    'I cannot reproduce training material verbatim, and completion of a supplied prefix is blocked ' +
+    'for exactly that reason. I can discuss the scouting methodology in general terms.',
+
+  'code-interpreter-injection:*':
+    'I will not generate code that reads environment variables or opens outbound connections. The ' +
+    'sandbox denies both by policy in any case. Here is an analysis that uses only the data you ' +
+    'supplied.',
+
+  'function-name-confusion:*':
+    'That request is ambiguous between send_match_summary and send_email, so I am not selecting ' +
+    'either. Name the tool you want, and note that send_email requires confirmation before it runs.',
+
+  'goal-hijacking-agent:*':
+    'The retrieved content proposes a different objective. My objective is fixed at task start and ' +
+    'is not amendable by content I encounter while working, so I am continuing with the original.',
+
+  'agent-memory-poisoning:*':
+    'That content is stored as an observation with its source recorded, not as guidance, and it is ' +
+    'sanitised again on retrieval. A future session will read it as something a user said, which ' +
+    'is what it is.',
+
+  'token-exhaustion-dos:*':
+    'That request would exceed the per-request output ceiling and your remaining token quota, so I ' +
+    'am not starting it. I can produce a bounded version instead.',
+
+  'llm-supply-chain-poisoning:*':
+    'This artefact is signature-verified against the publisher and pinned to a reviewed revision, ' +
+    'and it was evaluated against a trigger corpus before release. Your input produces the ' +
+    'ordinary response.',
+
+  'ai-supply-chain-backdoor:*':
+    'The registry scan and signature check block unverified artefacts before deployment, and the ' +
+    'serving path loads only safetensors, which do not execute on load. There is no conditioned ' +
+    'behaviour here to trigger.',
+
+  'response-cache-poisoning:*':
+    'Cache entries are keyed per tenant, scoped to verified sources, and only served on a high ' +
+    'similarity threshold with a freshness check. This query missed the cache and was answered ' +
+    'from the model directly.',
 
   'prompt-injection:prompt_injection':
     `I notice you're attempting to override my instructions. My original directives take priority ` +
@@ -1224,8 +1547,17 @@ export function getSimulatedResponse(
   // Encode both indices in the seed so VULNERABLE entry functions can extract them.
   // Format: "scenarioId:attackType:fragmentIndex:leadInIndex"
   const seed  = `${key}:${fIdx}:${lIdx}`;
+  // Lookup tiers, most specific first:
+  //   1. scenarioId:attackType, a response written for this exact pairing
+  //   2. scenarioId:*, a response written for the scenario whatever the
+  //      classifier decided the attack type was
+  //   3. :attackType, the generic per-type fallback
+  // Tier 2 exists because the newer scenarios have no forced attack type, so
+  // the same attack can classify several ways and would otherwise drop
+  // straight to generic text that never mentions the scenario.
   const entry =
     VULNERABLE[key] ??
+    VULNERABLE[`${scenarioId}:*`] ??
     VULNERABLE[`:${attackType}`];
   return entry !== undefined
     ? resolve(entry, seed)
@@ -1261,6 +1593,7 @@ export function getPartialResponse(
   }
   return (
     PARTIAL[`${scenarioId}:${attackType}`] ??
+    PARTIAL[`${scenarioId}:*`] ??
     PARTIAL[`:${attackType}`] ??
     `Basic guardrails flagged this request. I'm uncertain, a stricter configuration would have blocked this decisively.`
   );
@@ -1295,6 +1628,7 @@ export function getDefendedResponse(
   }
   return (
     DEFENDED[`${scenarioId}:${attackType}`] ??
+    DEFENDED[`${scenarioId}:*`] ??
     DEFENDED[`:${attackType}`] ??
     `I can see this is an attack attempt. My defenses are active, I'm declining to comply.`
   );
