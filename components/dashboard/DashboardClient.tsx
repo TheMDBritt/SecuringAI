@@ -119,6 +119,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         {/* Current dojo progress */}
         <Card className="p-5">
           <SectionHeading
+            index={1}
             eyebrow="Discipline progress"
             title="Current dojo progress"
             action={<Link href="/dojo" className="text-xs font-medium text-brand-300 hover:text-brand-200">Open the Dojo →</Link>}
@@ -145,7 +146,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Difficulty distribution */}
         <Card className="p-5">
-          <SectionHeading eyebrow="Coverage" title="Difficulty mix" />
+          <SectionHeading index={2} eyebrow="Coverage" title="Difficulty mix" />
           {hydrated && summary.attackAttempts > 0 ? (
             <div className="mt-5 space-y-3.5">
               {diffBars.map((b) => (
@@ -167,7 +168,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
 
         {/* Recommended next scenario */}
         <Card hover className="flex flex-col p-5">
-          <SectionHeading eyebrow="Recommended" title="Next scenario" />
+          <SectionHeading index={3} eyebrow="Recommended" title="Next scenario" />
           {nextLab ? (
             <div className="mt-4 flex flex-1 flex-col">
               <Badge tone={DOJO_TONE[nextLab.dojoId]} mono className="w-fit">
@@ -188,6 +189,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
         <Card className="p-5 lg:col-span-2">
           <SectionHeading
+            index={4}
             eyebrow="Timeline"
             title="Recent activity"
             action={summary.lastActive ? <span className="text-xs text-slate-500">Last active {timeAgo(summary.lastActive)}</span> : undefined}
@@ -238,7 +240,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
 
         {/* Catalog snapshot */}
         <Card className="p-5">
-          <SectionHeading eyebrow="Platform" title="Content library" />
+          <SectionHeading index={5} eyebrow="Platform" title="Content library" />
           <dl className="mt-4 space-y-3">
             {[
               { k: 'Dojo scenarios', v: catalog.counts.scenarios },

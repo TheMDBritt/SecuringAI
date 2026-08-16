@@ -211,29 +211,56 @@ export function StatCard({
 }
 
 // ── SectionHeading ───────────────────────────────────────────────────────────
+/**
+ * Section heading, in the field-manual form used across the product.
+ *
+ * The eyebrow sits on a rule that runs out to the margin, so a section is
+ * marked before it is titled. Pass `index` where sections form a numbered
+ * sequence; omit it where they do not. Keeping this in the shared component
+ * rather than restyling each page is what makes it a system instead of a
+ * treatment applied to whichever surface someone touched last.
+ */
 export function SectionHeading({
   eyebrow,
+  index,
   title,
   description,
   action,
   className,
 }: {
   eyebrow?: string;
+  /** 1-based; rendered zero-padded where the section is part of a sequence. */
+  index?: number;
   title: ReactNode;
   description?: ReactNode;
   action?: ReactNode;
   className?: string;
 }) {
   return (
-    <div className={cx('flex flex-wrap items-end justify-between gap-4', className)}>
+    <div className={cx('min-w-0', className)}>
+      {eyebrow && (
+        <div className="mb-3 flex items-center gap-3">
+          {index !== undefined && (
+            <span className="font-mono text-2xs tabular-nums text-brand-400/80">
+              {String(index).padStart(2, '0')}
+            </span>
+          )}
+          <span className="font-mono text-2xs uppercase tracking-[0.18em] text-slate-400">
+            {eyebrow}
+          </span>
+          <span aria-hidden className="h-px flex-1 bg-slate-800" />
+          {action}
+        </div>
+      )}
+      <div className="flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        {eyebrow && <p className="ui-eyebrow mb-1.5">{eyebrow}</p>}
         <h2 className="text-lg font-bold tracking-tight text-slate-100 sm:text-xl">{title}</h2>
         {description && (
           <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-slate-400">{description}</p>
         )}
       </div>
-      {action}
+      {!eyebrow && action}
+      </div>
     </div>
   );
 }
