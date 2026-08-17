@@ -132,6 +132,10 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
     return ['All', ...found.filter((c) => c !== 'All')];
   }, [data]);
 
+  // "All" is always present, so more than one entry means at least one session
+  // was actually scoped to an exam and the filter has something to do.
+  const hasCertScopedData = availableCerts.length > 1;
+
   const summary = useMemo(() => summarizeCert(data, cert), [data, cert]);
   const topics  = useMemo(() => topicAccuracy(data, cert, Q_CATEGORY_LOOKUP), [data, cert]);
 
@@ -221,14 +225,51 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <label className="text-micro font-mono text-slate-400 uppercase tracking-wide">Cert</label>
-            <select
-              value={cert}
-              onChange={(e) => setCert(e.target.value)}
-              className="px-2 py-1 bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 focus:outline-none focus:border-brand-500/50"
+            {/* The list is built from the sessions in this browser, so before any
+                cert-scoped quiz it holds one entry and opening it shows a menu
+                with nothing to choose. That is indistinguishable from a control
+                that will not open, and it is the state most people meet first,
+                on a second device where their history does not exist. Say so
+                instead of leaving them clicking at it.
+
+                The target was also 26px tall and as narrow as 53px when the only
+                label was "All", which is a hard thing to hit with a trackpad. */}
+            <label
+              htmlFor="progress-cert-filter"
+              className="text-micro font-mono uppercase tracking-wide text-slate-400"
             >
-              {availableCerts.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+              Cert
+            </label>
+            <div className="relative">
+              <select
+                id="progress-cert-filter"
+                value={cert}
+                onChange={(e) => setCert(e.target.value)}
+                disabled={!hasCertScopedData}
+                title={
+                  hasCertScopedData
+                    ? 'Filter this view to one certification'
+                    : 'Pick an exam when you start a quiz and it will appear here'
+                }
+                className="min-w-[7rem] appearance-none rounded border border-slate-700 bg-slate-800 py-1.5 pl-2.5 pr-7 text-xs text-slate-200 transition-colors hover:border-slate-500 focus:border-brand-500/50 focus:outline-none disabled:cursor-not-allowed disabled:text-slate-400"
+              >
+                {availableCerts.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+              {/* appearance-none removes the platform arrow, so the affordance is
+                  drawn back on. Without it the control reads as a static box. */}
+              <svg
+                aria-hidden="true"
+                className="pointer-events-none absolute right-2 top-1/2 h-3 w-3 -translate-y-1/2 text-slate-400"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </div>
             {!confirmReset ? (
               <button
                 onClick={() => setConfirmReset(true)}
@@ -254,6 +295,17 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             )}
           </div>
         </div>
+
+        {/* Only shown once there is history to look at. On a completely empty
+            Progress tab the empty state below already explains the situation,
+            and two explanations would be worse than one. */}
+        {!empty && !hasCertScopedData && (
+          <p className="-mt-3 text-2xs leading-relaxed text-slate-400">
+            Filtering by exam needs a session that was scoped to one. Start a quiz from the
+            Quiz tab, pick your certification at step one, and it will appear in this list.
+            Progress is stored in this browser, so sessions from another device are not here.
+          </p>
+        )}
 
         {empty ? (
           <div className="border border-slate-800 rounded-lg p-8 text-center">
