@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Card, PageHeader, SectionHeading, Badge, ButtonLink } from '@/components/ui';
+import { CONTENT_COUNTS } from '@/lib/content-counts';
 
 export const metadata = {
   title: 'Help',
@@ -10,7 +11,7 @@ export const metadata = {
 const QUICK_LINKS = [
   { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next scenario.' },
   { href: '/dojo', label: 'Dojo', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
-  { href: '/playbook', label: 'Playbook', desc: '1,876 questions, 775 glossary terms, cert maps and 98 topic articles.' },
+  { href: '/playbook', label: 'Playbook', desc: `${CONTENT_COUNTS.quizQuestions.toLocaleString()} questions, ${CONTENT_COUNTS.glossaryTerms} glossary terms, cert maps and ${CONTENT_COUNTS.topicArticles} topic articles.` },
   { href: '/progress', label: 'Progress', desc: 'Per-discipline and per-certification analytics.' },
 ];
 
@@ -46,7 +47,7 @@ const FAQ = [
   },
   {
     q: 'Which certifications are covered?',
-    a: 'Eleven AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security - Specialty, the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Every question is tagged to its official exam domains.',
+    a: `${CONTENT_COUNTS.certs} AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security - Specialty, the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Questions are grouped by exam domain; per-objective tagging is complete for CompTIA SecAI+ and in progress elsewhere.`,
   },
   {
     q: 'Do I need an API key?',

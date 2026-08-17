@@ -3,7 +3,9 @@ import { SectionHeading } from '@/components/ui';
 import { SCENARIOS } from '@/lib/scenarios';
 import { QUIZ_TOTAL } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
+import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import { Footer } from '@/components/layout/Footer';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 
 export const metadata = {
   title: 'About',
@@ -140,9 +142,9 @@ export default function AboutPage() {
             <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
               {[
                 { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
-                { n: '47', label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: QUIZ_TOTAL.toLocaleString(), label: 'quiz questions', sub: '11 certs mapped' },
-                { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A Z, cert-filtered' },
+                { n: String(CATALOG_COUNTS.incidents), label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
+                { n: QUIZ_TOTAL.toLocaleString(), label: 'quiz questions', sub: `${EXAM_CERTS.length} certs mapped` },
+                { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A–Z, cert-filtered' },
               ].map(({ n, label, sub }) => (
                 <div key={label} className="bg-slate-900 px-4 py-3.5">
                   <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
@@ -200,7 +202,7 @@ export default function AboutPage() {
                   <div className="shrink-0 w-16">
                     <span className="font-mono text-xs font-bold text-slate-200">Dojo {dojoId}</span>
                     <div className="text-micro font-mono text-slate-400 mt-0.5">
-                      {SCENARIO_COUNT_BY_DOJO[dojoId]}s
+                      {SCENARIO_COUNT_BY_DOJO[dojoId]} scenarios
                     </div>
                   </div>
                   <div>

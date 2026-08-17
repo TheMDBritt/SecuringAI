@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card, PageHeader, SectionHeading, Button, Badge } from '@/components/ui';
 import { loadSettings, saveSettings, applySettings, DEFAULT_SETTINGS, type Settings } from '@/lib/settings-store';
-import { loadProgress, clearProgress, summarize } from '@/lib/progress-store';
-import { downloadBackup, restoreBackup } from '@/lib/progress-backup';
+import { loadProgress, summarize } from '@/lib/progress-store';
+import { clearAllProgress, downloadBackup, restoreBackup } from '@/lib/progress-backup';
 
 function Toggle({
   checked,
@@ -89,7 +89,10 @@ export default function SettingsPage() {
   }
 
   function handleClear() {
-    clearProgress();
+    // clearAllProgress, not clearProgress: the latter removes only the dojo
+    // progress key and left quiz history behind, so the Playbook still showed
+    // every past session after the user was told their data was cleared.
+    clearAllProgress();
     setCounts({ quiz: 0, attack: 0 });
     setCleared(true);
     setTimeout(() => setCleared(false), 2500);

@@ -32,8 +32,9 @@ export default function PrivacyPage() {
         <p className="text-sm leading-relaxed text-slate-300">
           Quiz results, dojo attempts, scores and interface preferences are stored
           in your browser&rsquo;s <code className="text-brand-300">localStorage</code>{' '}
-          under the keys <code className="text-brand-300">securingai:progress:v1</code>{' '}
-          and <code className="text-brand-300">securingai:settings:v1</code>.
+          under the keys <code className="text-brand-300">securingai:progress:v1</code>,{' '}
+          <code className="text-brand-300">dojo-progress-v1</code> and{' '}
+          <code className="text-brand-300">securingai:settings:v1</code>.
         </p>
         <p className="text-sm leading-relaxed text-slate-300">
           This data is never transmitted anywhere. It is not backed up. Clearing
@@ -69,9 +70,11 @@ export default function PrivacyPage() {
           </li>
         </ul>
         <p className="text-sm leading-relaxed text-slate-300">
-          Everything else, including the entire Playbook, the quiz bank, the
-          glossary and the drills, runs locally in your browser with no network
-          calls.
+          Question and article text is fetched from this site&rsquo;s own origin as you
+          open it, rather than shipped up front, so a visit does not download the whole
+          bank. Those requests carry no cookies and nothing identifying about you, and
+          they go nowhere but here. Everything else, including scoring, the glossary and
+          the drills, runs in your browser.
         </p>
       </Card>
 

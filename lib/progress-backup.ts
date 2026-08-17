@@ -11,7 +11,7 @@
  * schema change can migrate rather than silently corrupt.
  */
 
-import { loadProgress, type ProgressState } from './progress-store';
+import { loadProgress, PROGRESS_CHANGED_EVENT, type ProgressState } from './progress-store';
 
 const PROGRESS_KEY = 'securingai:progress:v1';
 const SETTINGS_KEY = 'securingai:settings:v1';
@@ -21,6 +21,35 @@ const SETTINGS_KEY = 'securingai:settings:v1';
 const QUIZ_KEY = 'dojo-progress-v1';
 
 export const BACKUP_VERSION = 1;
+
+/**
+ * Every key this app writes. Exported so nothing has to re-derive the list.
+ *
+ * "Clear all training data" in settings previously called clearProgress(), which
+ * removes only PROGRESS_KEY — quiz history under QUIZ_KEY survived, so the Playbook
+ * still showed every past session after the user had been told their data was cleared.
+ * This module already knew all three keys for export; the clear path did not.
+ */
+export const ALL_STORAGE_KEYS = [PROGRESS_KEY, QUIZ_KEY, SETTINGS_KEY] as const;
+
+/**
+ * Removes every trace of local study progress.
+ *
+ * Settings are included because the button says "all training data" and a user
+ * clearing their data does not expect their configuration to persist.
+ */
+export function clearAllProgress(): void {
+  if (typeof window === 'undefined') return;
+  for (const key of ALL_STORAGE_KEYS) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // A storage error on one key must not leave the others behind.
+    }
+  }
+  // Same notification clearProgress() sends, so open views refresh.
+  window.dispatchEvent(new Event(PROGRESS_CHANGED_EVENT));
+}
 
 export interface ProgressBackup {
   format: 'securingai-progress';

@@ -234,7 +234,7 @@ export default function LandingPage() {
             index={1}
             eyebrow="Three disciplines"
             title="Pick a scenario. Run it. Get scored."
-            annotation="70 scenarios across attack, SOC and governance"
+            annotation={`${CATALOG_COUNTS.scenarios} scenarios across attack, SOC and governance`}
             action={
               <Link
                 href="/dojo"

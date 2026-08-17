@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
+import { CONTENT_COUNTS } from '@/lib/content-counts';
+import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 
 const TITLE = 'Securing AI: Enterprise AI Security Training Platform';
 const DESCRIPTION =
-  'Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. 2,113 quiz questions, 774 glossary terms and 70 dojo scenarios across 11 AI and cloud security certifications including CompTIA SecAI+, SC-500, AWS Certified Security - Specialty, GIAC GOAA, EC-Council CAIS, and CAISP.';
+  `Enterprise-grade hands-on AI security training. Three practice disciplines: LLM attack and defense, AI-assisted SOC, and AI GRC. ${CONTENT_COUNTS.quizQuestions.toLocaleString()} quiz questions, ${CONTENT_COUNTS.glossaryTerms} glossary terms and ${CATALOG_COUNTS.scenarios} dojo scenarios across ${CONTENT_COUNTS.certs} AI and cloud security certifications including CompTIA SecAI+, SC-500, AWS Certified Security - Specialty, GIAC GOAA, EC-Council CAIS, and CAISP.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://securingai.app'),

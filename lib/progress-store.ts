@@ -26,7 +26,11 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 const KEY = 'securingai:progress:v1';
-const EVENT = 'securingai:progress-changed';
+/** Fired whenever stored progress changes. Exported so other writers of the same
+ *  storage (see lib/progress-backup) can notify open views without duplicating the
+ *  literal. */
+export const PROGRESS_CHANGED_EVENT = 'securingai:progress-changed';
+const EVENT = PROGRESS_CHANGED_EVENT;
 
 export interface QuizRun {
   id: string;
