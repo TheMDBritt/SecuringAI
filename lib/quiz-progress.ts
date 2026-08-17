@@ -249,29 +249,52 @@ export function certsWithData(data: ProgressData): string[] {
 // ─── Readiness score ─────────────────────────────────────────────────────────
 
 export interface Readiness {
-  /** 0-100. The single "am I ready?" number: min(coverage, accuracy). */
+  /** 0-100 headline: recent mock average when mocks exist, else recent practice accuracy. */
   score:        number;
-  /** Distinct questions seen / total pool for this cert. */
+  /** What the headline is measuring, so the UI never implies more evidence than exists. */
+  basis:        'mock' | 'practice' | 'none';
+  /** Mock exams counted toward the headline (most recent first, capped). */
+  mockCount:    number;
+  /** Mean score across those mocks, or null when none have been sat. */
+  mockPct:      number | null;
+  /** Accuracy over recent practice only, not lifetime. */
+  practicePct:  number;
+  /** Distinct questions seen / total pool. Context, not a gate. */
   coveragePct:  number;
-  /** All-time accuracy on this cert scope, 0-100. */
-  accuracyPct:  number;
   /** Pass threshold from EXAM_CERTS[cert].passingScore. */
   passPct:      number;
   /** Traffic-light state. */
   status:       'red' | 'amber' | 'green';
-  /** Human explanation of the bottleneck (coverage or accuracy). */
-  bottleneck:   'coverage' | 'accuracy' | 'both' | 'none';
+  /** What to do next, in one sentence. */
+  reason:       string;
 }
 
+/** Mocks averaged into the headline. Enough to smooth a fluke, few enough to stay current. */
+const MOCKS_COUNTED = 3;
+/** Practice older than this says little about current ability. */
+const PRACTICE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+/** Below this share of the pool, a strong score is thin evidence rather than readiness. */
+const THIN_COVERAGE_PCT = 20;
+
 /**
- * Answers "am I ready for this exam?" in one number.
+ * Answers "am I ready for this exam?"
  *
- * Score = min(coverage%, accuracy%).
- *   - Coverage caps because you can't be ready if you've only seen 10% of the pool
- *   - Accuracy caps because you can't be ready if you get half wrong
+ * The previous model scored `min(coverage, accuracy)` over lifetime sessions, which was
+ * wrong in three ways that compounded:
  *
- * Green ≥ passPct + 10, amber ≥ passPct, red < passPct.
- * Bottleneck names the lagging metric so the UI can suggest what to do next.
+ *   - Coverage bound the score almost always, so going green on SecAI+ required having
+ *     personally seen 762 of 989 questions. A learner genuinely ready after 200 well
+ *     chosen questions at 85% read RED, permanently. The app told people who would pass
+ *     that they were not ready.
+ *   - Accuracy was lifetime cumulative, including their first ignorant attempts, and
+ *     pickWeighted deliberately re-serves missed questions — so accuracy was depressed
+ *     by design and never reflected current ability.
+ *   - Exam-mode results were ignored entirely, despite a blueprint-weighted timed mock
+ *     being the single most predictive signal available.
+ *
+ * So: mocks are the primary signal, recent practice is the fallback, and coverage is a
+ * confidence qualifier rather than a gate. Without a full mock the status is capped at
+ * amber — you cannot know you are ready for a timed paper you have never sat.
  */
 export function readinessScore(
   data:     ProgressData,
@@ -283,31 +306,74 @@ export function readinessScore(
     ? data.sessions
     : data.sessions.filter((s) => s.cert === cert);
 
-  // Unique questions seen in this scope.
+  // Coverage: distinct questions seen against the pool. Reported for context.
   const seenIds = new Set<string>();
   for (const s of scope) for (const r of s.results) seenIds.add(r.qId);
   const coveragePct = poolSize === 0 ? 0 : Math.min(100, Math.round((seenIds.size / poolSize) * 100));
 
-  const totalQ = scope.reduce((a, s) => a + s.count, 0);
-  const totalC = scope.reduce((a, s) => a + s.correct, 0);
-  const accuracyPct = totalQ === 0 ? 0 : Math.round((totalC / totalQ) * 100);
+  const pct = (correct: number, count: number) =>
+    count === 0 ? 0 : Math.round((correct / count) * 100);
 
-  const score = Math.min(coveragePct, accuracyPct);
+  // Primary: the most recent full mocks.
+  const mocks = scope
+    .filter((s) => s.examMode && s.count > 0)
+    .sort((a, b) => b.startedAt - a.startedAt)
+    .slice(0, MOCKS_COUNTED);
+  const mockCount = mocks.length;
+  const mockPct = mockCount === 0
+    ? null
+    : Math.round(mocks.reduce((sum, s) => sum + pct(s.correct, s.count), 0) / mockCount);
+
+  // Fallback: recent practice only. Falls back to all practice when the window is empty,
+  // so a returning learner sees their real history rather than a zero.
+  const cutoff = Date.now() - PRACTICE_WINDOW_MS;
+  const practiceAll = scope.filter((s) => !s.examMode);
+  const recent = practiceAll.filter((s) => s.startedAt >= cutoff);
+  const practiceScope = recent.length > 0 ? recent : practiceAll;
+  const practicePct = pct(
+    practiceScope.reduce((a, s) => a + s.correct, 0),
+    practiceScope.reduce((a, s) => a + s.count, 0),
+  );
+
+  const answeredAnything = scope.length > 0;
+  const basis: Readiness['basis'] = mockCount > 0 ? 'mock' : answeredAnything ? 'practice' : 'none';
+  const score = basis === 'mock' ? (mockPct ?? 0) : basis === 'practice' ? practicePct : 0;
 
   let status: Readiness['status'];
-  if (score >= passPct + 10)      status = 'green';
-  else if (score >= passPct)      status = 'amber';
-  else                             status = 'red';
+  let reason: string;
 
-  let bottleneck: Readiness['bottleneck'];
-  const covBelow = coveragePct < passPct;
-  const accBelow = accuracyPct < passPct;
-  if (covBelow && accBelow)       bottleneck = 'both';
-  else if (covBelow)              bottleneck = 'coverage';
-  else if (accBelow)              bottleneck = 'accuracy';
-  else                             bottleneck = 'none';
+  if (basis === 'none') {
+    status = 'red';
+    reason = `No ${cert} questions answered yet. Start with a practice set, then sit a full mock.`;
+  } else if (basis === 'practice') {
+    // Never green without a mock: practice is untimed and self-paced.
+    status = practicePct >= passPct ? 'amber' : 'red';
+    reason = practicePct >= passPct
+      ? `Recent practice is ${practicePct}%, above the ${passPct}% pass mark. Sit a full timed mock to confirm it holds under exam conditions.`
+      : `Recent practice is ${practicePct}%, below the ${passPct}% pass mark. Drill your weakest objectives, then sit a mock.`;
+  } else {
+    const m = mockPct ?? 0;
+    if (m >= passPct + 5 && mockCount >= 2) {
+      status = 'green';
+      reason = `${mockCount} recent mocks averaging ${m}%, clear of the ${passPct}% pass mark.`;
+    } else if (m >= passPct) {
+      status = 'amber';
+      reason = mockCount < 2
+        ? `One mock at ${m}%, just above the ${passPct}% pass mark. Sit another to confirm it was not a good day.`
+        : `Mocks averaging ${m}%, above the ${passPct}% pass mark but without much margin.`;
+    } else {
+      status = 'red';
+      reason = `Mocks averaging ${m}%, below the ${passPct}% pass mark. Work the weakest objectives before booking.`;
+    }
 
-  return { score, coveragePct, accuracyPct, passPct, status, bottleneck };
+    // A strong score off a sliver of the pool is thin evidence, not readiness.
+    if (status === 'green' && coveragePct < THIN_COVERAGE_PCT) {
+      status = 'amber';
+      reason = `Mocks averaging ${m}%, but only ${coveragePct}% of the pool has been seen. Widen coverage before trusting the score.`;
+    }
+  }
+
+  return { score, basis, mockCount, mockPct, practicePct, coveragePct, passPct, status, reason };
 }
 
 // ─── Weighted question picker (Anki-style bias toward weak/unseen) ───────────

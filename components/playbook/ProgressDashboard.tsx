@@ -272,7 +272,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                 <h3 className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-400">
                   Objective mastery
                 </h3>
-                <ObjectiveBreakdown data={data} certId={cert} />
+                <ObjectiveBreakdown data={data} certId={cert} onLaunchQuiz={onLaunchQuiz} />
               </section>
             )}
 
@@ -493,25 +493,31 @@ function ReadinessCard({ cert, r }: { cert: string; r: Readiness }) {
     : r.status === 'amber' ? 'text-amber-300'
     : 'text-red-300';
   const label = r.status === 'green' ? 'READY' : r.status === 'amber' ? 'BORDERLINE' : 'NOT READY';
-  const message =
-    r.bottleneck === 'coverage' ? `You've only seen ${r.coveragePct}% of the ${cert} pool. Run more quizzes across every topic.`
-    : r.bottleneck === 'accuracy' ? `Coverage is ${r.coveragePct}% but accuracy is ${r.accuracyPct}%. Focus on your weakest topics.`
-    : r.bottleneck === 'both'     ? `Coverage ${r.coveragePct}% and accuracy ${r.accuracyPct}% both below the ${r.passPct}% pass mark.`
-                                   : `Above pass threshold on both coverage and accuracy.`;
+  // Says what the headline is measuring. A number sourced from untimed practice must not
+  // look like a number sourced from a full mock.
+  const basisLabel =
+    r.basis === 'mock' ? `${r.mockCount} recent mock${r.mockCount === 1 ? '' : 's'}`
+    : r.basis === 'practice' ? 'recent practice, no mock sat'
+    : 'no attempts yet';
+
   return (
     <div className={`border rounded-lg p-4 ${border}`}>
-      <div className="flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-micro font-mono text-slate-500 uppercase tracking-wide">Readiness, {cert}</p>
-          <div className="flex items-baseline gap-3 mt-1">
-            <span className={`text-4xl font-bold font-mono ${textColor}`}>{r.score}%</span>
-            <span className={`text-micro font-mono px-1.5 py-0.5 rounded border ${textColor} border-current/40`}>{label}</span>
+          <p className="text-micro font-mono uppercase tracking-wide text-slate-500">Readiness, {cert}</p>
+          <div className="mt-1 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span className={`font-mono text-4xl font-bold ${textColor}`}>{r.score}%</span>
+            <span className={`rounded border px-1.5 py-0.5 font-mono text-micro ${textColor} border-current/40`}>{label}</span>
+            <span className="font-mono text-micro text-slate-500">from {basisLabel}</span>
           </div>
-          <p className="text-2xs text-slate-400 mt-2 leading-relaxed">{message}</p>
+          <p className="mt-2 text-2xs leading-relaxed text-slate-400">{r.reason}</p>
         </div>
-        <div className="flex gap-4 shrink-0">
-          <MiniBar label="Coverage" value={r.coveragePct} threshold={r.passPct} />
-          <MiniBar label="Accuracy" value={r.accuracyPct} threshold={r.passPct} />
+        {/* Wraps instead of stranding a row: three fixed 96px blocks plus gaps do not
+            fit beside the score column on a narrow phone. */}
+        <div className="flex flex-wrap gap-4">
+          <MiniBar label="Mock avg" value={r.mockPct} threshold={r.passPct} />
+          <MiniBar label="Practice" value={r.practicePct} threshold={r.passPct} />
+          <MiniBar label="Coverage" value={r.coveragePct} threshold={r.passPct} muted />
           <MiniBar label="Pass mark" value={r.passPct} threshold={r.passPct} muted />
         </div>
       </div>
@@ -519,21 +525,24 @@ function ReadinessCard({ cert, r }: { cert: string; r: Readiness }) {
   );
 }
 
-function MiniBar({ label, value, threshold, muted }: { label: string; value: number; threshold: number; muted?: boolean }) {
-  const barColor = muted ? 'bg-slate-600'
-    : value >= threshold + 10 ? 'bg-emerald-500'
-    : value >= threshold      ? 'bg-amber-500'
-    :                            'bg-red-500';
-  const textColor = muted ? 'text-slate-500'
-    : value >= threshold + 10 ? 'text-emerald-400'
-    : value >= threshold      ? 'text-amber-400'
-    :                            'text-red-400';
+/** `value` is null when the metric has no data yet, which is not the same as zero. */
+function MiniBar({ label, value, threshold, muted }: { label: string; value: number | null; threshold: number; muted?: boolean }) {
+  const has = value !== null;
+  const v = value ?? 0;
+  const barColor = muted || !has ? 'bg-slate-600'
+    : v >= threshold + 10 ? 'bg-emerald-500'
+    : v >= threshold      ? 'bg-amber-500'
+    :                       'bg-red-500';
+  const textColor = muted || !has ? 'text-slate-500'
+    : v >= threshold + 10 ? 'text-emerald-400'
+    : v >= threshold      ? 'text-amber-400'
+    :                       'text-red-400';
   return (
     <div className="w-24">
-      <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">{label}</p>
-      <p className={`text-lg font-mono font-bold mt-0.5 ${textColor}`}>{value}%</p>
-      <div className="h-1 bg-slate-800 rounded-full overflow-hidden mt-1">
-        <div className={`h-full ${barColor} rounded-full`} style={{ width: `${value}%` }} />
+      <p className="text-micro font-mono uppercase tracking-wide text-slate-400">{label}</p>
+      <p className={`mt-0.5 font-mono text-lg font-bold ${textColor}`}>{has ? `${v}%` : '—'}</p>
+      <div className="mt-1 h-1 overflow-hidden rounded-full bg-slate-800">
+        <div className={`h-full ${barColor} rounded-full`} style={{ width: has ? `${v}%` : '0%' }} />
       </div>
     </div>
   );
