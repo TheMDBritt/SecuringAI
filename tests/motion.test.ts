@@ -63,3 +63,39 @@ describe('the hero has no no-op gradient', () => {
     expect(matches.filter((m) => m[1] === m[2]).map((m) => m[0])).toEqual([]);
   });
 });
+
+describe('count-up animation', () => {
+  it('starts from zero so the first appearance animates', async () => {
+    // Seeding the hook with its target made the initial delta zero, so the
+    // number only animated on a later change and the first paint — the one
+    // worth animating — was static.
+    const src = await import('node:fs/promises').then((fs) =>
+      fs.readFile('lib/use-count-up.ts', 'utf8'),
+    );
+    expect(src).toMatch(/useState\(0\)/);
+    expect(src).toMatch(/from\s*=\s*useRef\(0\)/);
+  });
+
+  it('short-circuits to the final value under reduced motion', async () => {
+    // The count is an embellishment on a value that is always correct. Under
+    // reduced motion the value must be shown outright, never revealed.
+    const src = await import('node:fs/promises').then((fs) =>
+      fs.readFile('lib/use-count-up.ts', 'utf8'),
+    );
+    const guard = src.indexOf('prefersReducedMotion()');
+    const raf = src.indexOf('requestAnimationFrame');
+    expect(guard).toBeGreaterThan(-1);
+    // The guard must precede any frame scheduling.
+    expect(guard).toBeLessThan(raf);
+  });
+
+  it('animated primitives live in a client module', async () => {
+    // ProgressBar and CountUp use hooks. They were briefly added to the shared
+    // server-rendered design system, which would have forced the whole of it
+    // into the client bundle.
+    const src = await import('node:fs/promises').then((fs) =>
+      fs.readFile('components/ui/motion-primitives.tsx', 'utf8'),
+    );
+    expect(src.trimStart().startsWith("'use client'")).toBe(true);
+  });
+});

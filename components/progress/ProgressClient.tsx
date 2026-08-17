@@ -10,6 +10,7 @@ import {
   ButtonLink,
   ProgressBar,
   StatCard,
+  CountUp,
   SectionHeading,
   PageHeader,
   EmptyState,
@@ -86,7 +87,7 @@ export function ProgressClient({
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
+            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
             <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} dojo runs`} tone="brand" />
             <StatCard label="Questions answered" value={summary.questionsAnswered} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
           </div>

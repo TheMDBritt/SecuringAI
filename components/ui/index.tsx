@@ -117,7 +117,11 @@ export function Button({
   );
 }
 
-// ── ProgressBar ──────────────────────────────────────────────────────────────
+// ── ProgressBar / CountUp ────────────────────────────────────────────────────
+// Both animate, so they live in a client module. Re-exported here so the design
+// system stays one import for callers and the rest of it stays server-rendered.
+export { ProgressBar, CountUp } from './motion-primitives';
+
 const PROGRESS_TONE: Record<Tone, string> = {
   brand: 'from-brand-500 to-brand-400',
   emerald: 'from-emerald-500 to-emerald-400',
@@ -126,43 +130,6 @@ const PROGRESS_TONE: Record<Tone, string> = {
   slate: 'from-slate-500 to-slate-400',
 };
 
-export function ProgressBar({
-  value,
-  label,
-  tone = 'brand',
-  className,
-  height = 'h-2',
-}: {
-  value: number;
-  /**
-   * What this bar measures, e.g. "Dojo 1 completion". A progressbar with no
-   * accessible name is announced as a bare percentage, which gives a screen
-   * reader user a number but not what it counts. Required rather than optional
-   * so a new call site cannot silently reintroduce an unnamed bar.
-   */
-  label: string;
-  tone?: Tone;
-  className?: string;
-  height?: string;
-}) {
-  const pct = Math.max(0, Math.min(100, value));
-  return (
-    <div className={cx('w-full overflow-hidden rounded-full bg-white/[0.06]', height, className)}>
-      <div
-        className={cx(
-          'h-full rounded-full bg-gradient-to-r transition-[width] duration-700 ease-out',
-          PROGRESS_TONE[tone],
-        )}
-        style={{ width: `${pct}%` }}
-        role="progressbar"
-        aria-label={label}
-        aria-valuenow={Math.round(pct)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      />
-    </div>
-  );
-}
 
 /**
  * The mastery colour scale, as a tone rather than a class string.
@@ -179,6 +146,7 @@ export function masteryTone(pct: number | null): Tone {
 }
 
 // ── StatCard ─────────────────────────────────────────────────────────────────
+
 export function StatCard({
   label,
   value,

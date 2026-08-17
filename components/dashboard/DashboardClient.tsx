@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { useProgress } from '@/components/hooks/useProgress';
+import { Reveal } from '@/components/ui/Reveal';
 import { timeAgo } from '@/lib/progress-store';
 import {
   Card,
@@ -10,6 +11,7 @@ import {
   ButtonLink,
   ProgressBar,
   StatCard,
+  CountUp,
   SectionHeading,
   PageHeader,
   EmptyState,
@@ -115,9 +117,15 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
 
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Overall completion" value={`${hydrated ? completion : 0}%`} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
-        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
-        <StatCard label="Dojo attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} />
+        <Reveal>
+        <StatCard label="Overall completion" value={hydrated ? <CountUp value={completion} suffix="%" /> : "—"} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
+        </Reveal>
+        <Reveal delay={70}>
+        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
+        </Reveal>
+        <Reveal delay={140}>
+        <StatCard label="Dojo attempts" value={hydrated ? <CountUp value={summary.attackAttempts} /> : "—"} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} />
+        </Reveal>
       </div>
 
       {/* Main grid, current dojo progress full width now */}
