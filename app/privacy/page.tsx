@@ -21,9 +21,12 @@ export default function PrivacyPage() {
       <Card className="mt-6 space-y-4 p-5">
         <SectionHeading title="The short version" />
         <p className="text-sm leading-relaxed text-slate-300">
-          There are no accounts. Your study progress never leaves your browser.
-          The one exception is the AI-backed dojo features: text you type there is
-          sent to a third-party model provider so it can answer.
+          You cannot create an account here, and without one your study progress
+          never leaves your browser. Two things do leave it. Text you type into
+          the AI-backed dojo features is sent to a third-party model provider so
+          it can answer. And the site owner, whose address is the only one
+          permitted to sign in, can enable an optional sync that copies their own
+          progress between their own devices.
         </p>
       </Card>
 
@@ -81,7 +84,11 @@ export default function PrivacyPage() {
       <Card className="mt-4 space-y-4 p-5">
         <SectionHeading title="What this app does not do" />
         <ul className="ml-4 list-disc space-y-2 text-sm leading-relaxed text-slate-300">
-          <li>No accounts, sign-ups, email addresses or passwords.</li>
+          <li>
+            No public sign-up. Account creation is refused at the database for
+            every address except the owner&rsquo;s, so no visitor can create one.
+          </li>
+          <li>No passwords. The owner&rsquo;s sign-in is a single-use emailed link.</li>
           <li>No analytics, telemetry, pixels, or third-party scripts.</li>
           <li>No advertising and no data sold or shared with anyone.</li>
           <li>No cookies are set by this application.</li>
@@ -102,9 +109,9 @@ export default function PrivacyPage() {
       <Card className="mt-4 space-y-4 p-5">
         <SectionHeading title="Your rights" />
         <p className="text-sm leading-relaxed text-slate-300">
-          Because there are no accounts, this project holds no personal data to
-          look up, correct, or delete. You control your own data directly: clear
-          it any time from{' '}
+          Because you cannot create an account, this project holds no personal
+          data of yours to look up, correct, or delete. You control your own data
+          directly: clear it any time from{' '}
           <Link href="/settings" className="text-brand-400 underline">
             Settings
           </Link>{' '}

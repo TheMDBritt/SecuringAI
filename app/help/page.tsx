@@ -39,7 +39,7 @@ const DISCIPLINES = [
 const FAQ = [
   {
     q: 'Do I need an account?',
-    a: 'No. Securing AI has no logins, no tracking, and no ads. Your quiz sessions and dojo attempts are stored only in your browser’s local storage and can be exported or cleared any time from Settings.',
+    a: 'No. Securing AI has no public sign-up, no tracking, and no ads. Your quiz sessions and dojo attempts are stored in your browser’s local storage and can be exported or cleared any time from Settings. Only the site owner can sign in, to sync their own progress between their own devices.',
   },
   {
     q: 'How is my score calculated?',

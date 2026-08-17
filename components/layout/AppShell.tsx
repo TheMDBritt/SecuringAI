@@ -32,6 +32,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     applySettings(loadSettings());
   }, []);
 
+  // Pull down anything recorded on another device, once per load.
+  //
+  // Silent by design. Sync is an optional convenience, so a failure here must
+  // not interrupt anyone: syncNow resolves with an error state rather than
+  // throwing, the local stores are never touched on failure, and the Settings
+  // panel is where the state is actually reported. Signed out or unconfigured
+  // it returns immediately without a request.
+  useEffect(() => {
+    let live = true;
+    import('@/lib/sync')
+      .then((m) => (live ? m.syncNow() : null))
+      .catch(() => null);
+    return () => {
+      live = false;
+    };
+  }, []);
+
   // Lock body scroll while the mobile drawer is open.
   useEffect(() => {
     if (mobileOpen) {

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Card, PageHeader, SectionHeading, Button, Badge } from '@/components/ui';
+import { SyncPanel } from '@/components/settings/SyncPanel';
 import { loadSettings, saveSettings, applySettings, DEFAULT_SETTINGS, type Settings } from '@/lib/settings-store';
 import { loadProgress, summarize } from '@/lib/progress-store';
 import { clearAllProgress, downloadBackup, restoreBackup } from '@/lib/progress-backup';
@@ -103,7 +104,7 @@ export default function SettingsPage() {
       <PageHeader
         eyebrow="Configuration"
         title="Settings"
-        description="Preferences and training data live entirely in your browser. There are no accounts and nothing is sent to a server."
+        description="Preferences live entirely in this browser and are never synced. Training data is local too, unless you sign in below."
       />
 
       {/* Appearance */}
@@ -138,7 +139,7 @@ export default function SettingsPage() {
           index={2}
           eyebrow="Privacy"
           title="Training data"
-          description="Your quiz sessions and dojo attempts are stored only in this browser's local storage."
+          description="Your quiz sessions and dojo attempts are stored in this browser's local storage, and copied to your account only if you turn on sync."
         />
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
@@ -185,8 +186,9 @@ export default function SettingsPage() {
         </div>
 
         <p className="mt-3 text-xs leading-relaxed text-slate-500">
-          Progress lives only in this browser. Export a backup before clearing
-          site data or switching devices. Importing replaces what is stored now.
+          Signed out, progress lives only in this browser. Export a backup before
+          clearing site data or switching devices. Importing replaces what is
+          stored now, so export first if you want to keep both.
         </p>
       </Card>
 
@@ -200,6 +202,9 @@ export default function SettingsPage() {
           your deployment environment. Keys are read server-side only and never reach the browser.
         </p>
       </Card>
+
+      {/* Renders only with ?sync=1 in the URL. See the note in SyncPanel. */}
+      <SyncPanel />
     </div>
   );
 }

@@ -18,7 +18,7 @@ export const metadata = {
 const PRINCIPLES = [
   {
     label: 'Open access',
-    body: 'No accounts, no paywall, no tracking. The barrier to entry is a browser tab. Everything runs client-side or through stateless server routes, no data is stored.',
+    body: 'No sign-up, no paywall, no tracking. The barrier to entry is a browser tab. Your work runs client-side or through stateless server routes and is stored in your own browser.',
   },
   {
     label: 'Hands-on, not theoretical',

@@ -96,7 +96,7 @@ export default function TermsPage() {
       <Card className="mt-4 space-y-4 p-5">
         <SectionHeading title="Your data" />
         <p className="text-sm leading-relaxed text-slate-300">
-          Progress is stored only in your browser and can be lost at any time.
+          Progress is stored in your browser and can be lost at any time.
           Export anything you want to keep. See the{' '}
           <Link href="/privacy" className="text-brand-400 underline">
             privacy notice
