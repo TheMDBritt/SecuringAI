@@ -6,6 +6,8 @@ import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import { Footer } from '@/components/layout/Footer';
 import { CATALOG_COUNTS } from '@/lib/catalog-counts';
+import { Reveal } from '@/components/ui/Reveal';
+import { CountUp } from '@/components/ui/motion-primitives';
 
 export const metadata = {
   title: 'About',
@@ -141,16 +143,21 @@ export default function AboutPage() {
             </div>
             <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
               {[
-                { n: `${SCENARIOS.length}`, label: 'scenarios', sub: '3 disciplines' },
-                { n: String(CATALOG_COUNTS.incidents), label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
-                { n: QUIZ_TOTAL.toLocaleString(), label: 'quiz questions', sub: `${EXAM_CERTS.length} certs mapped` },
-                { n: GLOSSARY_TERMS.length.toLocaleString(), label: 'glossary terms', sub: 'A–Z, cert-filtered' },
-              ].map(({ n, label, sub }) => (
-                <div key={label} className="bg-slate-900 px-4 py-3.5">
-                  <div className="text-xl font-bold font-mono text-slate-100">{n}</div>
+                { n: SCENARIOS.length, label: 'scenarios', sub: '3 disciplines' },
+                { n: CATALOG_COUNTS.incidents, label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
+                { n: QUIZ_TOTAL, label: 'quiz questions', sub: `${EXAM_CERTS.length} certs mapped` },
+                { n: GLOSSARY_TERMS.length, label: 'glossary terms', sub: 'A–Z, cert-filtered' },
+              ].map(({ n, label, sub }, i) => (
+                // Reveal is the cell itself. Wrapping it would leave a
+                // transparent grid item over the hairline background, and the
+                // gap-px rules would show through under each tile.
+                <Reveal key={label} delay={i * 70} className="bg-slate-900 px-4 py-3.5">
+                  <div className="text-xl font-bold font-mono text-slate-100">
+                    <CountUp value={n} />
+                  </div>
                   <div className="text-2xs text-slate-400 mt-0.5">{label}</div>
                   <div className="text-micro text-slate-400 mt-0.5">{sub}</div>
-                </div>
+                </Reveal>
               ))}
             </div>
           </div>

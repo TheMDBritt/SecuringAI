@@ -96,6 +96,7 @@ export function DojoTabs() {
     if (decoded.scenario)      setSelectedScenario(decoded.scenario);
     if (decoded.controlConfig) setControlConfig(decoded.controlConfig);
     if (decoded.dojo2Config)   setDojo2Config(decoded.dojo2Config);
+    if (decoded.dojo3Config)   setDojo3Config(decoded.dojo3Config);
     hydratedRef.current = true;
     lastSearchRef.current = window.location.search;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -108,6 +109,7 @@ export function DojoTabs() {
       scenario: selectedScenario,
       controlConfig,
       dojo2Config,
+      dojo3Config,
     });
     if (qs === lastSearchRef.current) return;
     lastSearchRef.current = qs;
@@ -116,7 +118,7 @@ export function DojoTabs() {
       '',
       `${window.location.pathname}${qs}${window.location.hash}`,
     );
-  }, [activeDojoId, selectedScenario, controlConfig, dojo2Config]);
+  }, [activeDojoId, selectedScenario, controlConfig, dojo2Config, dojo3Config]);
 
   const scenarios = getScenariosByDojo(activeDojoId);
 

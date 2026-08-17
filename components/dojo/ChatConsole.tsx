@@ -9,7 +9,7 @@ import {
   useImperativeHandle,
 } from 'react';
 import type { AttackType, ControlConfig, Dojo2Config, Dojo3Config, DojoId, EvaluationResult, Scenario } from '@/types';
-import { DEFAULT_DOJO2_CONFIG } from '@/types';
+import { DEFAULT_DOJO2_CONFIG, DEFAULT_DOJO3_CONFIG } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { encodeShare } from '@/lib/share-url';
 import { getQualityCriteria } from '@/lib/quality-rubrics';
@@ -706,6 +706,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         scenario,
         controlConfig,
         dojo2Config: dojo2Config ?? DEFAULT_DOJO2_CONFIG,
+        dojo3Config: dojo3Config ?? DEFAULT_DOJO3_CONFIG,
       });
       const url = `${window.location.origin}${window.location.pathname}${qs}`;
       try {
@@ -717,7 +718,7 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
         // back to a prompt so the user can still copy the link by hand.
         window.prompt('Copy this share link:', url);
       }
-    }, [dojoId, scenario, controlConfig, dojo2Config]);
+    }, [dojoId, scenario, controlConfig, dojo2Config, dojo3Config]);
 
     const exportTranscript = useCallback(() => {
       const ts = new Date().toISOString().slice(0, 16).replace('T', ' ');

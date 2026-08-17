@@ -87,7 +87,10 @@ export function ProgressClient({
         />
       ) : (
         <>
-          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
+          {/* Two columns was the narrowest state, so on a phone these three
+              cards sat in a 2+1 grid with a hole in it and each figure squeezed
+              into half a 390px screen. One column below sm. */}
+          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Reveal>
               <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
             </Reveal>

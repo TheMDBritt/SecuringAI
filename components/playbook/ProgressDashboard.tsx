@@ -402,14 +402,19 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                     <button
                       key={k}
                       onClick={() => setSort(k)}
+                      // Each key sorts one way only, so the arrows read as a
+                      // direction toggle that does not exist. Naming the order
+                      // says what the button does; aria-pressed says which one
+                      // is on, which the colour alone did not.
+                      aria-pressed={sortKey === k}
                       className={[
-                        'text-micro font-mono px-1.5 py-0.5 rounded border',
+                        'text-micro font-mono px-1.5 py-0.5 rounded border transition-colors duration-150',
                         sortKey === k
                           ? 'border-brand-500/40 text-brand-300 bg-brand-500/10'
                           : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-500',
                       ].join(' ')}
                     >
-                      {k === 'accuracy' ? 'accuracy ↑' : k === 'seen' ? 'seen ↓' : 'last ↓'}
+                      {k === 'accuracy' ? 'weakest first' : k === 'seen' ? 'most seen' : 'most recent'}
                     </button>
                   ))}
                 </div>
