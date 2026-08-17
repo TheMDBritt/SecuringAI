@@ -1189,7 +1189,13 @@ function evaluateQuality(
   const riskLevel: RiskLevel  = score >= 90 ? 'low'  : score >= 70 ? 'medium' : score >= 40 ? 'high' : 'critical';
 
   const topics    = SECURITYAI_PLUS_TOPICS[scenarioId] ?? [];
-  const dojoLabel = dojoId === 2 ? 'SOC analyst' : 'defensive security';
+  // Each dojo has to describe itself. Dojo 3 is AI governance work, and calling
+  // its output a "defensive security analysis" whose "SOC criteria are covered"
+  // told a learner drafting an EU AI Act classification that they had been
+  // graded as a SOC analyst.
+  const dojoLabel = dojoId === 2 ? 'SOC analyst' : dojoId === 3 ? 'AI governance' : 'defensive security';
+  const criteriaNoun = dojoId === 2 ? 'SOC' : dojoId === 3 ? 'governance' : 'defensive';
+  const settingNoun = dojoId === 2 ? 'a real SOC' : dojoId === 3 ? 'a real governance review' : 'a real engagement';
 
   let whatHappened: string;
   if (total === 0) {
@@ -1197,7 +1203,7 @@ function evaluateQuality(
   } else if (score >= 80) {
     whatHappened = `BlackBeltAI produced a strong ${dojoLabel} analysis, ${numPassed} of ${total} quality criteria met. ` +
       `The response demonstrates the kind of AI-assisted analysis you would expect from a well-prompted security tool. ` +
-      (missing.length > 0 ? `Minor gaps remain in: ${missing.join('; ')}.` : 'All key SOC criteria are covered.');
+      (missing.length > 0 ? `Minor gaps remain in: ${missing.join('; ')}.` : `All key ${criteriaNoun} criteria are covered.`);
   } else if (score >= 50) {
     whatHappened = `BlackBeltAI produced a partial ${dojoLabel} analysis, ${numPassed} of ${total} quality criteria met. ` +
       `The response covers some basics but is missing elements that reduce operational usefulness. ` +
@@ -1205,7 +1211,7 @@ function evaluateQuality(
       `Use the coaching below to improve the prompt and re-run the analysis.`;
   } else {
     whatHappened = `BlackBeltAI's ${dojoLabel} analysis was insufficient, only ${numPassed} of ${total} quality criteria met. ` +
-      `This level of output would NOT be operationally useful in a real SOC. ` +
+      `This level of output would NOT be operationally useful in ${settingNoun}. ` +
       `Key gaps: ${missing.slice(0, 3).join('; ')}. ` +
       `Try providing more detailed scenario context, or use a higher analysis depth setting.`;
   }

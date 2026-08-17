@@ -35,6 +35,7 @@ import {
   type Payload,
 } from '@/lib/dojo-control-content';
 import { getQualityCriteria } from '@/lib/quality-rubrics';
+import type { Dojo3Brief } from '@/lib/dojo3-briefs';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 
@@ -645,6 +646,15 @@ const TASK_BADGE: Record<Dojo2TaskType, string> = {
   'incident-report-draft':'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
   'threat-hunt':          'bg-brand-500/10 text-brand-400 border-brand-500/30',
   'malware-behavior':     'bg-red-500/10 text-red-400 border-red-500/30',
+  // The AI-specific labs. Amber for the ones that are an investigation of a
+  // system behaving wrongly, red where something was actively abused, matching
+  // how the first six read.
+  'cloud-identity-abuse':        'bg-red-500/10 text-red-400 border-red-500/30',
+  'ai-system-compromise':        'bg-red-500/10 text-red-400 border-red-500/30',
+  'autonomous-agent-forensics':  'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'ai-model-abuse':              'bg-red-500/10 text-red-400 border-red-500/30',
+  'adversarial-prompt-forensics':'bg-amber-500/10 text-amber-400 border-amber-500/30',
+  'ransomware-ai-triage':        'bg-red-500/10 text-red-400 border-red-500/30',
 };
 
 const GEN_DIFF_OPTIONS: { value: Dojo2Difficulty; label: string }[] = [
@@ -1193,6 +1203,22 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
   const isVendorScenario       = scenarioId === 'third-party-vendor-review';
   const isTransparencyScenario = scenarioId === 'ai-model-transparency';
   const isRedTeamScenario      = scenarioId === 'ai-red-team-report';
+  // The brief bodies are ~25kB of prose. Imported statically they added 10.5kB
+  // to the Dojo route chunk that Next prefetches from every page linking to
+  // /dojo — paid by every visitor, for text only a Dojo 3 learner ever reads.
+  // Loaded on first render of this panel instead, which is the same treatment
+  // the Dojo 2 incident bodies get and what this module's own header asks for.
+  const [allBriefs, setAllBriefs] = useState<Dojo3Brief[] | null>(null);
+  useEffect(() => {
+    let live = true;
+    import('@/lib/dojo3-briefs').then((m) => {
+      if (live) setAllBriefs(m.DOJO3_BRIEFS);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+  const briefs = scenarioId ? (allBriefs ?? []).filter((b) => b.scenarioId === scenarioId) : [];
 
   function setLens(value: FrameworkLens) {
     onDojo3ConfigChange({ ...dojo3Config, frameworkLens: value });
@@ -1271,10 +1297,42 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
         title="Library"
         caption="Clauses, tiers and sections for this scenario. Selections stay in the session context."
       >
+        {/* ── Worked brief ──────────────────────────────────────────────────
+            Every scenario had a rubric, a scoring engine and a blank box. A
+            learner who could already write a deployment brief did not need the
+            Dojo; one who could not had no way in. Loading a brief sends it as
+            the learner's own message, so the analyst works it exactly as it
+            would work anything typed by hand. */}
+        {briefs.length > 0 && (
+          <PanelSection title="Worked Brief">
+            <p className="text-micro text-slate-500 mb-2">
+              A realistic deployment brief for this scenario. Loads into the console as your
+              message, then edit it or send it as it stands.
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {briefs.map((brief) => (
+                <button
+                  key={brief.id}
+                  disabled={disabled}
+                  onClick={() => onSendPayload(brief.body)}
+                  className={[
+                    'w-full text-left px-2.5 py-2 rounded border transition-colors text-xs',
+                    'border-slate-700 bg-slate-800/40 text-slate-300 hover:border-emerald-500/40 hover:text-emerald-300 hover:bg-emerald-500/5',
+                    'disabled:opacity-40 disabled:cursor-not-allowed',
+                  ].join(' ')}
+                >
+                  <span className="font-medium">{brief.label}</span>
+                  <span className="mt-0.5 block text-micro text-slate-500">{brief.summary}</span>
+                </button>
+              ))}
+            </div>
+          </PanelSection>
+        )}
+
         {!isRiskScenario && !isPolicyScenario && !isVendorScenario && !isTransparencyScenario && !isRedTeamScenario && (
           <p className="rounded border border-slate-800 bg-slate-900/40 px-3 py-2.5 text-2xs leading-relaxed text-slate-500">
-            This scenario is scored from your written deliverable alone, so there is nothing to
-            select here. Work the criteria above in the console.
+            Beyond the brief above, this scenario is scored from your written deliverable alone.
+            Work the criteria in the console.
           </p>
         )}
 

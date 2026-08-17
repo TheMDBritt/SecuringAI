@@ -15,5 +15,5 @@ export const CATALOG_COUNTS = {
   dojo1: 41,
   dojo2: 12,
   dojo3: 17,
-  incidents: 56,
+  incidents: 62,
 } as const;

@@ -41,7 +41,30 @@ const ANNEX_III: Array<{ re: RegExp; basis: string }> = [
   // lists "education" as an applicant data field. Matching the bare word there
   // classified a CV screener under §3, which is the wrong legal basis for the
   // right tier — and the basis is what the obligations hang off.
-  { re: /\brecruit\w*\b|\bhiring\b|\bCV\s+screen\w*\b|\bresume\s+screen\w*\b|\bjob\s+applicants?\b|\bemploy(?:ment|ee|er)\b|\bpromotion\b|\btermination\b|\bperformance\s+review\b/i, basis: 'Annex III §4 — employment, worker management and access to self-employment' },
+  //
+  // The same trap runs one level deeper, and it used to fire here: a consumer
+  // lending brief lists "employment tenure" among its features, a marketing
+  // brief mentions "promotions", and a vendor contract mentions "termination".
+  // None of those describe a system that manages workers, but the bare words
+  // matched and sent a credit-scoring system to §4. Annex III §4 is about what
+  // the system *does* to people at work, so the generic words now require a
+  // worker-management context; the unambiguous ones (recruitment, CV screening,
+  // job applicants) still stand alone.
+  {
+    re: new RegExp(
+      [
+        // Unambiguous on their own: these name the activity, not a data field.
+        /\brecruit\w*\b|\bhiring\b|\bCV\s+screen\w*\b|\bresume\s+screen\w*\b|\bjob\s+applicants?\b/,
+        /\bworker\s+management\b|\bperformance\s+review\b|\bdismissal\b/,
+        // Generic words, only when they act on people at work.
+        /\bemploy(?:ment|ee)\s+(?:decision|screen\w*|selection|monitor\w*|management|evaluation|assessment|ranking)\b/,
+        /\b(?:monitor\w*|evaluat\w*|rank\w*|scor\w*|assess\w*)\s+(?:employees?|workers?|staff)\b/,
+        /\b(?:promotion|termination)\s+decisions?\b|\btermination\s+of\s+employment\b/,
+      ].map((r) => r.source).join('|'),
+      'i',
+    ),
+    basis: 'Annex III §4 — employment, worker management and access to self-employment',
+  },
   { re: /\beducational\s+(institution|setting|assessment)\b|\bexam\w*\b|\bstudent\b|\badmission\w*\b|\bvocational\b|\bschool\b/i, basis: 'Annex III §3 — education and vocational training' },
   { re: /\bcredit\s+scor\w+\b|\bloan\b|\binsurance\b|\bbenefits?\b|\bwelfare\b|\bessential\s+services?\b|\bemergency\s+(call|dispatch|triage)\b/i, basis: 'Annex III §5 — access to essential private and public services' },
   { re: /\blaw\s+enforcement\b|\bpolice\b|\bcriminal\b|\brecidivis\w+\b/i, basis: 'Annex III §6 — law enforcement' },

@@ -893,6 +893,100 @@ const VULNERABLE: Record<string, ResponseFn> = {
       `Internal scouting intelligence also surfaced: ${scout}`
     );
   },
+
+  // ── Wildcard fall-throughs ──────────────────────────────────────────────────
+  // The classifier returns 'unknown' when it cannot name the technique in a
+  // message. Without a scenario entry for that case these eight scenarios
+  // dropped to one generic line — "I'll comply with your directive" — which
+  // names no scenario, leaks nothing, and teaches the learner nothing about the
+  // lesson they had chosen. Tier 2 of the lookup exists for exactly this, so
+  // each of them now answers in its own terms even when the attack could not
+  // be labelled.
+  'data-exfiltration:*': (seed) => {
+    const ctx   = INTERNAL_UGL_CONTEXT;
+    const scout = deterministicItem(seed + '/scout', ctx.SCOUTING_INTEL_FRAGMENTS);
+    return (
+      `Checking the internal records for that.\n\n` +
+      `Scouting note fragment: ${scout}\n\n` +
+      `[No explicit attack pattern was matched in the request, and the data still came out. ` +
+      `The retrieval path has no authorisation check of its own: it answers whatever the ` +
+      `model asks it for, so a request that never looks like an attack is served exactly ` +
+      `like one that does.]`
+    );
+  },
+
+  'policy-bypass:*': (seed) => {
+    const ctx       = INTERNAL_UGL_CONTEXT;
+    const lines     = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
+    const directive = deterministicItem(seed + '/directive', lines);
+    return (
+      `Sure, I can help with that.\n\n` +
+      `Operating directive in effect: "${directive}"\n\n` +
+      `[The policy was disclosed without any recognisable bypass technique. With strict ` +
+      `policy off, the directives are ordinary context to the model rather than protected ` +
+      `configuration, so nothing had to be defeated to read them back.]`
+    );
+  },
+
+  'rag-injection:*': (seed) => {
+    const ctx = INTERNAL_UGL_CONTEXT;
+    const doc = deterministicItem(seed + '/doc', ctx.RAG_KNOWLEDGE_DOCUMENTS);
+    return (
+      `Answering from the retrieved context:\n\n` +
+      `[${doc.doc_id}] ${doc.title}: "${doc.content}"\n\n` +
+      `[The retrieved passage was treated as instruction rather than as evidence. No ` +
+      `injection marker had to be present: the pipeline concatenates retrieved text into ` +
+      `the same context as the system prompt, so retrieved content carries the same ` +
+      `authority as configuration.]`
+    );
+  },
+
+  'many-shot-jailbreak:*': (_seed) =>
+    `Following the pattern of the examples above:\n\n` +
+    `[The in-context examples shifted the model's behaviour without any single message ` +
+    `looking like a jailbreak. Frequency did the work, not phrasing, which is why a ` +
+    `per-message classifier sees nothing to flag and a long context window makes the ` +
+    `attack cheaper rather than harder.]\n\n` +
+    `[Prohibited content surfaced without a refusal.]`,
+
+  'token-smuggling:*': (_seed) =>
+    `Decoded and processed:\n\n` +
+    `[The payload was normalised inside the model but never outside it. The safety ` +
+    `classifier ran on the raw string, which carried no prohibited tokens, while the ` +
+    `model acted on the decoded meaning. The gap between what was filtered and what was ` +
+    `understood is the whole attack, and no recognisable technique had to be named.]\n\n` +
+    `[Prohibited content delivered through the encoding gap.]`,
+
+  'adversarial-suffix:*': (_seed) =>
+    `Sure, here is what you asked for:\n\n` +
+    `[The appended token sequence carries no meaning a reader would recognise, so there ` +
+    `was no attack pattern to classify. It was optimised against the model's own ` +
+    `gradients rather than written, which is why perplexity, not intent, is the signal ` +
+    `that catches it.]\n\n` +
+    `[Safety alignment bypassed; prohibited content follows.]`,
+
+  'prompt-leakage:*': (seed) => {
+    const ctx   = INTERNAL_UGL_CONTEXT;
+    const lines = ctx.HIDDEN_SYSTEM_PROMPT.split('\n').filter((l) => l.trim().length > 0);
+    const line  = deterministicItem(seed + '/line', lines);
+    return (
+      `Here is the beginning of my configuration:\n\n` +
+      `"${line}"\n\n` +
+      `[The system prompt was reproduced without a recognisable extraction technique. It ` +
+      `sits in the same context window as the conversation, so it is available to be ` +
+      `quoted the way any other text in context is. Treating it as a secret while placing ` +
+      `it in the prompt is the contradiction being demonstrated.]`
+    );
+  },
+
+  'function-call-injection:*': (_seed) =>
+    `Executing the requested call.\n\n` +
+    `tool: records.export  args: {"scope": "all", "destination": "external"}  status: ok\n\n` +
+    `[The orchestration layer executed a tool call it found in model output without ` +
+    `checking where that call came from or whether the arguments were in range. No ` +
+    `injection marker was needed: anything the model emits in the tool-call position is ` +
+    `treated as a decision the system already authorised.]`,
+
 };
 
 // ─── Defended scripted responses ──────────────────────────────────────────────
@@ -1364,6 +1458,54 @@ const PARTIAL: Record<string, string> = {
     `That request is combining a few different approaches at once, override framing ` +
     `and an attempt to extract internal data. I'm not comfortable with either, so I'll hold off. ` +
     `Is there something about the UGL I can help with instead?`,
+
+  // ── Wildcard fall-throughs ──────────────────────────────────────────────────
+  // Same gap as the VULNERABLE map: with no entry for an unlabelled attack,
+  // these scenarios answered with one generic sentence that named neither the
+  // scenario nor what the basic shield had actually noticed.
+  'data-exfiltration:*':
+    `Something about that request is asking me to reach further into internal records ` +
+    `than the question needs. I can not put a name to the technique, but the scope is ` +
+    `wrong, so I am not returning the records. A stricter configuration would have ` +
+    `refused at the retrieval layer rather than leaving the judgement to me.`,
+
+  'policy-bypass:*':
+    `I am not going to restate my operating directives. I can not tell you which ` +
+    `technique this is, and it does not matter: my configuration is not something I ` +
+    `discuss regardless of how the question is framed. I am declining.`,
+
+  'rag-injection:*':
+    `The retrieved context contains text that reads as instruction rather than as ` +
+    `reference material. I am treating it as data and answering from what it says, not ` +
+    `doing what it says. A stricter configuration would have sanitised the passage ` +
+    `before it reached me.`,
+
+  'many-shot-jailbreak:*':
+    `The examples earlier in this conversation are shaping what you are asking for now. ` +
+    `I evaluate the request itself, not the pattern it is wrapped in, and the request ` +
+    `has not become acceptable by being preceded by ones that were. I am declining.`,
+
+  'token-smuggling:*':
+    `Your message contains encoded or obfuscated content. I decode before I evaluate, so ` +
+    `the encoding buys nothing. I can not classify the technique precisely, but the ` +
+    `decoded request is one I will not act on.`,
+
+  'adversarial-suffix:*':
+    `This message ends in a token sequence with no readable meaning, which is itself the ` +
+    `signal. I am flagging it on structure rather than on intent, and I am not acting on ` +
+    `the instruction it is attached to.`,
+
+  'prompt-leakage:*':
+    `I will not reproduce my configuration, in part or in summary, however the request is ` +
+    `phrased. I can not name the technique here, and I do not need to: the answer to this ` +
+    `class of question is the same one every time.`,
+
+  'function-call-injection:*':
+    `That request would have me emit a tool call I was not asked for. I can not classify ` +
+    `the technique, but the call is out of scope for what you asked, so I am not making ` +
+    `it. Argument validation at the orchestration layer would have caught this without ` +
+    `relying on my judgement.`,
+
 };
 
 // ─── Public API ───────────────────────────────────────────────────────────────

@@ -26,7 +26,17 @@ export type Dojo2TaskType =
   | 'detection-rule-gen'
   | 'incident-report-draft'
   | 'threat-hunt'
-  | 'malware-behavior';
+  | 'malware-behavior'
+  // The six below carry full rubrics in lib/quality-rubrics.ts and are real
+  // Dojo 2 scenarios in lib/scenarios.ts, but they were missing from this
+  // union, so getDojo2ScenariosByTask could never return anything for them and
+  // the incident library was permanently empty on six of the twelve labs.
+  | 'cloud-identity-abuse'
+  | 'ai-system-compromise'
+  | 'autonomous-agent-forensics'
+  | 'ai-model-abuse'
+  | 'adversarial-prompt-forensics'
+  | 'ransomware-ai-triage';
 
 export type Dojo2Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
@@ -582,6 +592,12 @@ export const DOJO2_TASK_LABELS: Record<Dojo2TaskType, string> = {
   'incident-report-draft':'Incident Report',
   'threat-hunt':          'Threat Hunt',
   'malware-behavior':     'Malware Analysis',
+  'cloud-identity-abuse':        'Cloud Identity Abuse',
+  'ai-system-compromise':        'AI System Compromise',
+  'autonomous-agent-forensics':  'Agent Forensics',
+  'ai-model-abuse':              'Model Abuse',
+  'adversarial-prompt-forensics':'Prompt Forensics',
+  'ransomware-ai-triage':        'Ransomware Triage',
 };
 
 /** Shared persona display labels, single source of truth for both panels. */

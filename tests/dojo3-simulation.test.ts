@@ -34,6 +34,46 @@ describe('EU AI Act classification', () => {
     expect(c.basis).toMatch(/Annex III §4/);
   });
 
+  // Annex III §4 is about what a system does to people at work. Briefs list
+  // employment, promotions and contract termination as data fields and
+  // commercial facts all the time, and matching those bare words sent a
+  // consumer credit-scoring system to the employment category — the right tier
+  // for the wrong reason, which is the failure that matters here because the
+  // obligations hang off the basis.
+  it('does not read "employment tenure" as an employment system', () => {
+    const lending = `We score personal loan applications and decline automatically below a
+    threshold. Input features include income, employment tenure, existing debt obligations and
+    address history. Deployed across the EU and the UK for roughly 40,000 applications a month.`;
+    const c = classify(lending, CONFIG);
+    expect(c.tier).toBe('High-Risk');
+    expect(c.basis).toMatch(/Annex III §5/);
+  });
+
+  it('does not read a marketing tool as an employment system', () => {
+    const marketing = `We generate content for campaign landing pages and seasonal promotions.
+    Every draft is reviewed by a named marketer before publication. Deployed in the EU. No
+    customer personal data reaches the model.`;
+    const c = classify(marketing, CONFIG);
+    expect(c.basis).not.toMatch(/Annex III §4/);
+  });
+
+  it('does not read contract termination as employment termination', () => {
+    const vendorTerms = `We are assessing a document classification supplier. Their contract
+    states data is deleted within a reasonable period after termination. Deployed in the EU. The
+    system routes inbound documents to teams and takes no decision about any individual.`;
+    const c = classify(vendorTerms, CONFIG);
+    expect(c.basis).not.toMatch(/Annex III §4/);
+  });
+
+  it('still catches a system that ranks staff', () => {
+    // Tightening the pattern must not open a hole under the category it guards.
+    const workforce = `We are deploying a system that will rank employees for promotion decisions
+    using performance review text and output a recommended shortlist. Deployed in the EU.`;
+    const c = classify(workforce, CONFIG);
+    expect(c.tier).toBe('High-Risk');
+    expect(c.basis).toMatch(/Annex III §4/);
+  });
+
   it('places a customer chatbot in limited risk under Art. 50', () => {
     const c = classify(CHATBOT_BRIEF, CONFIG);
     expect(c.tier).toBe('Limited Risk');
