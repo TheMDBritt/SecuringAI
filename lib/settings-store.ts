@@ -20,7 +20,23 @@ export function loadSettings(): Settings {
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return DEFAULT_SETTINGS;
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
+    const parsed: unknown = JSON.parse(raw);
+    if (typeof parsed !== 'object' || parsed === null) return DEFAULT_SETTINGS;
+    // Each field is taken only when it is actually a boolean.
+    //
+    // Spreading the parsed object let any stored value through, and applySettings
+    // writes String(value) onto the document. A stored "false" or 0 became
+    // data-reduce-motion="false"/"0", which is falsy-looking but is not the
+    // string the CSS matches — while a stored "no" became "no" and read as
+    // enabled by nothing at all. Either way an accessibility preference could be
+    // silently wrong, and localStorage is editable by hand and shared with every
+    // other script on the origin.
+    const source = parsed as Record<string, unknown>;
+    const out = { ...DEFAULT_SETTINGS };
+    for (const field of Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[]) {
+      if (typeof source[field] === 'boolean') out[field] = source[field] as boolean;
+    }
+    return out;
   } catch {
     return DEFAULT_SETTINGS;
   }
