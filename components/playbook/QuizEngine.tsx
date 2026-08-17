@@ -868,11 +868,16 @@ function QuestionScreen({
   const timerLow = remainingSec !== undefined && remainingSec <= 300;
 
   return (
-    // overflow-y-auto + m-auto on the inner block centres the question on a
-    // tall viewport without clipping its top when the content is taller than
-    // the container, which is what justify-center would do.
+    // Anchored near the top rather than centred. m-auto put a short question
+    // almost 40% down a tall viewport with a wide empty band above it and
+    // nothing below, which reads as a rendering fault rather than as focus.
+    //
+    // mt is a fixed offset and mb-auto takes the slack, so on a tall viewport
+    // the question sits where the eye lands and on a short one the block simply
+    // overflows into the scroll container. The top is never clipped, which is
+    // the property justify-center could not give.
     <div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col overflow-y-auto px-6 py-5">
-     <div className="m-auto w-full">
+     <div className="mb-auto mt-[4vh] w-full">
       {/* Exam-mode timer bar */}
       {examMode && timerStr && (
         <div className={`mb-3 px-3 py-2 rounded border flex items-center justify-between ${timerLow ? 'border-red-500/40 bg-red-500/10' : 'border-brand-500/30 bg-brand-500/5'}`}>
