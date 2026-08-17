@@ -50,10 +50,6 @@ const FAQ = [
     a: `${CONTENT_COUNTS.certs} AI and cloud security certifications, including CompTIA SecAI+, Microsoft SC-500, AWS Certified Security - Specialty, the GIAC offensive/automation tracks, EC-Council C|AI Security, and CAISP. Questions are grouped by exam domain; per-objective tagging is complete for CompTIA SecAI+ and in progress elsewhere.`,
   },
   {
-    q: 'Do I need an API key?',
-    a: 'No. The platform runs fully in deterministic stub mode out of the box. An optional OPENAI_API_KEY enables free-form AI replies in the SOC and GRC disciplines; it is read server-side only and never reaches the browser.',
-  },
-  {
     q: 'Is any of this real exploit code?',
     a: 'No. Every payload is a conceptual training artifact. A server-side safety filter blocks attempts to submit functional exploit syntax. Scenarios are simulated for education.',
   },
