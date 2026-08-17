@@ -83,14 +83,27 @@ describe('every Dojo 1 scenario answers as itself', () => {
         expect(generic).toEqual([]);
       });
 
-      it('returns substantive copy for all three outcomes', () => {
+      it('returns substantive copy for every entry in every pool', () => {
+        // Several pools pick at random, so asserting on one sample is a coin
+        // flip rather than a check. Sampling repeatedly and asserting across
+        // everything observed covers the whole pool and cannot pass by luck.
+        //
+        // The floor is 40 characters, not more: a blocked outcome is a refusal,
+        // and "I can't disable or bypass my operational guidelines." is the
+        // right length for one. The point of the check is that no pool entry is
+        // a stub, not that every entry is a paragraph.
         for (const t of types) {
-          for (const [name, out] of [
-            ['vulnerable', getSimulatedResponse(scenario.id, t, 0)],
-            ['partial', getPartialResponse(scenario.id, t, 0)],
-            ['blocked', getDefendedResponse(scenario.id, t, 0)],
+          for (const [name, fn] of [
+            ['vulnerable', getSimulatedResponse],
+            ['partial', getPartialResponse],
+            ['blocked', getDefendedResponse],
           ] as const) {
-            expect(out.length, `${scenario.id}/${t}/${name} is too short to be a response`).toBeGreaterThan(60);
+            const observed = new Set<string>();
+            for (let i = 0; i < 120; i++) observed.add(fn(scenario.id, t, i % 12));
+            for (const out of observed) {
+              expect(out.length, `${scenario.id}/${t}/${name} has a stub entry: ${JSON.stringify(out)}`).toBeGreaterThan(40);
+              expect(out.trim(), `${scenario.id}/${t}/${name} has an empty entry`).not.toBe('');
+            }
           }
         }
       });

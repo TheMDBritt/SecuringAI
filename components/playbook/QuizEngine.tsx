@@ -176,7 +176,32 @@ function pickByDomainWeight<T extends { id: string; category: string; topic: str
     .filter((d): d is { domain: typeof cert.domains[number]; weight: number } => d.weight !== null);
 
   const totalWeight = domains.reduce((sum, d) => sum + d.weight, 0);
-  if (domains.length === 0 || totalWeight <= 0) return pickWeighted(pool, count, perQ);
+
+  // Four certs publish no per-domain weighting we could source. Falling straight
+  // through to pickWeighted drew flat-random across the whole pool, so a mock
+  // over-sampled whichever domain happened to have the most questions written
+  // for it — a learner could take three mocks and barely meet a domain. An even
+  // split across domains is a stated assumption rather than an invented
+  // blueprint, and it is strictly closer to any real exam than pool-shaped
+  // random. The UI says which of the two a cert is using.
+  if (domains.length === 0 || totalWeight <= 0) {
+    const all = cert.domains;
+    if (all.length === 0) return pickWeighted(pool, count, perQ);
+    const even = all.map((domain) => ({ domain, weight: 1 }));
+    return drawFromDomains(pool, count, perQ, even, all.length);
+  }
+
+  return drawFromDomains(pool, count, perQ, domains, totalWeight);
+}
+
+/** Shared draw once the per-domain shares are decided, however they were derived. */
+function drawFromDomains<T extends { id: string; category: string; topic: string; objectives?: string[] }>(
+  pool: T[],
+  count: number,
+  perQ: ReturnType<typeof loadProgress>['perQ'],
+  domains: Array<{ domain: ExamDomain; weight: number }>,
+  totalWeight: number,
+): T[] {
 
   const taken = new Set<string>();
   const out: T[] = [];
@@ -578,6 +603,29 @@ function Step3Options({
           ))}
         </div>
       </div>
+
+      {/* What the real exam is, where that changes what these questions can do
+          for you. Two of these certifications are hands-on: offering a timed
+          multiple-choice mock for them would rehearse a format the candidate
+          never sees. Saying so is more useful than quietly showing no button. */}
+      {cert.formatNote && (
+        <div className="mb-5 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
+          <p className="mb-1 text-2xs font-semibold text-amber-300">
+            {cert.id} is a hands-on exam
+          </p>
+          <p className="text-2xs leading-relaxed text-slate-300">{cert.formatNote}</p>
+        </div>
+      )}
+
+      {/* Where no per-domain weighting is published, the draw is an even split
+          rather than a blueprint, and a learner should know which they are
+          getting before they read a score off it. */}
+      {cert.blueprintSource === 'unweighted' && (
+        <p className="mb-5 rounded border border-slate-700 bg-slate-900/40 px-3 py-2 text-2xs leading-relaxed text-slate-400">
+          No per-domain weighting is published for {cert.id}, so questions are drawn evenly
+          across its domains rather than to a blueprint.
+        </p>
+      )}
 
       {/* Mock exam preset (cert-driven) */}
       {showMockExamPreset && mockConfig && (

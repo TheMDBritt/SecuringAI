@@ -27,6 +27,33 @@ export interface ExamCert {
   passingScore?: number;
   /** If set, a mock exam preset button is shown with these params. */
   mockExam?: { questions: number; durationMin: number };
+  /**
+   * What the real exam actually asks of a candidate.
+   *
+   * Two of these certifications are not multiple-choice at all: CAISP is five
+   * hands-on challenges over six hours plus a written report, and GASAE is
+   * GIAC's CyberLive format, which is lab tasks in a live environment. Offering
+   * a timed 4-option mock for either would rehearse a format the candidate will
+   * never see and imply a readiness signal the questions cannot support.
+   *
+   * They keep their question pools — the concepts are the same and are worth
+   * studying — but they carry no mock preset, and the UI says why.
+   */
+  format?: 'multiple-choice' | 'performance-based';
+  /** Shown wherever the cert is offered, when the format needs explaining. */
+  formatNote?: string;
+  /**
+   * Where the *domain weighting* above came from, and how far it can be
+   * trusted. This is deliberately about the weighting alone: a cert can have a
+   * well-sourced pass mark and format while having no published per-domain
+   * split, and CAISP is exactly that case.
+   *
+   * Two of the three original blueprints were already documented as secondhand.
+   * Recording it in the data rather than only in docs/ means the UI can tell a
+   * learner which figures are published and which are our best reading, instead
+   * of presenting all of them with the same authority.
+   */
+  blueprintSource?: 'published' | 'secondhand' | 'unweighted';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -39,6 +66,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'CompTIA',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 67,
+    format: 'multiple-choice',
+    blueprintSource: 'published',
     mockExam: { questions: 60, durationMin: 60 },
     domains: [
       {
@@ -127,6 +156,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Amazon Web Services',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 65, durationMin: 90 },
     domains: [
       {
@@ -186,6 +217,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Microsoft',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 50, durationMin: 45 },
     domains: [
       {
@@ -248,6 +281,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Microsoft',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 50, durationMin: 100 },
     domains: [
       {
@@ -313,6 +348,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Google Cloud',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 80,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 60, durationMin: 120 },
     domains: [
       {
@@ -384,7 +421,12 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'GIAC Offensive AI Analyst',
     provider: 'GIAC / SANS',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
-    passingScore: 73,
+    // GIAC publishes 67% for the exam version released on or after
+    // 24 Jan 2026. This previously read 73%, which is a materially different
+    // bar for a learner calibrating against it.
+    passingScore: 67,
+    format: 'multiple-choice',
+    blueprintSource: 'unweighted',
     domains: [
       {
         id: 'goaa-d1',
@@ -440,6 +482,12 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'GIAC / SANS',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'performance-based',
+    formatNote:
+      'GASAE is a GIAC CyberLive certification: lab tasks performed in a live environment, ' +
+      'not recall questions. These questions build the underlying concepts; they cannot ' +
+      'rehearse the exam format, so no mock is offered.',
+    blueprintSource: 'unweighted',
     domains: [
       {
         id: 'gasae-d1',
@@ -501,6 +549,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Microsoft',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 60, durationMin: 100 },
     domains: [
       {
@@ -741,7 +791,13 @@ export const EXAM_CERTS: ExamCert[] = [
     name: 'Certified AI Security Professional',
     provider: 'Practical DevSecOps',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
-    passingScore: 70,
+    passingScore: 80,
+    format: 'performance-based',
+    formatNote:
+      'CAISP is five hands-on challenges over six hours, plus a written report submitted ' +
+      'within 24 hours. There are no multiple-choice questions. These questions build the ' +
+      'concepts the exam tests; they cannot rehearse its format, so no mock is offered.',
+    blueprintSource: 'unweighted',
     domains: [
       {
         id: 'caisp-d1',
@@ -810,6 +866,8 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'Amazon Web Services',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 75,
+    format: 'multiple-choice',
+    blueprintSource: 'secondhand',
     mockExam: { questions: 65, durationMin: 170 },
     domains: [
       {
@@ -896,6 +954,9 @@ export const EXAM_CERTS: ExamCert[] = [
     provider: 'EC-Council',
     badgeClass: 'bg-slate-500/10 text-slate-300 border-slate-600/60',
     passingScore: 70,
+    format: 'multiple-choice',
+    mockExam: { questions: 80, durationMin: 100 },
+    blueprintSource: 'unweighted',
     domains: [
       {
         id: 'cais-d1',
