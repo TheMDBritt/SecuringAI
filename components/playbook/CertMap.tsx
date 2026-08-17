@@ -300,12 +300,22 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
               <div className="px-4 pb-3">
                 <button
                   onClick={() => onCertFilter(cert.id)}
+                  // Disabled at zero: the button used to look live and filtered the
+                  // bank to nothing, which reads as a broken page rather than as an
+                  // empty cert.
+                  disabled={quizCount === 0}
                   // opacity-70 dropped the label to 3.36:1. The resting state
                   // reads as secondary from the tinted fill alone; fading the
                   // text as well only cost legibility.
-                  className={`w-full text-2xs font-mono py-1.5 rounded border transition-colors duration-150 ${cert.tagColor} hover:brightness-125`}
+                  className={`w-full rounded border py-1.5 font-mono text-2xs transition-colors duration-150 ${
+                    quizCount === 0
+                      ? 'cursor-not-allowed border-slate-700 text-slate-500'
+                      : `${cert.tagColor} hover:brightness-125`
+                  }`}
                 >
-                  Filter by {cert.id} · {quizCount} Qs →
+                  {quizCount === 0
+                    ? 'No questions yet'
+                    : `Filter by ${cert.id} · ${quizCount} questions`}
                 </button>
               </div>
             </div>

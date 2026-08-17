@@ -107,3 +107,30 @@ describe('the SecAI+ pool contains only SecAI+ material', () => {
     expect(thin, `Too thin to sit repeated mocks:\n${thin.join('\n')}`).toEqual([]);
   });
 });
+
+describe('the SecAI+ pool does not bloat', () => {
+  /** Content words, so two questions asking the same thing in different words match. */
+  function tokens(s: string): Set<string> {
+    return new Set(
+      s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter((w) => w.length > 3),
+    );
+  }
+  function overlap(a: Set<string>, b: Set<string>): number {
+    const shared = [...a].filter((x) => b.has(x)).length;
+    return shared / (a.size + b.size - shared);
+  }
+
+  it('asks each thing once', () => {
+    // A pool grows by accretion: someone adds a question for an objective that is
+    // already covered, and nobody notices because the count only goes up. This
+    // caught a question added for the ML Security Top 10 that already existed.
+    const qs = SECAI.map((q) => ({ id: q.id, t: tokens(q.question) }));
+    const dupes: string[] = [];
+    for (let i = 0; i < qs.length; i++) {
+      for (let j = i + 1; j < qs.length; j++) {
+        if (overlap(qs[i].t, qs[j].t) >= 0.6) dupes.push(`${qs[i].id} ~ ${qs[j].id}`);
+      }
+    }
+    expect(dupes, `Near-duplicate questions:\n${dupes.join('\n')}`).toEqual([]);
+  });
+});

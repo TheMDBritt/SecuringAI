@@ -28997,23 +28997,7 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     correct: 0,
     explanation: 'The first life cycle stage establishes what the system is for. Everything downstream depends on that: what data is in scope, what an acceptable error looks like, who is affected, and what risk the organisation is accepting. A system without a stated purpose cannot be risk assessed, because risk is always relative to an intended outcome. The other options describe things that may follow from a use case but do not explain why alignment comes first. Source: CompTIA SecAI+ CY0-001 objective 1.3.',
   },
-  {
-    id: 'secai-d21-mlsec10-001',
-    topic: 'AI Security',
-    category: 'AI Security',
-    difficulty: 'intermediate',
-    certTags: ['SecAI'],
-    objectives: ['SecAI:2.1'],
-    question: 'What does the OWASP Machine Learning Security Top 10 address that the OWASP LLM Top 10 does not?',
-    options: [
-      'Risks across machine learning generally, not only language models',
-      'Only risks that arise after a model has been deployed to production',
-      'Only risks affecting the infrastructure a model runs on',
-      'Only risks that have been observed in publicly reported incidents'],
-    correct: 0,
-    explanation: 'The two lists have different scopes. The LLM Top 10 covers risks specific to large language model applications, such as prompt injection and improper output handling. The ML Security Top 10 covers machine learning more broadly, including classical supervised models, with entries such as input manipulation, data poisoning and model inversion that apply whether or not the model handles language. Using the right list matters when scoping an assessment, because an LLM-only lens misses risks in a fraud classifier or an anomaly detector. Source: CompTIA SecAI+ CY0-001 objective 2.1.',
-  },
-  {
+    {
     id: 'secai-d25-bias-001',
     topic: 'AI Governance',
     category: 'AI Governance',

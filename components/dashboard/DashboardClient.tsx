@@ -113,7 +113,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Overall completion" value={`${hydrated ? completion : 0}%`} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
-        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%`: ' '} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
+        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? `${summary.accuracy}%` : '—'} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
         <StatCard label="Dojo attempts" value={hydrated ? summary.attackAttempts : 0} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} />
       </div>
 

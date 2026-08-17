@@ -140,7 +140,7 @@ export default function SettingsPage() {
           title="Training data"
           description="Your quiz sessions and dojo attempts are stored only in this browser's local storage."
         />
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-lg border border-surface-border bg-surface-raised/40 p-3.5">
             <p className="text-2xl font-bold text-slate-100">{hydrated ? counts.quiz : 0}</p>
             <p className="text-xs text-slate-500">Quiz sessions stored</p>

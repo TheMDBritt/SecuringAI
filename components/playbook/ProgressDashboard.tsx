@@ -4,6 +4,7 @@ import type { QuizQuestion } from '@/types';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { useQuestionsByIds } from '@/lib/use-questions';
 import ObjectiveBreakdown from './ObjectiveBreakdown';
+import DomainBreakdown from './DomainBreakdown';
 import { masteryTone } from '@/components/ui';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
@@ -40,11 +41,11 @@ function formatDate(ms: number): string {
   const diffMs = now - ms;
   const min = Math.floor(diffMs / 60_000);
   if (min < 1)  return 'just now';
-  if (min < 60) return `${min}m ago`;
+  if (min < 60) return `${min} min ago`;
   const hr  = Math.floor(min / 60);
-  if (hr < 24)  return `${hr}h ago`;
+  if (hr < 24)  return hr === 1 ? '1 hour ago' : `${hr} hours ago`;
   const day = Math.floor(hr / 24);
-  if (day < 30) return `${day}d ago`;
+  if (day < 30) return day === 1 ? 'yesterday' : `${day} days ago`;
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 }
 
@@ -52,7 +53,7 @@ function formatDate(ms: number): string {
 
 function Sparkline({ points }: { points: number[] }) {
   if (points.length < 2) {
-    return <div className="h-10 flex items-center text-micro font-mono text-slate-400">need ≥ 2 sessions for trend</div>;
+    return <div className="h-10 flex items-center text-micro font-mono text-slate-400">Two sessions needed before a trend appears</div>;
   }
   const w = 220;
   const h = 40;
@@ -63,7 +64,7 @@ function Sparkline({ points }: { points: number[] }) {
   const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${(i * step).toFixed(1)} ${yFor(p).toFixed(1)}`).join(' ');
   const lastY = yFor(points[points.length - 1]);
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} className="h-10 w-full" preserveAspectRatio="none">
+    <svg viewBox={`0 0 ${w} ${h}`} className="h-10 w-full" preserveAspectRatio="xMidYMid meet">
       <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" className="text-brand-400" />
       <circle cx={((points.length - 1) * step).toFixed(1)} cy={lastY.toFixed(1)} r="2.5" className="fill-brand-300" />
     </svg>
@@ -268,19 +269,31 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                 blueprint weights each domain, so this is the view that tells a
                 learner where their next hour of study actually pays. */}
             {cert !== 'All' && (
-              <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
-                <h3 className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-400">
-                  Objective mastery
-                </h3>
-                <ObjectiveBreakdown data={data} certId={cert} onLaunchQuiz={onLaunchQuiz} />
-              </section>
+              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+                {/* Domain first: it is how the blueprint is published and how a
+                    candidate thinks about the paper, and unlike the objective view
+                    it works for every cert rather than only the tagged one. */}
+                <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
+                  <h3 className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-400">
+                    Domain mastery
+                  </h3>
+                  <DomainBreakdown data={data} certId={cert} onLaunchQuiz={onLaunchQuiz} />
+                </section>
+
+                <section className="rounded-lg border border-slate-800 bg-slate-900/40 p-4">
+                  <h3 className="mb-1 font-mono text-2xs uppercase tracking-widest text-slate-400">
+                    Objective mastery
+                  </h3>
+                  <ObjectiveBreakdown data={data} certId={cert} onLaunchQuiz={onLaunchQuiz} />
+                </section>
+              </div>
             )}
 
             {/* All-time stats row */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
               <StatCell label="All-time" value={`${summary.overallPct}%`} sub={`${summary.totalCorrect}/${summary.totalQuestions}`} color={pctColor(summary.overallPct)} />
               <StatCell label="Best session" value={`${summary.bestSessionPct}%`} sub={summary.totalSessions === 1 ? 'first attempt' : `over ${summary.totalSessions} sessions`} color={pctColor(summary.bestSessionPct)} />
-              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%`: ' '} sub={summary.lastSessionPct === null ? ' ': formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct ?? 0)} />
+              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%` : '—'} sub={summary.lastSessionPct === null ? 'no sessions yet' : formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct ?? 0)} />
               <StatCell label="Sessions" value={String(summary.totalSessions)} sub="90-day window" color="text-slate-200" />
             </div>
 
@@ -391,7 +404,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                   ))}
                 </div>
               </div>
-              <div className="max-h-[420px] overflow-y-auto">
+              <div className="max-h-[420px] overflow-x-auto overflow-y-auto">
                 <table className="w-full text-xs">
                   <thead className="sticky top-0 bg-slate-900 border-b border-slate-800/50">
                     <tr className="text-left text-micro font-mono text-slate-400 uppercase tracking-wide">
@@ -410,8 +423,20 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                           <tr
                             key={r.qId}
                             onClick={() => setExpandedQId(isOpen ? null : r.qId)}
-                            className={`border-t border-slate-800/40 cursor-pointer hover:bg-slate-800/40 ${isOpen ? 'bg-slate-800/40' : ''}`}
+                            className={`border-t border-slate-800/40 cursor-pointer hover:bg-slate-800/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-400 ${isOpen ? 'bg-slate-800/40' : ''}`}
                             aria-expanded={isOpen}
+                            // A row that expands on click is a control. Without a
+                            // tabIndex, role and key handler it was reachable by mouse
+                            // only, so the explanation behind every missed question was
+                            // closed to keyboard and screen-reader users.
+                            tabIndex={0}
+                            role="button"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setExpandedQId(isOpen ? null : r.qId);
+                              }
+                            }}
                           >
                             <td className="px-3 py-2 max-w-md">
                               <p className="text-slate-300 line-clamp-2 flex items-start gap-2">
