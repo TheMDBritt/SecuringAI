@@ -125,6 +125,12 @@ input:focus {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* Delays have to go too. Staggered entrances hold their `from` state for
+       the length of the delay, so zeroing only the duration left content
+       invisible for the stagger — a flash of nothing, which is worse than the
+       motion it was meant to remove. */
+    transition-delay: 0ms !important;
+    animation-delay: 0ms !important;
   }
 }
 html[data-reduce-motion='true'] .cursor-blink { animation: none; }
@@ -134,6 +140,8 @@ html[data-reduce-motion='true'] *::after {
   transition-duration: 0.01ms !important;
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
+  transition-delay: 0ms !important;
+  animation-delay: 0ms !important;
 }
 
 /* Selection color */

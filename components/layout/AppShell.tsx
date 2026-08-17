@@ -55,7 +55,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <div className="flex min-h-screen flex-col lg:pl-16">
         <TopBar onMenu={() => setMobileOpen(true)} />
-        <main id="main-content" tabIndex={-1} className="flex flex-1 flex-col">
+        {/* Keyed on the path so the entrance replays on every navigation.
+            usePathname() excludes the query string, which is what makes this
+            safe: /playbook?section=quiz changing tabs must not remount the
+            section and throw away its state.
+
+            App routes fade without the rise. They own the full viewport and
+            scroll internally, so translating them adds a transient 8px of
+            document overflow and a scrollbar flicker. */}
+        <main
+          key={pathname}
+          id="main-content"
+          tabIndex={-1}
+          className={[
+            'flex flex-1 flex-col',
+            isAppRoute ? 'animate-fade-in-fast' : 'animate-page-in',
+          ].join(' ')}
+        >
           {children}
         </main>
         {/* App routes own the full viewport height and scroll internally, so a

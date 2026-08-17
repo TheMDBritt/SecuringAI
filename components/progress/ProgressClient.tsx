@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { useProgress } from '@/components/hooks/useProgress';
+import { Reveal } from '@/components/ui/Reveal';
 import { timeAgo } from '@/lib/progress-store';
 import {
   Card,
@@ -87,15 +88,22 @@ export function ProgressClient({
       ) : (
         <>
           <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-            <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
-            <StatCard label="Sessions" value={summary.quizRuns + summary.attackAttempts} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} dojo runs`} tone="brand" />
-            <StatCard label="Questions answered" value={summary.questionsAnswered} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
+            <Reveal>
+              <StatCard label="Quiz accuracy" value={summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered}`} tone="brand" />
+            </Reveal>
+            <Reveal delay={70}>
+              <StatCard label="Sessions" value={<CountUp value={summary.quizRuns + summary.attackAttempts} />} sub={`${summary.quizRuns} quiz · ${summary.attackAttempts} dojo runs`} tone="brand" />
+            </Reveal>
+            <Reveal delay={140}>
+              <StatCard label="Questions answered" value={<CountUp value={summary.questionsAnswered} />} sub={`${summary.questionsCorrect} correct`} tone="emerald" />
+            </Reveal>
           </div>
 
           {/* Discipline breakdown */}
           <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {dojos.map((d) => (
-              <Card key={d.id} className="p-5">
+            {dojos.map((d, i) => (
+              <Reveal key={d.id} delay={i * 80}>
+              <Card className="h-full p-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <Badge tone={d.tone} mono>Dojo {d.id}</Badge>
@@ -128,6 +136,7 @@ export function ProgressClient({
                   })}
                 </ul>
               </Card>
+              </Reveal>
             ))}
           </div>
 

@@ -12,6 +12,7 @@ import {
   ProgressBar,
   StatCard,
   CountUp,
+  Donut,
   SectionHeading,
   PageHeader,
   EmptyState,
@@ -118,13 +119,13 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <Reveal>
-        <StatCard label="Overall completion" value={hydrated ? <CountUp value={completion} suffix="%" /> : "—"} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} />
+        <StatCard label="Overall completion" value={hydrated ? <CountUp value={completion} suffix="%" /> : "—"} sub={`${attemptedIds.size}/${catalog.counts.scenarios} scenarios explored`} tone="brand" icon={ICONS.layers} className="h-full" />
         </Reveal>
         <Reveal delay={70}>
-        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} />
+        <StatCard label="Quiz accuracy" value={hydrated && summary.questionsAnswered ? <CountUp value={summary.accuracy} suffix="%" /> : "—"} sub={`${summary.questionsCorrect}/${summary.questionsAnswered} correct`} tone="brand" icon={ICONS.check} className="h-full" />
         </Reveal>
         <Reveal delay={140}>
-        <StatCard label="Dojo attempts" value={hydrated ? <CountUp value={summary.attackAttempts} /> : "—"} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} />
+        <StatCard label="Dojo attempts" value={hydrated ? <CountUp value={summary.attackAttempts} /> : "—"} sub={`${summary.quizRuns} quiz sessions`} tone="brand" icon={ICONS.target} className="h-full" />
         </Reveal>
       </div>
 
@@ -138,20 +139,32 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
             title="Current dojo progress"
             action={<Link href="/dojo" className="text-xs font-medium text-brand-300 hover:text-brand-200">Open the Dojo →</Link>}
           />
-          <div className="mt-5 space-y-5">
-            {perDojoRows.map((d) => (
-              <div key={d.id}>
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: DOJO_HEX[d.tone] }} />
-                    <span className="text-sm font-semibold text-slate-200">{d.title}</span>
-                    <Badge tone={d.tone} mono>Dojo {d.id}</Badge>
+          <div className="mt-5 flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8">
+            {/* The one figure the card is about, as a ring that sweeps to it.
+                Held back until hydration so it sweeps to the real number once
+                rather than to zero and then again to the truth. */}
+            <Donut
+              value={hydrated ? completion : 0}
+              size={124}
+              stroke={11}
+              label={hydrated ? `${completion}%` : '—'}
+              sublabel="Explored"
+            />
+            <div className="w-full flex-1 space-y-5">
+              {perDojoRows.map((d) => (
+                <div key={d.id}>
+                  <div className="mb-2 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: DOJO_HEX[d.tone] }} />
+                      <span className="text-sm font-semibold text-slate-200">{d.title}</span>
+                      <Badge tone={d.tone} mono>Dojo {d.id}</Badge>
+                    </div>
+                    <span className="font-mono text-xs text-slate-400">{d.done}/{d.total}</span>
                   </div>
-                  <span className="font-mono text-xs text-slate-400">{d.done}/{d.total}</span>
+                  <ProgressBar value={hydrated ? d.pct : 0} tone={d.tone} label={`${d.title} scenarios complete`} />
                 </div>
-                <ProgressBar value={hydrated ? d.pct : 0} tone={d.tone} label={`${d.title} scenarios complete`} />
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </Card>
       </div>

@@ -225,7 +225,15 @@ export function SectionHeading({
           <span className="font-mono text-2xs uppercase tracking-[0.18em] text-slate-400">
             {eyebrow}
           </span>
-          <span aria-hidden className="h-px flex-1 bg-slate-800" />
+          {/* The rule draws itself out to the margin, staggered by the
+              section's place in the sequence, so a page resolves top to bottom
+              rather than arriving all at once. Pure CSS: no hook, so this
+              component stays server-rendered. */}
+          <span
+            aria-hidden
+            className="h-px flex-1 origin-left animate-grow-x bg-slate-800"
+            style={index !== undefined ? { animationDelay: `${(index - 1) * 90}ms` } : undefined}
+          />
           {action}
         </div>
       )}
@@ -308,47 +316,6 @@ export function Skeleton({ className }: { className?: string }) {
   return <div className={cx('ui-skeleton', className)} aria-hidden="true" />;
 }
 
-// ── Donut (SVG ring gauge) ───────────────────────────────────────────────────
-export function Donut({
-  value,
-  size = 132,
-  stroke = 12,
-  label,
-  sublabel,
-  tone = '#3b82f6',
-}: {
-  value: number;
-  size?: number;
-  stroke?: number;
-  label?: ReactNode;
-  sublabel?: ReactNode;
-  tone?: string;
-}) {
-  const pct = Math.max(0, Math.min(100, value));
-  const r = (size - stroke) / 2;
-  const c = 2 * Math.PI * r;
-  const offset = c - (pct / 100) * c;
-  return (
-    <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(148,163,184,0.12)" strokeWidth={stroke} />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={r}
-          fill="none"
-          stroke={tone}
-          strokeWidth={stroke}
-          strokeLinecap="round"
-          strokeDasharray={c}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 900ms cubic-bezier(0.22,1,0.36,1)' }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        {label != null && <span className="text-2xl font-bold tracking-tight text-slate-50">{label}</span>}
-        {sublabel != null && <span className="mt-0.5 text-2xs font-medium text-slate-500">{sublabel}</span>}
-      </div>
-    </div>
-  );
-}
+// ── Donut ────────────────────────────────────────────────────────────────────
+// Sweeps from empty on mount, so it lives with the other animated primitives.
+export { Donut } from './motion-primitives';

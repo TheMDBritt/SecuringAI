@@ -43,12 +43,20 @@ function NavLink({
           : 'text-slate-400 hover:bg-white/5 hover:text-slate-100',
       ].join(' ')}
     >
-      {active && (
-        <span
-          className="absolute left-0 top-1/2 h-5 -translate-y-1/2 rounded-r-full bg-brand-400"
-          style={{ width: 3 }}
-        />
-      )}
+      {/* Always rendered, so the indicator grows into place when a route
+          becomes active instead of appearing fully formed. Mounting it only
+          when active gave the browser nothing to transition from.
+          scale-y and the centring translate compose through Tailwind's
+          transform variables, so both apply. */}
+      <span
+        aria-hidden="true"
+        className={[
+          'absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-brand-400',
+          'origin-center transition-[transform,opacity] duration-300 ease-out',
+          active ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
+        ].join(' ')}
+      />
+
       <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">{item.icon}</span>
       <span className={['whitespace-nowrap', labelClass].join(' ')}>{item.label}</span>
     </Link>
@@ -174,7 +182,19 @@ export function Sidebar({ mobileOpen, onClose }: { mobileOpen: boolean; onClose:
       </aside>
 
       {/* Mobile drawer */}
-      <div className={['fixed inset-0 z-50 lg:hidden', mobileOpen ? '' : 'pointer-events-none'].join(' ')} aria-hidden={!mobileOpen}>
+      {/* Closed state is `visibility: hidden`, not `aria-hidden`.
+          aria-hidden on a container that still holds focusable links is a
+          WCAG 4.1.2 failure — a keyboard user could tab into a drawer that is
+          announced as not there. visibility removes it from both the
+          accessibility tree and the tab order, and it transitions discretely:
+          it flips to visible immediately on open and only at the end of the
+          duration on close, so the slide-out still plays. */}
+      <div
+        className={[
+          'fixed inset-0 z-50 transition-[visibility] duration-200 lg:hidden',
+          mobileOpen ? 'visible' : 'invisible pointer-events-none',
+        ].join(' ')}
+      >
         <div
           className={[
             'absolute inset-0 bg-navy-950/70 backdrop-blur-sm transition-opacity duration-200',

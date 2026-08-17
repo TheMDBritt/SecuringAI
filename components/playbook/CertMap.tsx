@@ -1,6 +1,7 @@
 'use client';
 import { useMemo } from 'react';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
+import { Reveal } from '@/components/ui/Reveal';
 
 interface CertInfo {
   id:         string;
@@ -242,10 +243,13 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {CERTS.map((cert) => {
+        {CERTS.map((cert, i) => {
           const quizCount = quizCounts[cert.id] ?? 0;
           return (
-            <div key={cert.id} className="border border-slate-700 rounded-xl bg-slate-800/40 overflow-hidden">
+            // Eleven cards is a lot to land at once. Revealed as the reader
+            // scrolls, on a stagger short enough to read as one movement.
+            <Reveal key={cert.id} delay={(i % 2) * 70} className="flex">
+            <div className="flex w-full flex-col overflow-hidden rounded-xl border border-slate-700 bg-slate-800/40 transition-colors duration-200 hover:border-slate-600">
               {/* Header */}
               <div className="px-4 py-3 border-b border-slate-700/50 flex items-start justify-between gap-2">
                 <div>
@@ -319,6 +323,7 @@ export default function CertMap({ onCertFilter }: CertMapProps) {
                 </button>
               </div>
             </div>
+            </Reveal>
           );
         })}
       </div>

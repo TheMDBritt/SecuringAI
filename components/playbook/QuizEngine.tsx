@@ -841,13 +841,17 @@ function QuestionScreen({
         </div>
       </div>
 
-      {/* Question */}
-      <div className="mb-6">
+      {/* Question.
+          Keyed on the question so the entrance replays as the quiz advances.
+          Without the key React reuses the same nodes, the CSS animation never
+          restarts, and every question after the first arrived static — which is
+          the moment in the whole app where a change most needs to be seen. */}
+      <div key={`q-${question.id}`} className="mb-6 animate-rise-in">
         <p className="text-base text-slate-100 leading-relaxed font-medium">{question.question}</p>
       </div>
 
-      {/* Options */}
-      <div className="space-y-2.5">
+      {/* Options, dealt in sequence rather than appearing as a block. */}
+      <div key={`o-${question.id}`} className="space-y-2.5">
         {question.options.map((opt, i) => {
           let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
           if (chosen !== null) {
@@ -868,7 +872,10 @@ function QuestionScreen({
               key={i}
               onClick={() => handleChoose(i)}
               disabled={chosen !== null}
-              className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm ${style}`}
+              style={{ animationDelay: `${i * 45}ms` }}
+              className={`w-full animate-rise-in text-left px-4 py-3 rounded-lg border transition-all duration-200 text-sm ${style} ${
+                chosen === null ? 'hover:-translate-y-px' : ''
+              }`}
             >
               <span className="font-mono text-micro mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
               {opt}
@@ -931,7 +938,7 @@ function ResultScreen({
       <div
         role="status"
         aria-live="polite"
-        className={`flex items-center gap-2 mb-4 p-3 rounded-lg border ${result.correct ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}
+        className={`flex animate-pop-in items-center gap-2 mb-4 p-3 rounded-lg border ${result.correct ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-red-500/30 bg-red-500/5'}`}
       >
         <span aria-hidden="true" className={`text-lg ${result.correct ? 'text-emerald-400' : 'text-red-400'}`}>
           {result.correct ? '✓' : '✗'}
@@ -957,8 +964,12 @@ function ResultScreen({
           return (
             <div
               key={i}
+              // Staggered so the breakdown is read down the list rather than
+              // taken in as one block. 50ms is under the threshold where a
+              // sequence starts to feel like waiting.
+              style={{ animationDelay: `${60 + i * 50}ms` }}
               className={[
-                'rounded-lg border px-3 py-2 text-xs leading-relaxed',
+                'animate-rise-in rounded-lg border px-3 py-2 text-xs leading-relaxed',
                 isCorrect
                   ? 'border-emerald-500/40 bg-emerald-500/5 text-emerald-300'
                   : isChosen
@@ -975,7 +986,10 @@ function ResultScreen({
           );
         })}
         {/* Fallback overall explanation */}
-        <div className="mt-3 pt-3 border-t border-slate-700/50">
+        <div
+          className="mt-3 animate-rise-in border-t border-slate-700/50 pt-3"
+          style={{ animationDelay: `${60 + result.question.options.length * 50}ms` }}
+        >
           <p className="text-micro font-mono text-slate-400 uppercase tracking-wide mb-1">Why</p>
           <p className="text-xs text-slate-400 leading-relaxed">{result.question.explanation}</p>
         </div>

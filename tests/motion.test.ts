@@ -65,23 +65,39 @@ describe('the hero has no no-op gradient', () => {
 });
 
 describe('count-up animation', () => {
-  it('starts from zero so the first appearance animates', async () => {
-    // Seeding the hook with its target made the initial delta zero, so the
-    // number only animated on a later change and the first paint — the one
-    // worth animating — was static.
-    const src = await import('node:fs/promises').then((fs) =>
-      fs.readFile('lib/use-count-up.ts', 'utf8'),
+  const src = read('lib/use-count-up.ts');
+
+  it('server-renders the real figure, never a zero', async () => {
+    // The landing page counts up its content inventory — "2,195 quiz
+    // questions" and so on. Those are build-time constants baked into the
+    // server HTML, so a hook seeded at zero publishes "0 quiz questions" to
+    // every crawler, link preview and reader whose bundle never loads: the
+    // app's own headline claim, rendered as empty.
+    //
+    // Effects do not run during renderToStaticMarkup, so this is exactly the
+    // markup a no-JS client receives.
+    const { createElement } = await import('react');
+    const { renderToStaticMarkup } = await import('react-dom/server');
+    const { CountUp } = await import('@/components/ui/motion-primitives');
+
+    const html = renderToStaticMarkup(
+      createElement(CountUp, { value: 2195, suffix: ' questions' }),
     );
-    expect(src).toMatch(/useState\(0\)/);
-    expect(src).toMatch(/from\s*=\s*useRef\(0\)/);
+    expect(html).toContain('2,195 questions');
+    expect(html).not.toMatch(/>0[^0-9]/);
   });
 
-  it('short-circuits to the final value under reduced motion', async () => {
+  it('resets to zero before the browser paints, not after', () => {
+    // The reset that makes the opening sweep start from zero has to land in a
+    // layout effect. In a passive effect the browser paints the true value
+    // first, so the count reads as the number being taken away and given back.
+    expect(src).toContain('useLayoutEffect');
+    expect(src).toMatch(/typeof window === 'undefined' \? useEffect : useLayoutEffect/);
+  });
+
+  it('short-circuits to the final value under reduced motion', () => {
     // The count is an embellishment on a value that is always correct. Under
     // reduced motion the value must be shown outright, never revealed.
-    const src = await import('node:fs/promises').then((fs) =>
-      fs.readFile('lib/use-count-up.ts', 'utf8'),
-    );
     const guard = src.indexOf('prefersReducedMotion()');
     const raf = src.indexOf('requestAnimationFrame');
     expect(guard).toBeGreaterThan(-1);
@@ -89,13 +105,47 @@ describe('count-up animation', () => {
     expect(guard).toBeLessThan(raf);
   });
 
-  it('animated primitives live in a client module', async () => {
-    // ProgressBar and CountUp use hooks. They were briefly added to the shared
-    // server-rendered design system, which would have forced the whole of it
-    // into the client bundle.
-    const src = await import('node:fs/promises').then((fs) =>
-      fs.readFile('components/ui/motion-primitives.tsx', 'utf8'),
-    );
-    expect(src.trimStart().startsWith("'use client'")).toBe(true);
+  it('animated primitives live in a client module', () => {
+    // ProgressBar, Donut and CountUp use hooks. They were briefly added to the
+    // shared server-rendered design system, which would have forced the whole
+    // of it into the client bundle.
+    const mod = read('components/ui/motion-primitives.tsx');
+    expect(mod.trimStart().startsWith("'use client'")).toBe(true);
+    const index = read('components/ui/index.tsx');
+    expect(index.trimStart().startsWith("'use client'")).toBe(false);
+    for (const name of ['ProgressBar', 'CountUp', 'Donut']) {
+      expect(index).toContain(name);
+      expect(mod).toContain(`export function ${name}`);
+    }
+  });
+});
+
+describe('reduced motion leaves nothing hidden', () => {
+  const css = read('app/globals.css');
+
+  it('zeroes delays as well as durations', () => {
+    // Staggered entrances hold their `from` state for the length of the delay.
+    // Collapsing only the duration left every staggered element invisible for
+    // its stagger — a flash of nothing, which is worse than the motion it
+    // replaced. Both the media query and the in-app opt-in need the rule.
+    const blocks = css.split('html[data-reduce-motion=');
+    expect(blocks.length).toBeGreaterThan(1);
+    expect(css.match(/transition-delay: 0ms !important/g)?.length).toBe(2);
+    expect(css.match(/animation-delay: 0ms !important/g)?.length).toBe(2);
+  });
+});
+
+describe('the animation vocabulary is registered', () => {
+  it('every keyframe is reachable from a utility class', () => {
+    // grow-x was declared as a keyframe and never added to the animation map,
+    // so `animate-grow-x` compiled to nothing at all.
+    const cfg = read('tailwind.config.ts');
+    const keyframes = cfg.slice(cfg.indexOf('keyframes: {'), cfg.indexOf('animation: {'));
+    const animation = cfg.slice(cfg.indexOf('animation: {'));
+    const declared = [...keyframes.matchAll(/^\s{8}'?([a-z-]+)'?: \{/gm)].map((m) => m[1]);
+    expect(declared.length).toBeGreaterThan(4);
+    for (const name of declared) {
+      expect(animation, `keyframe "${name}" has no animate- utility`).toContain(`${name} `);
+    }
   });
 });

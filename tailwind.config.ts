@@ -119,6 +119,13 @@ const config: Config = {
           from: { transform: 'scaleX(0)' },
           to: { transform: 'scaleX(1)' },
         },
+        // Route change. The rise is small on purpose: enough that the eye
+        // registers a new page has arrived, not so much that the layout is seen
+        // to move into place.
+        'page-in': {
+          from: { opacity: '0', transform: 'translateY(8px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 0.4s cubic-bezier(0.22,1,0.36,1) both',
@@ -126,6 +133,10 @@ const config: Config = {
         shimmer: 'shimmer 1.6s infinite',
         'rise-in': 'rise-in 0.28s cubic-bezier(0.22,1,0.36,1) both',
         'pop-in': 'pop-in 0.32s cubic-bezier(0.34,1.4,0.64,1) both',
+        // grow-x was declared and never registered here, so `animate-grow-x`
+        // silently did nothing. Section rules use it to draw themselves.
+        'grow-x': 'grow-x 0.55s cubic-bezier(0.22,1,0.36,1) both',
+        'page-in': 'page-in 0.34s cubic-bezier(0.22,1,0.36,1) both',
       },
     },
   },

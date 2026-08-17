@@ -9,6 +9,10 @@ import { TerminalReplay } from '@/components/ui/TerminalReplay';
 import { Reveal } from '@/components/ui/Reveal';
 import { ScrollProgress } from '@/components/ui/ScrollProgress';
 import { SectionMarker } from '@/components/ui/SectionMarker';
+// Imported from the client module directly rather than through the design
+// system index, so the boundary stays as small as the one component that needs
+// it.
+import { CountUp } from '@/components/ui/motion-primitives';
 import type { DojoId } from '@/types';
 
 // ── Live counts, computed from source data at build time ─────────────────────
@@ -132,51 +136,65 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute inset-0 bg-grid-faint [background-size:44px_44px] [mask-image:radial-gradient(70%_60%_at_50%_0%,black,transparent)]" aria-hidden="true" />
         <div className="relative max-w-6xl mx-auto px-6 py-14 md:py-20">
           <div className="grid md:grid-cols-5 gap-8 md:gap-14 items-start">
-            {/* Left, headline */}
+            {/* Left, headline.
+                Revealed in reading order on a short stagger. Every other
+                section of this page arrives as the reader reaches it; the hero
+                was the one place that appeared fully formed, which made the
+                first screen the least considered one. */}
             <div className="md:col-span-3">
-              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-brand-500/25 bg-brand-500/10">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
-                <span className="text-2xs font-medium text-brand-200 tracking-wide">Enterprise AI security training · Free &amp; open access</span>
-              </div>
-              <h1 className="text-display md:text-display-lg font-bold tracking-tight text-white leading-[1.05]">
-                Attack LLMs.<br />
-                Defend against them.<br />
-                <span className="text-brand-300">Govern AI risk.</span>
-              </h1>
-              <p className="mt-6 text-base text-slate-300 max-w-[520px] leading-relaxed">
-                Three hands-on dojos. Attack a live LLM under configurable guardrails, triage
-                AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
-                and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
-                {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
-              </p>
+              <Reveal>
+                <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-brand-500/25 bg-brand-500/10">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
+                  <span className="text-2xs font-medium text-brand-200 tracking-wide">Enterprise AI security training · Free &amp; open access</span>
+                </div>
+              </Reveal>
+              <Reveal delay={80}>
+                <h1 className="text-display md:text-display-lg font-bold tracking-tight text-white leading-[1.05]">
+                  Attack LLMs.<br />
+                  Defend against them.<br />
+                  <span className="text-brand-300">Govern AI risk.</span>
+                </h1>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="mt-6 text-base text-slate-300 max-w-[520px] leading-relaxed">
+                  Three hands-on dojos. Attack a live LLM under configurable guardrails, triage
+                  AI-augmented SOC incidents, and classify EU AI Act risk scenarios, every turn scored
+                  and mapped to {STATS.certs} cert exam domains, OWASP LLM Top 10, and MITRE ATLAS.
+                  {' '}{STATS.quizQs.toLocaleString()} quiz questions across {STATS.certs} certs, {STATS.glossary} glossary terms.
+                </p>
+              </Reveal>
               {/* One clear entry point. The dashboard used to be the primary
                   CTA, but it is empty for a first-time visitor, so the Dojo
                   lead instead and the dashboard drops to a tertiary link. */}
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Link href="/dojo" className="ui-btn ui-btn-primary px-5 py-2.5 text-sm">
-                  Enter the Dojo &rarr;
-                </Link>
-                <Link href="/playbook" className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm">
-                  Study the playbook
-                </Link>
-                <Link href="/dashboard" className="ui-btn ui-btn-ghost px-4 py-2.5 text-sm">
-                  Your dashboard
-                </Link>
-              </div>
-              <p className="mt-3 text-xs text-slate-500">
-                No sign-up. Progress saves in this browser only.{' '}
-                <Link href="/help" className="text-brand-300 underline underline-offset-2 hover:text-brand-200">
-                  New here?
-                </Link>
-              </p>
+              <Reveal delay={240}>
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <Link href="/dojo" className="ui-btn ui-btn-primary px-5 py-2.5 text-sm">
+                    Enter the Dojo &rarr;
+                  </Link>
+                  <Link href="/playbook" className="ui-btn ui-btn-secondary px-5 py-2.5 text-sm">
+                    Study the playbook
+                  </Link>
+                  <Link href="/dashboard" className="ui-btn ui-btn-ghost px-4 py-2.5 text-sm">
+                    Your dashboard
+                  </Link>
+                </div>
+                <p className="mt-3 text-xs text-slate-500">
+                  No sign-up. Progress saves in this browser only.{' '}
+                  <Link href="/help" className="text-brand-300 underline underline-offset-2 hover:text-brand-200">
+                    New here?
+                  </Link>
+                </p>
+              </Reveal>
               {/* Quick framework tags */}
-              <div className="mt-6 flex flex-wrap gap-1.5">
-                {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
-                  <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-400">
-                    {f}
-                  </span>
-                ))}
-              </div>
+              <Reveal delay={320}>
+                <div className="mt-6 flex flex-wrap gap-1.5">
+                  {['OWASP LLM Top 10', 'MITRE ATLAS', 'NIST AI RMF', 'EU AI Act', 'ISO 42001'].map((f) => (
+                    <span key={f} className="text-micro font-mono px-1.5 py-0.5 rounded border border-slate-700 text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200">
+                      {f}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
             </div>
 
             {/* Right, stats + terminal */}
@@ -188,25 +206,32 @@ export default function LandingPage() {
                   inventory. */}
               <dl className="mb-3">
                 {[
-                  { n: STATS.quizQs.toLocaleString(), label: 'quiz questions', sub: `${STATS.certs} certs mapped` },
+                  { n: STATS.quizQs, label: 'quiz questions', sub: `${STATS.certs} certs mapped` },
                   { n: STATS.scenarios, label: 'dojo scenarios', sub: '3 disciplines' },
                   { n: STATS.glossary, label: 'glossary terms', sub: 'A to Z, cert-filtered' },
                   { n: STATS.articles, label: 'topic articles', sub: 'code and tables' },
                   { n: STATS.incidents, label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },
                   { n: STATS.certs, label: 'certs mapped', sub: 'official domains' },
-                ].map(({ n, label, sub }) => (
-                  <div
+                ].map(({ n, label, sub }, i) => (
+                  // Reveal *is* the row rather than wrapping one. A wrapper put
+                  // the dt/dd two divs deep inside the dl, which is not a valid
+                  // definition list — one grouping div is the limit.
+                  <Reveal
                     key={label}
+                    delay={i * 60}
                     className="flex items-baseline gap-4 border-b border-slate-800/80 py-2 last:border-b-0"
                   >
+                    {/* The figures count up. This list is the claim the page
+                        makes about how much material is behind it, so the
+                        numbers are worth watching arrive. */}
                     <dt className="w-16 shrink-0 text-right font-mono text-lg font-semibold tabular-nums tracking-tight text-slate-100">
-                      {n}
+                      <CountUp value={n} />
                     </dt>
                     <dd className="min-w-0 flex-1">
                       <span className="text-xs font-medium text-slate-200">{label}</span>
                       <span className="ml-2 font-mono text-micro text-slate-400">{sub}</span>
                     </dd>
-                  </div>
+                  </Reveal>
                 ))}
               </dl>
               {/* Terminal */}
