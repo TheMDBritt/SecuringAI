@@ -77,6 +77,19 @@ describe('the SecAI+ pool contains only SecAI+ material', () => {
     ).toEqual([]);
   });
 
+  it('never tells a SecAI+ learner what a different exam tests', () => {
+    // The explanations carried asides like "CAISP practical exams require candidates
+    // to…" and "GIAC GOAA Domain 1 covers transformer internals". Someone sitting
+    // CY0-001 is being told about a paper they are not taking, which is how the
+    // cross-tagging became visible to them in the first place.
+    const OTHER_EXAM = /\b(EC-Council|CAISP|CAIS|GIAC|GOAA|GASAE|SC-500|AI-10\d|AI-90\d)\b/;
+    const offenders = SECAI.filter((q) => OTHER_EXAM.test(q.explanation ?? '')).map((q) => q.id);
+    expect(
+      offenders,
+      `Another exam is named in a SecAI+ explanation:\n${offenders.join('\n')}`,
+    ).toEqual([]);
+  });
+
   it('keeps every domain deep enough for a full mock', () => {
     // The 60-question mock draws by published weight: 17/40/24/19. A domain needs
     // roughly 5x its draw so three consecutive mocks do not mostly repeat.
