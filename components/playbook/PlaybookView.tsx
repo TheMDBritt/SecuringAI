@@ -113,7 +113,7 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
               </span>
               <button
                 onClick={() => setCertFilter('')}
-                className="text-micro text-slate-400 hover:text-slate-400 leading-none"
+                className="text-micro leading-none text-slate-400 transition-colors hover:text-slate-200"
                 aria-label="Clear cert filter"
               >
                 ×

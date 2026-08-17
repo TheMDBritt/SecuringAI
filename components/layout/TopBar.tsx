@@ -66,10 +66,11 @@ export function TopBar({ onMenu }: { onMenu: () => void }) {
         </svg>
       </a>
 
-      {/* Hidden on the Dojo itself: a primary call to action that navigates to
-          the page you are already on is a dead end, and it was competing for
-          attention with the scenario list that actually needs the click. */}
-      {!pathname.startsWith('/dojo') && (
+      {/* Hidden where it would be a dead end or a duplicate: on the Dojo it
+          navigates to the page you are already on, and on the dashboard the page
+          header already carries the same primary action. Two identical primary
+          buttons in one viewport is the tell of a template rather than a design. */}
+      {!pathname.startsWith('/dojo') && !pathname.startsWith('/dashboard') && (
         <Link
           href="/dojo"
           // Present on every page, so eager prefetch means every visit pays for

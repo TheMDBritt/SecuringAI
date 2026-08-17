@@ -121,9 +121,12 @@ export default function HelpPage() {
       <Card className="mt-4 flex flex-col items-start justify-between gap-4 p-5 sm:flex-row sm:items-center sm:p-6">
         <div>
           <h3 className="text-sm font-semibold text-slate-100">Still need help?</h3>
-          <p className="mt-1 text-xs text-slate-500">The project is open source. Open an issue or read the architecture docs.</p>
+          <p className="mt-1 text-xs text-slate-500">The project is open source. Read the architecture notes, or open an issue on GitHub.</p>
         </div>
-        <ButtonLink href="/about" variant="secondary" size="md">About the platform</ButtonLink>
+        <div className="flex flex-wrap gap-2">
+          <ButtonLink href="/about" variant="secondary" size="md">About the platform</ButtonLink>
+          <ButtonLink href="https://github.com/TheMDBritt/SecuringAI/issues" variant="ghost" size="md">Open an issue</ButtonLink>
+        </div>
       </Card>
     </div>
   );

@@ -131,7 +131,7 @@ export default function GlossaryPanel() {
           className="flex-1 bg-transparent text-sm text-slate-200 placeholder-slate-600 focus:outline-none"
         />
         {search && (
-          <button onClick={() => setSearch('')} className="text-slate-400 hover:text-slate-400 text-xs">✕</button>
+          <button onClick={() => setSearch('')} className="text-slate-400 text-xs">✕</button>
         )}
         <span className="text-micro text-slate-400 font-mono">{certFiltered.length} terms</span>
       </div>
@@ -146,7 +146,7 @@ export default function GlossaryPanel() {
               'text-micro font-mono px-2 py-0.5 rounded border transition-colors',
               certFilter === c
                 ? (CERT_BADGE[c] ?? 'bg-brand-500/20 text-brand-300 border-brand-500/30')
-                : 'text-slate-400 border-slate-700 hover:text-slate-400 hover:border-slate-600',
+                : 'text-slate-400 border-slate-700 hover:text-slate-200 hover:border-slate-600',
             ].join(' ')}
           >
             {c}
@@ -160,7 +160,7 @@ export default function GlossaryPanel() {
           onClick={() => setJump('')}
           className={[
             'text-micro font-mono px-1.5 py-0.5 rounded transition-colors',
-            !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-400 hover:text-slate-400',
+            !jumpLetter ? 'bg-brand-500/20 text-brand-300' : 'text-slate-400',
           ].join(' ')}
         >
           All

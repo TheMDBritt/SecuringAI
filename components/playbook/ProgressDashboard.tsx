@@ -22,7 +22,9 @@ import SessionReview from './SessionReview';
 
 // ─── Small render helpers ────────────────────────────────────────────────────
 
-function pctColor(pct: number): string {
+/** null means nothing measured yet, which is not the same as scoring zero. */
+function pctColor(pct: number | null): string {
+  if (pct === null) return 'text-slate-400';
   if (pct >= 80) return 'text-emerald-400';
   if (pct >= 60) return 'text-amber-400';
   return 'text-red-400';
@@ -215,7 +217,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Progress</h2>
             <p className="text-2xs font-mono text-slate-400 mt-0.5">
-              Session history · per-question accuracy · weak-topic heatmap · 90-day rolling window
+              Session history, per-question accuracy and weak-topic analysis, over a 90-day window
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -257,8 +259,16 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
           <div className="border border-slate-800 rounded-lg p-8 text-center">
             <p className="text-sm text-slate-300 mb-1">No quiz sessions yet.</p>
             <p className="text-2xs font-mono text-slate-400">
-              Take a quiz, your progress will appear here.
+              Take a quiz and your progress will appear here.
             </p>
+            {/* The equivalent empty states elsewhere offer the action; this one
+                described it and left the user to find the tab themselves. */}
+            <a
+              href="/playbook?section=quiz"
+              className="mt-4 inline-flex rounded border border-brand-500/40 bg-brand-500/5 px-3 py-1.5 font-mono text-2xs text-brand-300 transition-colors hover:bg-brand-500/15"
+            >
+              Start a quiz
+            </a>
           </div>
         ) : (
           <>
@@ -293,7 +303,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4">
               <StatCell label="All-time" value={`${summary.overallPct}%`} sub={`${summary.totalCorrect}/${summary.totalQuestions}`} color={pctColor(summary.overallPct)} />
               <StatCell label="Best session" value={`${summary.bestSessionPct}%`} sub={summary.totalSessions === 1 ? 'first attempt' : `over ${summary.totalSessions} sessions`} color={pctColor(summary.bestSessionPct)} />
-              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%` : '—'} sub={summary.lastSessionPct === null ? 'no sessions yet' : formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct ?? 0)} />
+              <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%` : '—'} sub={summary.lastSessionPct === null ? 'no sessions yet' : formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct)} />
               <StatCell label="Sessions" value={String(summary.totalSessions)} sub="90-day window" color="text-slate-200" />
             </div>
 

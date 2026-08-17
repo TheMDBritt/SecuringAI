@@ -100,6 +100,9 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         description="Your live view across all three disciplines, attack defense, SOC operations, and AI governance, with completion, accuracy, and a recommended next scenario."
         actions={
           <>
+            <ButtonLink href="/progress" variant="secondary" size="md">
+              View progress
+            </ButtonLink>
             <ButtonLink href="/playbook" variant="secondary" size="md">
               Study playbook
             </ButtonLink>
@@ -150,7 +153,7 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         {/* Difficulty distribution */}
         <Card className="p-5">
           <SectionHeading index={2} eyebrow="Coverage" title="Difficulty mix" />
-          {hydrated && summary.attackAttempts > 0 ? (
+          {hydrated && (summary.attackAttempts > 0 || diffTotal > 1) ? (
             <div className="mt-5 space-y-3.5">
               {diffBars.map((b) => (
                 <div key={b.label}>
@@ -163,9 +166,15 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
               ))}
             </div>
           ) : (
-            <p className="mt-6 text-xs leading-relaxed text-slate-500">
-              Run beginner, intermediate, and advanced scenarios to see your difficulty coverage.
-            </p>
+            <div className="mt-6">
+              <p className="text-xs leading-relaxed text-slate-500">
+                Difficulty coverage appears once you have run scenarios across the beginner,
+                intermediate and advanced tiers.
+              </p>
+              <ButtonLink href="/dojo" variant="secondary" size="sm" className="mt-4">
+                Run a scenario
+              </ButtonLink>
+            </div>
           )}
         </Card>
 
