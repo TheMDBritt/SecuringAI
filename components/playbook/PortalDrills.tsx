@@ -178,11 +178,14 @@ export default function PortalDrills() {
 
         {/* Drill cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          {drills.map((d) => (
+          {drills.map((d, i) => (
             <button
               key={d.id}
               onClick={() => startDrill(d)}
-              className="text-left border border-slate-700 rounded-xl bg-slate-800/40 hover:bg-slate-800 hover:border-slate-600 transition-colors p-4"
+              // Re-dealt whenever the filter changes, which is the moment the
+              // list means something different and is worth seeing rebuild.
+              style={{ animationDelay: `${Math.min(i, 8) * 40}ms` }}
+              className="animate-rise-in text-left border border-slate-700 rounded-xl bg-slate-800/40 hover:bg-slate-800 hover:border-slate-600 hover:-translate-y-0.5 transition-all duration-200 p-4"
             >
               <div className="flex items-start justify-between mb-2 gap-2">
                 <span className={`text-micro font-mono px-2 py-0.5 rounded border ${activeSet.bucketColors[d.portal] ?? 'border-slate-700 text-slate-400'}`}>
@@ -289,7 +292,8 @@ export default function PortalDrills() {
             Correct and chosen-wrong were signalled by colour alone, which a
             colour-blind user cannot read. Each answered state now also carries
             a glyph and a visually-hidden label. */}
-        <div className="space-y-2 mb-4">
+        {/* Keyed on the step so the options deal in again at each one. */}
+        <div key={`step-${stepIdx}`} className="space-y-2 mb-4">
           {step.options.map((opt, i) => {
             let style = 'border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800/50';
             let mark: string | null = null;
@@ -314,7 +318,10 @@ export default function PortalDrills() {
                 // Answered options stay focusable so a keyboard user can still
                 // read back the whole set; aria-disabled conveys the state.
                 aria-disabled={pick !== null}
-                className={`w-full text-left px-3 py-2.5 rounded-lg border transition-all text-sm ${style}`}
+                style={{ animationDelay: `${i * 45}ms` }}
+                className={`w-full animate-rise-in text-left px-3 py-2.5 rounded-lg border transition-all duration-200 text-sm ${style} ${
+                  pick === null ? 'hover:-translate-y-px' : ''
+                }`}
               >
                 <span className="font-mono text-micro mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
                 {opt}

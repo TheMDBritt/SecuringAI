@@ -249,7 +249,16 @@ function StepIndicator({ step }: { step: SetupStep }) {
             {s}
           </div>
           {s < 3 && (
-            <div className={['w-6 h-px', s < step ? 'bg-brand-500/40' : 'bg-slate-700'].join(' ')} />
+            // The connector fills left to right as steps complete, so setup
+            // reads as a path being walked rather than three lit dots.
+            <div className="relative h-px w-6 bg-slate-700">
+              <span
+                className={[
+                  'absolute inset-0 origin-left bg-brand-500/50 transition-transform duration-300 ease-out',
+                  s < step ? 'scale-x-100' : 'scale-x-0',
+                ].join(' ')}
+              />
+            </div>
           )}
         </div>
       ))}
@@ -279,18 +288,23 @@ function Step1SelectExam({
 
       <div className="flex-1 overflow-y-auto">
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {EXAM_CERTS.map((cert) => {
+          {EXAM_CERTS.map((cert, i) => {
             const total = countForCert(cert.id);
             const isSelected = selected?.id === cert.id;
             return (
               <button
                 key={cert.id}
                 onClick={() => onSelect(cert)}
+                // Eleven cards arriving at once reads as a page load. Dealt in
+                // across roughly a third of a second instead, which is short
+                // enough that the last card is there before anyone reaches for
+                // it.
+                style={{ animationDelay: `${i * 30}ms` }}
                 className={[
-                  'text-left p-3 rounded-lg border transition-all',
+                  'animate-rise-in text-left p-3 rounded-lg border transition-all duration-200',
                   isSelected
                     ? 'border-brand-500 bg-brand-500/10'
-                    : 'border-slate-700 hover:border-slate-600 bg-slate-800/40 hover:bg-slate-800/70',
+                    : 'border-slate-700 hover:-translate-y-0.5 hover:border-slate-600 bg-slate-800/40 hover:bg-slate-800/70',
                 ].join(' ')}
               >
                 <div className="mb-2">

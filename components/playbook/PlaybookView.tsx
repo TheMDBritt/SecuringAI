@@ -156,7 +156,16 @@ export default function PlaybookView({ counts }: { counts: PlaybookCounts }) {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-hidden" {...tabs.panelProps(section)}>
+      {/* Keyed on the section so switching tabs crosses to the new panel
+          rather than swapping it. Tab switching is the main interaction on
+          this page and it was the one with no feedback at all beyond the pill
+          changing colour. Fade only — these panels scroll internally, so a
+          translate would fight their own overflow. */}
+      <div
+        key={section}
+        className="flex-1 min-h-0 animate-fade-in-fast overflow-hidden"
+        {...tabs.panelProps(section)}
+      >
         {section === 'topics'   && <TopicBrowser certFilter={certFilter || undefined} />}
         {section === 'glossary' && <GlossaryPanel />}
         {section === 'certs'    && <CertMap onCertFilter={handleCertFilter} />}
