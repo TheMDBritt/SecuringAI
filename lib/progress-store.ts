@@ -1,5 +1,7 @@
 'use client';
 
+import { safeWrite } from './storage-health';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // ACTIVITY LOG. One of two progress stores; read this before touching either.
 //
@@ -68,13 +70,28 @@ export interface ProgressState {
   attackRuns: AttackRun[];
 }
 
-const EMPTY: ProgressState = { quizRuns: [], attackRuns: [] };
+/**
+ * A fresh empty state, never a shared one.
+ *
+ * This was a single module-level constant that loadProgress handed back
+ * whenever storage was empty or unreadable. recordQuizRun then did
+ * `state.quizRuns.unshift(...)` on it, mutating the constant itself, so the
+ * "empty" state accumulated every run made during the page's lifetime.
+ *
+ * The visible consequence was that clearing training data did not stay
+ * cleared: removeItem emptied localStorage, the next read returned the
+ * polluted constant, the dashboard showed the deleted runs, and the next
+ * write persisted them back to disk. Deleted history came back.
+ */
+function emptyState(): ProgressState {
+  return { quizRuns: [], attackRuns: [] };
+}
 
 const MAX_QUIZ = 100;
 const MAX_ATTACK = 300;
 
 function safeParse(raw: string | null): ProgressState {
-  if (!raw) return EMPTY;
+  if (!raw) return emptyState();
   try {
     const parsed = JSON.parse(raw);
     return {
@@ -82,18 +99,21 @@ function safeParse(raw: string | null): ProgressState {
       attackRuns: Array.isArray(parsed.attackRuns) ? parsed.attackRuns : [],
     };
   } catch {
-    return EMPTY;
+    return emptyState();
   }
 }
 
 export function loadProgress(): ProgressState {
-  if (typeof window === 'undefined') return EMPTY;
+  if (typeof window === 'undefined') return emptyState();
   return safeParse(window.localStorage.getItem(KEY));
 }
 
 function save(state: ProgressState) {
   if (typeof window === 'undefined') return;
-  window.localStorage.setItem(KEY, JSON.stringify(state));
+  // Unguarded, this threw straight out of the quiz completion handler and into
+  // the route error boundary: a full disk, or Safari private browsing where
+  // every write throws, turned a finished exam into a crash screen.
+  if (!safeWrite(KEY, JSON.stringify(state))) return;
   window.dispatchEvent(new Event(EVENT));
 }
 

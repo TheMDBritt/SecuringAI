@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
 import { TrademarkNotice } from './TrademarkNotice';
+import { StorageWarning } from './StorageWarning';
 import { loadSettings, applySettings } from '@/lib/settings-store';
 
 /**
@@ -80,6 +81,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <div className="flex min-h-screen flex-col lg:pl-16">
         <TopBar onMenu={() => setMobileOpen(true)} />
+        {/* Renders nothing until a write actually fails. */}
+        <StorageWarning />
         {/* Keyed on the path so the entrance replays on every navigation.
             usePathname() excludes the query string, which is what makes this
             safe: /playbook?section=quiz changing tabs must not remount the

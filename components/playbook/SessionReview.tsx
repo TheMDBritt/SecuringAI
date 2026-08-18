@@ -27,7 +27,7 @@ function formatDate(ms: number): string {
 export default function SessionReview({ session, onBack, onRetakeMissed, onRetakeAll }: SessionReviewProps) {
   // Only the questions in this session are fetched, rather than importing the
   // entire bank to look up the ones already answered.
-  const { byId: Q_BY_ID, loading } = useQuestionsByIds(
+  const { byId: Q_BY_ID, loading, error } = useQuestionsByIds(
     useMemo(() => session.results.map((r) => r.qId), [session]),
   );
 
@@ -54,6 +54,20 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
           className="h-4 w-4 animate-spin rounded-full border-2 border-brand-500 border-t-transparent"
         />
         <span className="text-sm text-slate-400">Loading this session…</span>
+      </div>
+    );
+  }
+
+  // A fetch failure used to land here as an empty review, which reads as "this
+  // session had no questions" — telling the learner their work is missing when
+  // it is merely unreachable.
+  if (error && rows.length === 0) {
+    return (
+      <div role="alert" className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
+        <p className="text-sm text-slate-300">{error}</p>
+        <p className="text-xs text-slate-500">
+          Your session is safe. Only the question text failed to load.
+        </p>
       </div>
     );
   }

@@ -11,12 +11,14 @@
  *
  * Data model
  * ─────────────────────────────────────────────────────────────────────────────
- * `sessions`  : rolling 90-day window of completed quiz sessions
+ * `sessions`  : rolling two-year window of completed quiz sessions
  * `perQ`      : forever-retained aggregate per question ID
  *   - timesSeen, timesRight, lastSeenAt
  *
- * The 90-day window is enforced on load and on every write, prune-on-read
- * plus prune-on-write means an idle user's stale data still expires.
+ * The session window is enforced on write only. Pruning on read destroyed
+ * history simply because someone opened the app after a long gap, and because
+ * sync reads through the same path it propagated that deletion to every other
+ * device. See loadProgress.
  *
  * The weighted picker uses perQ to bias future quizzes toward weak / unseen
  * questions (Anki-style spaced repetition). Never-seen questions get the
@@ -24,8 +26,15 @@
  * zero so nothing is permanently retired.
  */
 
+import { safeWrite } from './storage-health';
+
 const STORAGE_KEY   = 'dojo-progress-v1';
-const SESSION_WINDOW_DAYS = 90;
+// Two years, not ninety days. Someone studying for a certification takes
+// months, often across a failed first sitting, and the old window quietly
+// deleted the earlier half of that. The window exists to bound localStorage
+// growth, and sessions are small; perQ is what actually accumulates and it is
+// never pruned at all.
+const SESSION_WINDOW_DAYS = 730;
 const SESSION_WINDOW_MS   = SESSION_WINDOW_DAYS * 24 * 60 * 60 * 1000;
 
 export interface QuestionResult {
@@ -60,7 +69,14 @@ export interface ProgressData {
   perQ:     Record<string, QuestionStats>;
 }
 
-const EMPTY: ProgressData = { sessions: [], perQ: {} };
+/**
+ * A fresh empty state, never a shared one. See the same note in
+ * progress-store.ts: handing out one mutable constant let a caller's write
+ * accumulate into it, and deleted history reappeared.
+ */
+function emptyData(): ProgressData {
+  return { sessions: [], perQ: {} };
+}
 
 // ─── Load / save ─────────────────────────────────────────────────────────────
 
@@ -68,9 +84,9 @@ function isBrowser(): boolean {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
 }
 
-/** Read progress from localStorage, pruning sessions older than 90 days. */
+/** Read progress from localStorage. Retention is applied on write, not here. */
 export function loadProgress(): ProgressData {
-  if (!isBrowser()) return EMPTY;
+  if (!isBrowser()) return emptyData();
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (!raw) return { sessions: [], perQ: {} };
@@ -78,7 +94,13 @@ export function loadProgress(): ProgressData {
     // Defensive: coerce shape in case of an old / corrupted record.
     const sessions = Array.isArray(parsed.sessions) ? parsed.sessions : [];
     const perQ     = parsed.perQ && typeof parsed.perQ === 'object' ? parsed.perQ : {};
-    return pruneOldSessions({ sessions, perQ }, Date.now());
+    // Deliberately not pruned here. Pruning on read meant merely opening the
+    // dashboard after a long gap destroyed history, before the user had any
+    // chance to export it, and before sync could push it. Worse, sync reads
+    // through this path, so a device that pruned would push the pruned set and
+    // evict those sessions from every other device too. Writes prune; reads
+    // report what is stored.
+    return { sessions, perQ };
   } catch {
     return { sessions: [], perQ: {} };
   }
@@ -97,17 +119,16 @@ export const QUIZ_PROGRESS_CHANGED_EVENT = 'securingai:quiz-progress-changed';
 
 function saveProgress(data: ProgressData): void {
   if (!isBrowser()) return;
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch {
-    // Quota exceeded or storage disabled, silently drop; nothing else to do
-    // in a no-account app.
-    return;
-  }
+  // A failed write used to return silently. That made sense when there was
+  // nowhere else for the data to go; now that an export and cross-device sync
+  // both exist, dropping a session without a word means the learner believes
+  // in a record that was never written. safeWrite remembers the failure and
+  // the shell raises a banner offering the export.
+  if (!safeWrite(STORAGE_KEY, JSON.stringify(data))) return;
   window.dispatchEvent(new Event(QUIZ_PROGRESS_CHANGED_EVENT));
 }
 
-/** Remove sessions older than the 90-day window. */
+/** Remove sessions older than the retention window. Write path only. */
 function pruneOldSessions(data: ProgressData, now: number): ProgressData {
   const cutoff = now - SESSION_WINDOW_MS;
   const kept = data.sessions.filter((s) => s.startedAt >= cutoff);

@@ -48,6 +48,15 @@ export default function PrivacyPage() {
           </Link>
           .
         </p>
+        <p className="text-sm leading-relaxed text-slate-300">
+          Individual session records are kept for two years and older ones are
+          dropped when new results are saved, so the store cannot grow without
+          limit. Per-question accuracy is kept for as long as the data stays in
+          your browser, because it is what decides when a question is due again.
+          If your browser refuses to store anything &mdash; storage full, or
+          private browsing &mdash; a warning appears at the top of every page
+          rather than results being dropped silently.
+        </p>
       </Card>
 
       <Card className="mt-4 space-y-4 p-5">

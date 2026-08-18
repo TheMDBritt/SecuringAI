@@ -221,7 +221,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
           <div>
             <h2 className="text-lg font-semibold text-slate-100">Progress</h2>
             <p className="text-2xs font-mono text-slate-400 mt-0.5">
-              Session history, per-question accuracy and weak-topic analysis, over a 90-day window
+              Session history, per-question accuracy and weak-topic analysis, over a two-year window
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -340,7 +340,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
               <StatCell label="All-time" value={`${summary.overallPct}%`} sub={`${summary.totalCorrect}/${summary.totalQuestions}`} color={pctColor(summary.overallPct)} />
               <StatCell label="Best session" value={`${summary.bestSessionPct}%`} sub={summary.totalSessions === 1 ? 'first attempt' : `over ${summary.totalSessions} sessions`} color={pctColor(summary.bestSessionPct)} />
               <StatCell label="Last session" value={summary.lastSessionPct !== null ? `${summary.lastSessionPct}%` : '—'} sub={summary.lastSessionPct === null ? 'no sessions yet' : formatDate(scopedSessions[0]?.startedAt ?? Date.now())} color={pctColor(summary.lastSessionPct)} />
-              <StatCell label="Sessions" value={String(summary.totalSessions)} sub="90-day window" color="text-slate-200" />
+              <StatCell label="Sessions" value={String(summary.totalSessions)} sub="two-year window" color="text-slate-200" />
             </div>
 
             {/* Trend sparkline */}
