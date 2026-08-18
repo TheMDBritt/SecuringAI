@@ -62,6 +62,14 @@ describe('import merges instead of replacing', () => {
     expect(quiz.sessions.map((s: { id: string }) => s.id).sort()).toEqual(['laptop-s', 'phone-s']);
   });
 
+  it('counts quiz sessions in the total, not just activity runs', () => {
+    // The total once read only quizRuns and attackRuns, so merging in a quiz
+    // session reported "0 saved records now" in the same breath as saying one
+    // record had been merged.
+    const result = restoreBackup(backupFile({ sessions: [session('s1', 10), session('s2', 20)] }));
+    expect(result).toMatchObject({ ok: true, added: 2, runs: 2 });
+  });
+
   it('reports how much was actually added', () => {
     store.set(PROGRESS_KEY, JSON.stringify({ quizRuns: [run('a', '2026-01-01T00:00:00Z')], attackRuns: [] }));
     const result = restoreBackup(backupFile({ runs: [run('a', '2026-01-01T00:00:00Z'), run('b', '2026-01-02T00:00:00Z')] }));

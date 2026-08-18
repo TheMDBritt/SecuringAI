@@ -11,7 +11,7 @@
  * schema change can migrate rather than silently corrupt.
  */
 
-import { loadProgress, PROGRESS_CHANGED_EVENT, type ProgressState } from './progress-store';
+import { PROGRESS_CHANGED_EVENT } from './progress-store';
 import { mergePayloads, normalise } from './sync-merge';
 
 const PROGRESS_KEY = 'securingai:progress:v1';
@@ -80,6 +80,18 @@ export function buildBackup(): ProgressBackup {
     quizProgress: readRaw(QUIZ_KEY),
     settings: readRaw(SETTINGS_KEY),
   };
+}
+
+/**
+ * The backup as text, for transfer without a file.
+ *
+ * A managed work machine commonly blocks downloads outright, which makes the
+ * export button useless on exactly the device whose history is hardest to move.
+ * The same JSON copied to the clipboard and pasted on the other device carries
+ * the identical payload through a channel policy rarely blocks.
+ */
+export function backupText(): string {
+  return JSON.stringify(buildBackup());
 }
 
 /** Triggers a browser download of the backup file. */
@@ -165,13 +177,11 @@ export function restoreBackup(text: string): ImportResult {
     return { ok: false, error: 'Could not write to browser storage. Is it full or blocked?' };
   }
 
-  let runs = 0;
-  try {
-    const state = loadProgress() as ProgressState;
-    runs = (state.quizRuns?.length ?? 0) + (state.attackRuns?.length ?? 0);
-  } catch {
-    /* count is cosmetic; a failure here does not invalidate the restore */
-  }
+  // Count everything the merge actually holds, not just the activity log.
+  // Reading quizRuns and attackRuns alone reported "0 saved records now"
+  // immediately after merging in a quiz session, because sessions live in the
+  // other store and were never counted.
+  const runs = countOf(merged);
 
   window.dispatchEvent(new Event('securingai:progress-changed'));
   return { ok: true, runs, added };

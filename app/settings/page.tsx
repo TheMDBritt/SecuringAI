@@ -5,7 +5,7 @@ import { Card, PageHeader, SectionHeading, Button, Badge } from '@/components/ui
 import { SyncPanel } from '@/components/settings/SyncPanel';
 import { loadSettings, saveSettings, applySettings, DEFAULT_SETTINGS, type Settings } from '@/lib/settings-store';
 import { loadProgress, summarize } from '@/lib/progress-store';
-import { clearAllProgress, downloadBackup, restoreBackup } from '@/lib/progress-backup';
+import { backupText, clearAllProgress, downloadBackup, restoreBackup } from '@/lib/progress-backup';
 
 function Toggle({
   checked,
@@ -52,6 +52,9 @@ export default function SettingsPage() {
   const [cleared, setCleared] = useState(false);
   const [importMsg, setImportMsg] = useState<{ tone: 'ok' | 'err'; text: string } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [pasted, setPasted] = useState('');
+  const [transferText, setTransferText] = useState('');
+  const [showTransfer, setShowTransfer] = useState(false);
 
   useEffect(() => {
     const s = loadSettings();
@@ -72,6 +75,42 @@ export default function SettingsPage() {
     // Exports progress, per-question stats and preferences together so the file
     // can actually restore a study session on another device.
     downloadBackup();
+  }
+
+  // ── Transfer without a file ────────────────────────────────────────────────
+  // Managed machines routinely block downloads, which makes the export button
+  // useless on exactly the device whose history is hardest to move. Copy and
+  // paste carries the same payload through a channel policy rarely blocks.
+  async function handleCopy() {
+    const text = backupText();
+    try {
+      await navigator.clipboard.writeText(text);
+      setImportMsg({ tone: 'ok', text: 'Copied. Paste it into the box on your other device.' });
+    } catch {
+      // Clipboard access can be refused by permissions or a non-secure origin.
+      // Showing the text is the fallback that always works: select all, copy.
+      setTransferText(text);
+      setImportMsg({ tone: 'ok', text: 'Clipboard blocked. Select the text below and copy it manually.' });
+    }
+  }
+
+  function handlePasteImport() {
+    const text = pasted.trim();
+    if (!text) return;
+    const result = restoreBackup(text);
+    if (result.ok) {
+      const p = summarize(loadProgress());
+      setCounts({ quiz: p.quizRuns, attack: p.attackAttempts });
+      setPasted('');
+      setImportMsg({
+        tone: 'ok',
+        text: result.added > 0
+          ? `Merged in ${result.added} record${result.added === 1 ? '' : 's'}. ${result.runs} saved records now.`
+          : `Nothing new in that backup. ${result.runs} saved records, unchanged.`,
+      });
+    } else {
+      setImportMsg({ tone: 'err', text: result.error });
+    }
   }
 
   async function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
@@ -160,6 +199,12 @@ export default function SettingsPage() {
           <Button variant="secondary" size="md" onClick={handleExport}>
             Export backup
           </Button>
+          <Button variant="secondary" size="md" onClick={handleCopy}>
+            Copy backup
+          </Button>
+          <Button variant="secondary" size="md" onClick={() => setShowTransfer((v) => !v)}>
+            {showTransfer ? 'Hide paste box' : 'Paste backup'}
+          </Button>
           <Button variant="secondary" size="md" onClick={() => fileRef.current?.click()}>
             Import backup
           </Button>
@@ -190,11 +235,55 @@ export default function SettingsPage() {
           )}
         </div>
 
+        {/* Shown only when the clipboard write was refused, so the text can be
+            selected and copied by hand. */}
+        {transferText && (
+          <div className="mt-3">
+            <label htmlFor="transfer-out" className="mb-1.5 block text-xs font-medium text-slate-400">
+              Your backup, select all and copy
+            </label>
+            <textarea
+              id="transfer-out"
+              readOnly
+              value={transferText}
+              onFocus={(e) => e.currentTarget.select()}
+              rows={4}
+              className="w-full rounded-lg border border-surface-border bg-surface-raised p-2.5 font-mono text-2xs text-slate-300"
+            />
+          </div>
+        )}
+
+        {showTransfer && (
+          <div className="mt-3">
+            <label htmlFor="transfer-in" className="mb-1.5 block text-xs font-medium text-slate-400">
+              Paste a backup from another device
+            </label>
+            <textarea
+              id="transfer-in"
+              value={pasted}
+              onChange={(e) => setPasted(e.target.value)}
+              rows={4}
+              placeholder="Paste the copied backup text here…"
+              className="w-full rounded-lg border border-surface-border bg-surface-raised p-2.5 font-mono text-2xs text-slate-200 placeholder:text-slate-500 focus:border-brand-500/50 focus:outline-none"
+            />
+            <Button
+              variant="primary"
+              size="sm"
+              className="mt-2"
+              onClick={handlePasteImport}
+              disabled={!pasted.trim()}
+            >
+              Merge pasted backup
+            </Button>
+          </div>
+        )}
+
         <p className="mt-3 text-xs leading-relaxed text-slate-500">
           Signed out, progress lives only in this browser. Export a backup before
           clearing site data, and import one to pull in history from another
-          device. Importing merges rather than replaces, so nothing already here
-          is lost and importing the same file twice is harmless.
+          device. Where downloads are blocked, Copy and Paste move the same data
+          without a file. Either way it merges rather than replaces, so nothing
+          already here is lost and repeating an import is harmless.
         </p>
       </Card>
 
