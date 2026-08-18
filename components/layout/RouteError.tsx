@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { reportError } from '@/lib/report-error';
 
 /**
  * Shared body for the route-level error boundaries.
@@ -21,7 +22,7 @@ export function RouteError({
   surface: string;
 }) {
   useEffect(() => {
-    console.error(`[Securing AI] ${surface} error:`, error);
+    reportError({ message: error.message, digest: error.digest, boundary: surface });
   }, [error, surface]);
 
   return (

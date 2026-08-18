@@ -1,5 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
+import { reportError } from '@/lib/report-error';
+
 /**
  * Last-resort boundary for failures in the root layout itself.
  *
@@ -8,6 +11,13 @@
  * styling rather than relying on anything the app provides.
  */
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
+  // The digest is shown to the user as a reference. Until this was sent
+  // somewhere, that reference correlated to nothing on the server and a user
+  // quoting it got you no further than not having it.
+  useEffect(() => {
+    reportError({ message: error.message, digest: error.digest, boundary: 'global' });
+  }, [error]);
+
   return (
     <html lang="en">
       <body

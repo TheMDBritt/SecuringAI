@@ -8,6 +8,28 @@
 //   - 'unsafe-eval' in development only, which the dev overlay and Fast Refresh
 //     require. Production gets neither.
 //
+// script-src also carries 'unsafe-inline', and it is the finding a security
+// review will raise, so here is the reasoning rather than an apology.
+//
+// The app's own inline script is one fixed string (app/layout.tsx, marking the
+// document as scripted before first paint), and a sha256 hash of it would be
+// trivial to add. That does not help: the App Router streams its RSC payload
+// through inline `self.__next_f.push(...)` scripts on every page, so the policy
+// has to admit those too. The moment a hash or nonce appears in script-src,
+// browsers ignore 'unsafe-inline' entirely, which would block Next's own
+// scripts and leave a blank page.
+//
+// The real alternative is nonce-based CSP through middleware, and it costs the
+// whole static-rendering story: a per-request nonce forces every page to render
+// dynamically, so a site that is currently prerendered and CDN-cacheable would
+// become a function invocation per visit. That is a large, permanent
+// performance and cost regression to close a gap that the rest of the policy
+// already narrows hard, with no eval, no third-party script origins, no object
+// or frame embedding, and a connect-src limited to self plus one host.
+//
+// Worth revisiting if this ever moves behind a server that needs dynamic
+// rendering anyway, since the cost disappears at that point.
+//
 // connect-src is 'self' plus the Supabase project, when one is configured.
 // Model provider traffic still goes through the app's own API routes and never
 // leaves the origin, so nothing is opened up for that.

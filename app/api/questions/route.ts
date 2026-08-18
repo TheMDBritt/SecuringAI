@@ -41,6 +41,29 @@ const MAX_IDS = 400;
 /** Only real exam ids are answerable, so an unknown cert costs a comparison. */
 const KNOWN_CERTS = new Set(EXAM_CERTS.map((c) => c.id));
 
+/**
+ * Indexes built once per process rather than per request.
+ *
+ * The id lookup scanned all ~36k questions on every call, and the review
+ * surfaces fetch in chunks, so opening one session review was several full
+ * scans of the bank. Both maps are derived from a module-scope constant that
+ * never changes, so building them here costs one pass at cold start and turns
+ * every subsequent request into a lookup.
+ */
+const BY_ID = new Map(QUIZ_QUESTIONS.map((q) => [q.id, q]));
+
+const BY_CERT = (() => {
+  const map = new Map<string, typeof QUIZ_QUESTIONS>();
+  for (const q of QUIZ_QUESTIONS) {
+    for (const tag of q.certTags) {
+      const bucket = map.get(tag);
+      if (bucket) bucket.push(q);
+      else map.set(tag, [q]);
+    }
+  }
+  return map;
+})();
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const cert = searchParams.get('cert');
@@ -51,7 +74,14 @@ export async function GET(request: Request) {
   if (ids) {
     const wanted = boundedList(ids, { max: MAX_IDS, label: 'ids' });
     if (isOverBudget(wanted)) return wanted;
-    return NextResponse.json(QUIZ_QUESTIONS.filter((q) => wanted.has(q.id)));
+    // Iterating the request's ids rather than the bank: the caller asks for at
+    // most MAX_IDS, the bank holds tens of thousands.
+    const found = [];
+    for (const id of wanted) {
+      const q = BY_ID.get(id);
+      if (q) found.push(q);
+    }
+    return NextResponse.json(found);
   }
 
   if (cert) {
@@ -60,7 +90,7 @@ export async function GET(request: Request) {
     if (!KNOWN_CERTS.has(cert)) {
       return NextResponse.json({ error: 'Unknown cert' }, { status: 400 });
     }
-    return NextResponse.json(QUIZ_QUESTIONS.filter((q) => q.certTags.includes(cert)));
+    return NextResponse.json(BY_CERT.get(cert) ?? []);
   }
 
   return NextResponse.json({ error: 'Specify cert or ids' }, { status: 400 });

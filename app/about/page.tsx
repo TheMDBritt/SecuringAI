@@ -141,7 +141,7 @@ export default function AboutPage() {
                 the field is converging on.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden">
+            <div className="grid grid-cols-1 gap-px bg-slate-800 border border-slate-800 rounded-lg overflow-hidden sm:grid-cols-2">
               {[
                 { n: SCENARIOS.length, label: 'scenarios', sub: '3 disciplines' },
                 { n: CATALOG_COUNTS.incidents, label: 'SOC incidents', sub: 'Dojo 2 prebuilt' },

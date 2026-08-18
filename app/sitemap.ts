@@ -2,8 +2,20 @@ import type { MetadataRoute } from 'next';
 
 const BASE = 'https://securingai.app';
 
+/**
+ * Pinned at build time, not request time.
+ *
+ * `new Date()` evaluated per request told crawlers that every URL on the site
+ * had changed, every time they looked. A lastModified that is always now
+ * carries no information, and a crawler that learns the signal is worthless
+ * stops using it — which costs exactly the recrawl priority the field exists
+ * to earn. The build time is the honest answer: the content is static and is
+ * rebuilt when it changes.
+ */
+const BUILT_AT = new Date();
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
+  const now = BUILT_AT;
   return [
     { url: `${BASE}/`,          lastModified: now, changeFrequency: 'weekly',  priority: 1.0 },
     { url: `${BASE}/dojo`,      lastModified: now, changeFrequency: 'weekly',  priority: 0.9 },

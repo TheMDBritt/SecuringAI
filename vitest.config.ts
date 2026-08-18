@@ -3,8 +3,12 @@ import { resolve } from 'node:path';
 
 export default defineConfig({
   test: {
+    // Node by default, because most suites are pure functions over lib/ and a
+    // DOM would only slow them down. Component suites opt in per file with
+    // `// @vitest-environment jsdom`, so the fast majority stays fast.
     environment: 'node',
-    include: ['tests/**/*.test.ts'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+    setupFiles: ['tests/setup.ts'],
     // The content-integrity suite loads multi-megabyte data modules.
     testTimeout: 30_000,
   },

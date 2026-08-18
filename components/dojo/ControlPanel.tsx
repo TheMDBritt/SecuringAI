@@ -1092,7 +1092,7 @@ function Dojo2Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo2Con
         <p className={['text-micro mb-1.5', disabled ? 'text-slate-400' : 'text-slate-500'].join(' ')}>
           Risk Level
         </p>
-        <div className="grid grid-cols-2 gap-1.5">
+        <div className="grid grid-cols-1 gap-1.5 min-[420px]:grid-cols-2">
           {RISK_OPTIONS.map((opt) => {
             const isActive = dojo2Config.riskAssessment === opt.value;
             return (
@@ -1341,7 +1341,7 @@ function Dojo3Panel({ disabled, scenarioId, metCriteria, hasEvaluation, dojo3Con
           <p className="text-micro text-slate-500 mb-2">
             Pick the working tier for this deployment. Sends the classification to the chat for justification and required mitigations.
           </p>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-1 gap-1.5 min-[420px]:grid-cols-2">
             {RISK_TIER_OPTIONS.map((opt) => {
               const isActive = dojo3Config.riskTier === opt.value;
               return (

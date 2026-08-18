@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
+import { reportError } from '@/lib/report-error';
 
 export default function GlobalError({
   error,
@@ -11,7 +12,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('[Securing AI] Unhandled error:', error);
+    reportError({ message: error.message, digest: error.digest, boundary: 'app' });
   }, [error]);
 
   return (

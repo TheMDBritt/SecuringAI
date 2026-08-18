@@ -527,7 +527,7 @@ export default function LandingPage() {
                   decides the outcome, same payload, same config, same result every time.
                   Free and open, no signup, no tracking.
                 </p>
-                <div className="mt-4 grid grid-cols-3 gap-3">
+                <div className="mt-4 grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
                   {[
                     { label: 'Dojo 1', sub: `${STATS.d1} attack scenarios` },
                     { label: 'Dojo 2', sub: `${STATS.incidents} SOC incidents` },
