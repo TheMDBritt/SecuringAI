@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -24,8 +24,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAppRoute = APP_ROUTES.some((r) => pathname === r || pathname.startsWith(`${r}/`));
 
+  const mainRef = useRef<HTMLElement>(null);
+  const firstRender = useRef(true);
+
   useEffect(() => {
     setMobileOpen(false);
+  }, [pathname]);
+
+  /**
+   * Move focus to the new page after navigating.
+   *
+   * The skip-link target existed and was focusable, and nothing ever focused
+   * it. Following a link left focus on an element that had just been unmounted,
+   * so a screen reader user arrived at a new document with focus effectively
+   * nowhere, and a keyboard user's next Tab restarted from the top of the
+   * document rather than continuing into the content they asked for. This is
+   * the standard single-page-app accessibility defect and axe cannot see it,
+   * because at any single moment the markup is correct.
+   *
+   * Skipped on first render: focusing on load steals focus from the address bar
+   * and suppresses the browser's own restore of a previous scroll position.
+   */
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    mainRef.current?.focus();
   }, [pathname]);
 
   // Apply persisted user preferences (e.g. reduce motion) on first load.
@@ -92,6 +117,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             scroll internally, so translating them adds a transient 8px of
             document overflow and a scrollbar flicker. */}
         <main
+          ref={mainRef}
           key={pathname}
           id="main-content"
           tabIndex={-1}

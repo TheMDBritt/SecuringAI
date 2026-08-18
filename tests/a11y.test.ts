@@ -46,3 +46,40 @@ describe('accessibility invariants', () => {
     expect(read('components/layout/AppShell.tsx')).toContain('#main-content');
   });
 });
+
+describe('table semantics are not overridden', () => {
+  it('never puts an interactive role on a table row', () => {
+    // role="button" on a <tr> removes the row from the table's accessibility
+    // tree, so a screen reader loses row position and header association for
+    // that row. The control belongs inside a cell, where it can be a real
+    // button that announces its own expanded state.
+    const offenders = FILES.filter((f) => {
+      const text = read(f);
+      return /<tr[\s\S]{0,400}?role="(button|link|checkbox|menuitem)"/.test(text);
+    });
+    expect(offenders).toEqual([]);
+  });
+});
+
+describe('motion respects the reduced-motion preference', () => {
+  const css = readFileSync(join(process.cwd(), 'app/globals.css'), 'utf8');
+
+  it('zeroes delays as well as durations', () => {
+    // Zeroing duration alone leaves staggered content invisible for the length
+    // of its delay, which is worse than the animation it was meant to remove.
+    for (const block of ['prefers-reduced-motion', "data-reduce-motion='true'"]) {
+      const i = css.indexOf(block);
+      expect(i, `${block} block missing`).toBeGreaterThan(-1);
+      const scope = css.slice(i, i + 900);
+      expect(scope).toMatch(/animation-delay:\s*0m?s\s*!important/);
+      expect(scope).toMatch(/transition-delay:\s*0m?s\s*!important/);
+    }
+  });
+
+  it('honours the preference for motion CSS cannot reach', () => {
+    // A scroll started from script is invisible to the media query, so the
+    // code has to ask. Chat autoscroll fired on every message and did not.
+    const chat = read('components/dojo/ChatConsole.tsx');
+    expect(chat).toContain('prefersReducedMotion()');
+  });
+});

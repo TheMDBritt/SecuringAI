@@ -120,14 +120,14 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
           <button
             disabled={missedQs.length === 0}
             onClick={() => onRetakeMissed(missedQs)}
-            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors active:translate-y-px"
           >
             ↻ Retake missed ({missedQs.length})
           </button>
           <button
             disabled={allQs.length === 0}
             onClick={() => onRetakeAll(allQs)}
-            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors active:translate-y-px"
           >
             ↻ Retake entire session ({allQs.length})
           </button>
@@ -192,14 +192,14 @@ export default function SessionReview({ session, onBack, onRetakeMissed, onRetak
           <button
             disabled={missedQs.length === 0}
             onClick={() => onRetakeMissed(missedQs)}
-            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors active:translate-y-px"
           >
             ↻ Retake missed ({missedQs.length})
           </button>
           <button
             disabled={allQs.length === 0}
             onClick={() => onRetakeAll(allQs)}
-            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="text-xs font-mono px-3 py-2 rounded border border-brand-500/40 text-brand-300 bg-brand-500/5 hover:bg-brand-500/10 disabled:opacity-40 disabled:cursor-not-allowed transition-colors active:translate-y-px"
           >
             ↻ Retake entire session ({allQs.length})
           </button>

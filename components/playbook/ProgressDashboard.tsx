@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { QuizQuestion } from '@/types';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { useQuestionsByIds } from '@/lib/use-questions';
@@ -460,7 +460,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                       // is on, which the colour alone did not.
                       aria-pressed={sortKey === k}
                       className={[
-                        'text-micro font-mono px-1.5 py-0.5 rounded border transition-colors duration-150',
+                        'text-micro font-mono px-1.5 py-0.5 rounded border transition-colors duration-150 active:translate-y-px',
                         sortKey === k
                           ? 'border-brand-500/40 text-brand-300 bg-brand-500/10'
                           : 'border-slate-700 text-slate-500 hover:text-slate-300 hover:border-slate-500',
@@ -491,31 +491,36 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                       const isOpen = expandedQId === r.qId;
                       const q = Q_LOOKUP_FULL[r.qId];
                       return (
-                        <>
+                        <Fragment key={r.qId}>
                           <tr
-                            key={r.qId}
                             onClick={() => setExpandedQId(isOpen ? null : r.qId)}
-                            className={`border-t border-slate-800/40 cursor-pointer hover:bg-slate-800/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-400 ${isOpen ? 'bg-slate-800/40' : ''}`}
-                            aria-expanded={isOpen}
-                            // A row that expands on click is a control. Without a
-                            // tabIndex, role and key handler it was reachable by mouse
-                            // only, so the explanation behind every missed question was
-                            // closed to keyboard and screen-reader users.
-                            tabIndex={0}
-                            role="button"
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                setExpandedQId(isOpen ? null : r.qId);
-                              }
-                            }}
+                            className={`border-t border-slate-800/40 cursor-pointer hover:bg-slate-800/40 ${isOpen ? 'bg-slate-800/40' : ''}`}
                           >
                             <td className="px-3 py-2 max-w-md">
-                              <p className="text-slate-300 line-clamp-2 flex items-start gap-2">
-                                <span className="text-slate-400 text-micro pt-0.5">{isOpen ? '▾' : '▸'}</span>
-                                <span>{r.question}</span>
-                              </p>
-                              <p className="text-micro font-mono text-slate-400 mt-0.5 ml-4">{r.category} · {r.topic}</p>
+                              {/* The control is a button inside the cell, not the
+                                  row itself. role="button" on a <tr> removes it
+                                  from the table's accessibility tree, so a screen
+                                  reader loses row position and header association
+                                  for exactly the rows a learner most needs to
+                                  read. The row keeps its click target for mouse
+                                  users; keyboard and assistive tech go through a
+                                  real button, which needs no synthetic key
+                                  handling and announces its own expanded state. */}
+                              <button
+                                type="button"
+                                aria-expanded={isOpen}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setExpandedQId(isOpen ? null : r.qId);
+                                }}
+                                className="w-full rounded text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+                              >
+                                <span className="text-slate-300 line-clamp-2 flex items-start gap-2">
+                                  <span aria-hidden="true" className="text-slate-400 text-micro pt-0.5">{isOpen ? '▾' : '▸'}</span>
+                                  <span>{r.question}</span>
+                                </span>
+                                <span className="block text-micro font-mono text-slate-400 mt-0.5 ml-4">{r.category} · {r.topic}</span>
+                              </button>
                             </td>
                             <td className="px-3 py-2 text-right">
                               <span className={`font-mono font-bold ${pctColor(r.accuracy)}`}>{r.accuracy}%</span>
@@ -557,7 +562,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                               </td>
                             </tr>
                           )}
-                        </>
+                        </Fragment>
                       );
                     })}
                   </tbody>

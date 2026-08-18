@@ -199,7 +199,11 @@ export default function TopicBrowser({ certFilter }: TopicBrowserProps) {
                 <div className="mt-2 flex items-center gap-1.5 flex-wrap">
                   <span className="text-micro font-mono text-slate-400">Key terms:</span>
                   {selectedArticle.vocab.map((v) => (
-                    <span key={v} className="text-micro font-mono text-brand-400/70 hover:text-brand-400 cursor-default">
+                    // A hover colour on something explicitly marked
+                    // cursor-default promises an interaction the cursor is
+                    // simultaneously denying. These are labels, so they read as
+                    // labels.
+                    <span key={v} className="text-micro font-mono text-brand-400/70">
                       {v}
                     </span>
                   ))}
