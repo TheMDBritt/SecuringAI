@@ -111,6 +111,64 @@ export async function requestMagicLink(email: string, redirectTo: string): Promi
   }
 }
 
+/**
+ * Sign in with a password, no email round trip.
+ *
+ * The reason this exists alongside the magic link: the built-in Supabase mailer
+ * allows about two messages an hour, and adding a device costs one. Someone
+ * signing in on a phone and a work machine in the same evening is rate limited
+ * out of their own account, which is exactly the failure this feature was meant
+ * to remove.
+ *
+ * A password is a real second option, not a weaker one. The alternative asked
+ * for, an address alone being enough, cannot be done from the browser without
+ * the service role key, which grants full admin over the database and bypasses
+ * every row level security policy. It would also mean anyone who knows the
+ * address owns the account, and addresses are public in commit metadata.
+ *
+ * Failures stay generic for the same reason as the magic link: a message that
+ * distinguished "no such account" from "wrong password" would confirm which
+ * addresses are registered.
+ */
+export async function signInWithPassword(email: string, password: string): Promise<SyncSession> {
+  const res = await fetch(`${URL_BASE}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ email, password }),
+  });
+  if (!res.ok) {
+    if (res.status === 429) {
+      throw new Error('Too many attempts just now. Wait a few minutes and try again.');
+    }
+    throw new Error('That email and password did not match. Check both and try again.');
+  }
+  const session = toSession((await res.json()) as TokenResponse, email);
+  if (!session) throw new Error('Signed in, but no session came back. Try again.');
+  saveSession(session);
+  return session;
+}
+
+/**
+ * Set or change the password on the signed-in account.
+ *
+ * Requires a live session, so this is reachable only after signing in by link
+ * or with an existing password. That is deliberate: a password that could be
+ * set from an unauthenticated form would be a takeover, not a convenience.
+ */
+export async function setPassword(session: SyncSession, password: string): Promise<void> {
+  const res = await fetch(`${URL_BASE}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { ...authHeaders(), Authorization: `Bearer ${session.accessToken}` },
+    body: JSON.stringify({ password }),
+  });
+  if (!res.ok) {
+    if (res.status === 422) {
+      throw new Error('That password was rejected. Use at least six characters.');
+    }
+    throw new Error('Could not change the password. Try again.');
+  }
+}
+
 interface TokenResponse {
   access_token?: string;
   refresh_token?: string;

@@ -71,3 +71,67 @@ describe('requestMagicLink', () => {
     });
   });
 });
+
+describe('signInWithPassword', () => {
+  const token = {
+    access_token: 'a', refresh_token: 'r', expires_in: 3600, user: { email: 'a@b.c' },
+  };
+
+  beforeEach(() => {
+    const store = new Map<string, string>();
+    vi.stubGlobal('window', {
+      localStorage: {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: (k: string, v: string) => void store.set(k, v),
+        removeItem: (k: string) => void store.delete(k),
+      },
+    });
+  });
+
+  it('returns a session and does not send an email', async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, status: 200, json: async () => token }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const session = await (await import('@/lib/sync-client')).signInWithPassword('a@b.c', 'hunter22');
+    expect(session.accessToken).toBe('a');
+    // The whole point: no /otp call, so the hourly mail quota is untouched.
+    const urls = (fetchMock.mock.calls as unknown as [string][]).map((c) => String(c[0]));
+    expect(urls.some((u) => u.includes('/otp'))).toBe(false);
+    expect(urls[0]).toContain('grant_type=password');
+  });
+
+  it('does not reveal whether the account exists', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 400 })));
+    const { signInWithPassword } = await import('@/lib/sync-client');
+    await expect(signInWithPassword('a@b.c', 'wrong')).rejects.toThrow(
+      'That email and password did not match. Check both and try again.',
+    );
+  });
+
+  it('names a rate limit rather than blaming the password', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 429 })));
+    const { signInWithPassword } = await import('@/lib/sync-client');
+    await expect(signInWithPassword('a@b.c', 'x')).rejects.toThrow(/wait a few minutes/i);
+  });
+});
+
+describe('setPassword', () => {
+  const session = { accessToken: 'tok', refreshToken: 'r', expiresAt: Date.now() + 1e6, email: 'a@b.c' };
+
+  it('authorises with the live session, so it cannot be used to take over an account', async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, status: 200 }));
+    vi.stubGlobal('fetch', fetchMock);
+    await (await import('@/lib/sync-client')).setPassword(session, 'newpassword');
+
+    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toContain('/auth/v1/user');
+    expect(init.method).toBe('PUT');
+    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer tok');
+  });
+
+  it('explains a rejected password', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 422 })));
+    const { setPassword } = await import('@/lib/sync-client');
+    await expect(setPassword(session, 'abc')).rejects.toThrow(/at least six/i);
+  });
+});
