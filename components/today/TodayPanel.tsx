@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Card, Button } from '@/components/ui';
+import { Card, Skeleton } from '@/components/ui';
 import { ProgressBar } from '@/components/ui/motion-primitives';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
@@ -102,9 +102,31 @@ export function TodayPanel({ poolSizes }: TodayPanelProps) {
     return { counts, readiness, streak };
   }, [cert, certMeta, progress, settings.dailyGoal, poolSizes]);
 
-  // Nothing rendered until the browser stores have been read, so the panel
-  // never flashes a confident "0 due" that is merely "not loaded yet".
-  if (!ready) return null;
+  // A placeholder of roughly the right size until the browser stores have been
+  // read. Rendering the real figures on the server is impossible, since they
+  // live in localStorage, and rendering zeros would state something false: "0
+  // due" and "not loaded yet" look identical and mean opposite things. But
+  // returning null left the page to jump when the panel arrived, so it holds
+  // its space instead.
+  if (!ready) {
+    return (
+      <Card className="p-5 sm:p-6">
+        <p className="sr-only" role="status" aria-live="polite">
+          Loading your plan
+        </p>
+        <Skeleton className="h-4 w-16" />
+        <Skeleton className="mt-2 h-6 w-64" />
+        <Skeleton className="mt-4 h-4 w-full max-w-lg" />
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-[68px] w-full" />
+          ))}
+        </div>
+        <Skeleton className="mt-5 h-2 w-full" />
+        <Skeleton className="mt-5 h-9 w-56" />
+      </Card>
+    );
+  }
 
   if (!cert || !certMeta || !view) return <CertPicker onPick={(id) => updateSettings({ activeCert: id })} />;
 
