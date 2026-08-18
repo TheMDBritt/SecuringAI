@@ -84,6 +84,17 @@ export function loadProgress(): ProgressData {
   }
 }
 
+/**
+ * Fired after quiz history is written, so cross-device sync knows there is
+ * something new to push.
+ *
+ * Deliberately its own event rather than the progress-store one. That event is
+ * what the dashboards re-read on, and a quiz session writes here after every
+ * single answer; reusing it would re-render the progress views mid-question for
+ * no benefit. Nothing in the UI listens to this one.
+ */
+export const QUIZ_PROGRESS_CHANGED_EVENT = 'securingai:quiz-progress-changed';
+
 function saveProgress(data: ProgressData): void {
   if (!isBrowser()) return;
   try {
@@ -91,7 +102,9 @@ function saveProgress(data: ProgressData): void {
   } catch {
     // Quota exceeded or storage disabled, silently drop; nothing else to do
     // in a no-account app.
+    return;
   }
+  window.dispatchEvent(new Event(QUIZ_PROGRESS_CHANGED_EVENT));
 }
 
 /** Remove sessions older than the 90-day window. */

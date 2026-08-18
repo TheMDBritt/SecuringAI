@@ -32,7 +32,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     applySettings(loadSettings());
   }, []);
 
-  // Pull down anything recorded on another device, once per load.
+  // Keep this browser level with every other one the account is signed in on.
+  //
+  // Not a one-shot pull on load: that would carry other devices' work in but
+  // leave work done here stranded until the app was next opened on this same
+  // machine. startAutoSync also pushes, on a debounce and when the tab is left.
   //
   // Silent by design. Sync is an optional convenience, so a failure here must
   // not interrupt anyone: syncNow resolves with an error state rather than
@@ -40,12 +44,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   // panel is where the state is actually reported. Signed out or unconfigured
   // it returns immediately without a request.
   useEffect(() => {
+    let stop: (() => void) | null = null;
     let live = true;
-    import('@/lib/sync')
-      .then((m) => (live ? m.syncNow() : null))
+    import('@/lib/sync-auto')
+      .then((m) => {
+        if (live) stop = m.startAutoSync();
+      })
       .catch(() => null);
     return () => {
       live = false;
+      stop?.();
     };
   }, []);
 
