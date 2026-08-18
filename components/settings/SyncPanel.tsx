@@ -185,7 +185,8 @@ export function SyncPanel() {
                 variant="primary"
                 size="md"
                 type="submit"
-                disabled={sending || !email.trim() || !password}
+                loading={sending}
+                disabled={!email.trim() || !password}
               >
                 {sending ? 'Signing in…' : 'Sign in'}
               </Button>
@@ -215,7 +216,7 @@ export function SyncPanel() {
             />
             <span className="text-xs text-slate-300">{state.email || 'Signed in'}</span>
           </span>
-          <Button variant="secondary" size="md" onClick={handleSync} disabled={state.status === 'syncing'}>
+          <Button variant="secondary" size="md" onClick={handleSync} loading={state.status === 'syncing'}>
             {state.status === 'syncing' ? 'Syncing…' : 'Sync now'}
           </Button>
           <Button variant="ghost" size="md" onClick={() => setChanging((v) => !v)}>
@@ -244,7 +245,7 @@ export function SyncPanel() {
               className="w-full rounded-lg border border-surface-border bg-surface-raised px-3 py-2 text-sm text-slate-100 focus:border-brand-500/50 focus:outline-none"
             />
           </div>
-          <Button variant="primary" size="md" type="submit" disabled={sending || newPassword.length < 6}>
+          <Button variant="primary" size="md" type="submit" loading={sending} disabled={newPassword.length < 6}>
             {sending ? 'Saving…' : 'Save password'}
           </Button>
         </form>

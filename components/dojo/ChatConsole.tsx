@@ -13,6 +13,7 @@ import { DEFAULT_DOJO2_CONFIG, DEFAULT_DOJO3_CONFIG } from '@/types';
 import type { Dojo2IncidentScenario } from '@/lib/dojo2-scenarios';
 import { encodeShare } from '@/lib/share-url';
 import { getQualityCriteria } from '@/lib/quality-rubrics';
+import { prefersReducedMotion } from '@/lib/motion';
 
 // ─── Imperative handle, exposed to DojoTabs via ref ─────────────────────────
 
@@ -474,8 +475,17 @@ export const ChatConsole = forwardRef<ChatConsoleHandle, ChatConsoleProps>(
     }, [loading, onLoadingChange]);
 
     // Auto-scroll on new messages.
+    //
+    // The only motion in the app that ignored the reduced-motion preference,
+    // and it fired on every single message. CSS cannot reach a scroll started
+    // from script, so this has to ask, the way TerminalReplay and useCountUp
+    // already do. The scroll still happens either way; only the smoothness is
+    // conditional, because not scrolling would strand the reader above the
+    // reply they just asked for.
     useEffect(() => {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      bottomRef.current?.scrollIntoView({
+        behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+      });
     }, [messages]);
 
     // Reset chat + seed when scenario type or dojo changes.

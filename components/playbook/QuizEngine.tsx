@@ -5,6 +5,7 @@ import { recordQuizRun } from '@/lib/progress-store';
 import { loadProgress, recordSession, pickWeighted } from '@/lib/quiz-progress';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
 import { loadSettings, updateSettings } from '@/lib/settings-store';
+import { useGrown, CountUp } from '@/components/ui/motion-primitives';
 
 /**
  * Fetches question bodies for the ids that were drawn.
@@ -1129,6 +1130,8 @@ function SummaryScreen({
   onRestart:      () => void;
   onRetry:        () => void;
 }) {
+  // Bars sweep in from empty on mount, matching every other bar in the app.
+  const grown = useGrown();
   const correct  = results.filter((r) => r.correct).length;
   const skipped  = results.filter((r) => r.skipped).length;
   const total    = results.length;
@@ -1177,11 +1180,19 @@ function SummaryScreen({
 
   return (
     <div className="overflow-y-auto h-full px-5 py-5">
-      {/* Score banner */}
-      <div className={`rounded-lg border px-5 py-4 mb-5 ${scoreBg}`}>
+      {/* Score banner.
+          Finishing a sixty-question mock is the emotional peak of this app and
+          this was its least animated screen: no arrival, static bars, two flat
+          buttons. The banner now lands, and the figure counts rather than
+          simply being present. Both go through the existing primitives, so
+          reduced motion is honoured without anything extra here. */}
+      <div className={`animate-pop-in rounded-lg border px-5 py-4 mb-5 ${scoreBg}`}>
         <div className="flex items-end justify-between mb-2">
           <div>
-            <div className={`text-4xl font-bold font-mono ${scoreColor}`}>{pct}<span className="text-2xl">%</span></div>
+            <div className={`text-4xl font-bold font-mono ${scoreColor}`}>
+              <CountUp value={pct} />
+              <span className="text-2xl">%</span>
+            </div>
             <p className="text-2xs text-slate-500 mt-0.5 font-mono">
               {correct}/{total} correct{skipped > 0 ? ` · ${skipped} skipped` : ''} · avg {avgTime}s
             </p>
@@ -1198,8 +1209,10 @@ function SummaryScreen({
           )}
         </div>
         <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-          <div className={`h-full rounded-full transition-all ${pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500'}`}
-               style={{ width: `${pct}%` }} />
+          <div
+            className={`h-full rounded-full transition-[width] duration-700 ease-out ${pct >= 80 ? 'bg-emerald-500' : pct >= 60 ? 'bg-amber-500' : 'bg-red-500'}`}
+            style={{ width: `${grown ? pct : 0}%` }}
+          />
         </div>
         {cert && (
           <div className="mt-1.5 flex items-center gap-1">
@@ -1230,7 +1243,10 @@ function SummaryScreen({
                     </div>
                   </div>
                   <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-                    <div className={`h-full ${barColor} rounded-full`} style={{ width: `${dPct}%` }} />
+                    <div
+                      className={`h-full ${barColor} rounded-full transition-[width] duration-700 ease-out`}
+                      style={{ width: `${grown ? dPct : 0}%` }}
+                    />
                   </div>
                 </div>
               );
@@ -1256,7 +1272,10 @@ function SummaryScreen({
                     </div>
                   </div>
                   <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                    <div className={`h-full ${barColor} rounded-full`} style={{ width: `${catPct}%` }} />
+                    <div
+                      className={`h-full ${barColor} rounded-full transition-[width] duration-700 ease-out`}
+                      style={{ width: `${grown ? catPct : 0}%` }}
+                    />
                   </div>
                 </div>
               );

@@ -1,4 +1,7 @@
+'use client';
+
 import type { AttackType, DojoId, EvaluationResult, Scenario } from '@/types';
+import { CountUp } from '@/components/ui/motion-primitives';
 import { ALL_CRITERIA_MET_MSG } from '@/lib/quality-rubrics';
 
 interface ScoringPaneProps {
@@ -448,8 +451,15 @@ export function ScoringPane({ scenario, dojoId, evaluations, sessionScore }: Sco
                     displayed its 100 starting posture before a single message
                     had been sent — directly above a caption reading "Send a
                     message to see the evaluation". A number that large reads
-                    as a result achieved, not as a starting value. */}
-                {awaitingFirstResult ? '—' : displayScore}
+                    as a result achieved, not as a starting value.
+
+                    The figure counts to its new value rather than jumping. It
+                    was the only static thing in its own row: the bar beneath it
+                    transitions and the verdict badge beside it pops, while the
+                    one number the learner is actively trying to move snapped.
+                    useCountUp resumes from what is on screen when a result
+                    lands mid-count, so a fast exchange does not stutter. */}
+                {awaitingFirstResult ? '—' : <CountUp value={displayScore} />}
               </span>
               <span className="text-sm text-slate-400 mb-0.5">/ 100</span>
               {latest && (

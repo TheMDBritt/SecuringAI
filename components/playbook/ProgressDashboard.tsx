@@ -6,6 +6,7 @@ import { useQuestionsByIds } from '@/lib/use-questions';
 import ObjectiveBreakdown from './ObjectiveBreakdown';
 import DomainBreakdown from './DomainBreakdown';
 import { masteryTone } from '@/components/ui';
+import { useGrown, ProgressBar } from '@/components/ui/motion-primitives';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
 import {
   loadProgress,
@@ -165,7 +166,15 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
     for (const s of scopedSessions) for (const r of s.results) ids.add(r.qId);
     return Array.from(ids);
   }, [scopedSessions]);
-  const { byId: Q_LOOKUP_FULL } = useQuestionsByIds(answeredIds);
+  // The loading and error flags used to be dropped on the floor here, so the
+  // table rendered its fallback labels and then silently swapped in the real
+  // question text, and a fetch failure was indistinguishable from having
+  // answered nothing. SessionReview reads the same hook and reports both.
+  const {
+    byId: Q_LOOKUP_FULL,
+    loading: questionsLoading,
+    error: questionsError,
+  } = useQuestionsByIds(answeredIds);
 
   const perQRows = useMemo(() => {
     const seenQIds = new Set<string>();
@@ -416,9 +425,15 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                             <span className="text-slate-500"> · {t.right}/{t.seen}</span>
                           </span>
                         </div>
-                        <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                          <div className={`h-full ${pctBar(t.accuracy)} rounded-full`} style={{ width: `${t.accuracy}%` }} />
-                        </div>
+                        {/* The shared primitive, not a fourth hand-rolled bar.
+                            Three implementations existed and two of them
+                            snapped straight to their width. */}
+                        <ProgressBar
+                          value={t.accuracy}
+                          label={`${t.category} accuracy`}
+                          tone={masteryTone(t.accuracy)}
+                          height="h-1.5"
+                        />
                       </div>
                     ))}
                   </div>
@@ -431,6 +446,7 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
               <div className="flex items-center justify-between px-4 pt-3 pb-2 border-b border-slate-800">
                 <p className="text-micro font-mono text-slate-400 uppercase tracking-wide">
                   Per-question stats, {perQRows.length} question{perQRows.length === 1 ? '': 's'} you&rsquo;ve seen
+                  {questionsLoading && <span className="ml-2 text-slate-500">loading text&hellip;</span>}
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="text-micro font-mono text-slate-500 mr-1">sort</span>
@@ -455,6 +471,11 @@ export default function ProgressDashboard({ initialSessionId, onLaunchQuiz }: Pr
                   ))}
                 </div>
               </div>
+              {questionsError && (
+                <p role="alert" className="mb-2 text-2xs text-amber-300">
+                  {questionsError} Your stats below are complete; only the question wording is missing.
+                </p>
+              )}
               <div className="max-h-[420px] overflow-x-auto overflow-y-auto">
                 <table className="w-full text-xs">
                   <thead className="sticky top-0 bg-slate-900 border-b border-slate-800/50">
@@ -603,6 +624,7 @@ function ReadinessCard({ cert, r }: { cert: string; r: Readiness }) {
 
 /** `value` is null when the metric has no data yet, which is not the same as zero. */
 function MiniBar({ label, value, threshold, muted }: { label: string; value: number | null; threshold: number; muted?: boolean }) {
+  const grown = useGrown();
   const has = value !== null;
   const v = value ?? 0;
   const barColor = muted || !has ? 'bg-slate-600'
@@ -618,7 +640,10 @@ function MiniBar({ label, value, threshold, muted }: { label: string; value: num
       <p className="text-micro font-mono uppercase tracking-wide text-slate-400">{label}</p>
       <p className={`mt-0.5 font-mono text-lg font-bold ${textColor}`}>{has ? `${v}%` : '—'}</p>
       <div className="mt-1 h-1 overflow-hidden rounded-full bg-slate-800">
-        <div className={`h-full ${barColor} rounded-full`} style={{ width: has ? `${v}%` : '0%' }} />
+        <div
+          className={`h-full ${barColor} rounded-full transition-[width] duration-700 ease-out`}
+          style={{ width: has && grown ? `${v}%` : '0%' }}
+        />
       </div>
     </div>
   );

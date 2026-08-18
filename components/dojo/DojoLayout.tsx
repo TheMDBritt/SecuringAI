@@ -117,7 +117,10 @@ export function DojoLayout({
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+    // Fade only, no rise: this fills the viewport and scrolls internally, so
+    // translating it would add transient overflow, for the reason AppShell
+    // gives about app routes.
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden animate-fade-in-fast">
       {/* Pane switcher, small screens only. */}
       <div
         className="flex shrink-0 items-center gap-1 border-b border-slate-700 bg-slate-900 px-2 py-1.5 lg:hidden"

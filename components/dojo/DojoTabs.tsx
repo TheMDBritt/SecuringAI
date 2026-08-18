@@ -268,8 +268,13 @@ export function DojoTabs() {
           it changes with the tab, so it names the page. */}
       <h1 className="sr-only">Dojo {activeDojoId}, {activeTab.label}</h1>
 
-      {/* Tab content */}
+      {/* Tab content.
+          Keyed on the dojo so switching tabs replays the entrance, the same
+          way PlaybookView keys its sections. Without the key React reuses the
+          nodes and the CSS animation never restarts, so the panel simply
+          swapped its contents with nothing connecting before and after. */}
       <DojoLayout
+        key={activeDojoId}
         hasScenario={selectedScenario !== null}
         scenarioPicker={
           <ScenarioPicker

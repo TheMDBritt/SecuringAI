@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import type { PlaybookSection, QuizQuestion } from '@/types';
 import dynamic from 'next/dynamic';
 import { useTabList } from '@/components/hooks/useTabList';
+import { Skeleton } from '@/components/ui';
 
 // Each section owns a multi-megabyte data module: the quiz bank alone is 2.2 MB
 // of source. Importing them statically put every one of them in the first
@@ -12,11 +13,32 @@ import { useTabList } from '@/components/hooks/useTabList';
 // visit costs only the section actually opened.
 //
 // ssr is left on so each section still server-renders when linked directly.
+// A skeleton rather than the words "Loading section...".
+//
+// These chunks are large, so this state is genuinely seen, and a line of text
+// centred in an empty panel followed by a full-height content pop is the most
+// visible rough edge in the app. The Skeleton primitive and its shimmer had
+// been built, styled and exported and were imported by nothing at all.
+//
+// Shapes roughly match what arrives: a heading, a row of controls, then rows.
+// aria-live still carries the announcement, because a screen reader needs the
+// word "loading", not a set of grey rectangles.
 const loading = () => (
-  <div className="flex h-full items-center justify-center p-8">
-    <p className="text-xs font-mono text-slate-400" role="status" aria-live="polite">
-      Loading section...
+  <div className="h-full p-6">
+    <p className="sr-only" role="status" aria-live="polite">
+      Loading section
     </p>
+    <Skeleton className="h-6 w-48" />
+    <div className="mt-4 flex gap-2">
+      <Skeleton className="h-8 w-24" />
+      <Skeleton className="h-8 w-24" />
+      <Skeleton className="h-8 w-16" />
+    </div>
+    <div className="mt-6 space-y-3">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <Skeleton key={i} className="h-14 w-full" />
+      ))}
+    </div>
   </div>
 );
 

@@ -23,7 +23,7 @@ import { useCountUp } from '@/lib/use-count-up';
  * carries the number, and every call site draws from localStorage — so without
  * JS there is no progress to show and an empty bar is the honest state.
  */
-function useGrown(): boolean {
+export function useGrown(): boolean {
   const [grown, setGrown] = useState(false);
   useEffect(() => {
     if (prefersReducedMotion()) {

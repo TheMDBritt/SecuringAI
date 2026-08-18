@@ -103,15 +103,39 @@ export function Button({
   variant = 'primary',
   size = 'md',
   className,
+  loading = false,
   ...rest
 }: {
   children: ReactNode;
   variant?: BtnVariant;
   size?: keyof typeof BTN_SIZE;
   className?: string;
+  /**
+   * Show a spinner and refuse further presses while work is in flight.
+   *
+   * Every awaited call in the app previously signalled only through
+   * `disabled`, which renders as reduced opacity. A button that dims is
+   * ambiguous: it looks equally like "working" and like "you cannot do this",
+   * and on a slow connection the difference matters. The label is kept
+   * alongside the spinner so the control does not change width mid-press.
+   */
+  loading?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button className={cx('ui-btn', BTN_VARIANT[variant], BTN_SIZE[size], className)} {...rest}>
+    <button
+      {...rest}
+      className={cx('ui-btn', BTN_VARIANT[variant], BTN_SIZE[size], className)}
+      // After the spread deliberately: a caller passing its own `disabled`
+      // must not be able to re-enable a button whose work is still in flight.
+      disabled={loading || rest.disabled}
+      aria-busy={loading || undefined}
+    >
+      {loading && (
+        <span
+          aria-hidden="true"
+          className="mr-2 inline-block h-3 w-3 animate-spin rounded-full border border-current border-t-transparent align-[-1px]"
+        />
+      )}
       {children}
     </button>
   );

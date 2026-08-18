@@ -3,6 +3,34 @@ import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 import { CONTENT_COUNTS } from '@/lib/content-counts';
 import { CATALOG_COUNTS } from '@/lib/catalog-counts';
+import { Inter, JetBrains_Mono } from 'next/font/google';
+
+/**
+ * The typefaces the design system has always specified and never loaded.
+ *
+ * globals.css set --font-sans to Inter and --font-mono to JetBrains Mono, and
+ * nothing anywhere fetched either one: no next/font, no @font-face, no files in
+ * public/. Every visitor without those installed locally saw the whole app fall
+ * back to system-ui, so the design that shipped was not the design that was
+ * written.
+ *
+ * next/font self-hosts the files from the origin, which matters because the CSP
+ * sets font-src to 'self' and data: only, so a Google Fonts link would have
+ * been blocked even after being added. It also inlines the metrics needed to
+ * avoid layout shift, so fixing this does not cost the zero-CLS the accident
+ * was giving us.
+ */
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jetbrains-mono',
+});
 
 const TITLE = 'Securing AI: Enterprise AI Security Training Platform';
 const DESCRIPTION =
@@ -67,7 +95,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         {/*
           Marks the document as scripted before first paint. Scroll-reveal only
