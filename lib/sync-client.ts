@@ -91,8 +91,22 @@ export async function requestMagicLink(email: string, redirectTo: string): Promi
     body: JSON.stringify({ email, create_user: true, options: { email_redirect_to: redirectTo } }),
   });
   if (!res.ok) {
-    // Deliberately vague. A precise message here would say whether an address
-    // is allowlisted, which turns the sign-in form into a membership oracle.
+    // A rate limit is the one failure worth naming. The reason the generic
+    // message exists is to avoid confirming whether an address is allowlisted,
+    // and 429 reveals nothing about that: it is returned for any address once
+    // the project's hourly email quota is spent, allowlisted or not. Hiding it
+    // only sends someone to check an address that was never the problem, and
+    // retrying is the exact wrong response since each attempt extends the wait.
+    //
+    // The built-in Supabase sender allows a couple of emails an hour and is
+    // documented as unsuitable for production. Configuring project SMTP raises
+    // the ceiling; until then this message is what the user sees.
+    if (res.status === 429) {
+      throw new Error('Too many sign-in emails just now. Wait about an hour and try again.');
+    }
+    // Everything else stays deliberately vague. A precise message here would
+    // say whether an address is allowlisted, turning the form into a
+    // membership oracle.
     throw new Error('Could not send the sign-in link. Check the address and try again.');
   }
 }
