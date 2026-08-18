@@ -32,6 +32,7 @@
 import { PROGRESS_CHANGED_EVENT } from './progress-store';
 import { QUIZ_PROGRESS_CHANGED_EVENT } from './quiz-progress';
 import { syncNow } from './sync';
+import { consumeCredentialLink, hasCredentialLink } from './sync-client';
 
 /** Long enough to cover a burst of answers, short enough to survive a tab close. */
 const DEBOUNCE_MS = 4000;
@@ -112,8 +113,20 @@ export function startAutoSync(): () => void {
   // known to have failed, so retry immediately rather than on the next change.
   window.addEventListener('online', () => void run());
 
-  // Pull anything recorded elsewhere before the user starts working here.
-  void run();
+  // A key link signs this browser in before the first sync, so arriving on one
+  // both authenticates and pulls in a single pass rather than needing a reload.
+  // Handled here rather than in the settings panel so the link works on any
+  // route: the whole point is that it can be the everyday bookmark.
+  //
+  // Awaited deliberately. Starting the sync first would race the sign-in and
+  // the first pass would run signed out, quietly doing nothing on the very
+  // visit the link exists to serve.
+  void (async () => {
+    // consumeCredentialLink persists the session itself, via
+    // signInWithPassword, so there is nothing to store here.
+    if (hasCredentialLink()) await consumeCredentialLink();
+    await run();
+  })();
 
   return () => {
     stopped = true;

@@ -212,6 +212,75 @@ export function consumeAuthRedirect(): SyncSession | null {
   return session;
 }
 
+/**
+ * Sign in from a credential carried in the URL.
+ *
+ * A key link: one URL that signs this browser in on arrival, so a machine where
+ * typing a password into a form is impractical still gets its progress. It
+ * works on any route, so an ordinary bookmark can carry it.
+ *
+ * Be clear about what this is. The link is a bearer credential: whoever holds
+ * the URL holds the account, exactly as if the password were written on it,
+ * because it is. That is an acceptable trade for one person's study history and
+ * would not be for anything else. It is why the parameter is stripped from the
+ * address bar the moment it is read, the same way the magic-link tokens are —
+ * out of the visible URL, out of anything copied from it afterwards, and out of
+ * the history entry left behind on a shared machine.
+ *
+ * What this cannot fix is the browser reaching Supabase at all. Where a network
+ * blocks the host, this signs in no better than the form does.
+ *
+ * Encoded rather than plain so the credential is not legible over a shoulder.
+ * Encoding is not encryption and is not relied on as protection: anyone holding
+ * the link can decode it in one line.
+ */
+const KEY_PARAM = 'k';
+
+export function hasCredentialLink(): boolean {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).has(KEY_PARAM);
+}
+
+export async function consumeCredentialLink(): Promise<SyncSession | null> {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  const raw = params.get(KEY_PARAM);
+  if (!raw) return null;
+
+  // Stripped first, and unconditionally. If sign-in fails the credential must
+  // still not be left sitting in the address bar for the next person to read.
+  params.delete(KEY_PARAM);
+  const query = params.toString();
+  window.history.replaceState(
+    null,
+    '',
+    window.location.pathname + (query ? `?${query}` : '') + window.location.hash,
+  );
+
+  let email: string;
+  let password: string;
+  try {
+    // URL-safe base64, so the link survives being pasted through anything.
+    const decoded = atob(raw.replace(/-/g, '+').replace(/_/g, '/'));
+    const split = decoded.indexOf(':');
+    if (split < 1) return null;
+    email = decoded.slice(0, split);
+    password = decoded.slice(split + 1);
+  } catch {
+    return null;
+  }
+  if (!email || !password) return null;
+
+  try {
+    return await signInWithPassword(email, password);
+  } catch {
+    // A stale link leaves the browser exactly as it was, signed out and
+    // local-only, rather than raising an error on a page nobody asked to sign
+    // in from.
+    return null;
+  }
+}
+
 async function refresh(session: SyncSession): Promise<SyncSession | null> {
   const res = await fetch(`${URL_BASE}/auth/v1/token?grant_type=refresh_token`, {
     method: 'POST',
