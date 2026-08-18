@@ -28,7 +28,7 @@ import { EXAM_CERTS, questionMatchesDomain, parseDomainWeight } from '@/lib/cert
 import type { ExamCert, ExamDomain } from '@/lib/cert-exam-domains';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type QuizMode = 'setup' | 'loading' | 'question' | 'result' | 'summary';
+type QuizMode = 'setup' | 'loading' | 'question' | 'result' | 'summary' | 'review';
 type SetupStep = 1 | 2 | 3;
 
 /**
@@ -862,6 +862,7 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
 // ─── Question Screen ──────────────────────────────────────────────────────────
 function QuestionScreen({
   question, index, total, onAnswer, examMode, remainingSec, onAbandonExam, certId,
+  examChosen, flagged, onToggleFlag, onPrev, onNext, onSubmitExam, answeredCount, flaggedCount,
 }: {
   question:       QuizQuestion;
   index:          number;
@@ -871,23 +872,41 @@ function QuestionScreen({
   remainingSec?:  number;
   onAbandonExam?: () => void;
   certId?:        string;
+  /**
+   * Exam mode keeps the answer for each question in the parent, indexed by
+   * position, so revisiting a question shows what was chosen. Practice mode
+   * keeps it locally, because there the answer is final the moment it is given.
+   */
+  examChosen?:    number | null;
+  flagged?:       boolean;
+  onToggleFlag?:  () => void;
+  onPrev?:        () => void;
+  onNext?:        () => void;
+  onSubmitExam?:  () => void;
+  answeredCount?: number;
+  flaggedCount?:  number;
 }) {
-  const [chosen, setChosen] = useState<number | null>(null);
+  const [localChosen, setLocalChosen] = useState<number | null>(null);
+  const chosen = examMode ? (examChosen ?? null) : localChosen;
   const progress = ((index + 1) / total) * 100;
 
   // Reset selection when the question changes (exam-mode chains questions w/o unmount).
-  useEffect(() => { setChosen(null); }, [question.id]);
+  useEffect(() => { setLocalChosen(null); }, [question.id]);
 
   const handleChoose = useCallback((i: number) => {
-    if (chosen !== null) return;
-    setChosen(i);
-    // Exam mode: no reveal, advance immediately.
+    // Exam mode: the answer is provisional until the paper is submitted, so a
+    // choice can be changed. Locking the first press was the single least
+    // exam-like thing here — a real candidate answers, moves on, and comes back
+    // when a later question jogs their memory, and triage is the actual skill a
+    // timed mock is meant to train.
     if (examMode) {
       onAnswer(i);
       return;
     }
+    if (localChosen !== null) return;
+    setLocalChosen(i);
     setTimeout(() => onAnswer(i), 900);
-  }, [chosen, examMode, onAnswer]);
+  }, [localChosen, examMode, onAnswer]);
 
   // Answer with A-D or 1-4. Anyone drilling a 60-question mock is doing this
   // for an hour; making them move a mouse for every answer is a tax on the
@@ -986,10 +1005,12 @@ function QuestionScreen({
             <button
               key={i}
               onClick={() => handleChoose(i)}
-              disabled={chosen !== null}
+              // Answers stay changeable through the whole paper in exam mode.
+              disabled={!examMode && chosen !== null}
+              aria-pressed={examMode ? i === chosen : undefined}
               style={{ animationDelay: `${i * 45}ms` }}
               className={`w-full animate-rise-in text-left px-4 py-3 rounded-lg border transition-all duration-200 text-sm ${style} ${
-                chosen === null ? 'hover:-translate-y-px' : ''
+                examMode || chosen === null ? 'hover:-translate-y-px active:translate-y-0' : ''
               }`}
             >
               <span className="font-mono text-micro mr-3 opacity-60">{String.fromCharCode(65 + i)}</span>
@@ -1007,17 +1028,205 @@ function QuestionScreen({
         {' '}to <kbd className="rounded border border-slate-700 px-1 text-slate-300">4</kbd> to answer
       </p>
 
-      {/* Exam-mode skip button */}
+      {/* Exam navigation.
+          Previously this was a single "skip" button and an index that only ever
+          incremented: no way back, no way to change an answer, no way to mark
+          something to return to. A candidate who cannot triage is not
+          rehearsing the exam, only the questions. */}
       {examMode && (
-        <button
-          onClick={() => { if (chosen === null) onAnswer(null); }}
-          disabled={chosen !== null}
-          className="mt-3 w-full py-1.5 rounded text-2xs font-mono text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 disabled:opacity-40"
-        >
-          Skip, leave unanswered
-        </button>
+        <div className="mt-4 border-t border-slate-800 pt-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onPrev}
+              disabled={index === 0}
+              className="rounded border border-slate-700 px-3 py-1.5 text-2xs font-mono text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200 disabled:opacity-30"
+            >
+              &larr; Previous
+            </button>
+            <button
+              onClick={onToggleFlag}
+              aria-pressed={flagged}
+              className={`rounded border px-3 py-1.5 text-2xs font-mono transition-colors ${
+                flagged
+                  ? 'border-amber-500/50 bg-amber-500/10 text-amber-300'
+                  : 'border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+              }`}
+            >
+              {flagged ? 'Flagged' : 'Flag for review'}
+            </button>
+            <button
+              onClick={() => onAnswer(null)}
+              className="rounded border border-slate-700 px-3 py-1.5 text-2xs font-mono text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200"
+            >
+              Clear
+            </button>
+            <div className="ml-auto flex items-center gap-2">
+              {index + 1 < total ? (
+                <button
+                  onClick={onNext}
+                  className="rounded border border-brand-500/40 bg-brand-500/10 px-3 py-1.5 text-2xs font-mono text-brand-300 transition-colors hover:bg-brand-500/20"
+                >
+                  Next &rarr;
+                </button>
+              ) : (
+                <button
+                  onClick={onSubmitExam}
+                  className="rounded border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-2xs font-mono text-emerald-300 transition-colors hover:bg-emerald-500/20"
+                >
+                  Submit paper
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="mt-2 font-mono text-micro text-slate-500">
+            {answeredCount ?? 0} of {total} answered
+            {(flaggedCount ?? 0) > 0 && ` · ${flaggedCount} flagged`}
+            {index + 1 < total && ` · you can submit from the last question`}
+          </p>
+        </div>
       )}
      </div>
+    </div>
+  );
+}
+
+
+// ─── Review Screen ────────────────────────────────────────────────────────────
+/**
+ * Every question of a finished paper, with what was chosen and why.
+ *
+ * This did not exist. In exam mode the per-question reveal is skipped by
+ * design, correctly, and the summary showed a percentage and four domain bars.
+ * After a sixty-five question, one-hundred-and-seventy minute mock, that was
+ * the entire feedback: to see why a single answer was wrong the learner had to
+ * leave the quiz, open a different tab, find the session in a list and expand
+ * it. The twenty minutes after a mock is the most valuable part of taking one,
+ * and it was the part the product buried.
+ *
+ * Wrong answers first. Reviewing in exam order means starting with questions
+ * the candidate already knows they got right, and attention runs out before the
+ * ones that matter.
+ */
+function ReviewScreen({
+  results, index, onGo, onBack,
+}: {
+  results: QuizResult[];
+  index:   number;
+  onGo:    (i: number) => void;
+  onBack:  () => void;
+}) {
+  const order = useMemo(() => {
+    const idx = results.map((_, i) => i);
+    const rank = (i: number) => (results[i].skipped ? 0 : results[i].correct ? 2 : 1);
+    return idx.sort((a, b) => rank(a) - rank(b) || a - b);
+  }, [results]);
+
+  const pos = Math.max(0, Math.min(order.length - 1, index));
+  const r = results[order[pos]];
+  if (!r) return null;
+
+  const wrongCount = results.filter((x) => !x.correct && !x.skipped).length;
+  const skippedCount = results.filter((x) => x.skipped).length;
+
+  return (
+    <div className="mx-auto flex h-full w-full max-w-3xl flex-col overflow-y-auto px-5 py-5">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <button
+          onClick={onBack}
+          className="rounded border border-slate-700 px-2 py-1 text-micro font-mono text-slate-500 transition-colors hover:border-slate-500 hover:text-slate-300"
+        >
+          Back to score
+        </button>
+        <span className="text-micro font-mono text-slate-400">
+          Review {pos + 1} / {order.length}
+        </span>
+        <span className="ml-auto text-micro font-mono text-slate-500">
+          {wrongCount} wrong{skippedCount > 0 && ` · ${skippedCount} unanswered`} · shown worst first
+        </span>
+      </div>
+
+      {/* Jump straight to any question. On a 65-question paper, paging one at a
+          time to reach the three that were missed is not review. */}
+      <div className="mb-5 flex flex-wrap gap-1">
+        {order.map((qi, i) => {
+          const rr = results[qi];
+          const tone = rr.skipped
+            ? 'border-slate-600 text-slate-500'
+            : rr.correct
+              ? 'border-emerald-600/50 text-emerald-400'
+              : 'border-red-600/50 text-red-400';
+          return (
+            <button
+              key={qi}
+              onClick={() => onGo(i)}
+              aria-current={i === pos ? 'true' : undefined}
+              aria-label={`Question ${qi + 1}, ${rr.skipped ? 'unanswered' : rr.correct ? 'correct' : 'wrong'}`}
+              className={`h-6 w-6 rounded border font-mono text-micro transition-colors ${tone} ${
+                i === pos ? 'bg-slate-700 text-slate-100' : 'hover:bg-slate-800'
+              }`}
+            >
+              {qi + 1}
+            </button>
+          );
+        })}
+      </div>
+
+      <div key={r.question.id} className="animate-rise-in">
+        <p className="mb-4 text-base font-medium leading-relaxed text-slate-100">{r.question.question}</p>
+
+        <div className="space-y-2">
+          {r.question.options.map((opt, i) => {
+            const isCorrect = i === r.question.correct;
+            const isChosen = i === r.chosen;
+            const style = isCorrect
+              ? 'border-emerald-500 bg-emerald-500/10 text-emerald-200'
+              : isChosen
+                ? 'border-red-500 bg-red-500/10 text-red-200'
+                : 'border-slate-700/60 text-slate-400';
+            return (
+              <div key={i} className={`rounded-lg border px-4 py-3 text-sm ${style}`}>
+                <span className="mr-3 font-mono text-micro opacity-60">{String.fromCharCode(65 + i)}</span>
+                {opt}
+                {isCorrect && <span className="ml-2 font-mono text-micro text-emerald-400">correct</span>}
+                {isChosen && !isCorrect && <span className="ml-2 font-mono text-micro text-red-400">your answer</span>}
+                {r.question.optionExplanations?.[i] && (
+                  <p className="mt-1.5 text-2xs leading-relaxed text-slate-400">
+                    {r.question.optionExplanations[i]}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {r.skipped && (
+          <p className="mt-3 rounded border border-slate-700 bg-slate-900/40 px-3 py-2 text-2xs text-slate-400">
+            You left this one unanswered.
+          </p>
+        )}
+
+        <div className="mt-4 rounded-lg border border-slate-700/60 bg-slate-900/40 p-4">
+          <p className="mb-1.5 font-mono text-micro uppercase tracking-wide text-slate-400">Why</p>
+          <p className="text-sm leading-relaxed text-slate-300">{r.question.explanation}</p>
+        </div>
+      </div>
+
+      <div className="mt-5 flex gap-2 pb-4">
+        <button
+          onClick={() => onGo(pos - 1)}
+          disabled={pos === 0}
+          className="rounded border border-slate-700 px-3 py-1.5 text-2xs font-mono text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200 disabled:opacity-30"
+        >
+          &larr; Previous
+        </button>
+        <button
+          onClick={() => onGo(pos + 1)}
+          disabled={pos + 1 >= order.length}
+          className="rounded border border-slate-700 px-3 py-1.5 text-2xs font-mono text-slate-400 transition-colors hover:border-slate-500 hover:text-slate-200 disabled:opacity-30"
+        >
+          Next &rarr;
+        </button>
+      </div>
     </div>
   );
 }
@@ -1123,12 +1332,13 @@ function ResultScreen({
 
 // ─── Summary Screen ───────────────────────────────────────────────────────────
 function SummaryScreen({
-  results, settings, onRestart, onRetry,
+  results, settings, onRestart, onRetry, onReview,
 }: {
   results:        QuizResult[];
   settings:       QuizSettings | null;
   onRestart:      () => void;
   onRetry:        () => void;
+  onReview:       () => void;
 }) {
   // Bars sweep in from empty on mount, matching every other bar in the app.
   const grown = useGrown();
@@ -1284,16 +1494,27 @@ function SummaryScreen({
         </div>
       )}
 
+      {/* Review leads, and is the primary action.
+          The twenty minutes after a mock is the most valuable part of sitting
+          one, and until now the summary offered only "go again" and "start
+          over" — both of which throw the paper away unread. */}
+      <button
+        onClick={onReview}
+        className="mb-2 w-full rounded border border-emerald-500/40 bg-emerald-500/5 py-2.5 text-sm font-semibold text-emerald-300 transition-colors hover:border-emerald-500/70 hover:bg-emerald-500/10 active:translate-y-px"
+      >
+        Review every question
+        {total - correct > 0 && ` · ${total - correct} to go over`}
+      </button>
       <div className="flex gap-2 pt-1">
         <button
           onClick={onRetry}
-          className="flex-1 py-2.5 rounded border border-brand-500/40 hover:border-brand-500/70 bg-brand-500/5 hover:bg-brand-500/10 text-brand-300 text-sm font-semibold transition-colors"
+          className="flex-1 py-2.5 rounded border border-brand-500/40 hover:border-brand-500/70 bg-brand-500/5 hover:bg-brand-500/10 text-brand-300 text-sm font-semibold transition-colors active:translate-y-px"
         >
           Retry Same Settings
         </button>
         <button
           onClick={onRestart}
-          className="flex-1 py-2.5 rounded border border-slate-700 hover:border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-colors"
+          className="flex-1 py-2.5 rounded border border-slate-700 hover:border-slate-600 bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition-colors active:translate-y-px"
         >
           New Quiz
         </button>
@@ -1328,6 +1549,16 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   const [examEndAt,     setExamEndAt]     = useState<number | null>(null);
   const [nowMs,         setNowMs]         = useState(() => Date.now());
   const [loadError,     setLoadError]     = useState<string | null>(null);
+  /**
+   * Exam mode holds answers by question index rather than appending results.
+   *
+   * The append-only list could only grow, which is what made the paper
+   * one-directional: there was nowhere to put a revised answer, so the index
+   * only ever incremented and options were disabled after the first press.
+   */
+  const [examAnswers,   setExamAnswers]   = useState<(number | null)[]>([]);
+  const [flagged,       setFlagged]       = useState<Set<number>>(new Set());
+  const [reviewIndex,   setReviewIndex]   = useState(0);
   const preloadHandledRef = useRef<QuizQuestion[] | null>(null);
 
   // Preloaded launch, skip SetupScreen when parent hands us a question list.
@@ -1401,6 +1632,8 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     setSettings(s);
     setResults([]);
     setCurrentIndex(0);
+    setExamAnswers([]);
+    setFlagged(new Set());
     setLoadError(null);
     setMode('loading');
 
@@ -1433,6 +1666,17 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   }, []);
 
   const handleAnswer = useCallback((chosen: number | null) => {
+    // Exam mode records the answer against its position and stays put. The
+    // paper is not graded until it is submitted, so nothing is decided here.
+    if (settings?.examMode) {
+      setExamAnswers((prev) => {
+        const next = [...prev];
+        next[currentIndex] = chosen;
+        return next;
+      });
+      return;
+    }
+
     const q       = questions[currentIndex];
     const elapsed = Date.now() - questionStart;
     const r: QuizResult = {
@@ -1442,20 +1686,47 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
       skipped:   chosen === null,
       timeTaken: elapsed,
     };
-    const isLast = currentIndex + 1 >= questions.length;
     setResults((prev) => [...prev, r]);
-    if (settings?.examMode) {
-      if (isLast) {
-        setExamEndAt(null);
-        setMode('summary');
-      } else {
-        setCurrentIndex((i) => i + 1);
-        setQuestionStart(Date.now());
-      }
-      return;
-    }
     setMode('result');
   }, [questions, currentIndex, questionStart, settings]);
+
+  /**
+   * Grade the paper.
+   *
+   * One place builds results from the answer array, so submitting by hand, by
+   * running out of time and by ending early all produce the same shape.
+   * Unanswered positions become skips rather than wrong answers, which is what
+   * they are: the scheduler must not treat "ran out of time" as "did not know".
+   */
+  const submitExam = useCallback(() => {
+    const graded: QuizResult[] = questions.map((q, i) => {
+      const chosen = examAnswers[i] ?? null;
+      return {
+        question:  q,
+        chosen,
+        correct:   chosen !== null && chosen === q.correct,
+        skipped:   chosen === null,
+        timeTaken: 0,
+      };
+    });
+    setResults(graded);
+    setExamEndAt(null);
+    setMode('summary');
+  }, [questions, examAnswers]);
+
+  const toggleFlag = useCallback(() => {
+    setFlagged((prev) => {
+      const next = new Set(prev);
+      if (next.has(currentIndex)) next.delete(currentIndex);
+      else next.add(currentIndex);
+      return next;
+    });
+  }, [currentIndex]);
+
+  const goToQuestion = useCallback((i: number) => {
+    setCurrentIndex(Math.max(0, Math.min(questions.length - 1, i)));
+    setQuestionStart(Date.now());
+  }, [questions.length]);
 
   const handleNext = useCallback(() => {
     if (currentIndex + 1 >= questions.length) {
@@ -1512,28 +1783,21 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
     return () => clearInterval(id);
   }, [examEndAt]);
 
+  // Time up: grade whatever is on the paper. Both this and ending early go
+  // through submitExam, so a paper cannot be graded two different ways.
+  // Previously each walked forward from the current index appending skips,
+  // which silently discarded answers given to questions the candidate had
+  // already passed and come back to.
   useEffect(() => {
     if (!examEndAt) return;
     if (nowMs < examEndAt) return;
-    const remaining: QuizResult[] = [];
-    for (let i = currentIndex; i < questions.length; i++) {
-      remaining.push({ question: questions[i], chosen: null, correct: false, skipped: true, timeTaken: 0 });
-    }
-    setResults((prev) => [...prev, ...remaining]);
-    setExamEndAt(null);
-    setMode('summary');
-  }, [nowMs, examEndAt, currentIndex, questions]);
+    submitExam();
+  }, [nowMs, examEndAt, submitExam]);
 
   const handleAbandonExam = useCallback(() => {
     if (!settings?.examMode) return;
-    const remaining: QuizResult[] = [];
-    for (let i = currentIndex; i < questions.length; i++) {
-      remaining.push({ question: questions[i], chosen: null, correct: false, skipped: true, timeTaken: 0 });
-    }
-    setResults((prev) => [...prev, ...remaining]);
-    setExamEndAt(null);
-    setMode('summary');
-  }, [settings, currentIndex, questions]);
+    submitExam();
+  }, [settings, submitExam]);
 
   const remainingSec = examEndAt ? Math.max(0, Math.floor((examEndAt - nowMs) / 1000)) : undefined;
 
@@ -1584,6 +1848,14 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
             remainingSec={remainingSec}
             onAbandonExam={handleAbandonExam}
             certId={settings?.selectedCert?.id}
+            examChosen={examAnswers[currentIndex] ?? null}
+            flagged={flagged.has(currentIndex)}
+            onToggleFlag={toggleFlag}
+            onPrev={() => goToQuestion(currentIndex - 1)}
+            onNext={() => goToQuestion(currentIndex + 1)}
+            onSubmitExam={submitExam}
+            answeredCount={examAnswers.filter((a) => a !== null && a !== undefined).length}
+            flaggedCount={flagged.size}
           />
         )}
         {mode === 'result'   && currentResult && (
@@ -1595,6 +1867,15 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
             settings={settings}
             onRestart={() => { setMode('setup'); }}
             onRetry={() => { if (settings) handleStart(settings); }}
+            onReview={() => { setReviewIndex(0); setMode('review'); }}
+          />
+        )}
+        {mode === 'review'   && (
+          <ReviewScreen
+            results={results}
+            index={reviewIndex}
+            onGo={(i) => setReviewIndex(Math.max(0, Math.min(results.length - 1, i)))}
+            onBack={() => setMode('summary')}
           />
         )}
       </div>
