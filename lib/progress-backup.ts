@@ -12,6 +12,7 @@
  */
 
 import { loadProgress, PROGRESS_CHANGED_EVENT, type ProgressState } from './progress-store';
+import { mergePayloads, normalise } from './sync-merge';
 
 const PROGRESS_KEY = 'securingai:progress:v1';
 const SETTINGS_KEY = 'securingai:settings:v1';
@@ -98,11 +99,23 @@ export function downloadBackup(): void {
 }
 
 export type ImportResult =
-  | { ok: true; runs: number }
+  | { ok: true; runs: number; added: number }
   | { ok: false; error: string };
 
 /**
- * Restores a backup, replacing what is currently stored.
+ * Restores a backup, merging it into what is already stored.
+ *
+ * Merging rather than replacing, because the realistic use of this feature is
+ * carrying history from a second device, and that device is not a superset of
+ * this one. Replacing meant importing a phone's backup onto a laptop silently
+ * destroyed everything studied on the laptop, with no warning and no undo. The
+ * union is the same one sync uses, so both paths behave identically: nothing is
+ * ever dropped, and importing the same file twice changes nothing the second
+ * time.
+ *
+ * Settings are only adopted when this browser has none. A backup carries the
+ * preferences of the machine it came from, and reduce-motion describes the
+ * device you are sitting at rather than history that should follow you.
  *
  * Validates the envelope before writing anything, so a wrong file cannot leave
  * storage half-overwritten. Returns a result rather than throwing, since the
@@ -133,10 +146,21 @@ export function restoreBackup(text: string): ImportResult {
     };
   }
 
+  const before = normalise({ activity: readRaw(PROGRESS_KEY), quiz: readRaw(QUIZ_KEY) });
+  const incoming = normalise({ activity: backup.progress, quiz: backup.quizProgress });
+  const merged = mergePayloads(before, incoming);
+
+  const countOf = (p: typeof merged) =>
+    p.activity.quizRuns.length + p.activity.attackRuns.length + p.quiz.sessions.length;
+  const added = countOf(merged) - countOf(before);
+
   try {
-    if (backup.progress) localStorage.setItem(PROGRESS_KEY, JSON.stringify(backup.progress));
-    if (backup.quizProgress) localStorage.setItem(QUIZ_KEY, JSON.stringify(backup.quizProgress));
-    if (backup.settings) localStorage.setItem(SETTINGS_KEY, JSON.stringify(backup.settings));
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(merged.activity));
+    localStorage.setItem(QUIZ_KEY, JSON.stringify(merged.quiz));
+    // Only when this browser has expressed no preference of its own.
+    if (backup.settings && readRaw(SETTINGS_KEY) === null) {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(backup.settings));
+    }
   } catch {
     return { ok: false, error: 'Could not write to browser storage. Is it full or blocked?' };
   }
@@ -150,5 +174,5 @@ export function restoreBackup(text: string): ImportResult {
   }
 
   window.dispatchEvent(new Event('securingai:progress-changed'));
-  return { ok: true, runs };
+  return { ok: true, runs, added };
 }

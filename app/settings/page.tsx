@@ -83,7 +83,12 @@ export default function SettingsPage() {
     if (result.ok) {
       const p = summarize(loadProgress());
       setCounts({ quiz: p.quizRuns, attack: p.attackAttempts });
-      setImportMsg({ tone: 'ok', text: `Restored ${result.runs} saved records.` });
+      setImportMsg({
+        tone: 'ok',
+        text: result.added > 0
+          ? `Merged in ${result.added} record${result.added === 1 ? '' : 's'}. ${result.runs} saved records now.`
+          : `Nothing new in that file. ${result.runs} saved records, unchanged.`,
+      });
     } else {
       setImportMsg({ tone: 'err', text: result.error });
     }
@@ -187,8 +192,9 @@ export default function SettingsPage() {
 
         <p className="mt-3 text-xs leading-relaxed text-slate-500">
           Signed out, progress lives only in this browser. Export a backup before
-          clearing site data or switching devices. Importing replaces what is
-          stored now, so export first if you want to keep both.
+          clearing site data, and import one to pull in history from another
+          device. Importing merges rather than replaces, so nothing already here
+          is lost and importing the same file twice is harmless.
         </p>
       </Card>
 
