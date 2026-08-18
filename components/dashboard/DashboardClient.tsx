@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 import { useProgress } from '@/components/hooks/useProgress';
 import { Reveal } from '@/components/ui/Reveal';
+import { TodayPanel } from '@/components/today/TodayPanel';
 import { timeAgo } from '@/lib/progress-store';
 import {
   Card,
@@ -62,7 +63,13 @@ const ICONS = {
 
 const DIFF_RANK: Record<string, number> = { beginner: 0, intermediate: 1, advanced: 2 };
 
-export function DashboardClient({ catalog }: { catalog: Catalog }) {
+export function DashboardClient({
+  catalog,
+  poolSizes,
+}: {
+  catalog: Catalog;
+  poolSizes: Record<string, number>;
+}) {
   const { state, summary, hydrated } = useProgress();
 
   const attemptedIds = useMemo(() => new Set(state.attackRuns.map((r) => r.scenarioId)), [state.attackRuns]);
@@ -103,9 +110,6 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
         description="Your live view across all three disciplines, attack defense, SOC operations, and AI governance, with completion, accuracy, and a recommended next scenario."
         actions={
           <>
-            <ButtonLink href="/progress" variant="secondary" size="md">
-              View progress
-            </ButtonLink>
             <ButtonLink href="/playbook" variant="secondary" size="md">
               Study playbook
             </ButtonLink>
@@ -115,6 +119,12 @@ export function DashboardClient({ catalog }: { catalog: Catalog }) {
           </>
         }
       />
+
+      {/* The daily plan comes first. Everything below it is the historical
+          view, which is useful but is not an answer to "what now". */}
+      <div className="mt-6">
+        <TodayPanel poolSizes={poolSizes} />
+      </div>
 
       {/* Top stat row */}
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">

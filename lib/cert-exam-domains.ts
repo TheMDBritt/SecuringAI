@@ -426,6 +426,18 @@ export const EXAM_CERTS: ExamCert[] = [
     // bar for a learner calibrating against it.
     passingScore: 67,
     format: 'multiple-choice',
+    // GOAA is a multiple-choice exam, so unlike GASAE and CAISP a mock is not
+    // ruled out by the format. It is ruled out by sourcing: neither the domain
+    // weights nor the published question count and time limit could be
+    // obtained, and a mock built on guesses at those would misrepresent the
+    // exam it claims to rehearse while looking exactly like the sourced ones.
+    // Without this note the mock button was simply absent and nothing said why,
+    // which reads as a bug rather than a decision.
+    formatNote:
+      'No timed mock is offered for GOAA yet. GIAC does not publish domain weightings for ' +
+      'this exam, and the question count and time limit could not be sourced, so a mock ' +
+      'would have to invent the shape of the paper. Practice sets below draw from the full ' +
+      'pool instead.',
     blueprintSource: 'unweighted',
     domains: [
       {

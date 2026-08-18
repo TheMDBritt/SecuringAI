@@ -37,13 +37,6 @@ const IconPlaybook = (
   </svg>
 );
 
-const IconProgress = (
-  <svg className={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    <path d="M3 3v18h18" />
-    <path d="M7 14l3.5-4 3 3L20 7" />
-  </svg>
-);
-
 const IconSettings = (
   <svg className={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="3" />
@@ -71,7 +64,6 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: IconDashboard },
   { href: '/dojo', label: 'Dojo', icon: IconDojo, match: '/dojo' },
   { href: '/playbook', label: 'Playbook', icon: IconPlaybook, match: '/playbook' },
-  { href: '/progress', label: 'Progress', icon: IconProgress },
 ];
 
 export const SECONDARY_NAV: NavItem[] = [

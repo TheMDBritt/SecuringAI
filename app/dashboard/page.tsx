@@ -1,5 +1,5 @@
 import { SCENARIOS } from '@/lib/scenarios';
-import { QUIZ_TOTAL } from '@/lib/quiz-index';
+import { QUIZ_TOTAL, QUIZ_INDEX } from '@/lib/quiz-index';
 import { GLOSSARY_TERMS } from '@/lib/playbook-glossary';
 import { CATALOG_COUNTS } from '@/lib/catalog-counts';
 import { EXAM_CERTS } from '@/lib/cert-exam-domains';
@@ -25,6 +25,12 @@ export default function DashboardPage() {
     difficulty: s.difficulty,
   }));
 
+  // Counted here so the client never has to import the question index for it.
+  const poolSizes: Record<string, number> = {};
+  for (const c of EXAM_CERTS) {
+    poolSizes[c.id] = QUIZ_INDEX.filter((q) => q.certTags.includes(c.id)).length;
+  }
+
   const catalog = {
     scenarios,
     counts: {
@@ -37,5 +43,5 @@ export default function DashboardPage() {
     dojoMeta: DOJO_META,
   };
 
-  return <DashboardClient catalog={catalog} />;
+  return <DashboardClient catalog={catalog} poolSizes={poolSizes} />;
 }

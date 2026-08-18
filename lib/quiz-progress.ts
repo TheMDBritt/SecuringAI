@@ -13,17 +13,18 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * `sessions`  : rolling two-year window of completed quiz sessions
  * `perQ`      : forever-retained aggregate per question ID
- *   - timesSeen, timesRight, lastSeenAt
+ *   - timesSeen, timesRight, lastSeenAt, dueAt, intervalDays, ease
  *
  * The session window is enforced on write only. Pruning on read destroyed
  * history simply because someone opened the app after a long gap, and because
  * sync reads through the same path it propagated that deletion to every other
  * device. See loadProgress.
  *
- * The weighted picker uses perQ to bias future quizzes toward weak / unseen
- * questions (Anki-style spaced repetition). Never-seen questions get the
- * highest weight; consistently-right questions get the lowest but still non-
- * zero so nothing is permanently retired.
+ * Review is scheduled, not merely weighted. Each answer advances an SM-2
+ * interval and ease on the question, and the picker prefers what is due and
+ * how overdue it is. This file claimed spaced repetition for a long time while
+ * implementing a static difficulty bias that never read lastSeenAt; see the
+ * note above `schedule` for what changed and why.
  */
 
 import { safeWrite } from './storage-health';
@@ -62,6 +63,12 @@ export interface QuestionStats {
   timesSeen:   number;
   timesRight:  number;
   lastSeenAt:  number;
+  /** Epoch ms this question next comes due. Absent on records written before scheduling existed. */
+  dueAt?:      number;
+  /** Current spacing in days. Absent means never scheduled. */
+  intervalDays?: number;
+  /** SM-2 ease factor, 1.3 upward. Absent means the default. */
+  ease?:       number;
 }
 
 export interface ProgressData {
@@ -168,11 +175,19 @@ export function recordSession(input: RecordSessionInput): SessionRecord {
   const nextPerQ = { ...current.perQ };
   for (const r of input.results) {
     const prev = nextPerQ[r.qId];
+    // A skipped question was never judged, so it must not advance the
+    // schedule. Counting a skip as correct would push it weeks out on no
+    // evidence; counting it as wrong would punish running out of time.
+    const answered = r.chosen !== null;
+    const next = answered ? schedule(prev, r.correct, now) : null;
     nextPerQ[r.qId] = {
       qId:        r.qId,
       timesSeen:  (prev?.timesSeen  ?? 0) + 1,
       timesRight: (prev?.timesRight ?? 0) + (r.correct ? 1 : 0),
       lastSeenAt: now,
+      dueAt:        next ? next.dueAt        : prev?.dueAt,
+      intervalDays: next ? next.intervalDays : prev?.intervalDays,
+      ease:         next ? next.ease         : prev?.ease,
     };
   }
 
@@ -410,24 +425,144 @@ export function readinessScore(
   return { score, basis, mockCount, mockPct, practicePct, coveragePct, passPct, status, reason };
 }
 
-// ─── Weighted question picker (Anki-style bias toward weak/unseen) ───────────
+// ─── Scheduling ──────────────────────────────────────────────────────────────
 
 /**
- * Weight = (2 - accuracy) * (unseen ? 3 : 1)
- *   never seen           →  weight 6 (highest)
- *   0% right on N seen   →  weight 2
- *   50% right            →  weight 1.5
- *   100% right           →  weight 1 (still shown, but rarely)
+ * Spacing, actually implemented.
  *
- * We keep a floor > 0 so no question is permanently retired, otherwise
- * long-time users would see the same subset forever.
+ * The header of this file has claimed "Anki-style spaced repetition" since it
+ * was written, and the code did not do it. The whole scheduler was
+ *
+ *   if (unseen) return 6;
+ *   return max(0.5, 2 - timesRight / timesSeen);
+ *
+ * which is a difficulty bias, not a schedule. `lastSeenAt` was recorded on
+ * every answer and never read by anything. A question answered correctly
+ * yesterday and one answered correctly eight months ago carried identical
+ * weight, so review never arrived when forgetting made it useful, and a
+ * learner who had answered everything once got an endless reshuffle of the
+ * same pool with no sense of anything being retired or coming back.
+ *
+ * This is SM-2, simplified to the two outcomes a multiple-choice item has.
+ * Correct multiplies the interval by the ease factor; wrong resets it to a day
+ * and lowers the ease so a question that keeps being missed keeps coming back
+ * quickly. The ease floor of 1.3 is SM-2's, and it exists so a repeatedly
+ * failed item cannot collapse to a schedule that never grows.
  */
-function questionWeight(qId: string, perQ: Record<string, QuestionStats>): number {
+const EASE_DEFAULT = 2.5;
+const EASE_MIN = 1.3;
+const EASE_CORRECT_BONUS = 0.1;
+const EASE_WRONG_PENALTY = 0.2;
+const FIRST_INTERVAL_DAYS = 1;
+const SECOND_INTERVAL_DAYS = 3;
+const MAX_INTERVAL_DAYS = 180;
+const DAY_MS = 86_400_000;
+
+/** Advance one question's schedule after an answer. */
+export function schedule(prev: QuestionStats | undefined, correct: boolean, now: number): {
+  dueAt: number;
+  intervalDays: number;
+  ease: number;
+} {
+  const prevEase = typeof prev?.ease === 'number' ? prev.ease : EASE_DEFAULT;
+  const prevInterval = typeof prev?.intervalDays === 'number' ? prev.intervalDays : 0;
+
+  if (!correct) {
+    // Back to tomorrow, and make the ease shallower so repeated misses stay
+    // frequent rather than drifting out to a week because of one lucky run.
+    return {
+      ease: Math.max(EASE_MIN, prevEase - EASE_WRONG_PENALTY),
+      intervalDays: FIRST_INTERVAL_DAYS,
+      dueAt: now + FIRST_INTERVAL_DAYS * DAY_MS,
+    };
+  }
+
+  const ease = Math.min(3.0, prevEase + EASE_CORRECT_BONUS);
+  const intervalDays =
+    prevInterval === 0
+      ? FIRST_INTERVAL_DAYS
+      : prevInterval === FIRST_INTERVAL_DAYS
+        ? SECOND_INTERVAL_DAYS
+        : Math.min(MAX_INTERVAL_DAYS, Math.round(prevInterval * ease));
+
+  return { ease, intervalDays, dueAt: now + intervalDays * DAY_MS };
+}
+
+/**
+ * When a pre-scheduling record comes due.
+ *
+ * Existing users have `lastSeenAt` and nothing else. Treating those as due
+ * immediately would dump the entire history into one enormous first queue, and
+ * treating them as never due would hide them forever. Deriving a due date from
+ * how well the question was known, measured from when it was last seen, lands
+ * everyone somewhere sensible without a migration.
+ */
+function inferredDueAt(s: QuestionStats): number {
+  if (s.timesSeen === 0) return 0;
+  const accuracy = s.timesRight / s.timesSeen;
+  const days = accuracy >= 0.9 ? 21 : accuracy >= 0.7 ? 7 : accuracy >= 0.5 ? 3 : 1;
+  return s.lastSeenAt + days * DAY_MS;
+}
+
+/** Epoch ms this question is next due. Unseen questions are always due. */
+export function dueAtFor(s: QuestionStats | undefined): number {
+  if (!s || s.timesSeen === 0) return 0;
+  return typeof s.dueAt === 'number' ? s.dueAt : inferredDueAt(s);
+}
+
+/** Whether this question is ready for review. */
+export function isDue(s: QuestionStats | undefined, now = Date.now()): boolean {
+  return dueAtFor(s) <= now;
+}
+
+/** How many of these question ids are due now, split by whether they are new. */
+export function dueCounts(
+  ids: string[],
+  perQ: Record<string, QuestionStats>,
+  now = Date.now(),
+): { due: number; fresh: number; later: number } {
+  let due = 0;
+  let fresh = 0;
+  let later = 0;
+  for (const id of ids) {
+    const s = perQ[id];
+    if (!s || s.timesSeen === 0) fresh++;
+    else if (dueAtFor(s) <= now) due++;
+    else later++;
+  }
+  return { due, fresh, later };
+}
+
+// ─── Weighted question picker ────────────────────────────────────────────────
+
+/**
+ * Weight combines how well a question is known with how overdue it is.
+ *
+ * Unseen stays highest, so a learner still meets new material. Beyond that,
+ * a question that came due a month ago now outranks one that came due this
+ * morning, which is the behaviour the file claimed and did not have. Nothing
+ * reaches zero: a permanently retired question means a long-term user
+ * eventually sees the same shrinking subset forever.
+ */
+function questionWeight(qId: string, perQ: Record<string, QuestionStats>, now: number): number {
   const s = perQ[qId];
   if (!s || s.timesSeen === 0) return 6;
+
   const accuracy = s.timesRight / s.timesSeen;
-  return Math.max(0.5, 2 - accuracy);
+  const difficulty = Math.max(0.5, 2 - accuracy);
+
+  const due = dueAtFor(s);
+  if (due > now) {
+    // Not due yet. Still reachable, so a narrow filter is never empty, but it
+    // should not compete with material that is actually ready for review.
+    return difficulty * 0.15;
+  }
+  // Overdue by a day doubles it; the cap stops a year-old item from crowding
+  // out everything else entirely.
+  const overdueDays = (now - due) / DAY_MS;
+  return difficulty * Math.min(3, 1 + overdueDays);
 }
+
 
 /** Pick N questions from a pool, biased toward weak / unseen. */
 export function pickWeighted<T extends { id: string }>(
@@ -446,8 +581,9 @@ export function pickWeighted<T extends { id: string }>(
     }
     return out;
   }
+  const now = Date.now();
   const remaining = [...pool];
-  const weights   = remaining.map((q) => questionWeight(q.id, perQ));
+  const weights   = remaining.map((q) => questionWeight(q.id, perQ, now));
   const out: T[] = [];
   for (let k = 0; k < n && remaining.length > 0; k++) {
     const total = weights.reduce((a, w) => a + w, 0);

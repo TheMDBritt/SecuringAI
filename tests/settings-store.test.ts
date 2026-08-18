@@ -32,9 +32,15 @@ function installBrowser() {
     clear: () => store.clear(),
   };
   const documentElement = { dataset: {} as Record<string, string> };
-  vi.stubGlobal('window', { localStorage });
+  const events: string[] = [];
+  vi.stubGlobal('window', {
+    localStorage,
+    dispatchEvent: (e: Event) => { events.push(e.type); return true; },
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  });
   vi.stubGlobal('document', { documentElement });
-  return { store, documentElement };
+  return { store, documentElement, events };
 }
 
 let env: ReturnType<typeof installBrowser>;
@@ -53,7 +59,7 @@ describe('loading', () => {
   });
 
   it('round-trips a saved settings object', () => {
-    const next: Settings = { reduceMotion: true, denseTables: true };
+    const next: Settings = { ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: true };
     saveSettings(next);
     expect(loadSettings()).toEqual(next);
   });
@@ -62,7 +68,7 @@ describe('loading', () => {
     // A settings object written by an older build is missing whatever was added
     // since. Those fields take their default rather than becoming undefined.
     env.store.set(KEY, JSON.stringify({ reduceMotion: true }));
-    expect(loadSettings()).toEqual({ reduceMotion: true, denseTables: false });
+    expect(loadSettings()).toEqual({ ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: false });
   });
 
   it('ignores a field that is not a boolean', () => {
@@ -101,20 +107,20 @@ describe('applying', () => {
   it('writes exactly the strings the CSS matches', () => {
     // The stylesheet keys off html[data-reduce-motion='true']. Anything other
     // than the literal "true"/"false" pair is a silently broken preference.
-    applySettings({ reduceMotion: true, denseTables: false });
+    applySettings({ ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: false });
     expect(env.documentElement.dataset.reduceMotion).toBe('true');
     expect(env.documentElement.dataset.denseTables).toBe('false');
   });
 
   it('is applied as part of saving, not only on next load', () => {
-    saveSettings({ reduceMotion: true, denseTables: true });
+    saveSettings({ ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: true });
     expect(env.documentElement.dataset.reduceMotion).toBe('true');
     expect(env.documentElement.dataset.denseTables).toBe('true');
   });
 
   it('turns a preference back off', () => {
-    saveSettings({ reduceMotion: true, denseTables: false });
-    saveSettings({ reduceMotion: false, denseTables: false });
+    saveSettings({ ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: false });
+    saveSettings({ ...DEFAULT_SETTINGS, reduceMotion: false, denseTables: false });
     expect(env.documentElement.dataset.reduceMotion).toBe('false');
     expect(loadSettings().reduceMotion).toBe(false);
   });
@@ -124,7 +130,7 @@ describe('server rendering', () => {
   it('returns defaults and touches nothing when there is no window', () => {
     vi.unstubAllGlobals();
     expect(loadSettings()).toEqual(DEFAULT_SETTINGS);
-    expect(() => saveSettings({ reduceMotion: true, denseTables: true })).not.toThrow();
+    expect(() => saveSettings({ ...DEFAULT_SETTINGS, reduceMotion: true, denseTables: true })).not.toThrow();
     expect(() => applySettings(DEFAULT_SETTINGS)).not.toThrow();
   });
 });

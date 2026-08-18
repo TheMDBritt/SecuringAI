@@ -4,6 +4,7 @@ import { SC500_DRILL_SET, type Drill, type DrillSet, type DrillStep } from '@/li
 import { SECAI_DRILL_SET } from '@/lib/secai-drills';
 import { AWS_SCSC03_DRILL_SET } from '@/lib/aws-scsc03-drills';
 import { useTabList } from '@/components/hooks/useTabList';
+import { recordQuizRun } from '@/lib/progress-store';
 
 type Mode = 'list' | 'run' | 'done';
 
@@ -67,6 +68,32 @@ export default function PortalDrills() {
     [activeSet, portalFilter],
   );
 
+  /**
+   * Write a finished drill into the activity log.
+   *
+   * Drills previously recorded nothing at all. Someone could work through a
+   * twenty-step SC-500 portal drill and it would appear in no dashboard, no
+   * history, and nowhere in the readiness calculation, which made a real
+   * feature read as a dead end and quietly understated how much work had
+   * actually been done.
+   *
+   * Recorded as a quiz run rather than a quiz session: a drill is a sequence of
+   * navigation choices, not exam-bank questions, so its steps have no place in
+   * per-question mastery and must not feed the review scheduler. The activity
+   * log is exactly the right grain for "this happened, and it went like this".
+   */
+  const recordDrill = (d: Drill, chosen: (number | null)[]) => {
+    const correct = chosen.filter((p, i) => p === d.steps[i].correct).length;
+    recordQuizRun({
+      certId: activeSet.certId,
+      certName: activeSet.certId,
+      total: d.steps.length,
+      correct,
+      skipped: chosen.filter((p) => p === null).length,
+      examMode: false,
+    });
+  };
+
   const startDrill = (d: Drill) => {
     setActiveDrill(shuffleDrill(d));
     setStepIdx(0);
@@ -85,6 +112,7 @@ export default function PortalDrills() {
   const handleNext = () => {
     if (!activeDrill) return;
     if (stepIdx + 1 >= activeDrill.steps.length) {
+      recordDrill(activeDrill, picks);
       setMode('done');
     } else {
       setStepIdx((s) => s + 1);

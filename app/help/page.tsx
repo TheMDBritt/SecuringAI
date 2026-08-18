@@ -12,7 +12,6 @@ const QUICK_LINKS = [
   { href: '/dashboard', label: 'Dashboard', desc: 'Your completion, quiz accuracy, and recommended next scenario.' },
   { href: '/dojo', label: 'Dojo', desc: 'Attack and defend a live LLM, run SOC workflows, govern AI risk.' },
   { href: '/playbook', label: 'Playbook', desc: `${CONTENT_COUNTS.quizQuestions.toLocaleString()} questions, ${CONTENT_COUNTS.glossaryTerms} glossary terms, cert maps and ${CONTENT_COUNTS.topicArticles} topic articles.` },
-  { href: '/progress', label: 'Progress', desc: 'Per-discipline and per-certification analytics.' },
 ];
 
 const DISCIPLINES = [

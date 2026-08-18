@@ -4,6 +4,7 @@ import type { QuizQuestion, QuizDifficulty } from '@/types';
 import { recordQuizRun } from '@/lib/progress-store';
 import { loadProgress, recordSession, pickWeighted } from '@/lib/quiz-progress';
 import { QUIZ_INDEX } from '@/lib/quiz-index';
+import { loadSettings, updateSettings } from '@/lib/settings-store';
 
 /**
  * Fetches question bodies for the ids that were drawn.
@@ -22,7 +23,6 @@ async function fetchQuestionsByIds(ids: string[]): Promise<QuizQuestion[]> {
   }
   return out;
 }
-import { generateQuizQuestions } from '@/lib/playbook-quiz-gen';
 import { EXAM_CERTS, questionMatchesDomain, parseDomainWeight } from '@/lib/cert-exam-domains';
 import type { ExamCert, ExamDomain } from '@/lib/cert-exam-domains';
 
@@ -486,11 +486,13 @@ function Step3Options({
   cert,
   selectedDomainIds,
   onBack,
+  onChangeCert,
   onStart,
 }: {
   cert: ExamCert;
   selectedDomainIds: Set<string>;
   onBack: () => void;
+  onChangeCert: () => void;
   onStart: (s: QuizSettings) => void;
 }) {
   const [difficulty, setDifficulty] = useState<QuizDifficulty | 'all'>('all');
@@ -592,6 +594,15 @@ function Step3Options({
           {cert.id}
         </span>
         <span className="text-sm font-semibold text-slate-200 truncate">{cert.name}</span>
+        {/* Setup jumps straight here once an exam is remembered, so there has
+            to be an obvious way out that does not rely on guessing that Back
+            goes two screens further than it looks like it does. */}
+        <button
+          onClick={onChangeCert}
+          className="ml-auto shrink-0 text-micro font-mono text-slate-500 underline underline-offset-2 transition-colors hover:text-slate-300"
+        >
+          Change exam
+        </button>
       </div>
 
       {/* Domain summary */}
@@ -605,13 +616,18 @@ function Step3Options({
       </div>
 
       {/* What the real exam is, where that changes what these questions can do
-          for you. Two of these certifications are hands-on: offering a timed
-          multiple-choice mock for them would rehearse a format the candidate
-          never sees. Saying so is more useful than quietly showing no button. */}
+          for you. Some of these certifications are hands-on, so a timed
+          multiple-choice mock would rehearse a format the candidate never sees;
+          for others the paper's shape simply is not published, so a mock would
+          have to invent it. Either way, saying so beats quietly showing no
+          button. The heading follows the format, because calling a
+          multiple-choice exam hands-on would be worse than saying nothing. */}
       {cert.formatNote && (
         <div className="mb-5 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
           <p className="mb-1 text-2xs font-semibold text-amber-300">
-            {cert.id} is a hands-on exam
+            {cert.format === 'multiple-choice'
+              ? `No timed mock for ${cert.id}`
+              : `${cert.id} is a hands-on exam`}
           </p>
           <p className="text-2xs leading-relaxed text-slate-300">{cert.formatNote}</p>
         </div>
@@ -752,10 +768,36 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
   const [selectedCert, setSelectedCert] = useState<ExamCert | null>(null);
   const [selectedDomainIds, setSelectedDomainIds] = useState<Set<string>>(new Set());
 
+  /**
+   * Skip straight past the exam picker when the learner has already told us
+   * which exam they are sitting.
+   *
+   * Choosing the cert was step one of every session, forever: six clicks from
+   * the landing page to the first question, and five of them re-stating
+   * something the person had already said. Step two compounded it, because
+   * selecting a cert pre-selects every one of its domains, so the default path
+   * was a screen where nothing is changed and Continue is pressed.
+   *
+   * Read after mount rather than as initial state: the setting lives in
+   * localStorage, and seeding useState from it would render one step on the
+   * server and another in the browser.
+   */
+  useEffect(() => {
+    const { activeCert } = loadSettings();
+    if (!activeCert) return;
+    const cert = EXAM_CERTS.find((c) => c.id === activeCert);
+    if (!cert) return;
+    setSelectedCert(cert);
+    setSelectedDomainIds(new Set(cert.domains.map((d) => d.id)));
+    setStep(3);
+  }, []);
+
   const handleSelectCert = (cert: ExamCert) => {
     setSelectedCert(cert);
     // Pre-select all domains when a cert is chosen.
     setSelectedDomainIds(new Set(cert.domains.map((d) => d.id)));
+    // Remembered so this is the last time the question gets asked.
+    updateSettings({ activeCert: cert.id });
   };
 
   const handleToggleDomain = (id: string) => {
@@ -802,6 +844,11 @@ function SetupScreen({ onStart }: { onStart: (s: QuizSettings) => void }) {
         cert={selectedCert}
         selectedDomainIds={selectedDomainIds}
         onBack={() => setStep(2)}
+        onChangeCert={() => {
+          updateSettings({ activeCert: '' });
+          setSelectedCert(null);
+          setStep(1);
+        }}
         onStart={onStart}
       />
     );
@@ -1075,13 +1122,12 @@ function ResultScreen({
 
 // ─── Summary Screen ───────────────────────────────────────────────────────────
 function SummaryScreen({
-  results, settings, onRestart, onRetry, onGenerateMore,
+  results, settings, onRestart, onRetry,
 }: {
   results:        QuizResult[];
   settings:       QuizSettings | null;
   onRestart:      () => void;
   onRetry:        () => void;
-  onGenerateMore: (category: string) => void;
 }) {
   const correct  = results.filter((r) => r.correct).length;
   const skipped  = results.filter((r) => r.skipped).length;
@@ -1181,14 +1227,6 @@ function SummaryScreen({
                       <span className={`text-micro font-mono font-semibold ${dPct >= 80 ? 'text-emerald-400' : dPct >= 60 ? 'text-amber-400' : 'text-red-400'}`}>
                         {dPct}%
                       </span>
-                      {dPct < 70 && dTotal > 0 && (
-                        <button
-                          onClick={() => onGenerateMore(domain.categories[0] ?? '')}
-                          className="text-micro font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
-                        >
-                          more →
-                        </button>
-                      )}
                     </div>
                   </div>
                   <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
@@ -1215,14 +1253,6 @@ function SummaryScreen({
                     <span className="text-2xs text-slate-400 truncate max-w-[200px]">{cat}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-micro font-mono text-slate-400">{stats.correct}/{stats.total}</span>
-                      {catPct < 70 && (
-                        <button
-                          onClick={() => onGenerateMore(cat)}
-                          className="text-micro font-mono text-brand-400 hover:text-brand-300 border border-brand-500/30 px-1.5 py-0.5 rounded"
-                        >
-                          more →
-                        </button>
-                      )}
                     </div>
                   </div>
                   <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
@@ -1278,8 +1308,6 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
   const [questionStart, setQuestionStart] = useState(0);
   const [examEndAt,     setExamEndAt]     = useState<number | null>(null);
   const [nowMs,         setNowMs]         = useState(() => Date.now());
-  const [generating,    setGenerating]    = useState(false);
-  const [genError,      setGenError]      = useState('');
   const [loadError,     setLoadError]     = useState<string | null>(null);
   const preloadHandledRef = useRef<QuizQuestion[] | null>(null);
 
@@ -1490,29 +1518,6 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
 
   const remainingSec = examEndAt ? Math.max(0, Math.floor((examEndAt - nowMs) / 1000)) : undefined;
 
-  const handleGenerateMore = useCallback(async (category: string) => {
-    if (!settings) return;
-    setGenerating(true);
-    setGenError('');
-    try {
-      const extra = await generateQuizQuestions({
-        topic:      category,
-        category,
-        difficulty: settings.difficulty === 'all' ? 'intermediate' : settings.difficulty,
-        count:      10,
-        // Passing the active cert lets the generator apply cert-specific
-        // scaffolding (SecAI+ / SC-500 / SCS-C03 voice) and tag the returned
-        // questions so they surface in the correct Progress + filter buckets.
-        certTag:    settings.selectedCert?.id
-                    ?? (settings.certFilter && settings.certFilter !== 'All' ? settings.certFilter : undefined),
-      });
-      setQuestions((prev) => [...prev, ...extra.map(shuffleOptions)]);
-    } catch (e) {
-      setGenError(e instanceof Error ? e.message : 'Generation failed');
-    } finally {
-      setGenerating(false);
-    }
-  }, [settings]);
 
   const currentQuestion = questions[currentIndex];
   const currentResult   = results[results.length - 1];
@@ -1522,19 +1527,6 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
       {preloadedLabel && (mode === 'question' || mode === 'result') && (
         <div className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
           <span className="text-2xs font-mono text-brand-400 uppercase tracking-wide">↻ {preloadedLabel}</span>
-        </div>
-      )}
-      {generating && (
-        <div role="status" aria-live="polite" className="px-4 py-2 border-b border-brand-500/20 bg-brand-500/5 flex items-center gap-2">
-          <div aria-hidden="true" className="w-3 h-3 border border-brand-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-2xs font-mono text-brand-400">Generating new questions...</span>
-        </div>
-      )}
-      {genError && (
-        <div role="alert" className="px-4 py-2 border-b border-red-500/20 bg-red-500/5">
-          <span className="text-2xs font-mono text-red-400">
-            <span aria-hidden="true">&#9888; </span>{genError}
-          </span>
         </div>
       )}
       <div className="flex-1 overflow-y-auto">
@@ -1584,7 +1576,6 @@ export default function QuizEngine({ preloadedQuestions, preloadedLabel, onSessi
             settings={settings}
             onRestart={() => { setMode('setup'); }}
             onRetry={() => { if (settings) handleStart(settings); }}
-            onGenerateMore={handleGenerateMore}
           />
         )}
       </div>
