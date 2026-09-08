@@ -236,14 +236,24 @@ export function consumeAuthRedirect(): SyncSession | null {
  */
 const KEY_PARAM = 'k';
 
+// window.location is guaranteed in a browser and not in every environment this
+// module is loaded into. Reading it unguarded threw during startAutoSync, which
+// runs before anything else, so a missing location took the whole sync path
+// down rather than merely skipping the link.
+function search(): string | null {
+  if (typeof window === 'undefined') return null;
+  return typeof window.location?.search === 'string' ? window.location.search : null;
+}
+
 export function hasCredentialLink(): boolean {
-  if (typeof window === 'undefined') return false;
-  return new URLSearchParams(window.location.search).has(KEY_PARAM);
+  const raw = search();
+  return raw !== null && new URLSearchParams(raw).has(KEY_PARAM);
 }
 
 export async function consumeCredentialLink(): Promise<SyncSession | null> {
-  if (typeof window === 'undefined') return null;
-  const params = new URLSearchParams(window.location.search);
+  const currentSearch = search();
+  if (currentSearch === null) return null;
+  const params = new URLSearchParams(currentSearch);
   const raw = params.get(KEY_PARAM);
   if (!raw) return null;
 
@@ -251,11 +261,16 @@ export async function consumeCredentialLink(): Promise<SyncSession | null> {
   // still not be left sitting in the address bar for the next person to read.
   params.delete(KEY_PARAM);
   const query = params.toString();
-  window.history.replaceState(
-    null,
-    '',
-    window.location.pathname + (query ? `?${query}` : '') + window.location.hash,
-  );
+  try {
+    window.history.replaceState(
+      null,
+      '',
+      window.location.pathname + (query ? `?${query}` : '') + window.location.hash,
+    );
+  } catch {
+    // Stripping is a precaution, not the feature. Somewhere without a real
+    // History API should still sign in rather than refusing to.
+  }
 
   let email: string;
   let password: string;
